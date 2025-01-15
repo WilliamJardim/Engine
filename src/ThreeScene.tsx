@@ -78,29 +78,9 @@ const ThreeScene: React.FC = () => {
 
       //Outras coisas que vão acontecer
       const frameDelta = clockCamera.getDelta(); // Tempo entre frames
-      const cameraVelocity  = camera.getVelocity();
-      const cameraDirection = camera.getDirection();
-      const cameraMovement  = camera.getMovement();
-      const cameraControls  = camera.getControls();
-
-      cameraVelocity.x -= cameraVelocity.x * 10.0 * frameDelta;
-      cameraVelocity.z -= cameraVelocity.z * 10.0 * frameDelta;
-
-      cameraDirection.z = Number(cameraMovement.forward) - Number(cameraMovement.backward);
-      cameraDirection.x = Number(cameraMovement.right) - Number(cameraMovement.left);
-
-      cameraDirection.normalize(); // Garante que a direção tenha comprimento 1
-
-      if (cameraMovement.forward == true || cameraMovement.backward == true){
-        cameraVelocity.z -= cameraDirection.z * 200.0 * frameDelta;
-      }
-
-      if (cameraMovement.left == true || cameraMovement.right == true ) {
-        cameraVelocity.x -= cameraDirection.x * 200.0 * frameDelta;
-      }
-
-      cameraControls.moveRight(-cameraVelocity.x * frameDelta);
-      cameraControls.moveForward(-cameraVelocity.z * frameDelta);
+      
+      //Atualiza a camera
+      camera.Update( frameDelta );
 
       //Atualiza o pulo
       updateJump();
@@ -119,7 +99,7 @@ const ThreeScene: React.FC = () => {
 
       EngineLoop( scene, 
                   camera, 
-                  cameraControls );
+                  camera.getControls() );
 
       renderer.render( scene, camera.getCamera() );
     };

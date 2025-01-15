@@ -31,13 +31,6 @@ const ThreeScene: React.FC = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     canvasRef.current.appendChild(renderer.domElement);
 
-    const light = new THREE.AmbientLight(0xffffff, 1); // Luz ambiente
-    scene.add(light);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Luz direcional
-    directionalLight.position.set(5, 10, 7.5);
-    scene.add(directionalLight);
-
     const clockCamera = new THREE.Clock();
 
     let gravity = -0.09;     // Gravidade que puxa para baixo

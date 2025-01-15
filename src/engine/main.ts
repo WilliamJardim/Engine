@@ -19,6 +19,13 @@ export function EngineMain( scene: THREE.Scene,
         )
     );
 
+    const light = new THREE.AmbientLight(0xffffff, 1); // Luz ambiente
+    scene.add(light);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Luz direcional
+    directionalLight.position.set(5, 10, 7.5);
+    scene.add(directionalLight);
+
 }
 
 

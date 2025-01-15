@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import './ThreeScene.css'; // Importa o CSS
 import { EngineMain } from './engine/main'; // Importa a função EngineMain
 import { PointerLockControls } from 'three/examples/jsm/Addons.js';
+import MovementState from './engine/interfaces/MovementState';
 
 const ThreeScene: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -26,31 +27,56 @@ const ThreeScene: React.FC = () => {
     directionalLight.position.set(5, 10, 7.5);
     scene.add(directionalLight);
 
-    // Configurar PointerLockControls
-    const controls = new PointerLockControls(camera, renderer.domElement);
-
-    // Adicionar evento de clique para ativar o controle do cursor
-    canvasRef.current.addEventListener('click', () => {
-      controls.lock();
-    });
-
-    // Chamar a função EngineMain
-    EngineMain( scene );
-
     camera.position.set(0, 1.6, 5); // Altura da câmera simulando altura de uma pessoa
 
     camera.position.z = 5;
+
+    // Configurar movimentação da camera
+    const cameraControls = new PointerLockControls(camera, renderer.domElement);
+
+    // Adicionar evento de clique para ativar o controle do cursor
+    canvasRef.current.addEventListener('click', () => {
+      cameraControls.lock();
+    });
+
+    const clockCamera = new THREE.Clock();
+
+    const cameraMovement: MovementState = { forward: false, 
+                                            backward: false, 
+                                            left: false, 
+                                            right: false };
+
+    const cameraVelocity = new THREE.Vector3();
+    const cameraDirection = new THREE.Vector3();
 
     // Função de animação
     const animate = () => {
       requestAnimationFrame(animate);
 
       //Outras coisas que vão acontecer
-      
+      const frameDelta = clockCamera.getDelta(); // Tempo entre frames
+
+      cameraVelocity.x -= cameraVelocity.x * 10.0 * frameDelta;
+      cameraVelocity.z -= cameraVelocity.z * 10.0 * frameDelta;
+
+      cameraDirection.z = Number(cameraMovement.forward) - Number(cameraMovement.backward);
+      cameraDirection.x = Number(cameraMovement.right) - Number(cameraMovement.left);
+
+      cameraDirection.normalize(); // Garante que a direção tenha comprimento 1
+
+      if (cameraMovement.forward == true || cameraMovement.backward == true){
+        cameraVelocity.z -= cameraDirection.z * 400.0 * frameDelta;
+      }
+
+      if (cameraMovement.left == true || cameraMovement.right == true ) {
+        cameraVelocity.x -= cameraDirection.x * 400.0 * frameDelta;
+      }
+
+      cameraControls.moveRight(-cameraVelocity.x * frameDelta);
+      cameraControls.moveForward(-cameraVelocity.z * frameDelta);
+
       renderer.render(scene, camera);
     };
-
-    animate();
 
     const handleResize = () => {
       if (!canvasRef.current) return;
@@ -60,6 +86,61 @@ const ThreeScene: React.FC = () => {
     };
   
     window.addEventListener('resize', handleResize);
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      switch (event.code) {
+        case 'ArrowUp':
+        case 'KeyW':
+          cameraMovement.forward = true;
+          break;
+        case 'ArrowDown':
+        case 'KeyS':
+          cameraMovement.backward = true;
+          break;
+        case 'ArrowLeft':
+        case 'KeyA':
+          cameraMovement.left = true;
+          break;
+        case 'ArrowRight':
+        case 'KeyD':
+          cameraMovement.right = true;
+          break;
+      }
+    };
+
+    const onKeyUp = (event: KeyboardEvent) => {
+      switch (event.code) {
+        case 'ArrowUp':
+        case 'KeyW':
+          cameraMovement.forward = false;
+          break;
+        case 'ArrowDown':
+        case 'KeyS':
+          cameraMovement.backward = false;
+          break;
+        case 'ArrowLeft':
+        case 'KeyA':
+          cameraMovement.left = false;
+          break;
+        case 'ArrowRight':
+        case 'KeyD':
+          cameraMovement.right = false;
+          break;
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup',   onKeyUp);
+
+    camera.position.y = 1.6; // Altura inicial da câmera (simula a altura de uma pessoa)
+    camera.position.z = 5;
+
+    animate();
+
+    // Chamar a função EngineMain
+    EngineMain( scene, 
+                camera, 
+                cameraControls );
 
     // Limpeza ao desmontar o componente
     return () => {

@@ -30,7 +30,9 @@ const ThreeScene: React.FC = () => {
     directionalLight.position.set(5, 10, 7.5);
     scene.add(directionalLight);
 
-    camera.position.set(0, 1.6, 5); // Altura da câmera simulando altura de uma pessoa
+    const posicaoYchao = 1.6;
+
+    camera.position.set(0, posicaoYchao, 5); // Altura da câmera simulando altura de uma pessoa
 
     camera.position.z = 5;
 
@@ -47,10 +49,16 @@ const ThreeScene: React.FC = () => {
     const cameraMovement: MovementState = { forward: false, 
                                             backward: false, 
                                             left: false, 
-                                            right: false };
+                                            right: false,
+                                            isJumping: false,
+                                            jumpVelocityY: 0,
+                                            jumpCooldown: false,
+                                            jumpStrength: 1 };
 
     const cameraVelocity = new THREE.Vector3();
     const cameraDirection = new THREE.Vector3();
+
+    let gravity = -0.09;     // Gravidade que puxa para baixo
 
     // Adicionar o crosshair à câmera
     const crosshair = createCrosshair();
@@ -69,6 +77,30 @@ const ThreeScene: React.FC = () => {
 
     // Adiciona o evento de movimento do mouse
     window.addEventListener('mousemove', onMouseMove, false);
+
+    //Função para atualizar o pulo do personagem em primeira pessoa
+    function updateJump() {
+      if(cameraMovement.jumpVelocityY == undefined){
+        cameraMovement.jumpVelocityY = 0;
+      }
+
+      // Se estiver pulando, aplicar o movimento vertical
+      if (cameraMovement.isJumping == true) {
+        // Aplica a gravidade (reduz a velocidade vertical a cada frame)
+
+        // Se está subindo, aplicamos a gravidade para diminuir a velocidade
+        cameraMovement.jumpVelocityY += gravity;  // Acelera negativamente para reduzir a velocidade de subida
+        camera.position.y += cameraMovement.jumpVelocityY;  // Move a câmera para cima
+    
+  
+        // Verifica se o personagem alcançou o pico do pulo e começou a cair
+        if (camera.position.y <= posicaoYchao) { 
+          camera.position.y = posicaoYchao;  // Impede de ultrapassar o chão
+          cameraMovement.isJumping = false;  // O pulo terminou, agora está de volta no chão
+          cameraMovement.jumpVelocityY = 0;  // Zera a velocidade vertical
+        }
+      }
+    }
 
     // Função de animação
     const animate = () => {
@@ -99,6 +131,9 @@ const ThreeScene: React.FC = () => {
 
       cameraControls.moveRight(-cameraVelocity.x * frameDelta);
       cameraControls.moveForward(-cameraVelocity.z * frameDelta);
+
+      //Atualiza o pulo
+      updateJump();
 
       //Atualiza a posição do crosshair
       UpdateCrosshair( scene, 
@@ -146,6 +181,14 @@ const ThreeScene: React.FC = () => {
         case 'KeyD':
           cameraMovement.right = true;
           break;
+        case 'Space':
+          debugger
+          if( !cameraMovement.isJumping )
+          {
+             cameraMovement.isJumping = true;
+             cameraMovement.jumpVelocityY = cameraMovement.jumpStrength;
+          }
+          break;
       }
     };
 
@@ -166,6 +209,9 @@ const ThreeScene: React.FC = () => {
         case 'ArrowRight':
         case 'KeyD':
           cameraMovement.right = false;
+          break;
+        case 'Space':
+          cameraMovement.jumpCooldown = false;
           break;
       }
     };

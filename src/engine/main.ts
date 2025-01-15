@@ -4,10 +4,11 @@ import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import createTexturedObject from './utils/createTexturedObject';
 import createMaterialByImage from './utils/createMaterialByImage';
 import createCube from './utils/createCube';
+import { GameCamera } from './GameCamera';
 
 /** Função que vai ser executada quanto a Engine for iniciada */
 export function EngineMain( scene: THREE.Scene, 
-                            camera: THREE.PerspectiveCamera, 
+                            camera: GameCamera, 
                             cameraControls: PointerLockControls 
 ): void{
     
@@ -23,16 +24,16 @@ export function EngineMain( scene: THREE.Scene,
 
 /** Loop que vai ser executado ANTES da função de atualização */
 export function EngineBeforeLoop( scene: THREE.Scene, 
-    camera: THREE.PerspectiveCamera, 
-    cameraControls: PointerLockControls 
+                                  camera: GameCamera, 
+                                  cameraControls: PointerLockControls 
 ): void{
 
 }
 
 /** Loop que vai ser executado a todo momento depois que a função de atualização rodar */
 export function EngineLoop( scene: THREE.Scene, 
-                                    camera: THREE.PerspectiveCamera, 
-                                    cameraControls: PointerLockControls 
+                            camera: GameCamera, 
+                            cameraControls: PointerLockControls 
 ): void{
 
 }

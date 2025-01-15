@@ -8,6 +8,7 @@ import { EngineBeforeLoop } from './engine/main' //Importa a função EngineBefo
 import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import MovementState from './engine/interfaces/MovementState';
 import createCrosshair, { TrackCrosshair, UpdateCrosshair } from './engine/utils/Crosshair';
+import { GameCamera } from './engine/GameCamera';
 
 const ThreeScene: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -17,8 +18,15 @@ const ThreeScene: React.FC = () => {
 
     // Configurar cena, câmera e renderizador
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
+  
     const renderer = new THREE.WebGLRenderer();
+
+    const posicaoYchao = 1.6;
+
+    const camera = new GameCamera(scene,
+                                  renderer,
+                                  canvasRef,
+                                  posicaoYchao);
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     canvasRef.current.appendChild(renderer.domElement);
@@ -30,56 +38,14 @@ const ThreeScene: React.FC = () => {
     directionalLight.position.set(5, 10, 7.5);
     scene.add(directionalLight);
 
-    const posicaoYchao = 1.6;
-
-    camera.position.set(0, posicaoYchao, 5); // Altura da câmera simulando altura de uma pessoa
-
-    camera.position.z = 5;
-
-    // Configurar movimentação da camera
-    const cameraControls = new PointerLockControls(camera, renderer.domElement);
-
-    // Adicionar evento de clique para ativar o controle do cursor
-    canvasRef.current.addEventListener('click', () => {
-      cameraControls.lock();
-    });
-
     const clockCamera = new THREE.Clock();
-
-    const cameraMovement: MovementState = { forward: false, 
-                                            backward: false, 
-                                            left: false, 
-                                            right: false,
-                                            isJumping: false,
-                                            jumpVelocityY: 0,
-                                            jumpCooldown: false,
-                                            jumpStrength: 1 };
-
-    const cameraVelocity = new THREE.Vector3();
-    const cameraDirection = new THREE.Vector3();
 
     let gravity = -0.09;     // Gravidade que puxa para baixo
 
-    // Adicionar o crosshair à câmera
-    const crosshair = createCrosshair();
-    scene.add(crosshair);
-
-    // Adicionar um RayCaster para permitir rastrear onde o jogador está apontando
-    const raycaster = new THREE.Raycaster();
-    const mousePosition = new THREE.Vector2(0, 0); // Coordenadas do mouse (fixo no centro)
-
-    // Atualiza a posição do mouse
-    function onMouseMove(event: MouseEvent) {
-      // Normaliza a posição do mouse para o intervalo de -1 a 1
-      mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    }
-
-    // Adiciona o evento de movimento do mouse
-    window.addEventListener('mousemove', onMouseMove, false);
-
     //Função para atualizar o pulo do personagem em primeira pessoa
     function updateJump() {
+      const cameraMovement = camera.getMovement();
+
       if(cameraMovement.jumpVelocityY == undefined){
         cameraMovement.jumpVelocityY = 0;
       }
@@ -90,12 +56,12 @@ const ThreeScene: React.FC = () => {
 
         // Se está subindo, aplicamos a gravidade para diminuir a velocidade
         cameraMovement.jumpVelocityY += gravity;  // Acelera negativamente para reduzir a velocidade de subida
-        camera.position.y += cameraMovement.jumpVelocityY;  // Move a câmera para cima
+        camera.getPosition().y += cameraMovement.jumpVelocityY;  // Move a câmera para cima
     
   
         // Verifica se o personagem alcançou o pico do pulo e começou a cair
-        if (camera.position.y <= posicaoYchao) { 
-          camera.position.y = posicaoYchao;  // Impede de ultrapassar o chão
+        if (camera.getPosition().y <= posicaoYchao) { 
+          camera.getPosition().y = posicaoYchao;  // Impede de ultrapassar o chão
           cameraMovement.isJumping = false;  // O pulo terminou, agora está de volta no chão
           cameraMovement.jumpVelocityY = 0;  // Zera a velocidade vertical
         }
@@ -108,10 +74,14 @@ const ThreeScene: React.FC = () => {
 
       EngineBeforeLoop( scene, 
                         camera, 
-                        cameraControls);
+                        camera.getControls() );
 
       //Outras coisas que vão acontecer
       const frameDelta = clockCamera.getDelta(); // Tempo entre frames
+      const cameraVelocity  = camera.getVelocity();
+      const cameraDirection = camera.getDirection();
+      const cameraMovement  = camera.getMovement();
+      const cameraControls  = camera.getControls();
 
       cameraVelocity.x -= cameraVelocity.x * 10.0 * frameDelta;
       cameraVelocity.z -= cameraVelocity.z * 10.0 * frameDelta;
@@ -138,32 +108,34 @@ const ThreeScene: React.FC = () => {
       //Atualiza a posição do crosshair
       UpdateCrosshair( scene, 
                        camera,
-                       crosshair );
+                       camera.getCrosshair() );
 
       //Atualiza para onde a camera está apontando
       TrackCrosshair( scene, 
                       camera,
-                      crosshair,
-                      raycaster,
-                      mousePosition);
+                      camera.getCrosshair(),
+                      camera.getRaycaster(),
+                      camera.getMousePosition() );
 
       EngineLoop( scene, 
                   camera, 
                   cameraControls );
 
-      renderer.render(scene, camera);
+      renderer.render( scene, camera.getCamera() );
     };
 
     const handleResize = () => {
       if (!canvasRef.current) return;
       renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.setAspect( window.innerWidth / window.innerHeight );
       camera.updateProjectionMatrix();
     };
   
     window.addEventListener('resize', handleResize);
 
     const onKeyDown = (event: KeyboardEvent) => {
+      const cameraMovement = camera.getMovement();
+
       switch (event.code) {
         case 'ArrowUp':
         case 'KeyW':
@@ -193,6 +165,8 @@ const ThreeScene: React.FC = () => {
     };
 
     const onKeyUp = (event: KeyboardEvent) => {
+      const cameraMovement = camera.getMovement();
+
       switch (event.code) {
         case 'ArrowUp':
         case 'KeyW':
@@ -219,15 +193,15 @@ const ThreeScene: React.FC = () => {
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('keyup',   onKeyUp);
 
-    camera.position.y = 1.6; // Altura inicial da câmera (simula a altura de uma pessoa)
-    camera.position.z = 5;
+    camera.getPosition().y = 1.6; // Altura inicial da câmera (simula a altura de uma pessoa)
+    camera.getPosition().z = 5;
 
     animate();
 
     // Chamar a função EngineMain
     EngineMain( scene, 
                 camera, 
-                cameraControls );
+                camera.getControls() );
 
     // Limpeza ao desmontar o componente
     return () => {

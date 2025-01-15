@@ -7,6 +7,7 @@ import { EngineLoop } from './engine/main'; // Importa a função EngineLoop
 import { EngineBeforeLoop } from './engine/main' //Importa a função EngineBeforeLoop
 import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import MovementState from './engine/interfaces/MovementState';
+import createCrosshair, { UpdateCrosshair } from './engine/utils/Crosshair';
 
 const ThreeScene: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -16,7 +17,7 @@ const ThreeScene: React.FC = () => {
 
     // Configurar cena, câmera e renderizador
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
     const renderer = new THREE.WebGLRenderer();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -51,6 +52,10 @@ const ThreeScene: React.FC = () => {
     const cameraVelocity = new THREE.Vector3();
     const cameraDirection = new THREE.Vector3();
 
+    // Adicionar o crosshair à câmera
+    const crosshair = createCrosshair();
+    scene.add(crosshair);
+
     // Função de animação
     const animate = () => {
       requestAnimationFrame(animate);
@@ -71,15 +76,20 @@ const ThreeScene: React.FC = () => {
       cameraDirection.normalize(); // Garante que a direção tenha comprimento 1
 
       if (cameraMovement.forward == true || cameraMovement.backward == true){
-        cameraVelocity.z -= cameraDirection.z * 400.0 * frameDelta;
+        cameraVelocity.z -= cameraDirection.z * 200.0 * frameDelta;
       }
 
       if (cameraMovement.left == true || cameraMovement.right == true ) {
-        cameraVelocity.x -= cameraDirection.x * 400.0 * frameDelta;
+        cameraVelocity.x -= cameraDirection.x * 200.0 * frameDelta;
       }
 
       cameraControls.moveRight(-cameraVelocity.x * frameDelta);
       cameraControls.moveForward(-cameraVelocity.z * frameDelta);
+
+      //Atualiza a posição do crosshair
+      UpdateCrosshair( scene, 
+                       camera,
+                       crosshair );
 
       EngineLoop( scene, 
                   camera, 

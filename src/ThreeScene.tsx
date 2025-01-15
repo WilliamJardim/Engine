@@ -7,7 +7,7 @@ import { EngineLoop } from './engine/main'; // Importa a função EngineLoop
 import { EngineBeforeLoop } from './engine/main' //Importa a função EngineBeforeLoop
 import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import MovementState from './engine/interfaces/MovementState';
-import createCrosshair, { UpdateCrosshair } from './engine/utils/Crosshair';
+import createCrosshair, { TrackCrosshair, UpdateCrosshair } from './engine/utils/Crosshair';
 
 const ThreeScene: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -56,6 +56,20 @@ const ThreeScene: React.FC = () => {
     const crosshair = createCrosshair();
     scene.add(crosshair);
 
+    // Adicionar um RayCaster para permitir rastrear onde o jogador está apontando
+    const raycaster = new THREE.Raycaster();
+    const mousePosition = new THREE.Vector2(0, 0); // Coordenadas do mouse (fixo no centro)
+
+    // Atualiza a posição do mouse
+    function onMouseMove(event: MouseEvent) {
+      // Normaliza a posição do mouse para o intervalo de -1 a 1
+      mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    }
+
+    // Adiciona o evento de movimento do mouse
+    window.addEventListener('mousemove', onMouseMove, false);
+
     // Função de animação
     const animate = () => {
       requestAnimationFrame(animate);
@@ -90,6 +104,13 @@ const ThreeScene: React.FC = () => {
       UpdateCrosshair( scene, 
                        camera,
                        crosshair );
+
+      //Atualiza para onde a camera está apontando
+      TrackCrosshair( scene, 
+                      camera,
+                      crosshair,
+                      raycaster,
+                      mousePosition);
 
       EngineLoop( scene, 
                   camera, 

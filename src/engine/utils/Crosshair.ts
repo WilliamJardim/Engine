@@ -23,3 +23,31 @@ export function UpdateCrosshair( scene: THREE.Scene,
     crosshair.quaternion.copy(camera.quaternion);
     crosshair.translateZ(-1); // Mantém o crosshair sempre 2 unidades à frente da câmera
 }
+
+// Função de rastreamento dos objetos que o cursor está apontando
+export function TrackCrosshair( scene: THREE.Scene, 
+                                camera: THREE.PerspectiveCamera,
+                                crosshair: Crosshair,
+                                raycaster: THREE.Raycaster,
+                                mousePosition: THREE.Vector2 ){
+
+    raycaster.setFromCamera(mousePosition, camera);
+  
+    //Copia algumas coisas uteis
+    crosshair.raycaster = raycaster;
+    crosshair.scene = scene;
+    crosshair.camera = camera;
+    crosshair.mousePosition = mousePosition;
+
+    // Verificar interseções com objetos na cena
+    const intersects = raycaster.intersectObjects(scene.children, true); // true para verificar filhos
+  
+    // Ignorar o crosshair
+    const validIntersections = intersects.filter(intersect => intersect.object.uuid !== crosshair.uuid);
+
+    if (validIntersections.length > 0) {
+      const target = validIntersections[0].object;
+      //Armazena o target
+      crosshair.target = target;
+    }
+  };

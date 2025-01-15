@@ -3,6 +3,8 @@ import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import './ThreeScene.css'; // Importa o CSS
 import { EngineMain } from './engine/main'; // Importa a função EngineMain
+import { EngineLoop } from './engine/main'; // Importa a função EngineLoop
+import { EngineBeforeLoop } from './engine/main' //Importa a função EngineBeforeLoop
 import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import MovementState from './engine/interfaces/MovementState';
 
@@ -53,6 +55,10 @@ const ThreeScene: React.FC = () => {
     const animate = () => {
       requestAnimationFrame(animate);
 
+      EngineBeforeLoop( scene, 
+                        camera, 
+                        cameraControls);
+
       //Outras coisas que vão acontecer
       const frameDelta = clockCamera.getDelta(); // Tempo entre frames
 
@@ -74,6 +80,10 @@ const ThreeScene: React.FC = () => {
 
       cameraControls.moveRight(-cameraVelocity.x * frameDelta);
       cameraControls.moveForward(-cameraVelocity.z * frameDelta);
+
+      EngineLoop( scene, 
+                  camera, 
+                  cameraControls );
 
       renderer.render(scene, camera);
     };

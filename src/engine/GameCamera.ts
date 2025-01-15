@@ -75,6 +75,69 @@ export class GameCamera{
         this.canvasRef!.current!.addEventListener('click', () => {
             contexto.cameraControls.lock();
         });
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            const cameraMovement = this.getMovement();
+      
+            switch (event.code) {
+              case 'ArrowUp':
+              case 'KeyW':
+                cameraMovement.forward = true;
+                break;
+              case 'ArrowDown':
+              case 'KeyS':
+                cameraMovement.backward = true;
+                break;
+              case 'ArrowLeft':
+              case 'KeyA':
+                cameraMovement.left = true;
+                break;
+              case 'ArrowRight':
+              case 'KeyD':
+                cameraMovement.right = true;
+                break;
+              case 'Space':
+                debugger
+                if( !cameraMovement.isJumping )
+                {
+                   cameraMovement.isJumping = true;
+                   cameraMovement.jumpVelocityY = cameraMovement.jumpStrength;
+                }
+                break;
+            }
+          };
+      
+        const onKeyUp = (event: KeyboardEvent) => {
+            const cameraMovement = this.getMovement();
+      
+            switch (event.code) {
+              case 'ArrowUp':
+              case 'KeyW':
+                cameraMovement.forward = false;
+                break;
+              case 'ArrowDown':
+              case 'KeyS':
+                cameraMovement.backward = false;
+                break;
+              case 'ArrowLeft':
+              case 'KeyA':
+                cameraMovement.left = false;
+                break;
+              case 'ArrowRight':
+              case 'KeyD':
+                cameraMovement.right = false;
+                break;
+              case 'Space':
+                cameraMovement.jumpCooldown = false;
+                break;
+            }
+         };
+      
+         document.addEventListener('keydown', onKeyDown);
+         document.addEventListener('keyup',   onKeyUp);
+      
+         this.getPosition().y = 1.6; // Altura inicial da câmera (simula a altura de uma pessoa)
+         this.getPosition().z = 5;
     }
 
     /**

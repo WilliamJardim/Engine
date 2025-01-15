@@ -45,6 +45,9 @@ export function TrackCrosshair( scene: THREE.Scene,
     // Ignorar o crosshair
     const validIntersections = intersects.filter(intersect => intersect.object.uuid !== crosshair.uuid);
 
+    //Copia as intersects para dentro do crosshair para facilitar acesso
+    crosshair.intersects = validIntersections;
+
     if (validIntersections.length > 0) {
       const target = validIntersections[0].object;
       //Armazena o target

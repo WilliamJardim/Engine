@@ -3,8 +3,10 @@ import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import MovementState from './interfaces/MovementState';
 import Crosshair from './interfaces/Crosshair';
 import createCrosshair, { TrackCrosshair, UpdateCrosshair } from './utils/Crosshair';
+import Base from './Base';
+import ObjectBase from './ObjectBase';
 
-export class GameCamera{
+export class GameCamera extends ObjectBase{
     private scene:THREE.Scene;
     private renderer:THREE.WebGLRenderer;
     private canvasRef:React.RefObject<HTMLDivElement>;
@@ -23,6 +25,8 @@ export class GameCamera{
                  posicaoYchao_inicial:number,
                 
     ){
+        super(null);
+        
         const contexto = this;
 
         this.scene = scene;
@@ -32,6 +36,9 @@ export class GameCamera{
         this.renderer = renderer;
 
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
+
+        //The prop that will be used to reffer to the main Mesh that this Object will manipulate
+        this.setMesh( this.camera );
 
         this.camera.position.set(0, posicaoYchao_inicial, 5); // Altura da câmera simulando altura de uma pessoa
         

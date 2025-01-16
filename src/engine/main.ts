@@ -5,18 +5,24 @@ import createTexturedObject from './utils/createTexturedObject';
 import createMaterialByImage from './utils/createMaterialByImage';
 import createCube from './utils/createCube';
 import { GameCamera } from './GameCamera';
+import ObjectBase from './ObjectBase';
 
 /** Função que vai ser executada quanto a Engine for iniciada */
 export function EngineMain( scene: THREE.Scene, 
+                            renderer: THREE.WebGLRenderer,
+                            canvasRef: React.RefObject<HTMLDivElement>,
                             camera: GameCamera, 
                             cameraControls: PointerLockControls 
 ): void{
     
-    //Cria um cubo simples para testar
+    // Cria um cubo simples para testar
+    const cubo = createCube( 
+        createMaterialByImage('/textures/1piso.png') 
+    );
+
+    // Adiciona o cubo na cena
     scene.add(
-        createCube( 
-            createMaterialByImage('/textures/1piso.png') 
-        )
+        cubo.getMesh()
     );
 
     const light = new THREE.AmbientLight(0xffffff, 1); // Luz ambiente
@@ -31,6 +37,8 @@ export function EngineMain( scene: THREE.Scene,
 
 /** Loop que vai ser executado ANTES da função de atualização */
 export function EngineBeforeLoop( scene: THREE.Scene, 
+                                  renderer: THREE.WebGLRenderer,
+                                  canvasRef: React.RefObject<HTMLDivElement>,
                                   camera: GameCamera, 
                                   cameraControls: PointerLockControls 
 ): void{
@@ -39,6 +47,8 @@ export function EngineBeforeLoop( scene: THREE.Scene,
 
 /** Loop que vai ser executado a todo momento depois que a função de atualização rodar */
 export function EngineLoop( scene: THREE.Scene, 
+                            renderer: THREE.WebGLRenderer,
+                            canvasRef: React.RefObject<HTMLDivElement>,
                             camera: GameCamera, 
                             cameraControls: PointerLockControls 
 ): void{

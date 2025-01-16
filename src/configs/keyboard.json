@@ -1,3 +1,6 @@
 {
-   
+   "walkForward": "W",
+   "walkBackward": "S",
+   "walkLeft": "A",
+   "walkRight": "D"
 }

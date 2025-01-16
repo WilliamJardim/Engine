@@ -66,6 +66,8 @@ const ThreeScene: React.FC = () => {
       requestAnimationFrame(animate);
 
       EngineBeforeLoop( scene, 
+                        renderer,
+                        canvasRef,
                         camera, 
                         camera.getControls() );
 
@@ -91,6 +93,8 @@ const ThreeScene: React.FC = () => {
                       camera.getMousePosition() );
 
       EngineLoop( scene, 
+                  renderer,
+                  canvasRef,
                   camera, 
                   camera.getControls() );
 
@@ -110,6 +114,8 @@ const ThreeScene: React.FC = () => {
 
     // Chamar a função EngineMain
     EngineMain( scene, 
+                renderer,
+                canvasRef,
                 camera, 
                 camera.getControls() );
 

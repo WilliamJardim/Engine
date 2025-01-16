@@ -26,6 +26,10 @@ export function EngineMain( scene: THREE.Scene,
             invisible: false,
             opacity: 1,
             collide: true,
+            ignoreCollisions: [
+                "OtherCube",
+                "AnotherCubo"
+            ],
             weight: 40,
             position: {
                 x: 0,

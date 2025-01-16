@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import Crosshair from '../interfaces/Crosshair';
-import { GameCamera } from '../GameCamera';
+import { GameCamera } from '../core/GameCamera';
 
 export default function createCrosshair(): Crosshair{
     const crosshairSize = 0.02; // Tamanho do cursor no mundo

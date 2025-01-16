@@ -8,7 +8,7 @@ import { EngineBeforeLoop } from './engine/main' //Importa a função EngineBefo
 import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import MovementState from './engine/interfaces/MovementState';
 import createCrosshair, { TrackCrosshair, UpdateCrosshair } from './engine/utils/Crosshair';
-import { GameCamera } from './engine/GameCamera';
+import { GameCamera } from './engine/core/GameCamera';
 
 const ThreeScene: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);

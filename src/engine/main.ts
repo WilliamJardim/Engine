@@ -4,8 +4,8 @@ import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import createTexturedObject from './utils/createTexturedObject';
 import createMaterialByImage from './utils/createMaterialByImage';
 import createCube from './utils/createCube';
-import { GameCamera } from './GameCamera';
-import ObjectBase from './ObjectBase';
+import { GameCamera } from './core/GameCamera';
+import ObjectBase from './core/ObjectBase';
 
 /** Função que vai ser executada quanto a Engine for iniciada */
 export function EngineMain( scene: THREE.Scene, 

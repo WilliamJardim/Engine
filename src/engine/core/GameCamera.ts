@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/examples/jsm/Addons.js';
-import MovementState from './interfaces/MovementState';
-import Crosshair from './interfaces/Crosshair';
-import createCrosshair, { TrackCrosshair, UpdateCrosshair } from './utils/Crosshair';
+import MovementState from '../interfaces/MovementState';
+import Crosshair from '../interfaces/Crosshair';
+import createCrosshair, { TrackCrosshair, UpdateCrosshair } from '../utils/Crosshair';
 import Base from './Base';
 import ObjectBase from './ObjectBase';
 

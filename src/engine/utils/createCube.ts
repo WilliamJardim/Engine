@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import ObjectBase from '../ObjectBase';
+import ObjectBase from '../core/ObjectBase';
 import ObjectProps from '../interfaces/ObjectProps';
 
 export default function createCube( materialToCreate: THREE.MeshStandardMaterial | null,

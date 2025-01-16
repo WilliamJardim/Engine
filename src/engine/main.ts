@@ -17,7 +17,34 @@ export function EngineMain( scene: THREE.Scene,
     
     // Cria um cubo simples para testar
     const cubo = createCube( 
-        createMaterialByImage('/textures/1piso.png') 
+        //The material
+        createMaterialByImage('/textures/1piso.png'),
+
+        //The attributes
+        {
+            name: 'MyCube',
+            isNPC: false,
+            havePhysics: true,
+            invisible: false,
+            opacity: 1,
+            collide: true,
+            weight: 40,
+            position: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            scale: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+        }
     );
 
     // Adiciona o cubo na cena

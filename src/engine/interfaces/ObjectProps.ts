@@ -13,7 +13,7 @@ export default interface ObjectProps{
     rotation?: ObjectRotation,
     scale?: ObjectScale,
     collide?: boolean,
-    ignoreCollisions: Array<string>,
+    ignoreCollisions?: Array<string>,
     invisible?: boolean,
     opacity?: number
 }

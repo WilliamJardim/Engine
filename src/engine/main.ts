@@ -17,11 +17,9 @@ export function EngineMain( scene: THREE.Scene,
     
     // Cria um cubo simples para testar
     const cubo = createCube( 
-        //The material
-        createMaterialByImage('/textures/1piso.png'),
-
         //The attributes
         {
+            material: createMaterialByImage('/textures/1piso.png'), //The material,
             name: 'MyCube',
             isNPC: false,
             havePhysics: true,

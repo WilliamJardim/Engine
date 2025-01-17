@@ -1,3 +1,5 @@
+import PhysicsState from "./PhysicsState"
+
 export default interface MovementState{
     forward: boolean, 
     backward: boolean, 
@@ -8,6 +10,8 @@ export default interface MovementState{
     jumpStrength?: number,    // Força inicial do pulo
     jumpVelocityY?: number,   // Velocidade vertical (Y)
     jumpCooldown?: boolean,   // Evitar pular várias vezes rapidamente
+
+    physics?: PhysicsState,
 
     //Movimento diagonal
     diagonal?: MovementState

@@ -1,11 +1,15 @@
 import * as THREE from 'three';
 import Base from "./Base";
-import ObjectProps from './interfaces/ObjectProps';
+import ObjectProps from '../interfaces/ObjectProps';
+import PhysicsState from '../interfaces/PhysicsState';
+import MovementState from '../interfaces/MovementState';
 
 export default class ObjectBase extends Base{
 
     public mesh:any;
     public objProps:ObjectProps;
+    public movimentState:MovementState;
+    public physicsState:PhysicsState;
 
     constructor(mesh: any, 
                 objProps?:ObjectProps
@@ -13,22 +17,66 @@ export default class ObjectBase extends Base{
     ){
         super()
         this.objProps = objProps || {};
+        
+        this.movimentState = {
+            forward: false,
+            backward: false,
+            right: false,
+            left: false
+        };
+
+        this.physicsState = this.movimentState.physics || {};
+        this.physicsState.havePhysics = this.objProps.havePhysics;
+
         this.setMesh( mesh );
     }
 
-    setProps( newObjProps:ObjectProps ): void{
+    /**
+    * Atualiza a fisica do objeto 
+    */
+    public updatePhysics(){
+
+        //If this object have physics
+        if( this.physicsState.havePhysics == true ){
+
+            // Se está subindo, aplicamos a gravidade para diminuir a velocidade
+            this.physicsState.velocity += this.getMesh()
+                                              .getScene()
+                                              .gravity;  // Acelera negativamente para reduzir a velocidade de subida
+
+            this.getPosition().y += this.physicsState.velocity || 0;  // Move a câmera para cima
+    
+            // Verifica se o personagem alcançou o pico de altura e começou a cair
+            if (this.getPosition().y <= (this.physicsState.posicaoYchao||0) ) { 
+                this.getPosition().y = (this.physicsState.posicaoYchao||0);  // Impede de ultrapassar o chão
+                this.physicsState.velocity = 0;  // Zera a velocidade vertical
+            }
+            
+        }
+
+    }
+
+    public updateObject(){
+        this.updatePhysics();
+    }
+
+    public setProps( newObjProps:ObjectProps ): void{
         this.objProps = newObjProps;
     }
 
-    getProps(): ObjectProps{
+    public getProps(): ObjectProps{
         return this.objProps;
     }
 
-    getMesh(): any{
+    public getMesh(): any{
         return this.mesh;
     }
 
-    setMesh(newMesh:any): void{
+    public setMesh(newMesh:any): void{
         this.mesh = newMesh;
+    }
+
+    public getPosition(): THREE.Vector3{
+        return this.getMesh().position;
     }
 }

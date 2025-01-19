@@ -7,6 +7,7 @@ import createCube from './utils/createCube';
 import createPlane from './utils/createPlane';
 import { GameCamera } from './core/GameCamera';
 import ObjectBase from './core/ObjectBase';
+import importObjectFrom from './utils/importObject';
 
 /** Função que vai ser executada quanto a Engine for iniciada */
 export function EngineMain( scene: THREE.Scene, 
@@ -54,6 +55,16 @@ export function EngineMain( scene: THREE.Scene,
     scene.add(
         cubo.getMesh()
     );
+
+    //Importa uma caixa
+    importObjectFrom({
+        caminho: 'objs/box.obj',
+        haveMTL: true,
+
+        callback: function(objetoCarregado: ObjectBase){
+            scene.add( objetoCarregado.getMesh() )
+        }
+    })
 
     const light = new THREE.AmbientLight(0xffffff, 1); // Luz ambiente
     scene.add(light);

@@ -3,6 +3,7 @@ import Base from "./Base";
 import ObjectProps from '../interfaces/ObjectProps';
 import PhysicsState from '../interfaces/PhysicsState';
 import MovementState from '../interfaces/MovementState';
+import ObjectPosition from '../interfaces/ObjectPosition';
 
 export default class ObjectBase extends Base{
 
@@ -78,5 +79,15 @@ export default class ObjectBase extends Base{
 
     public getPosition(): THREE.Vector3{
         return this.getMesh().position;
+    }
+
+    public setPosition( position: ObjectPosition ): ObjectBase{
+        const mesh: THREE.Mesh = this.getMesh();
+        mesh.position.x = position.x || mesh.position.x;
+        mesh.position.y = position.y || mesh.position.y;
+        mesh.position.z = position.z || mesh.position.z;
+
+        //Retorna ele mesmo modificado
+        return this;
     }
 }

@@ -62,7 +62,16 @@ export function EngineMain( scene: THREE.Scene,
         haveMTL: true,
 
         callback: function(objetoCarregado: ObjectBase){
-            scene.add( objetoCarregado.getMesh() )
+
+            //Define a posição do objeto
+            objetoCarregado.setPosition({
+                x: -5,
+                y: 0,
+                z: 0
+            });
+
+            //Adiciona o objeto na cena
+            scene.add( objetoCarregado.getMesh() );
         }
     })
 

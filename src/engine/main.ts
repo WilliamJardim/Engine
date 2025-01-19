@@ -8,6 +8,10 @@ import createPlane from './utils/createPlane';
 import { GameCamera } from './core/GameCamera';
 import ObjectBase from './core/ObjectBase';
 import importObjectFrom from './utils/importObject';
+import GlobalContext from './core/GlobalContext';
+
+// Objeto usado para armazenar qualquer coisa que o jogo precisar
+const globalContext = new GlobalContext({});
 
 /** Função que vai ser executada quanto a Engine for iniciada */
 export function EngineMain( scene: THREE.Scene, 
@@ -72,6 +76,8 @@ export function EngineMain( scene: THREE.Scene,
 
             //Adiciona o objeto na cena
             scene.add( objetoCarregado.getMesh() );
+
+            //globalContext.set('caixaRef', objetoCarregado);
         }
     })
 
@@ -81,6 +87,8 @@ export function EngineMain( scene: THREE.Scene,
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Luz direcional
     directionalLight.position.set(5, 10, 7.5);
     scene.add(directionalLight);
+
+    
 
 }
 
@@ -102,5 +110,15 @@ export function EngineLoop( scene: THREE.Scene,
                             camera: GameCamera, 
                             cameraControls: PointerLockControls 
 ): void{
+
+    //Faz a caixa ficar proximo do jogador
+    //if( globalContext.avaliable('caixaRef') )
+    //{
+
+        //globalContext.get('caixaRef').setPosition({
+        //    z: camera.getCamera().position.x-50
+        //});
+
+    //}
 
 }

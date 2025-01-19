@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 public/textures
+public/itens
+src/engine/test
 
 # Editor directories and files
 .vscode/*

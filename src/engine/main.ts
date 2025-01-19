@@ -4,6 +4,7 @@ import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import createTexturedObject from './utils/createTexturedObject';
 import createMaterialByImage from './utils/createMaterialByImage';
 import createCube from './utils/createCube';
+import createPlane from './utils/createPlane';
 import { GameCamera } from './core/GameCamera';
 import ObjectBase from './core/ObjectBase';
 

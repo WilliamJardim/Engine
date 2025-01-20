@@ -4,6 +4,7 @@ import ObjectProps from '../interfaces/ObjectProps';
 import PhysicsState from '../interfaces/PhysicsState';
 import MovementState from '../interfaces/MovementState';
 import ObjectPosition from '../interfaces/ObjectPosition';
+import Scene from './Scene';
 
 export default class ObjectBase extends Base{
 
@@ -11,6 +12,7 @@ export default class ObjectBase extends Base{
     public objProps:ObjectProps;
     public movimentState:MovementState;
     public physicsState:PhysicsState;
+    public scene:Scene|null;
 
     constructor(mesh: any, 
                 objProps?:ObjectProps
@@ -19,6 +21,8 @@ export default class ObjectBase extends Base{
         super()
         this.objProps = objProps || {};
         
+        this.scene = null;
+
         this.movimentState = {
             forward: false,
             backward: false,
@@ -38,12 +42,10 @@ export default class ObjectBase extends Base{
     public updatePhysics(){
 
         //If this object have physics
-        /*
-        if( this.physicsState.havePhysics == true ){
+        if( this.scene != null && this.physicsState.havePhysics == true ){
 
             // Se está subindo, aplicamos a gravidade para diminuir a velocidade
-            this.physicsState.velocity += this.getMesh()
-                                              .getScene()
+            this.physicsState.velocity! += this.getScene()!
                                               .gravity;  // Acelera negativamente para reduzir a velocidade de subida
 
             this.getPosition().y += this.physicsState.velocity || 0;  // Move a câmera para cima
@@ -54,7 +56,7 @@ export default class ObjectBase extends Base{
                 this.physicsState.velocity = 0;  // Zera a velocidade vertical
             }
             
-        }*/
+        }
 
     }
 
@@ -76,6 +78,10 @@ export default class ObjectBase extends Base{
 
     public setMesh(newMesh:any): void{
         this.mesh = newMesh;
+    }
+
+    public getScene(): Scene|null{
+        return this.scene;
     }
 
     public getPosition(): THREE.Vector3{

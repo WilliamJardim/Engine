@@ -8,6 +8,7 @@ import { UpdateCrosshair } from '../utils/Crosshair';
 import { TrackCrosshair } from '../utils/Crosshair';
 import { EngineBeforeLoop } from '../main' //Importa a função EngineBeforeLoop
 import ObjectBase from './ObjectBase';
+import isObjectBase from '../utils/isObjectBase';
 
 export default class Scene extends Base{
 
@@ -50,21 +51,17 @@ export default class Scene extends Base{
     }
 
     public add( objeto:any ){
-        const isObjectBase = this.isObjectBase(objeto);
+        const is_ObjectBase = isObjectBase(objeto);
 
         //If is a instance of the Engine ObjectBase, get THREE.Mesh of this ObjectBase instance, add the ObjectBase instance to the update list 
-        if( isObjectBase == true ){
+        if( is_ObjectBase == true ){
             this.scene.add( objeto.getMesh() );
             this.objects.push( objeto );
 
-        }else if( isObjectBase == false ){
+        }else if( is_ObjectBase == false ){
             this.scene.add( objeto );
         }
 
-    }
-
-    public isObjectBase(objeto: any): objeto is ObjectBase {
-        return typeof objeto.getMesh === 'function';
     }
 
     //Função que chama o loop "animate"
@@ -149,6 +146,11 @@ export default class Scene extends Base{
 
             try{
                 currentObject.updateObject();
+
+                /**
+                * Repass some important informations into the  "currentObject"
+                */
+                currentObject.scene = this;
 
             }catch(e){
                 console.log(e)

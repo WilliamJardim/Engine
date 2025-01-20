@@ -7,8 +7,9 @@ import { EngineLoop } from '../main'; // Importa a função EngineLoop
 import { UpdateCrosshair } from '../utils/Crosshair'; 
 import { TrackCrosshair } from '../utils/Crosshair';
 import { EngineBeforeLoop } from '../main' //Importa a função EngineBeforeLoop
+import ObjectBase from './ObjectBase';
 
-export default class ObjectBase extends Base{
+export default class Scene extends Base{
 
     public scene:THREE.Scene;
     public renderer:THREE.WebGLRenderer;
@@ -17,6 +18,9 @@ export default class ObjectBase extends Base{
     public camera:GameCamera;
     public clockCamera:THREE.Clock;
     public gravity:number;
+
+    public objects:ObjectBase[];
+    public additionalObjects:ObjectBase[];
 
     constructor( canvasRef:any ){
         super();
@@ -37,7 +41,30 @@ export default class ObjectBase extends Base{
                                      this.posicaoYchao);
 
         this.clockCamera = new THREE.Clock();
+
+        this.objects = [];
+
+        //Here, we will put only object references(the instances), to be updated too, if they not are in the objects array.
+        this.additionalObjects = [];
         
+    }
+
+    public add( objeto:any ){
+        const isObjectBase = this.isObjectBase(objeto);
+
+        //If is a instance of the Engine ObjectBase, get THREE.Mesh of this ObjectBase instance, add the ObjectBase instance to the update list 
+        if( isObjectBase == true ){
+            this.scene.add( objeto.getMesh() );
+            this.objects.push( objeto );
+
+        }else if( isObjectBase == false ){
+            this.scene.add( objeto );
+        }
+
+    }
+
+    public isObjectBase(objeto: any): objeto is ObjectBase {
+        return typeof objeto.getMesh === 'function';
     }
 
     //Função que chama o loop "animate"
@@ -56,7 +83,7 @@ export default class ObjectBase extends Base{
         function animate(){
             requestAnimationFrame(animate);
     
-            EngineBeforeLoop( context.scene, 
+            EngineBeforeLoop( context, 
                               context.renderer,
                               context.canvasRef,
                               context.camera, 
@@ -72,23 +99,25 @@ export default class ObjectBase extends Base{
             context.updateJump();
     
             //Atualiza a posição do crosshair
-            UpdateCrosshair( context.scene, 
+            UpdateCrosshair( context, 
                              context.camera,
                              context.camera.getCrosshair() );
     
             //Atualiza para onde a camera está apontando
-            TrackCrosshair( context.scene, 
+            TrackCrosshair( context, 
                             context.camera,
                             context.camera.getCrosshair(),
                             context.camera.getRaycaster(),
                             context.camera.getMousePosition() );
     
-            EngineLoop( context.scene, 
+            EngineLoop( context, 
                         context.renderer,
                         context.canvasRef,
                         context.camera, 
                         context.camera.getControls() );
     
+            context.updateObjects();
+
             context.renderer.render( context.scene, 
                                      context.camera.getCamera() );
         }
@@ -96,13 +125,36 @@ export default class ObjectBase extends Base{
         animate();
 
         // Chamar a função EngineMain
-        EngineMain( this.scene, 
+        EngineMain( this, 
                     this.renderer,
                     this.canvasRef,
                     this.camera, 
                     this.camera.getControls() );
 
             
+    }
+
+    /**
+    * Update all objects in the scene 
+    */
+    public updateObjects(): void{
+
+        const updatableObjects = Array<ObjectBase>(0).concat( this.objects )
+                                                     .concat( this.additionalObjects );
+
+        for( let i = 0 ; i < updatableObjects.length ; i++ )
+        {
+            const currentObject = updatableObjects[ i ];
+            const currentObjectIndex = i;
+
+            try{
+                currentObject.updateObject();
+
+            }catch(e){
+                console.log(e)
+            }
+        }
+
     }
 
     //Função para atualizar o pulo do personagem em primeira pessoa

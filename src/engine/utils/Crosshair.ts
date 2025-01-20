@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import Crosshair from '../interfaces/Crosshair';
 import { GameCamera } from '../core/GameCamera';
+import Scene from '../core/Scene';
 
 export default function createCrosshair(): Crosshair{
     const crosshairSize = 0.02; // Tamanho do cursor no mundo
@@ -16,7 +17,7 @@ export default function createCrosshair(): Crosshair{
 };
 
 //Atualiza a posição do Crosshair
-export function UpdateCrosshair( scene: THREE.Scene, 
+export function UpdateCrosshair( scene: Scene, 
                                  camera: GameCamera,
                                  crosshair: Crosshair
 ): void{
@@ -26,7 +27,7 @@ export function UpdateCrosshair( scene: THREE.Scene,
 }
 
 // Função de rastreamento dos objetos que o cursor está apontando
-export function TrackCrosshair( scene: THREE.Scene, 
+export function TrackCrosshair( scene: Scene, 
                                 camera: GameCamera,
                                 crosshair: Crosshair,
                                 raycaster: THREE.Raycaster,
@@ -41,7 +42,7 @@ export function TrackCrosshair( scene: THREE.Scene,
     crosshair.mousePosition = mousePosition;
 
     // Verificar interseções com objetos na cena
-    const intersects = raycaster.intersectObjects(scene.children, true); // true para verificar filhos
+    const intersects = raycaster.intersectObjects(scene.scene.children, true); // true para verificar filhos
   
     // Ignorar o crosshair
     const validIntersections = intersects.filter(intersect => intersect.object.uuid !== crosshair.uuid);

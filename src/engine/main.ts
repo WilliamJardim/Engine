@@ -9,12 +9,13 @@ import { GameCamera } from './core/GameCamera';
 import ObjectBase from './core/ObjectBase';
 import importObjectFrom from './utils/importObject';
 import GlobalContext from './core/GlobalContext';
+import Scene from './core/Scene';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
 const globalContext = new GlobalContext({});
 
 /** Função que vai ser executada quanto a Engine for iniciada */
-export function EngineMain( scene: THREE.Scene, 
+export function EngineMain( scene: Scene, 
                             renderer: THREE.WebGLRenderer,
                             canvasRef: React.RefObject<HTMLDivElement>,
                             camera: GameCamera, 
@@ -56,14 +57,16 @@ export function EngineMain( scene: THREE.Scene,
     );
 
     // Adiciona o cubo na cena
-    scene.add(
-        cubo.getMesh()
-    );
+    scene.add(cubo);
 
     //Importa uma caixa
     importObjectFrom({
         caminho: 'objs/box.obj',
         haveMTL: true,
+        
+        objectProps: {
+            name: 'Caixa'
+        },
 
         callback: function(objetoCarregado: ObjectBase){
 
@@ -75,18 +78,18 @@ export function EngineMain( scene: THREE.Scene,
             });
 
             //Adiciona o objeto na cena
-            scene.add( objetoCarregado.getMesh() );
+            scene.add( objetoCarregado );
 
             //globalContext.set('caixaRef', objetoCarregado);
         }
     })
 
     const light = new THREE.AmbientLight(0xffffff, 1); // Luz ambiente
-    scene.add(light);
+    scene.add( light );
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Luz direcional
     directionalLight.position.set(5, 10, 7.5);
-    scene.add(directionalLight);
+    scene.add( directionalLight );
 
     
 
@@ -94,7 +97,7 @@ export function EngineMain( scene: THREE.Scene,
 
 
 /** Loop que vai ser executado ANTES da função de atualização */
-export function EngineBeforeLoop( scene: THREE.Scene, 
+export function EngineBeforeLoop( scene: Scene, 
                                   renderer: THREE.WebGLRenderer,
                                   canvasRef: React.RefObject<HTMLDivElement>,
                                   camera: GameCamera, 
@@ -104,7 +107,7 @@ export function EngineBeforeLoop( scene: THREE.Scene,
 }
 
 /** Loop que vai ser executado a todo momento depois que a função de atualização rodar */
-export function EngineLoop( scene: THREE.Scene, 
+export function EngineLoop( scene: Scene, 
                             renderer: THREE.WebGLRenderer,
                             canvasRef: React.RefObject<HTMLDivElement>,
                             camera: GameCamera, 

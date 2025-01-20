@@ -38,6 +38,7 @@ export default class ObjectBase extends Base{
     public updatePhysics(){
 
         //If this object have physics
+        /*
         if( this.physicsState.havePhysics == true ){
 
             // Se está subindo, aplicamos a gravidade para diminuir a velocidade
@@ -53,7 +54,7 @@ export default class ObjectBase extends Base{
                 this.physicsState.velocity = 0;  // Zera a velocidade vertical
             }
             
-        }
+        }*/
 
     }
 

@@ -12,5 +12,5 @@ export default function createCube( objProps:ObjectProps
      const material = !materialToCreate ? new THREE.MeshBasicMaterial({ color: 0x00ff00 }) : materialToCreate;
      const plane = new THREE.Mesh(geometry, material);
 
-     return new ObjectBase(plane);
+     return new ObjectBase(plane, objProps);
 }

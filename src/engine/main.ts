@@ -12,7 +12,7 @@ import GlobalContext from './core/GlobalContext';
 import Scene from './core/Scene';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
-const globalContext = new GlobalContext({});
+export const globalContext = new GlobalContext({});
 
 /** Função que vai ser executada quanto a Engine for iniciada */
 export function EngineMain( scene: Scene, 
@@ -80,7 +80,7 @@ export function EngineMain( scene: Scene,
             //Adiciona o objeto na cena
             scene.add( objetoCarregado );
 
-            //globalContext.set('caixaRef', objetoCarregado);
+            globalContext.set('CaixaRef', objetoCarregado);
         }
     })
 

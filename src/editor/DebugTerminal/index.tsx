@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import './style.css';
 import {globalContext} from '../../engine/main.ts';
 
@@ -6,6 +6,10 @@ export default function DebugTerminal()
 {
     const [entradaUsuario, setEntradaUsuario] = useState('');
     const [saidas, setSaidas] = useState('');
+
+    useEffect(()=>{
+        setSaidas('Terminal de execução de códigos dentro do contexto!');
+    }, [])
 
     function aoEscrever(event:any): void{
         setEntradaUsuario( event.target.value ); // Atualiza o estado com o valor do input

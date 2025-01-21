@@ -1,0 +1,11 @@
+
+.div-principal{
+    width: 100% !important;
+}
+
+.div-componentes{
+    width: 100% !important;
+    display: flex;
+    flex-direction: row;
+}
+  

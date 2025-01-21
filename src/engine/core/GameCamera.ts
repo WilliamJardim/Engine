@@ -104,7 +104,6 @@ export class GameCamera extends ObjectBase{
                 cameraMovement.right = true;
                 break;
               case 'Space':
-                debugger
                 if( !cameraMovement.isJumping )
                 {
                    cameraMovement.isJumping = true;

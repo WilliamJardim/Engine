@@ -9,11 +9,14 @@ import { TrackCrosshair } from '../utils/Crosshair';
 import { EngineBeforeLoop } from '../main' //Importa a função EngineBeforeLoop
 import ObjectBase from './ObjectBase';
 import isObjectBase from '../utils/isObjectBase';
+import postVertexShader from '../shaders/postVertexShader';
+import postFragmentShader from '../shaders/postFragmentShader';
 
 export default class Scene extends Base{
 
     public scene:THREE.Scene;
     public renderer:THREE.WebGLRenderer;
+    public renderTarget:THREE.WebGLRenderTarget;
     public canvasRef:React.RefObject<HTMLDivElement>;
     public posicaoYchao:number;
     public camera:GameCamera;
@@ -34,7 +37,19 @@ export default class Scene extends Base{
 
         // Configurar cena, câmera e renderizador
         this.scene = new THREE.Scene();
+
+        // Adicionar uma luz ambiente para iluminar a cena de forma geral
+        const ambientLight = new THREE.AmbientLight(0x555555);
+        this.scene.add(ambientLight);
+
         this.renderer = new THREE.WebGLRenderer();
+
+        // Criar Render Target (framebuffer)
+        this.renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
+            minFilter: THREE.LinearFilter,
+            magFilter: THREE.LinearFilter,
+            format: THREE.RGBAFormat
+        });
 
         this.camera = new GameCamera(this.scene,
                                      this.renderer,
@@ -47,6 +62,26 @@ export default class Scene extends Base{
 
         //Here, we will put only object references(the instances), to be updated too, if they not are in the objects array.
         this.additionalObjects = [];
+
+        //Shaders de pós-processamento
+        const postMaterial = new THREE.ShaderMaterial({
+            vertexShader: postVertexShader(),
+            fragmentShader: postFragmentShader(),
+            uniforms: {
+                tDiffuse: { value: this.renderTarget.texture } // Passa a cena renderizada como textura
+            },
+            depthTest: true,
+            depthWrite: true
+        });
+
+        // Criar um plano fullscreen para aplicar o shader
+        const postPlane = new THREE.PlaneGeometry(2, 2);
+        const postQuad = new THREE.Mesh(postPlane, postMaterial);
+
+        // Força o quad a ser renderizado após os outros objetos
+        postQuad.renderOrder = 999;
+
+        this.scene.add(postQuad);
         
     }
 
@@ -115,6 +150,13 @@ export default class Scene extends Base{
     
             context.updateObjects();
 
+            // 1. Renderizar a cena normal para o framebuffer
+            context.renderer.setRenderTarget(context.renderTarget);
+            context.renderer.render( context.scene, 
+                                     context.camera.getCamera() );
+
+            // 2. Aplicar pós-processamento renderizando o quad fullscreen
+            context.renderer.setRenderTarget(null); // Renderizar na tela   
             context.renderer.render( context.scene, 
                                      context.camera.getCamera() );
         }

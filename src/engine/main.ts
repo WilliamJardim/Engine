@@ -21,7 +21,13 @@ export function EngineMain( scene: Scene,
                             camera: GameCamera, 
                             cameraControls: PointerLockControls 
 ): void{
-    
+
+    /**
+    * Define algumas coisas uteis
+    */
+    globalContext.set('sceneCameraControls', cameraControls);
+    globalContext.set('gameScene', scene); //A cena que o jogo está rodando em si
+
     // Cria um cubo simples para testar
     const cubo = createCube( 
         //The attributes

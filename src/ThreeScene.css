@@ -8,4 +8,5 @@
     align-items: center;
     background-color: #000; /* Fundo preto para dar contraste */
     overflow: hidden; /* Evitar barras de rolagem */
+    border: solid 1px white;
   }

@@ -1,13 +1,19 @@
-import ObjectBase from "../../core/ObjectBase";
+interface DistanciaEixos{
+    x: number;
+    y: number;
+    z: number;
+}
 
 /**
-* Verifica se dois objetos estão colidindo:
+* Calcula a distancia entre dois objetos:
 * 
 * @param objA - Object 1
-* @param objB - Object 2 
-* @returns {boolean} - Se está colidindo ou não
+* @param objB - Object 2
+* @param consideraEscala - Se vai levar em conta a escala X, Y e Z dos objetos ou não
+* @param usaValorAbsoluto - Se vai usar o Math.abs ou não
+* @returns {DistanciaEixos}
 */
-export default function isCollision(objA:any, objB:any): boolean{
+export default function getDistance( objA:any, objB:any, consideraEscala:boolean, usaValorAbsoluto:boolean ): DistanciaEixos {
 
     /**
     * Informações do objeto 1
@@ -38,28 +44,21 @@ export default function isCollision(objA:any, objB:any): boolean{
           scaleY_object2   : number     = object2_scale.y,
           scaleZ_object2   : number     = object2_scale.z;
 
-    
     /**
-    * Testando se teve colisão 
+    * Calculando a distancia para cada eixo 
     */
-    const collisionX:boolean = (X_object1 < X_object2 + scaleX_object2) && 
-                               (X_object1 + scaleX_object1 > X_object2 );
+    const distX:number = (X_object1 + (consideraEscala ? scaleX_object1 : 0) ) - (X_object1 + (consideraEscala ? scaleX_object1 : 0) );
+    const distY:number = (Y_object1 + (consideraEscala ? scaleY_object1 : 0) ) - (Y_object1 + (consideraEscala ? scaleY_object1 : 0) );
+    const distZ:number = (Z_object1 + (consideraEscala ? scaleZ_object1 : 0) ) - (Z_object1 + (consideraEscala ? scaleZ_object1 : 0) );
 
-    const collisionY:boolean = (Y_object1 < Y_object2 + scaleY_object2) && 
-                               (Y_object1 + scaleY_object1 > Y_object2 );
-
-    const collisionZ:boolean = (Z_object1 < Z_object2 + scaleZ_object2) && 
-                               (Z_object1 + scaleZ_object1 > Z_object2 );
-    
     /**
-    * Se em todos os tres eixos colidiu
+    * Retorna a distancia dos tres eixos: X, Y e Z 
     */
-    if( collisionX == true && 
-        collisionY == true && 
-        collisionZ == true
-    ){
-        return true;
-    }
+    return { 
+        x: usaValorAbsoluto ? Math.abs(distX) : distX,
+        y: usaValorAbsoluto ? Math.abs(distY) : distY,
+        z: usaValorAbsoluto ? Math.abs(distZ) : distZ
 
-    return false;
+    } as DistanciaEixos
+    
 }

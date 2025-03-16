@@ -63,6 +63,8 @@ export default function DebugTerminal()
     */
     function onKeyDown(event:any): void{
 
+        globalContext.get('sceneCameraControls').lock(); // Bloqueia o jogo pra não atrapalhar o terminal
+
         if( event.key === "Enter")
         {
             executarComando()

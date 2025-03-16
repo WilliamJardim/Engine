@@ -28,6 +28,7 @@ export function EngineMain( scene: Scene,
     */
     globalContext.set('sceneCameraControls', cameraControls);
     globalContext.set('gameScene', scene); //A cena que o jogo está rodando em si
+    globalContext.set('htmlCanvas', document.querySelector("canvas") );
 
     // Cria um cubo simples para testar
     const cubo = createCube( 
@@ -121,6 +122,25 @@ export function EngineLoop( scene: Scene,
                             camera: GameCamera, 
                             cameraControls: PointerLockControls 
 ): void{
+
+    const htmlCanvas = globalContext.get('htmlCanvas');
+    
+    if(htmlCanvas)
+    {
+        /**
+        * Eventos do canvas 
+        */
+        document.addEventListener("click", (event) => {
+
+            if( event.target === htmlCanvas ){
+                globalContext.set('isDentroCanvas', true);
+
+            }else{
+                globalContext.set('isDentroCanvas', false);
+            }
+
+        });
+    }
 
     //Faz a caixa ficar proximo do jogador
     //if( globalContext.avaliable('caixaRef') )

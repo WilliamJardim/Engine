@@ -5,7 +5,7 @@ import {globalContext} from '../../engine/main.ts';
 export default function DebugTerminal()
 {
     const [entradaUsuario, setEntradaUsuario] = useState('');
-    const [saidas,         setSaidas]         = useState('');
+    const [saidas,         setSaidas]         = useState<string>('');
     const [historico,      setHistorico]      = useState<Array<string>>([]);
     const [indiceComando,  setIndiceComando]  = useState(0);
 
@@ -105,16 +105,28 @@ export default function DebugTerminal()
             return;
           }
 
+          if( entradaUsuarioAtual == 'date' ){
+            setSaidas( `${saidas}\n${new Date().toString()}`);
+            setEntradaUsuario("");
+            return;
+          }
+
+
+          
           if( entradaUsuarioAtual == 'help' ){
             setSaidas( (prev:string) => `
-                Página de ajuda
+${saidas}
+-=-=- Página de ajuda -=-=-
             `);
             setEntradaUsuario("");
             return;
           }
 
+
+
           if( entradaUsuarioAtual == 'history' ){
             setSaidas( `
+${saidas}
 -=-=- Histórico de comandos -=-=-:
 
 ${ historico.map(function( comandoJaExecutado:string, indiceComandoExecutado:number ){
@@ -124,6 +136,8 @@ ${ historico.map(function( comandoJaExecutado:string, indiceComandoExecutado:num
             setEntradaUsuario("");
             return;
           }
+
+          
 
           // Cria uma função com acesso explícito ao globalContext
           const fn = new Function(

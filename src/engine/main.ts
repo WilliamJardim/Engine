@@ -10,6 +10,7 @@ import ObjectBase from './core/ObjectBase';
 import importObjectFrom from './utils/importObject';
 import GlobalContext from './core/GlobalContext';
 import Scene from './core/Scene';
+import isCollision from './utils/logic/isCollision';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
 export const globalContext = new GlobalContext({});
@@ -64,6 +65,7 @@ export function EngineMain( scene: Scene,
 
     // Adiciona o cubo na cena
     scene.add(cubo);
+    globalContext.set('CuboRef', cubo);
 
     //Importa uma caixa
     importObjectFrom({
@@ -129,5 +131,13 @@ export function EngineLoop( scene: Scene,
         //});
 
     //}
+
+    //Detecta colisão
+    if( globalContext.avaliable('CaixaRef') && globalContext.avaliable('CuboRef') )
+    {
+        if( isCollision( globalContext.get('CaixaRef'), globalContext.get('CuboRef') ) ){
+            console.log('Cubo Colidiou com Caixa');
+        }
+    }
 
 }

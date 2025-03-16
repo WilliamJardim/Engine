@@ -99,10 +99,29 @@ export default function DebugTerminal()
 
         try {
 
+          if( entradaUsuarioAtual == 'clear' ){
+            setSaidas('');
+            setEntradaUsuario("");
+            return;
+          }
+
           if( entradaUsuarioAtual == 'help' ){
             setSaidas( (prev:string) => `
                 Página de ajuda
             `);
+            setEntradaUsuario("");
+            return;
+          }
+
+          if( entradaUsuarioAtual == 'history' ){
+            setSaidas( `
+-=-=- Histórico de comandos -=-=-:
+
+${ historico.map(function( comandoJaExecutado:string, indiceComandoExecutado:number ){
+    return `(${indiceComandoExecutado < 10 ? '0' + indiceComandoExecutado : indiceComandoExecutado}) - ${comandoJaExecutado}\n`;
+}) }
+            `);
+            setEntradaUsuario("");
             return;
           }
 

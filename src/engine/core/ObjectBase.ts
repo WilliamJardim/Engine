@@ -100,9 +100,10 @@ export default class ObjectBase extends Base{
             // Para cada bloco de evento
             for( let eventosObjeto of eventos.getEventos() )
             {
-                // Se existe o evento whenCollide
-                if( eventosObjeto.whenCollide )
-                {
+                // Se o objeto pode colidir e Se existe o evento whenCollide
+                if( objeto.objProps.collide != false && 
+                    eventosObjeto.whenCollide 
+                ){
                     const objetosCena = Array<ObjectBase>(0).concat( this.scene!.objects )
                                                             .concat( this.scene!.additionalObjects );
 
@@ -112,6 +113,7 @@ export default class ObjectBase extends Base{
                         //Se não for ele mesmo
                         //E Se ESTE objeto COLIDIR com o objeto atual da cena 
                         if( objetoAtualCena.id != objeto.id &&
+                            objetoAtualCena.objProps.collide != false &&
                             isCollision( objeto, objetoAtualCena ) == true 
                         ) {
                             objeto.callEvent( eventosObjeto.whenCollide, {

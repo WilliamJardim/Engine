@@ -75,6 +75,7 @@ export function EngineMain( scene: Scene,
         
         objectProps: {
             name: 'Caixa',
+            collide: true,
 
             // Cria um bloco de eventos para esse objeto
             events: [

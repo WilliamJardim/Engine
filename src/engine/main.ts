@@ -90,6 +90,7 @@ export function EngineMain( scene: Scene,
             ]
         },
 
+        // Depois que o objeto for carregado
         callback: function(objetoCarregado: ObjectBase){
 
             //Define a posição do objeto

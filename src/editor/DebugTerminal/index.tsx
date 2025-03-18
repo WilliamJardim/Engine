@@ -88,6 +88,9 @@ export default function DebugTerminal()
     * 
     * @example
     * globalContext.get('CaixaRef').getMesh().position.x = globalContext.get('CuboRef').getMesh().position.x
+    * 
+    * @example
+    * Engine.get('CaixaRef').destroy()
     */
     function executarComando() {
         let entradaUsuarioAtual = entradaUsuario;

@@ -8,6 +8,7 @@ import Scene from './Scene';
 import ObjectEvents from '../interfaces/ObjectEvents';
 import ObjectEventLayer from '../interfaces/ObjectEventBlock';
 import isCollision from '../utils/logic/isCollision';
+import removeObject from '../utils/removeObject';
 
 export default class ObjectBase extends Base{
 
@@ -45,6 +46,13 @@ export default class ObjectBase extends Base{
         this.physicsState.havePhysics = (this.objProps || {}).havePhysics || false;
 
         this.setMesh( mesh );
+    }
+
+    /**
+    * Deleta o objeto da cena 
+    */
+    public destroy(): void{
+        removeObject( this, this.scene! );
     }
 
     /**

@@ -187,12 +187,15 @@ export default class Scene extends Base{
             const currentObjectIndex = i;
 
             try{
-                currentObject.updateObject();
-
                 /**
                 * Repass some important informations into the  "currentObject"
                 */
                 currentObject.scene = this;
+
+                /**
+                * Update the object 
+                */
+                currentObject.updateObject();
 
             }catch(e){
                 console.log(e)

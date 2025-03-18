@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import ObjectPosition from "./ObjectPosition";
 import ObjectRotation from "./ObjectRotation";
 import ObjectScale from "./ObjectScale";
+import ObjectEvents from './ObjectEvents';
 
 export default interface ObjectProps{
     material?: THREE.MeshStandardMaterial | null,
@@ -15,5 +16,6 @@ export default interface ObjectProps{
     collide?: boolean,
     ignoreCollisions?: Array<string>,
     invisible?: boolean,
-    opacity?: number
+    opacity?: number,
+    events?: ObjectEvents[]
 }

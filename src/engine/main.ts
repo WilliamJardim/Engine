@@ -74,7 +74,20 @@ export function EngineMain( scene: Scene,
         haveMTL: true,
         
         objectProps: {
-            name: 'Caixa'
+            name: 'Caixa',
+
+            // Cria um bloco de eventos para esse objeto
+            events: [
+                {
+                    whenCollide: function( parametrosColisao:any ){
+
+                        // Se a Caixa colidir com o Cubo
+                        if( parametrosColisao.target.name == 'MyCube' ){
+                            console.log('Cubo Colidiou com Caixa');
+                        }
+                    }
+                }
+            ]
         },
 
         callback: function(objetoCarregado: ObjectBase){
@@ -153,11 +166,13 @@ export function EngineLoop( scene: Scene,
     //}
 
     //Detecta colisão
+    /*
     if( globalContext.avaliable('CaixaRef') && globalContext.avaliable('CuboRef') )
     {
         if( isCollision( globalContext.get('CaixaRef'), globalContext.get('CuboRef') ) ){
             console.log('Cubo Colidiou com Caixa');
         }
     }
+    */
 
 }

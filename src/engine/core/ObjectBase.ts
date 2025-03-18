@@ -5,11 +5,17 @@ import PhysicsState from '../interfaces/PhysicsState';
 import MovementState from '../interfaces/MovementState';
 import ObjectPosition from '../interfaces/ObjectPosition';
 import Scene from './Scene';
+import ObjectEvents from '../interfaces/ObjectEvents';
+import ObjectEventLayer from '../interfaces/ObjectEventBlock';
+import isCollision from '../utils/logic/isCollision';
 
 export default class ObjectBase extends Base{
 
+    public name?:string|undefined;
+    public id:string;
     public mesh:any;
     public objProps:ObjectProps;
+    public objEvents:ObjectEventLayer;
     public movimentState:MovementState;
     public physicsState:PhysicsState;
     public scene:Scene|null;
@@ -19,8 +25,13 @@ export default class ObjectBase extends Base{
             
     ){
         super()
-        this.objProps = objProps || {};
-        
+        this.objProps  = objProps || ({} as ObjectProps);
+
+        this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
+        this.name        = this.objProps.name || undefined;
+
+        this.objEvents = new ObjectEventLayer(this.objProps.events || []);
+
         this.scene = null;
 
         this.movimentState = {
@@ -31,7 +42,7 @@ export default class ObjectBase extends Base{
         };
 
         this.physicsState = this.movimentState.physics || {};
-        this.physicsState.havePhysics = this.objProps.havePhysics;
+        this.physicsState.havePhysics = (this.objProps || {}).havePhysics || false;
 
         this.setMesh( mesh );
     }
@@ -39,7 +50,7 @@ export default class ObjectBase extends Base{
     /**
     * Atualiza a fisica do objeto 
     */
-    public updatePhysics(){
+    public updatePhysics(): void{
 
         //If this object have physics
         if( this.scene != null && this.physicsState.havePhysics == true ){
@@ -60,8 +71,59 @@ export default class ObjectBase extends Base{
 
     }
 
-    public updateObject(){
+    /**
+    * Chama um evento 
+    */
+    public callEvent( funcaoEvento:Function, parametros:any ): void{
+        const objeto  = this;
+        funcaoEvento.bind(objeto)( parametros );
+    }
+
+    /**
+    * Atualiza os eventos internos do objeto 
+    */
+    public updateEvents(): void{
+        const objeto  : ObjectBase       = this;
+        const eventos : ObjectEventLayer = objeto.objEvents;
+
+        //Se tem eventos
+        if( eventos )
+        {   
+            // Para cada bloco de evento
+            for( let eventosObjeto of eventos.getEventos() )
+            {
+                // Se existe o evento whenCollide
+                if( eventosObjeto.whenCollide )
+                {
+                    const objetosCena = Array<ObjectBase>(0).concat( this.scene!.objects )
+                                                            .concat( this.scene!.additionalObjects );
+
+                    // Para cada objeto na cena, verifica se colidiu com este objeto
+                    for( let objetoAtualCena of objetosCena ){
+                        
+                        //Se não for ele mesmo
+                        //E Se ESTE objeto COLIDIR com o objeto atual da cena 
+                        if( objetoAtualCena.id != objeto.id &&
+                            isCollision( objeto, objetoAtualCena ) == true 
+                        ) {
+                            objeto.callEvent( eventosObjeto.whenCollide, {
+                                self     : objeto,
+                                target   : objetoAtualCena,
+                                instante : new Date().getTime(),
+                                subjects : [ objeto.id, objetoAtualCena.id ]
+                            });
+                        }
+                        
+                    }
+                }
+            }
+
+        }
+    }
+
+    public updateObject(): void{
         this.updatePhysics();
+        this.updateEvents();
     }
 
     public setProps( newObjProps:ObjectProps ): void{

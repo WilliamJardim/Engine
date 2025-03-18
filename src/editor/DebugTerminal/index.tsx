@@ -85,6 +85,9 @@ export default function DebugTerminal()
     * 
     * @example
     * globalContext.get('CaixaRef').setPosition({x: -15,y: 0,z: 0}); 
+    * 
+    * @example
+    * globalContext.get('CaixaRef').getMesh().position.x = globalContext.get('CuboRef').getMesh().position.x
     */
     function executarComando() {
         let entradaUsuarioAtual = entradaUsuario;

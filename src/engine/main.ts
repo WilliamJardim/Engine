@@ -43,7 +43,7 @@ export function EngineMain( scene: Scene,
             collide: true,
             ignoreCollisions: [
                 "OtherCube",
-                "AnotherCubo"
+                "AnotherCubo",
             ],
             weight: 40,
             position: {
@@ -76,7 +76,7 @@ export function EngineMain( scene: Scene,
         objectProps: {
             name: 'Caixa',
             collide: true,
-
+                        
             // Cria um bloco de eventos para esse objeto
             events: [
                 {

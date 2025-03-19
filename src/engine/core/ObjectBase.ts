@@ -109,12 +109,43 @@ export default class ObjectBase extends Base{
 
                     // Para cada objeto na cena, verifica se colidiu com este objeto
                     for( let objetoAtualCena of objetosCena ){
-                        
-                        //Se não for ele mesmo
-                        //E Se ESTE objeto COLIDIR com o objeto atual da cena 
-                        if( objetoAtualCena.id != objeto.id &&
-                            objetoAtualCena.objProps.collide != false &&
-                            isCollision( objeto, objetoAtualCena ) == true 
+            
+                        //Se ESTE objeto COLIDIR com o objeto atual da cena 
+                        if( 
+                            // Se não for ele mesmo
+                            (
+                                objetoAtualCena.id != objeto.id 
+                            ) &&
+                            //Se o objetoAtualCena tem colisão habilitada
+                            (
+                                objetoAtualCena.objProps.collide != false
+                            ) &&
+                            //Se o objeto atual NÂO tiver uma exceção para o objetoAtualCena
+                            (
+                                (
+                                    //Se ele inclui o ID ou se não tem ignoreColisions nem entra
+                                    (objeto.objProps.ignoreCollisions?.includes( objetoAtualCena.id ) == false || !objeto.objProps.ignoreCollisions) &&
+                                    //Se ele tem nome o nome é uma excessao ou se ele não tem name, nem entra
+                                    (objetoAtualCena.name && objeto.objProps.ignoreCollisions?.includes( objetoAtualCena.name ) == false || !objetoAtualCena.name) &&
+                                    //Se ele tem classes na excessao ou se ele não tem classes nem entra
+                                    (objeto.objProps.classes?.some((classe:string)=>{ return objetoAtualCena.objProps.ignoreCollisions?.includes( classe ) == true }) == false || !objeto.objProps.classes)
+                                
+                                //Mais se não tiver o ignoreColissions ele não vai aplicar essa excessão
+                                ) || !objeto.objProps.ignoreCollisions
+                            ) &&
+                            //Se o objetoAtualCena NÂO tiver uma exceção para o objeto
+                            (
+                                (
+                                    (objetoAtualCena.objProps.ignoreCollisions?.includes( objeto.id ) == false || !objetoAtualCena.objProps.ignoreCollisions) &&
+                                    (objeto.name && objetoAtualCena.objProps.ignoreCollisions?.includes( objeto.name ) == false || !objeto.name) &&
+                                    (objetoAtualCena.objProps.classes && objetoAtualCena.objProps.classes.some((classe:string)=>{ return objetoAtualCena.objProps.ignoreCollisions?.includes( classe ) == true }) == false || !objetoAtualCena.objProps.classes)
+                                    //Mais se não tiver o ignoreColissions ele não vai aplicar essa excessão
+                                ) || !objetoAtualCena.objProps.ignoreCollisions
+                            ) &&
+                            /** Se houve uma colisão de fato **/
+                            (
+                                isCollision( objeto, objetoAtualCena ) == true 
+                            )
                         ) {
                             objeto.callEvent( eventosObjeto.whenCollide, {
                                 self     : objeto,

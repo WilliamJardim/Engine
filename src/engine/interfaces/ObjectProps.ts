@@ -7,6 +7,7 @@ import ObjectEvents from './ObjectEvents';
 export default interface ObjectProps{
     material?: THREE.MeshStandardMaterial | null,
     name?:string,
+    classes?:string[],
     isNPC?: boolean,
     havePhysics?: boolean,
     weight?: number,

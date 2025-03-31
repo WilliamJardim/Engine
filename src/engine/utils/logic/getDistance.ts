@@ -1,8 +1,4 @@
-interface DistanciaEixos{
-    x: number;
-    y: number;
-    z: number;
-}
+import DistanciaEixos from "../interfaces/DistanciaEixos";
 
 /**
 * Calcula a distancia entre dois objetos:
@@ -13,7 +9,7 @@ interface DistanciaEixos{
 * @param usaValorAbsoluto - Se vai usar o Math.abs ou não
 * @returns {DistanciaEixos}
 */
-export default function getDistance( objA:any, objB:any, consideraEscala:boolean, usaValorAbsoluto:boolean ): DistanciaEixos {
+export default function getDistance( objA:any, objB:any, consideraEscala:boolean=true, usaValorAbsoluto:boolean=true ): DistanciaEixos {
 
     /**
     * Informações do objeto 1

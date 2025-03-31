@@ -3,6 +3,7 @@ import ObjectPosition from "./ObjectPosition";
 import ObjectRotation from "./ObjectRotation";
 import ObjectScale from "./ObjectScale";
 import ObjectEvents from './ObjectEvents';
+import ProximityBounds from '../utils/interfaces/ProximityBounds';
 
 export default interface ObjectProps{
     material?: THREE.MeshStandardMaterial | null,
@@ -16,6 +17,7 @@ export default interface ObjectProps{
     scale?: ObjectScale,
     collide?: boolean,
     ignoreCollisions?: Array<string>,
+    proximityConfig?:ProximityBounds|number,
     invisible?: boolean,
     opacity?: number,
     events?: ObjectEvents[]

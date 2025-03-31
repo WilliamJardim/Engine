@@ -9,6 +9,9 @@ import ObjectEvents from '../interfaces/ObjectEvents';
 import ObjectEventLayer from '../interfaces/ObjectEventBlock';
 import isCollision from '../utils/logic/isCollision';
 import removeObject from '../utils/removeObject';
+import isProximity from '../utils/logic/isProximity';
+import ProximityBounds from '../utils/interfaces/ProximityBounds';
+import getDistance from '../utils/logic/getDistance';
 
 export default class ObjectBase extends Base{
 
@@ -100,13 +103,14 @@ export default class ObjectBase extends Base{
             // Para cada bloco de evento
             for( let eventosObjeto of eventos.getEventos() )
             {
+                const objetosCena = Array<ObjectBase>(0).concat( this.scene!.objects )
+                                                        .concat( this.scene!.additionalObjects );
+
                 // Se o objeto pode colidir e Se existe o evento whenCollide
                 if( objeto.objProps.collide != false && 
                     eventosObjeto.whenCollide 
                 ){
-                    const objetosCena = Array<ObjectBase>(0).concat( this.scene!.objects )
-                                                            .concat( this.scene!.additionalObjects );
-
+                    
                     // Para cada objeto na cena, verifica se colidiu com este objeto
                     for( let objetoAtualCena of objetosCena ){
             
@@ -151,10 +155,35 @@ export default class ObjectBase extends Base{
                                 self     : objeto,
                                 target   : objetoAtualCena,
                                 instante : new Date().getTime(),
-                                subjects : [ objeto.id, objetoAtualCena.id ]
+                                subjects : [ objeto.id, objetoAtualCena.id ],
+                                distance : getDistance(objeto, objetoAtualCena) 
                             });
                         }
                         
+                    }
+                }
+
+                //Se tem o evento whenProximity
+                if( eventosObjeto.whenProximity )
+                {
+                    // Para cada objeto na cena, verifica se colidiu com este objeto
+                    for( let objetoAtualCena of objetosCena ){
+                        if( 
+                            // Se não for ele mesmo
+                            (
+                                objetoAtualCena.id != objeto.id 
+                            ) &&
+                            isProximity( objeto, objetoAtualCena, ( objeto.objProps.proximityConfig || 100) )
+                        ){
+                            objeto.callEvent( eventosObjeto.whenProximity, {
+                                self     : objeto,
+                                target   : objetoAtualCena,
+                                instante : new Date().getTime(),
+                                subjects : [ objeto.id, objetoAtualCena.id ],
+                                proximityConfig: objeto.objProps.proximityConfig,
+                                distance : getDistance(objeto, objetoAtualCena) 
+                            });
+                        }
                     }
                 }
             }

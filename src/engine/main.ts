@@ -35,7 +35,7 @@ export function EngineMain( scene: Scene,
     const cuboChao = createCube( 
         //The attributes
         {
-            material: createMaterialByImage('/textures/asfalto1.jpg'), //The material,
+            material: createMaterialByImage('/textures/grama.jpg'), //The material,
             name: 'Chao',
             isNPC: false,
             havePhysics: false,
@@ -45,12 +45,12 @@ export function EngineMain( scene: Scene,
             weight: 40,
             position: {
                 x: 0,
-                y: 0,
+                y: -5,
                 z: 0
             },
             scale: {
-                x: 500,
-                y: 500,
+                x: 510,
+                y: 2,
                 z: 500
             },
             rotation: {
@@ -80,21 +80,6 @@ export function EngineMain( scene: Scene,
                 "AnotherCubo",
             ],
             weight: 40,
-            position: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
-            scale: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
-            rotation: {
-                x: 0,
-                y: 0,
-                z: 0
-            }
         }
     );
 

@@ -173,7 +173,7 @@ export default class ObjectBase extends Base{
                             (
                                 objetoAtualCena.id != objeto.id 
                             ) &&
-                            isProximity( objeto, objetoAtualCena, ( objeto.objProps.proximityConfig || 100) )
+                            isProximity( objeto, objetoAtualCena, ( objeto.objProps.proximityConfig || 100) ) == true
                         ){
                             objeto.callEvent( eventosObjeto.whenProximity, {
                                 self     : objeto,

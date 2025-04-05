@@ -43,9 +43,9 @@ export default function getDistance( objA:any, objB:any, consideraEscala:boolean
     /**
     * Calculando a distancia para cada eixo 
     */
-    const distX:number = (X_object1 + (consideraEscala ? scaleX_object1 : 0) ) - (X_object1 + (consideraEscala ? scaleX_object1 : 0) );
-    const distY:number = (Y_object1 + (consideraEscala ? scaleY_object1 : 0) ) - (Y_object1 + (consideraEscala ? scaleY_object1 : 0) );
-    const distZ:number = (Z_object1 + (consideraEscala ? scaleZ_object1 : 0) ) - (Z_object1 + (consideraEscala ? scaleZ_object1 : 0) );
+    const distX:number = (X_object1 + (consideraEscala ? scaleX_object1 : 0) ) - (X_object2 + (consideraEscala ? scaleX_object2 : 0) );
+    const distY:number = (Y_object1 + (consideraEscala ? scaleY_object1 : 0) ) - (Y_object2 + (consideraEscala ? scaleY_object2 : 0) );
+    const distZ:number = (Z_object1 + (consideraEscala ? scaleZ_object1 : 0) ) - (Z_object2 + (consideraEscala ? scaleZ_object2 : 0) );
 
     /**
     * Retorna a distancia dos tres eixos: X, Y e Z 

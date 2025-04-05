@@ -11,6 +11,7 @@ import importObjectFrom from './utils/importObject';
 import GlobalContext from './core/GlobalContext';
 import Scene from './core/Scene';
 import isCollision from './utils/logic/isCollision';
+import ProximityBounds from './utils/interfaces/ProximityBounds';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
 export const globalContext = new GlobalContext({});
@@ -76,6 +77,13 @@ export function EngineMain( scene: Scene,
         objectProps: {
             name: 'Caixa',
             collide: true,
+
+            //Define configuraçao de detecção de proximidade
+            proximityConfig: {
+                x: 3,
+                y: 3,
+                z: 3
+            }as ProximityBounds,
                         
             // Cria um bloco de eventos para esse objeto
             events: [
@@ -86,6 +94,15 @@ export function EngineMain( scene: Scene,
                         if( parametrosColisao.target.name == 'MyCube' ){
                             console.log('Cubo Colidiou com Caixa');
                         }
+                    },
+
+                    whenProximity: function( parametrosProximidade:any ){
+
+                        // Se a Caixa colidir com o Cubo
+                        if( parametrosProximidade.target.name == 'MyCube' ){
+                            console.log('Cubo próximo da Caixa');
+                        }
+
                     }
                 }
             ]

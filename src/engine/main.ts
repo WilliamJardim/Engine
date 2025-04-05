@@ -31,6 +31,39 @@ export function EngineMain( scene: Scene,
     globalContext.set('gameScene', scene); //A cena que o jogo está rodando em si
     globalContext.set('htmlCanvas', document.querySelector("canvas") );
 
+    // Cria um chao simples para testar
+    const cuboChao = createCube( 
+        //The attributes
+        {
+            material: createMaterialByImage('/textures/asfalto1.jpg'), //The material,
+            name: 'Chao',
+            isNPC: false,
+            havePhysics: false,
+            invisible: false,
+            opacity: 1,
+            collide: true,
+            weight: 40,
+            position: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            scale: {
+                x: 500,
+                y: 500,
+                z: 500
+            },
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+        }
+    );
+
+    scene.add(cuboChao);
+    globalContext.set('ChaoRef', cuboChao);
+
     // Cria um cubo simples para testar
     const cubo = createCube( 
         //The attributes

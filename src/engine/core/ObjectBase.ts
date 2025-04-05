@@ -12,6 +12,7 @@ import removeObject from '../utils/removeObject';
 import isProximity from '../utils/logic/isProximity';
 import ProximityBounds from '../utils/interfaces/ProximityBounds';
 import getDistance from '../utils/logic/getDistance';
+import ObjectVelocity from '../interfaces/ObjectVelocity';
 
 export default class ObjectBase extends Base{
 
@@ -23,12 +24,14 @@ export default class ObjectBase extends Base{
     public movimentState:MovementState;
     public physicsState:PhysicsState;
     public scene:Scene|null;
+    public isFalling:boolean;
 
     constructor(mesh: any, 
                 objProps?:ObjectProps
             
     ){
         super()
+       
         this.objProps  = objProps || ({} as ObjectProps);
 
         this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
@@ -45,10 +48,18 @@ export default class ObjectBase extends Base{
             left: false
         };
 
-        this.physicsState = this.movimentState.physics || {};
+        this.physicsState = this.movimentState.physics || {
+
+            //Define a velocidade inicial do objeto
+            velocity: { x: 0, y: 0, z: 0 } as ObjectVelocity
+
+        };
+
         this.physicsState.havePhysics = (this.objProps || {}).havePhysics || false;
 
         this.setMesh( mesh );
+
+        this.isFalling = false;
     }
 
     public setProps( newObjProps:ObjectProps ): void{
@@ -89,6 +100,10 @@ export default class ObjectBase extends Base{
         return this.getMesh().scale;
     }
 
+    public getVelocity(): ObjectVelocity{
+        return this.physicsState.velocity;
+    }
+
     /**
     * Deleta o objeto da cena 
     */
@@ -101,12 +116,13 @@ export default class ObjectBase extends Base{
     */
     public updatePhysics(): void{
 
-        const objeto      : ObjectBase       = this;
         const objetosCena : ObjectBase[]     = Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                    .concat( this.scene!.additionalObjects );
 
+        this.isFalling = true;
+
         //If this object have physics
-        if( this.scene != null && this.physicsState.havePhysics == true )
+        if( this.scene != null && this.scene.gravity && this.physicsState.havePhysics == true )
         {
             /**
             * Para cada objeto da cena
@@ -116,14 +132,30 @@ export default class ObjectBase extends Base{
                 /**
                 * Se o ESTE OBJETO colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
                 */
-                if( objetoAtualCena.id != objeto.id && isCollision( objeto, objetoAtualCena ) == true )
+                if( objetoAtualCena.id != this.id && isProximity( this, objetoAtualCena, 1.7 ) === true )
                 {
-                    //Corrige a posição Y do objeto
-                    objeto.setPosition({
-                        y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.2) + (objeto.getScale().y/1.2)
+                    //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
+                    this.setPosition({
+                        y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.2) + (this.getScale().y/1.2)
                     })
 
+                    // Zera a velocidade do objeto pois ele já caiu
+                    this.getVelocity().y = 0;
+
+                    this.isFalling = false;
                     break;
+
+                }
+            }
+
+            /**
+            * Se o objeto está caindo 
+            */
+            if( this.isFalling === true )
+            {
+                if( this.getVelocity().y != undefined ){
+                    this.getVelocity().y += Math.abs( this.scene.gravity );
+                    this.getPosition().y -= this.getVelocity().y;
                 }
             }
 

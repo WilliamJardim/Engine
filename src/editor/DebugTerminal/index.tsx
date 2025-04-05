@@ -96,6 +96,9 @@ export default function DebugTerminal()
     * globalContext.get('CuboRef').getMesh().position.y = globalContext.get('ChaoRef').getMesh().position.y + 25
     * 
     * @example
+    * globalContext.get('CuboRef').getMesh().position.x += 0.5
+    * 
+    * @example
     * Engine.get('CaixaRef').destroy()
     */
     function executarComando() {

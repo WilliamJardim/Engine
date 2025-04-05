@@ -51,6 +51,44 @@ export default class ObjectBase extends Base{
         this.setMesh( mesh );
     }
 
+    public setProps( newObjProps:ObjectProps ): void{
+        this.objProps = newObjProps;
+    }
+
+    public getProps(): ObjectProps{
+        return this.objProps;
+    }
+
+    public getMesh(): any{
+        return this.mesh;
+    }
+
+    public setMesh(newMesh:any): void{
+        this.mesh = newMesh;
+    }
+
+    public getScene(): Scene|null{
+        return this.scene;
+    }
+
+    public getPosition(): THREE.Vector3{
+        return this.getMesh().position;
+    }
+
+    public setPosition( position: ObjectPosition ): ObjectBase{
+        const mesh: THREE.Mesh = this.getMesh();
+        mesh.position.x = position.x || mesh.position.x;
+        mesh.position.y = position.y || mesh.position.y;
+        mesh.position.z = position.z || mesh.position.z;
+
+        //Retorna ele mesmo modificado
+        return this;
+    }
+
+    public getScale(): THREE.Vector3{
+        return this.getMesh().scale;
+    }
+
     /**
     * Deleta o objeto da cena 
     */
@@ -63,21 +101,32 @@ export default class ObjectBase extends Base{
     */
     public updatePhysics(): void{
 
+        const objeto      : ObjectBase       = this;
+        const objetosCena : ObjectBase[]     = Array<ObjectBase>(0).concat( this.scene!.objects )
+                                                                   .concat( this.scene!.additionalObjects );
+
         //If this object have physics
-        if( this.scene != null && this.physicsState.havePhysics == true ){
+        if( this.scene != null && this.physicsState.havePhysics == true )
+        {
+            /**
+            * Para cada objeto da cena
+            */
+            for( let objetoAtualCena of objetosCena )
+            {
+                /**
+                * Se o ESTE OBJETO colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
+                */
+                if( objetoAtualCena.id != objeto.id && isCollision( objeto, objetoAtualCena ) == true )
+                {
+                    //Corrige a posição Y do objeto
+                    objeto.setPosition({
+                        y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.2) + (objeto.getScale().y/1.2)
+                    })
 
-            // Se está subindo, aplicamos a gravidade para diminuir a velocidade
-            this.physicsState.velocity! += this.getScene()!
-                                              .gravity;  // Acelera negativamente para reduzir a velocidade de subida
-
-            this.getPosition().y += this.physicsState.velocity || 0;  // Move a câmera para cima
-    
-            // Verifica se o personagem alcançou o pico de altura e começou a cair
-            if (this.getPosition().y <= (this.physicsState.posicaoYchao||0) ) { 
-                this.getPosition().y = (this.physicsState.posicaoYchao||0);  // Impede de ultrapassar o chão
-                this.physicsState.velocity = 0;  // Zera a velocidade vertical
+                    break;
+                }
             }
-            
+
         }
 
     }
@@ -103,8 +152,8 @@ export default class ObjectBase extends Base{
             // Para cada bloco de evento
             for( let eventosObjeto of eventos.getEventos() )
             {
-                const objetosCena = Array<ObjectBase>(0).concat( this.scene!.objects )
-                                                        .concat( this.scene!.additionalObjects );
+                const objetosCena: ObjectBase[] = Array<ObjectBase>(0).concat( this.scene!.objects )
+                                                                      .concat( this.scene!.additionalObjects );
 
                 // Se o objeto pode colidir e Se existe o evento whenCollide
                 if( objeto.objProps.collide != false && 
@@ -194,39 +243,5 @@ export default class ObjectBase extends Base{
     public updateObject(): void{
         this.updatePhysics();
         this.updateEvents();
-    }
-
-    public setProps( newObjProps:ObjectProps ): void{
-        this.objProps = newObjProps;
-    }
-
-    public getProps(): ObjectProps{
-        return this.objProps;
-    }
-
-    public getMesh(): any{
-        return this.mesh;
-    }
-
-    public setMesh(newMesh:any): void{
-        this.mesh = newMesh;
-    }
-
-    public getScene(): Scene|null{
-        return this.scene;
-    }
-
-    public getPosition(): THREE.Vector3{
-        return this.getMesh().position;
-    }
-
-    public setPosition( position: ObjectPosition ): ObjectBase{
-        const mesh: THREE.Mesh = this.getMesh();
-        mesh.position.x = position.x || mesh.position.x;
-        mesh.position.y = position.y || mesh.position.y;
-        mesh.position.z = position.z || mesh.position.z;
-
-        //Retorna ele mesmo modificado
-        return this;
     }
 }

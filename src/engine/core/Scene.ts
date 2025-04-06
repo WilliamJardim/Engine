@@ -11,6 +11,7 @@ import ObjectBase from './ObjectBase';
 import isObjectBase from '../utils/isObjectBase';
 import postVertexShader from '../shaders/postVertexShader';
 import postFragmentShader from '../shaders/postFragmentShader';
+import ObjectProps from '../interfaces/ObjectProps';
 
 export default class Scene extends Base{
 
@@ -51,10 +52,7 @@ export default class Scene extends Base{
             format: THREE.RGBAFormat
         });
 
-        this.camera = new GameCamera(this.scene,
-                                     this.renderer,
-                                     this.canvasRef,
-                                     this.posicaoYchao);
+        this.camera = new GameCamera(this);
 
         this.clockCamera = new THREE.Clock();
 
@@ -83,6 +81,14 @@ export default class Scene extends Base{
 
         this.scene.add(postQuad);
         
+    }
+
+    public getRenderer(): THREE.WebGLRenderer{
+        return this.renderer;
+    }
+
+    public getCanvas(): React.RefObject<HTMLDivElement>{
+        return this.canvasRef;
     }
 
     public add( objeto:any ){
@@ -128,7 +134,7 @@ export default class Scene extends Base{
             context.camera.Update( frameDelta );
     
             //Atualiza o pulo
-            context.updateJump();
+            //context.updateJump();
     
             //Atualiza a posição do crosshair
             UpdateCrosshair( context, 

@@ -6,6 +6,9 @@ import ObjectEvents from './ObjectEvents';
 import ProximityBounds from '../utils/interfaces/ProximityBounds';
 
 export default interface ObjectProps{
+    //Aceita acessar indicies
+    [key: string]: any;
+
     material?: THREE.MeshStandardMaterial | null,
     name?:string,
     classes?:string[],

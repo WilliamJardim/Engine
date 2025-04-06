@@ -45,7 +45,7 @@ export function EngineMain( scene: Scene,
             weight: 40,
             position: {
                 x: 0,
-                y: -5,
+                y: -50,
                 z: 0
             },
             scale: {
@@ -95,6 +95,7 @@ export function EngineMain( scene: Scene,
         objectProps: {
             name: 'Caixa',
             collide: true,
+            havePhysics: true,
 
             //Define configuraçao de detecção de proximidade
             proximityConfig: {
@@ -174,7 +175,7 @@ export function EngineLoop( scene: Scene,
 ): void{
 
     const htmlCanvas = globalContext.get('htmlCanvas');
-    
+
     if(htmlCanvas)
     {
         /**

@@ -5,9 +5,13 @@ import Crosshair from '../interfaces/Crosshair';
 import createCrosshair, { TrackCrosshair, UpdateCrosshair } from '../utils/Crosshair';
 import Base from './Base';
 import ObjectBase from './ObjectBase';
+import ObjectProps from '../interfaces/ObjectProps';
+import Scene from './Scene';
 
-export class GameCamera extends ObjectBase{
-    private scene:THREE.Scene;
+export class GameCamera{
+    private objectBase:ObjectBase;
+    private objProps:ObjectProps;
+    private scene:Scene;
     private renderer:THREE.WebGLRenderer;
     private canvasRef:React.RefObject<HTMLDivElement>;
     private camera:THREE.PerspectiveCamera;
@@ -19,15 +23,26 @@ export class GameCamera extends ObjectBase{
     private cameraDirection:THREE.Vector3;
     private crosshair:Crosshair;
 
-    constructor( scene:THREE.Scene,
-                 renderer:THREE.WebGLRenderer, 
-                 canvasRef:React.RefObject<HTMLDivElement>,
-                 posicaoYchao_inicial:number,
+    constructor( scene:Scene,
+                 objProps?:ObjectProps
                 
     ){
-        super(null);
-        
         const contexto = this;
+        const canvasRef = scene.getCanvas();
+        const renderer  = scene.getRenderer();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
+
+        //Define as propriedades do objeto
+        this.objProps   = (objProps || {
+          havePhysics: true
+        }as ObjectProps);
+        
+        // O ObjectBase responsavel pela camera
+        this.objectBase = new ObjectBase( camera, 
+                                          this.objProps );
+        
+        // Repassa coisas importantes
+        this.objectBase.scene = scene;
 
         this.scene = scene;
 
@@ -35,12 +50,12 @@ export class GameCamera extends ObjectBase{
 
         this.renderer = renderer;
 
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
+        this.camera = camera;
 
         //The prop that will be used to reffer to the main Mesh that this Object will manipulate
-        this.setMesh( this.camera );
+        this.objectBase.setMesh( this.camera );
 
-        this.camera.position.set(0, posicaoYchao_inicial, 5); // Altura da câmera simulando altura de uma pessoa
+        this.camera.position.set(0, 0, 5); // Altura da câmera simulando altura de uma pessoa
         
         this.camera.position.z = 5;
     
@@ -172,6 +187,9 @@ export class GameCamera extends ObjectBase{
 
         cameraControls.moveRight(-cameraVelocity.x * frameDelta);
         cameraControls.moveForward(-cameraVelocity.z * frameDelta);
+
+        //Atualiza o ObjectBase
+        this.objectBase.updateObject();
     }
 
     public setAspect( aspecto:number ): void{

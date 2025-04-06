@@ -64,7 +64,19 @@ export default class ObjectBase extends Base{
 
     public setProps( newObjProps:ObjectProps ): void{
         this.objProps = newObjProps;
+
+        if( this.objProps.havePhysics != undefined ){
+            this.physicsState.havePhysics = this.objProps.havePhysics;
+        }
     }
+
+    public addProp( propName:string, propValue:any ): void{
+        this.objProps[ propName ] = propValue;
+
+        if( propName == 'havePhysics' ){
+            this.physicsState.havePhysics = propValue;
+        }
+    }   
 
     public getProps(): ObjectProps{
         return this.objProps;
@@ -132,7 +144,7 @@ export default class ObjectBase extends Base{
                 /**
                 * Se o ESTE OBJETO colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
                 */
-                if( objetoAtualCena.id != this.id && isProximity( this, objetoAtualCena, 1.7, false ) === true )
+                if( objetoAtualCena.id != this.id && isProximity( this, objetoAtualCena, 1.5, true, false ) === true )
                 {
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     this.setPosition({

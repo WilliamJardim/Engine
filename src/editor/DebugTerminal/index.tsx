@@ -97,6 +97,7 @@ export default function DebugTerminal()
     * 
     * @example
     * globalContext.get('CuboRef').getMesh().position.x += 0.5
+    * globalContext.get('CuboRef').getMesh().position.y += 0.5
     * 
     * @example
     * Engine.get('CaixaRef').destroy()

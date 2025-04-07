@@ -156,6 +156,16 @@ export default class ObjectBase extends Base{
                         })
                     }
 
+                    //Impede que o objeto suba em cima de outro objeto
+                    /*
+                    if( this.getPosition().y >= objetoAtualCena.getPosition().y && 
+                        this.getPosition().y <= objetoAtualCena.getPosition().y + objetoAtualCena.getScale().y 
+                    ){
+                        this.setPosition({
+                            y: objetoAtualCena.getPosition().y - (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
+                        })
+                    }*/
+
                     // Zera a velocidade do objeto pois ele já caiu
                     this.getVelocity().y = 0;
 

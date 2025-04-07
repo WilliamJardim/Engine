@@ -150,9 +150,11 @@ export default class ObjectBase extends Base{
                 if( objetoAtualCena.id != this.id && isProximity( this, objetoAtualCena, 1.5, true, false ) === true )
                 {
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
-                    this.setPosition({
-                        y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
-                    })
+                    if( this.getPosition().y > objetoAtualCena.getPosition().y ){
+                        this.setPosition({
+                            y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
+                        })
+                    }
 
                     // Zera a velocidade do objeto pois ele já caiu
                     this.getVelocity().y = 0;

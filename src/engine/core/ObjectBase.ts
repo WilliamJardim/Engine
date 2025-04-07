@@ -25,6 +25,7 @@ export default class ObjectBase extends Base{
     public physicsState:PhysicsState;
     public scene:Scene|null;
     public isFalling:boolean;
+    public groundY:number; // A posição Y do chão atual em relação a este objeto
 
     constructor(mesh: any, 
                 objProps?:ObjectProps
@@ -33,6 +34,8 @@ export default class ObjectBase extends Base{
         super()
        
         this.objProps  = objProps || ({} as ObjectProps);
+
+        this.groundY = 0;
 
         this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
         this.name        = this.objProps.name || undefined;
@@ -155,6 +158,7 @@ export default class ObjectBase extends Base{
                     this.getVelocity().y = 0;
 
                     this.isFalling = false;
+                    this.groundY = this.getPosition().y; // A posição da ultima colisão
                     break;
 
                 }

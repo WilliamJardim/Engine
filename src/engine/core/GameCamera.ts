@@ -9,7 +9,7 @@ import ObjectProps from '../interfaces/ObjectProps';
 import Scene from './Scene';
 
 export class GameCamera{
-    private objectBase:ObjectBase;
+    public  objectBase:ObjectBase;
     private objProps:ObjectProps;
     private scene:Scene;
     private renderer:THREE.WebGLRenderer;
@@ -68,9 +68,10 @@ export class GameCamera{
                                 left: false, 
                                 right: false,
                                 isJumping: false,
+                                stopJumpStartFallAgain: false,
                                 jumpVelocityY: 0,
                                 jumpCooldown: false,
-                                jumpStrength: 1 };
+                                jumpStrength: 0.5 };
         
         this.cameraVelocity = new THREE.Vector3();
         this.cameraDirection = new THREE.Vector3();
@@ -121,8 +122,15 @@ export class GameCamera{
               case 'Space':
                 if( !cameraMovement.isJumping )
                 {
+                   cameraMovement.stopJumpStartFallAgain = false;
                    cameraMovement.isJumping = true;
                    cameraMovement.jumpVelocityY = cameraMovement.jumpStrength;
+
+                   setTimeout(()=>{
+                     cameraMovement.stopJumpStartFallAgain = true;
+                     cameraMovement.isJumping = false;
+                     cameraMovement.jumpVelocityY = 0;
+                   }, 250)
                 }
                 break;
             }

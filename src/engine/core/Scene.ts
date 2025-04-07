@@ -31,7 +31,7 @@ export default class Scene extends Base{
         super();
 
         this.posicaoYchao = 1.6;
-        this.gravity = -0.09;     // Gravidade que puxa para baixo
+        this.gravity = -0.03;     // Gravidade que puxa para baixo
 
         //Obtem o canvas
         this.canvasRef = canvasRef;
@@ -134,7 +134,7 @@ export default class Scene extends Base{
             context.camera.Update( frameDelta );
     
             //Atualiza o pulo
-            //context.updateJump();
+            context.updateJump();
     
             //Atualiza a posição do crosshair
             UpdateCrosshair( context, 
@@ -211,6 +211,7 @@ export default class Scene extends Base{
     }
 
     //Função para atualizar o pulo do personagem em primeira pessoa
+    //TODO: CONTINUAR ESSA LOGICA QUE TÁ BUGADA
     public updateJump() {
         const cameraMovement = this.camera.getMovement();
 
@@ -219,22 +220,55 @@ export default class Scene extends Base{
         }
 
         // Se estiver pulando, aplicar o movimento vertical
-        if (cameraMovement.isJumping == true) {
-        // Aplica a gravidade (reduz a velocidade vertical a cada frame)
+        if (cameraMovement.isJumping == true && cameraMovement.stopJumpStartFallAgain == false ) {
+            // Aplica a gravidade (reduz a velocidade vertical a cada frame)
 
-        // Se está subindo, aplicamos a gravidade para diminuir a velocidade
-        cameraMovement.jumpVelocityY += this.gravity;  // Acelera negativamente para reduzir a velocidade de subida
-        this.camera.getPosition().y += cameraMovement.jumpVelocityY;  // Move a câmera para cima
-    
-    
-        // Verifica se o personagem alcançou o pico do pulo e começou a cair
-        if (this.camera.getPosition().y <= this.posicaoYchao) { 
-            this.camera.getPosition().y = this.posicaoYchao;  // Impede de ultrapassar o chão
-            cameraMovement.isJumping = false;  // O pulo terminou, agora está de volta no chão
-            cameraMovement.jumpVelocityY = 0;  // Zera a velocidade vertical
-        }
+            // Se está subindo, aplicamos a gravidade para diminuir a velocidade
+            cameraMovement.jumpVelocityY -= this.gravity;  // Acelera negativamente para reduzir a velocidade de subida
+            this.camera.getPosition().y += cameraMovement.jumpVelocityY;  // Move a câmera para cima
+            this.camera.objectBase.isFalling = true
         }
     }
+
+    /*
+    public updateJump(deltaTime: number) {
+        const movement = this.camera.getMovement();
+        const position = this.camera.getPosition();
+    
+        const GRAVITY = -9800; // unidades por segundo ao quadrado (ajuste conforme necessário)
+        const JUMP_FORCE = 3500; // impulso inicial do pulo (ajuste conforme necessário)
+        const TERMINAL_VELOCITY = -20000; // velocidade máxima de queda
+    
+        // Inicializa se ainda não tiver
+        if (movement.jumpVelocityY === undefined) movement.jumpVelocityY = 0;
+        if (movement.isJumping === undefined) movement.isJumping = false;
+    
+        // Se apertou o botão de pulo e está no chão
+        if (movement.isJumping == true && this.camera.objectBase.isFalling == false ) {
+            movement.jumpVelocityY = JUMP_FORCE;
+            movement.isJumping = false; // Zera o sinal de pulo
+        }
+    
+        // Aplica física do pulo
+        if (movement.isJumping || this.camera.objectBase.isFalling) {
+            // Aplica gravidade
+            movement.jumpVelocityY += GRAVITY * deltaTime;
+            movement.jumpVelocityY = Math.max(movement.jumpVelocityY, TERMINAL_VELOCITY);
+    
+            // Move a câmera com base na velocidade atual
+            position.y += movement.jumpVelocityY * deltaTime;
+    
+            // Verifica se chegou ao chão
+            if (position.y <= this.camera.objectBase.groundY) {
+                //position.y = this.camera.objectBase.groundY;
+                //movement.jumpVelocityY = 0;
+                //movement.isJumping = false;
+                //this.camera.objectBase.isFalling = false;
+            } else {
+                //this.camera.objectBase.isFalling = true;
+            }
+        }
+    }*/
 
     public handleResize(){
         if (!this.canvasRef.current) return;

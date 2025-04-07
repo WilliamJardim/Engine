@@ -7,6 +7,7 @@ export default interface MovementState{
     right: boolean,
 
     isJumping?: boolean,      // Controle se está pulando ou não
+    stopJumpStartFallAgain?: boolean,
     jumpStrength?: number,    // Força inicial do pulo
     jumpVelocityY?: number,   // Velocidade vertical (Y)
     jumpCooldown?: boolean,   // Evitar pular várias vezes rapidamente

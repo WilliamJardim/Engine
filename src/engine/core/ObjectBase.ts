@@ -127,6 +127,23 @@ export default class ObjectBase extends Base{
     }
 
     /**
+    * Calcula o voluma do objeto 
+    * @returns 
+    */
+    public getVolume(): number {
+        const escala = this.getScale();
+        return escala.x * escala.y * escala.z;
+    }
+
+    /**
+    * Retorna o peso do objeto mais a area dele, algo que vou usar na fisica
+    * @returns {number} 
+    */
+    public getAreaPeso(): number{
+        return (this.objProps.weight||0) + this.getVolume();
+    }
+
+    /**
     * Atualiza a fisica do objeto 
     */
     public updatePhysics(): void{
@@ -150,6 +167,7 @@ export default class ObjectBase extends Base{
                 if( objetoAtualCena.id != this.id && isProximity( this, objetoAtualCena, 1.5, true, false ) === true )
                 {
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
+                    //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
                     if( this.getPosition().y > objetoAtualCena.getPosition().y ){
                         this.setPosition({
                             y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
@@ -158,8 +176,8 @@ export default class ObjectBase extends Base{
 
                     //Impede que o objeto suba em cima de outro objeto
                     /*
-                    if( this.getPosition().y >= objetoAtualCena.getPosition().y && 
-                        this.getPosition().y <= objetoAtualCena.getPosition().y + objetoAtualCena.getScale().y 
+                    if( this.getPosition().y < objetoAtualCena.getPosition().y && 
+                        this.getPosition().y < objetoAtualCena.getPosition().y + objetoAtualCena.getScale().y
                     ){
                         this.setPosition({
                             y: objetoAtualCena.getPosition().y - (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)

@@ -212,6 +212,7 @@ export default class Scene extends Base{
 
     //Função para atualizar o pulo do personagem em primeira pessoa
     //TODO: CONTINUAR ESSA LOGICA QUE TÁ BUGADA
+    //BUG: ESSA FUNÇÂO FAZ A CAMERA FICAR UM POUCO ACIMA DO CHÂO QUANDO PULA PERTO DA CAIXA
     public updateJump() {
         const cameraMovement = this.camera.getMovement();
 

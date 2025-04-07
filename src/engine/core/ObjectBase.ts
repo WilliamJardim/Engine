@@ -16,6 +16,7 @@ import ObjectVelocity from '../interfaces/ObjectVelocity';
 
 export default class ObjectBase extends Base{
 
+    public tipo:string = 'ObjectBase';
     public name?:string|undefined;
     public id:string;
     public mesh:any;
@@ -154,18 +155,23 @@ export default class ObjectBase extends Base{
         this.isFalling = true;
 
         //If this object have physics
-        if( this.scene != null && this.scene.gravity && this.physicsState.havePhysics == true )
-        {
+        if( (this.objProps.collide == true || this.objProps.collide == undefined ) && 
+            this.scene != null && 
+            this.scene.gravity && 
+            this.physicsState.havePhysics == true 
+        ){
             /**
             * Para cada objeto da cena
             */
             for( let objetoAtualCena of objetosCena )
             {
                 /**
-                * Se o ESTE OBJETO colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
+                * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
                 */
-                if( objetoAtualCena.id != this.id && isProximity( this, objetoAtualCena, 1.5, true, false ) === true )
-                {
+                if( (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
+                     objetoAtualCena.id != this.id && 
+                     isProximity( this, objetoAtualCena, 1.5, true, false ) === true 
+                ){
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
                     if( this.getPosition().y > objetoAtualCena.getPosition().y ){

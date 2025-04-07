@@ -50,7 +50,7 @@ export function EngineMain( scene: Scene,
             },
             scale: {
                 x: 510,
-                y: 2,
+                y: 1,
                 z: 500
             },
             rotation: {

@@ -130,7 +130,7 @@ export class GameCamera{
                      cameraMovement.stopJumpStartFallAgain = true;
                      cameraMovement.isJumping = false;
                      cameraMovement.jumpVelocityY = 0;
-                   }, 250)
+                   }, 300)
                 }
                 break;
             }

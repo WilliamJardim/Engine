@@ -5,126 +5,50 @@ import getDistance from "./getDistance";
 
 /**
 * Verifica se dois objetos estão proximos dentro de uma faixa de coordenadas:
+* Leva em conta uma zona de proximidade imaginária entre os objetos
 * 
 * @param objA - Object 1
 * @param objB - Object 2 
 * @returns {boolean} - Se está colidindo ou não
 */
-export default function isProximity(objA:any, objB:any, limites:ProximityBounds|number, consideraEscala:boolean=true, usaValorAbsoluto:boolean=true): boolean{
-    
-    const distanciaXYZ:DistanciaEixos = getDistance(objA, objB, consideraEscala, usaValorAbsoluto);
+export default function isProximity(
+    objA: any,
+    objB: any,
+    limites: ProximityBounds | number,
+    consideraEscala: boolean = true,
+    usaValorAbsoluto: boolean = true
+): boolean {
+    const posA = objA.getPosition?.() ?? { x: 0, y: 0, z: 0 };
+    const posB = objB.getPosition?.() ?? { x: 0, y: 0, z: 0 };
 
-    /**
-    * Sentido da proximidade 
-    */
-    let temX = false,
-        temY = false,
-        temZ = false;
+    const escalaA = objA.getScale?.() ?? { x: 0, y: 0, z: 0 };
+    const escalaB = objB.getScale?.() ?? { x: 0, y: 0, z: 0 };
 
-    let apenasX = false,
-        apenasY = false,
-        apenasZ = false,
-        qualquerDirecao = false;
-
-    /**
-    * Definir o sentido da verificação de proximidade
-    */
-    if( typeof limites == 'object' && (limites.x || limites.y || limites.z) )
-    {
-        if( limites.x ){
-            temX = true;
-        }
-        if( limites.y ){
-            temX = true;
-        }
-        if( limites.z ){
-            temX = true;
+    const getLimite = (eixo: 'x' | 'y' | 'z'): number => {
+        if (typeof limites === 'number'){
+            return limites;
         }
 
-        if( (temX && (temY || temZ)) ||
-            (temY && (temX || temZ)) ||
-            (temZ && (temX || temY))
-        ){
-            qualquerDirecao = true;
+        const valor = limites[eixo];
+        return typeof valor === 'number' ? valor : 0;
+    };
 
-        //SENAO
-        }else{
-            if(temX && (!temY && !temZ)){
-                apenasX = true;
-            }
+    const inRange = (eixo: 'x' | 'y' | 'z'): boolean => {
+        const centroA = posA[eixo];
+        const centroB = posB[eixo];
 
-            if(temY && (!temX || !temZ)){
-                apenasY = true;
-            }
+        const metadeEscalaA = escalaA[eixo] / 2;
+        const metadeEscalaB = escalaB[eixo] / 2;
+        const limiteExtra = getLimite(eixo);
 
-            if(temZ && (!temX || !temY)){
-                apenasZ = true;
-            }
-        }
+        const minA = centroA - metadeEscalaA - limiteExtra;
+        const maxA = centroA + metadeEscalaA + limiteExtra;
 
-    //Se não foi definido uma direção de verificação, ele considera todas
-    }else{
-        qualquerDirecao = true;
-    }
+        const minB = centroB - metadeEscalaB;
+        const maxB = centroB + metadeEscalaB;
 
-    /**
-    * Lógica de proximidade
-    */
-    if( qualquerDirecao ){
+        return maxB >= minA && minB <= maxA;
+    };
 
-        if( typeof limites == 'number' && 
-            distanciaXYZ.x <= limites &&
-            distanciaXYZ.y <= limites &&
-            distanciaXYZ.z <= limites
-        ){
-            return true;
-
-        } else if( typeof limites == 'object' && 
-            ( (limites.x && typeof limites.x == 'number' && distanciaXYZ.x <= limites.x) || true ) &&
-            ( (limites.y && typeof limites.y == 'number' && distanciaXYZ.y <= limites.y) || true ) &&
-            ( (limites.z && typeof limites.z == 'number' && distanciaXYZ.z <= limites.z) || true ) 
-        ){  
-            return true;
-        }
-
-    //Se forem direções especificas
-    }else{
-        //Se for ter proximidade apenas em X
-        if( apenasX ){
-            if( typeof limites == 'number' && 
-                distanciaXYZ.x <= limites
-            ){
-                return true;
-    
-            }else if( typeof limites == 'object' && (limites.x && typeof limites.x == 'number' && distanciaXYZ.x <= limites.x) ){
-                return true;
-            }
-        }
-
-        //Se for ter proximidade apenas em Y
-        if( apenasY ){
-            if( typeof limites == 'number' && 
-                distanciaXYZ.y <= limites
-            ){
-                return true;
-    
-            }else if( typeof limites == 'object' && (limites.y && typeof limites.y == 'number' && distanciaXYZ.y <= limites.y) ){
-                return true;
-            }
-        }
-
-        //Se for ter proximidade apenas em Z
-        if( apenasZ ){
-            if( typeof limites == 'number' && 
-                distanciaXYZ.z <= limites
-            ){
-                return true;
-    
-            }else if( typeof limites == 'object' && (limites.z && typeof limites.z == 'number' && distanciaXYZ.z <= limites.z) ){
-                return true;
-            }
-        }
-    }
-
-    return false;
+    return inRange('x') && inRange('y') && inRange('z');
 }

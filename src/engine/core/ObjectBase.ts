@@ -186,14 +186,21 @@ export default class ObjectBase extends Base{
                     }
 
                     //Impede que o objeto suba em cima de outro objeto
-                    /*
-                    if( this.getPosition().y < objetoAtualCena.getPosition().y && 
-                        this.getPosition().y < objetoAtualCena.getPosition().y + objetoAtualCena.getScale().y
+                    if( //objetoAtualCena.objProps.havePhysics === false &&
+                        this.getPosition().y < objetoAtualCena.getPosition().y
                     ){
                         this.setPosition({
-                            y: objetoAtualCena.getPosition().y - (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
+                            y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y
                         })
-                    }*/
+                    }
+                    /**
+                    * A linha comentada: objetoAtualCena.objProps.havePhysics === false , é desnecessaria, pois, o objeto não precisa ser estatico para nao poder ultrapassar
+                    * Porem é mais dificil de testar se objetos tiverem fisica, por que ficam caindo. Mais eu fiz um teste movendo o chao para baixo, e a caixa e o cubo cairam certinho como esperado, e o cubo não conseguiu ultrapassar a caixa por baixo
+                    *
+                    * DETALHE: Mais se não mover o chao pra baixo não deu pra testar pois quando eu tentei mover o cubo pra ficar em baixo da caixa ele ficou no meio da caixa,
+                    * mais isso não é por causa da logica de correação da posição do cubo, mais sim, por que, o cubo a onde ele tava não pode ultrassar a caixa, ai a logica de correção dele jogou ele pra baixo da caixa, porém, isso fez ele ultrapassar o chão, então, ele corrigiu a posição e ficou em cima do chão, o que fez ele ficar no meio da caixa
+                    * Eu sei disso por que testei varias vezes, e ao fazer ess teste de mover o chao pra baixo, os dois objetos cairam corretamente como eu queria, e quando cairam no chao, o cubo ficou em baixo da caixa, e quando eu tentei forçar o cubo a ultrapassar a caixa por baixo, ele permaneceu lá em baixo da caixa, então a posição foi corrigida certa, e mesmo assim continuou em cima do chão, o que também é otimo, msotra que ta certo.
+                    */
 
                     // Zera a velocidade do objeto pois ele já caiu
                     this.getVelocity().y = 0;

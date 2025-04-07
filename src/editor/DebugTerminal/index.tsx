@@ -88,6 +88,7 @@ export default function DebugTerminal()
     * 
     * @example
     * globalContext.get('CaixaRef').getMesh().position.x = globalContext.get('CuboRef').getMesh().position.x
+    * globalContext.get('CaixaRef').getMesh().position.y = globalContext.get('CuboRef').getMesh().position.y + 5
     * 
     * @example
     * globalContext.get('CuboRef').getMesh().position.y = globalContext.get('CaixaRef').getMesh().position.y + 10
@@ -98,6 +99,10 @@ export default function DebugTerminal()
     * @example
     * globalContext.get('CuboRef').getMesh().position.x += 0.5
     * globalContext.get('CuboRef').getMesh().position.y += 0.5
+    * globalContext.get('CuboRef').getMesh().position.y += 2.5
+    * 
+    * @example
+    * globalContext.get('ChaoRef').getPosition().y = -555
     * 
     * @example
     * Engine.get('CaixaRef').destroy()

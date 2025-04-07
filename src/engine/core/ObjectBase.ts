@@ -151,7 +151,7 @@ export default class ObjectBase extends Base{
                 {
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     this.setPosition({
-                        y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.2) + (this.getScale().y/1.2)
+                        y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
                     })
 
                     // Zera a velocidade do objeto pois ele já caiu

@@ -174,10 +174,15 @@ export default class ObjectBase extends Base{
                 ){
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
-                    if( this.getPosition().y > objetoAtualCena.getPosition().y ){
+                    if( this.getPosition().y > objetoAtualCena.getPosition().y )
+                    {
                         this.setPosition({
                             y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
-                        })
+                        });
+
+                        //Diz que o objeto parou de cair
+                        this.isFalling = false;
+                        this.groundY = this.getPosition().y; // A posição da ultima colisão
                     }
 
                     //Impede que o objeto suba em cima de outro objeto
@@ -193,8 +198,6 @@ export default class ObjectBase extends Base{
                     // Zera a velocidade do objeto pois ele já caiu
                     this.getVelocity().y = 0;
 
-                    this.isFalling = false;
-                    this.groundY = this.getPosition().y; // A posição da ultima colisão
                     break;
 
                 }

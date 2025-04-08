@@ -43,6 +43,7 @@ export function EngineMain( scene: Scene,
             opacity: 1,
             collide: true,
             weight: 40,
+            traverse: false,
             position: {
                 x: 0,
                 y: -50,

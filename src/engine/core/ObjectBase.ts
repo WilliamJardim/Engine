@@ -129,7 +129,7 @@ export default class ObjectBase extends Base{
 
     /**
     * Calcula o voluma do objeto 
-    * @returns 
+    * @returns {number}
     */
     public getVolume(): number {
         const escala = this.getScale();
@@ -137,11 +137,46 @@ export default class ObjectBase extends Base{
     }
 
     /**
-    * Retorna o peso do objeto mais a area dele, algo que vou usar na fisica
+    * Calcula a massa do objeto 
+    * @returns {number}
+    */
+    public getMassa(): number {
+        const peso = this.objProps.weight || 0;
+        return peso / (this.scene!.gravity || 0.5); 
+    }
+
+    /**
+    * Calcula a massa total do objeto 
+    * @returns {number}
+    */
+    public getMassaTotal(): number {
+        const densidade = this.objProps.density || 1;
+        const volume    = this.getVolume();
+        const peso      = this.objProps.weight || 0;
+        
+        const massaPorDensidade = densidade * volume;
+        const massaPorPeso = peso / 9.8;
+    
+        return massaPorDensidade + massaPorPeso;
+    }
+
+    /**
+    * Retorna o peso do objeto levando em conta a area dele, algo que vou usar na fisica
     * @returns {number} 
     */
     public getAreaPeso(): number{
-        return (this.objProps.weight||0) + this.getVolume();
+        return (this.objProps.weight||0) + (0.3 * (this.objProps.weight||0) * this.getVolume());
+    }
+
+    /**
+    * Calcula a força/impacto
+    * Isso não calcula apenas o impacto mais tambem leva em conta o peso intensificado pelo volume do objeto
+    */
+    public getImpacto(): number{
+        const velocidadeObjeto = this.getVelocity();
+        const velocidadeTotal  = Math.sqrt(velocidadeObjeto.x**2 + velocidadeObjeto.y**2 + velocidadeObjeto.z**2);
+
+        return this.getAreaPeso() * velocidadeTotal;
     }
 
     /**
@@ -155,7 +190,8 @@ export default class ObjectBase extends Base{
         this.isFalling = true;
 
         //If this object have physics
-        if( (this.objProps.collide == true || this.objProps.collide == undefined ) && 
+        if( (this.objProps.traverse != true) &&
+            (this.objProps.collide == true || this.objProps.collide == undefined ) && 
             this.scene != null && 
             this.scene.gravity && 
             this.physicsState.havePhysics == true 
@@ -168,7 +204,8 @@ export default class ObjectBase extends Base{
                 /**
                 * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
                 */
-                if( (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
+                if( (objetoAtualCena.objProps.traverse != true) &&
+                    (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
                      isProximity( this, objetoAtualCena, 1.5, true, false ) === true 
                 ){
@@ -226,6 +263,17 @@ export default class ObjectBase extends Base{
     }
 
     /**
+    * Atualiza a movimentação do objeto 
+    */
+    public updateMovement(): void{
+
+        const objetosCena : ObjectBase[]  =  Array<ObjectBase>(0).concat( this.scene!.objects )
+                                                                 .concat( this.scene!.additionalObjects );
+
+                                    
+    }
+
+    /**
     * Chama um evento 
     */
     public callEvent( funcaoEvento:Function, parametros:any ): void{
@@ -250,7 +298,7 @@ export default class ObjectBase extends Base{
                                                                       .concat( this.scene!.additionalObjects );
 
                 // Se o objeto pode colidir e Se existe o evento whenCollide
-                if( objeto.objProps.collide != false && 
+                if( (objeto.objProps.collide != false || objeto.objProps.collisionEvents == true) && 
                     eventosObjeto.whenCollide 
                 ){
                     
@@ -265,7 +313,7 @@ export default class ObjectBase extends Base{
                             ) &&
                             //Se o objetoAtualCena tem colisão habilitada
                             (
-                                objetoAtualCena.objProps.collide != false
+                                (objetoAtualCena.objProps.collide != false || objetoAtualCena.objProps.collisionEvents == true)
                             ) &&
                             //Se o objeto atual NÂO tiver uma exceção para o objetoAtualCena
                             (
@@ -336,6 +384,7 @@ export default class ObjectBase extends Base{
 
     public updateObject(): void{
         this.updatePhysics();
+        this.updateMovement();
         this.updateEvents();
     }
 }

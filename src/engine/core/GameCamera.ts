@@ -9,6 +9,7 @@ import ObjectProps from '../interfaces/ObjectProps';
 import Scene from './Scene';
 
 export class GameCamera{
+    public  tipo = 'Camera';
     public  objectBase:ObjectBase;
     private objProps:ObjectProps;
     private scene:Scene;

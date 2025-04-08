@@ -15,7 +15,7 @@ import getDistance from '../utils/logic/getDistance';
 import ObjectVelocity from '../interfaces/ObjectVelocity';
 
 export default class ObjectBase extends Base{
-
+    
     public tipo:string = 'ObjectBase';
     public name?:string|undefined;
     public id:string;

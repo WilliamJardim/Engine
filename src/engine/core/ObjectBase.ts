@@ -13,6 +13,8 @@ import isProximity from '../utils/logic/isProximity';
 import ProximityBounds from '../utils/interfaces/ProximityBounds';
 import getDistance from '../utils/logic/getDistance';
 import ObjectVelocity from '../interfaces/ObjectVelocity';
+import ImaginaryObject from './ImaginaryObject';
+import ObjectScale from '../interfaces/ObjectScale';
 
 export default class ObjectBase extends Base{
     
@@ -112,8 +114,42 @@ export default class ObjectBase extends Base{
         return this;
     }
 
+    public somarX( x:number ): void{
+        this.getPosition().x += x;
+    }
+    
+    public somarY( y:number ): void{
+        this.getPosition().y += y;
+    }
+
+    public somarZ( z:number ): void{
+        this.getPosition().z += z;
+    }
+
+    public setScale( scale: ObjectScale ): ObjectBase{
+        const mesh: THREE.Mesh = this.getMesh();
+        mesh.scale.x = scale.x || mesh.scale.x;
+        mesh.scale.y = scale.y || mesh.scale.y;
+        mesh.scale.z = scale.z || mesh.scale.z;
+
+        //Retorna ele mesmo modificado
+        return this;
+    }
+
     public getScale(): THREE.Vector3{
         return this.getMesh().scale;
+    }
+
+    public somarEscalaX( x:number ): void{
+        this.getScale().x += x;
+    }
+    
+    public somarEscalaY( y:number ): void{
+        this.getScale().y += y;
+    }
+
+    public somarEscalaZ( z:number ): void{
+        this.getScale().z += z;
     }
 
     public getVelocity(): ObjectVelocity{
@@ -263,14 +299,106 @@ export default class ObjectBase extends Base{
     }
 
     /**
-    * Atualiza a movimentação do objeto 
+    * Atualiza a movimentação do objeto, e do objeto em relação aos outros objetos na cena, como por exemplo objetos que podem carregar ele
     */
     public updateMovement(): void{
+
+        const objeto  : ObjectBase = this;
 
         const objetosCena : ObjectBase[]  =  Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                  .concat( this.scene!.additionalObjects );
 
                                     
+    }
+
+    /**
+    * Atualize objetos anexados/grudados 
+    */
+    public updateAttachments(): void{
+
+        const objeto  : ObjectBase = this;
+        const cena    : Scene|null = objeto.getScene();
+
+        if(!cena){ return; }
+
+        if( objeto.objProps.attachments )
+        {                                                
+            /**
+            * Para cada objeto da cena
+            */
+            for( let anexo of objeto.objProps.attachments )
+            {   
+                let idObjetoAnexar:string = '';
+                let tipoAnexo:string = '';
+
+                //Se o anexo for uma string
+                if( typeof anexo == 'string' ){
+                    tipoAnexo = 'string';
+                    idObjetoAnexar = anexo;
+
+                //Se o anexo for um objeto ObjectAttachment
+                }else if( typeof anexo == 'object' ){
+                    tipoAnexo = 'object';
+
+                    if( anexo.id ){
+                        idObjetoAnexar = anexo.id;
+                    }
+                    if( anexo.name ){
+                        idObjetoAnexar = anexo.name;
+                    }
+                }
+                
+                const objetoAnexar : ObjectBase|null = cena.getObjectBySomething( idObjetoAnexar );
+                           
+                if( objetoAnexar ){
+
+                    // Acompanha a posição do objeto
+                    objetoAnexar.setPosition( objeto.getPosition() as ObjectPosition );
+
+                    // Mais opções de anexo
+                    if( typeof anexo == 'object' )
+                    {
+                        // Se tem um ajuste de posição EM RELAÇÂO AO OBJETO, aplica
+                        if( anexo.position ){
+                            objetoAnexar.somarX( anexo.position.x || 0 );
+                            objetoAnexar.somarY( anexo.position.y || 0 );
+                            objetoAnexar.somarZ( anexo.position.z || 0 );
+                        }
+
+                        // Se tem uma escala especifica para ele
+                        if( anexo.scale ){
+                            objetoAnexar.setScale( anexo.scale as ObjectScale );
+                        }
+                        // Se tem redução de escala
+                        if( anexo.scaleReduce ){
+                            objetoAnexar.somarEscalaX( anexo.scaleReduce.x || 0 );
+                            objetoAnexar.somarEscalaY( anexo.scaleReduce.y || 0 );
+                            objetoAnexar.somarEscalaZ( anexo.scaleReduce.z || 0 );
+                        }
+
+                        //Se tem outras coisas
+                        if( anexo.traverse ){
+                            objetoAnexar.objProps.traverse = anexo.traverse;
+                        }
+                        if( anexo.collide ){
+                            objetoAnexar.objProps.collide = anexo.collide;
+                        }
+                        if( anexo.havePhysics ){
+                            objetoAnexar.objProps.havePhysics = anexo.havePhysics;
+                            objetoAnexar.physicsState.havePhysics = anexo.havePhysics;
+                        }
+                        if( anexo.collisionEvents ){
+                            objetoAnexar.objProps.collisionEvents = anexo.collisionEvents;
+                        }
+                        if( anexo.invisible ){
+                            objetoAnexar.objProps.invisible = anexo.invisible;
+                        }
+                    }
+
+                }
+            }        
+        }                                               
+
     }
 
     /**
@@ -383,8 +511,16 @@ export default class ObjectBase extends Base{
     }
 
     public updateObject(): void{
+        /**
+        * Principal: Fisica, Movimentação e Eventos 
+        */
         this.updatePhysics();
         this.updateMovement();
         this.updateEvents();
+
+        /**
+        * Atualiza os "attachments" ou "objeto anexados/grudados" ao objeto atual
+        */
+        this.updateAttachments();
     }
 }

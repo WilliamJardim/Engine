@@ -35,7 +35,7 @@ export class GameCamera{
 
         //Define as propriedades do objeto
         this.objProps   = (objProps || {
-          havePhysics: true
+          havePhysics: true,
         }as ObjectProps);
         
         // O ObjectBase responsavel pela camera

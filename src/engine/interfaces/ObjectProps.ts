@@ -4,6 +4,7 @@ import ObjectRotation from "./ObjectRotation";
 import ObjectScale from "./ObjectScale";
 import ObjectEvents from './ObjectEvents';
 import ProximityBounds from '../utils/interfaces/ProximityBounds';
+import ObjectAttachment from './ObjectAttachment';
 
 export default interface ObjectProps{
     //Aceita acessar indicies
@@ -26,4 +27,24 @@ export default interface ObjectProps{
     invisible?: boolean,
     opacity?: number,
     events?: ObjectEvents[]
+
+    /**
+    * Define quais objetos da cena vão estar grudados/anexados a este objeto
+    * Uma lista de objetos que vão estar "grudados" no objeto atual. Pode ser um Array de strings ou de ObjectAttachment(s)
+    * 
+    * @prop {ObjectPosition} position - Posição do anexo em relação ao objeto atual
+    * @prop {ObjectScale} scale - Nova escala do anexo
+    * 
+    * @example
+    * attachments: [
+            { 
+                name: 'MyCube', 
+                position: {z: 8},
+                scale: {x: 9, y: 9, z: 9},
+                scaleReduce: { x: -5, y: -5, z: -5 }
+            },
+            ...
+        ]
+    */
+    attachments?: Array<string>|Array<ObjectAttachment>,
 }

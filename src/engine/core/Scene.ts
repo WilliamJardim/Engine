@@ -12,6 +12,7 @@ import isObjectBase from '../utils/isObjectBase';
 import postVertexShader from '../shaders/postVertexShader';
 import postFragmentShader from '../shaders/postFragmentShader';
 import ObjectProps from '../interfaces/ObjectProps';
+import ImaginaryObject from './ImaginaryObject';
 
 export default class Scene extends Base{
 
@@ -26,6 +27,9 @@ export default class Scene extends Base{
 
     public objects:ObjectBase[];
     public additionalObjects:ObjectBase[];
+    
+    public objectTableById:any;
+    public objectTableByName:any;
 
     constructor( canvasRef:any ){
         super();
@@ -61,6 +65,11 @@ export default class Scene extends Base{
         //Here, we will put only object references(the instances), to be updated too, if they not are in the objects array.
         this.additionalObjects = [];
 
+        // Tabela que vai manter os objetos indexados por ID
+        this.objectTableById = {};
+        // Tabela que vai manter os objetos indexados por Nome
+        this.objectTableByName = {};
+
         //Shaders de pós-processamento
         const postMaterial = new THREE.ShaderMaterial({
             vertexShader: postVertexShader(),
@@ -81,6 +90,27 @@ export default class Scene extends Base{
 
         this.scene.add(postQuad);
         
+    }
+
+    /**
+    * Traz um objeto pelo ID
+    */
+    public getObjectByID( objectId:string ): ObjectBase|ImaginaryObject|null{
+        return this.objectTableById[ objectId ] || null;
+    }
+
+    /**
+    * Traz um objeto pelo Nome
+    */
+    public getObjectByName( objectId:string ): ObjectBase|ImaginaryObject|null{
+        return this.objectTableByName[ objectId ] || null;
+    }
+
+    /**
+    * Traz um objeto pelo Nome ou ID
+    */
+    public getObjectBySomething( objectIdOrName:string ): ObjectBase|ImaginaryObject|null{
+        return this.getObjectByID(objectIdOrName) || this.getObjectByName(objectIdOrName);
     }
 
     public getRenderer(): THREE.WebGLRenderer{
@@ -153,7 +183,7 @@ export default class Scene extends Base{
                         context.canvasRef,
                         context.camera, 
                         context.camera.getControls() );
-    
+
             context.updateObjects();
 
             // 1. Renderizar a cena normal para o framebuffer
@@ -184,6 +214,8 @@ export default class Scene extends Base{
     */
     public updateObjects(): void{
 
+        const context = this;
+
         const updatableObjects = Array<ObjectBase>(0).concat( this.objects )
                                                      .concat( this.additionalObjects );
 
@@ -191,6 +223,19 @@ export default class Scene extends Base{
         {
             const currentObject = updatableObjects[ i ];
             const currentObjectIndex = i;
+
+            /**
+            * Atualiza uma tabela com os nomes dos objetos
+            */
+            if( currentObject && currentObject.objProps )
+            {
+                if( currentObject.objProps.name != undefined ){
+                    context.objectTableByName[ currentObject.objProps.name ] = currentObject;
+                }
+                if( currentObject.objProps.id != undefined ){
+                    context.objectTableById[ currentObject.objProps.id ] = currentObject;
+                }
+            }
 
             try{
                 /**

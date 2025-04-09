@@ -18,7 +18,7 @@ export default interface ObjectProps{
     weight?: number,
     position?: ObjectPosition,
     rotation?: ObjectRotation,
-    scale?: ObjectScale,
+    scale?: ObjectScale|number,
     collide?: boolean,
     collisionEvents?: boolean, //Se vai receber eventos de colisão mesmo que ele não colida fisicamente
     traverse?: boolean, //Se o objeto pode simplismente passar atravez de outros objetos(ignora a fisica)

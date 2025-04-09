@@ -76,6 +76,7 @@ export function EngineMain( scene: Scene,
             invisible: false,
             opacity: 1,
             collide: true,
+            scaleReduce: 0,
             ignoreCollisions: [
                 "OtherCube",
                 "AnotherCubo",

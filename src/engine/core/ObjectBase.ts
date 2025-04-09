@@ -67,6 +67,29 @@ export default class ObjectBase extends Base{
         this.setMesh( mesh );
 
         this.isFalling = false;
+
+        //Se tem posição
+        if( this.objProps.position ){
+            this.setPosition( this.objProps.position );
+        }
+        //Se tem escala
+        if( this.objProps.scale ){
+            this.setScale( this.objProps.scale );
+        }
+        // Se tem redução de escala
+        if( this.objProps.scaleReduce ){
+            if( typeof this.objProps.scaleReduce == 'object' ){
+                this.somarEscalaX( this.objProps.scaleReduce.x || 0 );
+                this.somarEscalaY( this.objProps.scaleReduce.y || 0 );
+                this.somarEscalaZ( this.objProps.scaleReduce.z || 0 );
+
+            //Se o scaleReduce for um numero, todos os eixos sofrem igual
+            }else if(typeof this.objProps.scaleReduce == 'number'){
+                this.somarEscalaX( this.objProps.scaleReduce || 0 );
+                this.somarEscalaY( this.objProps.scaleReduce || 0 );
+                this.somarEscalaZ( this.objProps.scaleReduce || 0 );
+            }
+        }
     }
 
     /**
@@ -190,11 +213,20 @@ export default class ObjectBase extends Base{
         this.getPosition().z += z;
     }
 
-    public setScale( scale: ObjectScale ): ObjectBase{
+    public setScale( scale: ObjectScale|number ): ObjectBase{
         const mesh: THREE.Mesh = this.getMesh();
-        mesh.scale.x = scale.x || mesh.scale.x;
-        mesh.scale.y = scale.y || mesh.scale.y;
-        mesh.scale.z = scale.z || mesh.scale.z;
+
+        if( typeof scale == 'object' ){
+            mesh.scale.x = scale.x || mesh.scale.x;
+            mesh.scale.y = scale.y || mesh.scale.y;
+            mesh.scale.z = scale.z || mesh.scale.z;
+
+        //Se a escala for um numero igual para todos os eixos
+        }else if( typeof scale == 'number' ){
+            mesh.scale.x = scale || mesh.scale.x;
+            mesh.scale.y = scale || mesh.scale.y;
+            mesh.scale.z = scale || mesh.scale.z;
+        }
 
         //Retorna ele mesmo modificado
         return this;
@@ -443,7 +475,7 @@ export default class ObjectBase extends Base{
 
                         // Se tem uma escala especifica para ele
                         if( anexo.scale ){
-                            objetoAnexar.setScale( anexo.scale as ObjectScale );
+                            objetoAnexar.setScale( anexo.scale );
                         }
                         // Se tem redução de escala
                         if( anexo.scaleReduce ){

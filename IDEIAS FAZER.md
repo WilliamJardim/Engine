@@ -59,11 +59,9 @@ Isso pode ter evento de keyPress no Objeto, ou de outras formas, como um keyEven
 # Objeto imaginario
 Fazer: Continuar o objeto imaginário 
 
-Criar um atributo collisionEvents, para ser usado como alternativa.
+(JA FIZ) Criar um atributo collisionEvents, para ser usado como alternativa.
 
-Por padrão se um objeto não tem colisão, ele também não pode receber nem enviar eventos de Colisão 
-
-Porém com o collisionEvents habilitado, isso vai ser possível mesmo que o objeto não colida fisicamente
+(JA FIZ )Por padrão se um objeto não tem colisão, ele também não pode receber nem enviar eventos de Colisão. Porém com o collisionEvents habilitado, isso vai ser possível mesmo que o objeto não colida fisicamente
 
 
 # Colisão
@@ -86,6 +84,11 @@ Quanto mais forte for o impacto, mais o objeto vai se mover. E esse movimento va
 # BUG
 Bug: o código de corrigir posição dos objetos que caem está afetando a lógica de pulo
 
+Bug: ao destruir objetos, eles continuam colidindo, mesmo que sumam da cena
+
+Bug: as vezes, dependendo da escala, os objetos ficam quicando sem parar no chão
+
+
 # Objetos podem carregar outros objetos em cima dele
 criar uma lógica que quando um objeto estiver em cima de ouro objeto, .. se o objeto na qual ele está em cima de mover, os objetos que estão em cima dele vão todos se mover também, para simular que o objeto que ele está se apoiando o está carregando
 
@@ -102,7 +105,7 @@ haveAttachment( nome ) ou isAttached( nome ) = que procura se o objeto atual pos
 
 Também posso ter o isAttachedOf( pai ) ,que permite verificar se o objeto atual está anexado a um determinado outro objeto pai
 
-# Escala
+# (FEITO) Escala
 Adicionar a possibilidade da escala ser um número 
 
 Ao criar ou importar um objeto, eu posso passar um número pra escala, e isso vai fazer ele definir a escala de X, Y e Z com o mesmo valor

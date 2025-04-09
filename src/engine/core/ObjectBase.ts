@@ -287,7 +287,7 @@ export default class ObjectBase extends Base{
         const peso      = this.objProps.weight || 0;
         
         const massaPorDensidade = densidade * volume;
-        const massaPorPeso = peso / 9.8;
+        const massaPorPeso = peso / (this.scene!.gravity || 9.8);
     
         return massaPorDensidade + massaPorPeso;
     }
@@ -339,7 +339,7 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isProximity( this, objetoAtualCena, 1.5, true, false ) === true 
+                     isProximity( this, objetoAtualCena, 0.8, true, false ) === true 
                 ){
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO

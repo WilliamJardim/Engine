@@ -1,6 +1,6 @@
 ## Engine
 <p align="center">
-    <img src="./images/logo1024x1024-remaster.png" width="512px" height="512px" alt="Meu logo" />
+    <img src="./images/logo1024x1024-remaster.png" width="800px" height="800px" alt="Meu logo" />
 </p>
 
 ## Apresentação

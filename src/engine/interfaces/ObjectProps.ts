@@ -46,5 +46,5 @@ export default interface ObjectProps{
             ...
         ]
     */
-    attachments?: Array<string>|Array<ObjectAttachment>,
+    attachments?: Array<string|ObjectAttachment>,
 }

@@ -15,6 +15,7 @@ import getDistance from '../utils/logic/getDistance';
 import ObjectVelocity from '../interfaces/ObjectVelocity';
 import ImaginaryObject from './ImaginaryObject';
 import ObjectScale from '../interfaces/ObjectScale';
+import ObjectAttachment from '../interfaces/ObjectAttachment';
 
 export default class ObjectBase extends Base{
     
@@ -66,6 +67,69 @@ export default class ObjectBase extends Base{
         this.setMesh( mesh );
 
         this.isFalling = false;
+    }
+
+    /**
+    * Retorna todos os objetos anexados ao objeto atual
+    */
+    public getAttachments(): Array<string|ObjectAttachment>|undefined{
+        return this.objProps.attachments;
+    }
+
+    /**
+    * Faz o objeto atual se anexar com outro objeto
+    * @param {ObjectBase} outroObjeto
+    * @param {ObjectAttachment} attachementConfig
+    */
+    public joinAttachment( outroObjeto:ObjectBase, attachementConfig: ObjectAttachment ): void{
+        const esteObjeto:ObjectBase = this;
+
+        //Se nao existe cria
+        if( !outroObjeto.objProps.attachments ){
+            outroObjeto.objProps.attachments = [];
+        }
+
+        // Cria o anexo no outro objeto para linkar esteObjeto com ele
+        outroObjeto.objProps.attachments.push({
+            name:esteObjeto.name, 
+            id:esteObjeto.id, 
+
+            //Junto com o resto do attachementConfig
+            ... attachementConfig
+
+        } as ObjectAttachment);
+    }
+
+    /**
+    * Adiciona algum objeto ao objeto atual simplismente adicionando ele na lista de attachments 
+    * @param {ObjectBase} objetoAnexar
+    * @param {ObjectAttachment} attachementConfig
+    */
+    public attach( objetoAnexar:ObjectBase, attachementConfig: ObjectAttachment ): void{
+        const esteObjeto:ObjectBase = this;
+
+        //Se nao existe cria
+        if( !esteObjeto.objProps.attachments ){
+            esteObjeto.objProps.attachments = [];
+        }
+
+        // Cria o anexo no outro objeto para linkar esteObjeto com ele
+        esteObjeto.objProps.attachments.push({
+            name:objetoAnexar.name, 
+            id:objetoAnexar.id, 
+
+            //Junto com o resto do attachementConfig
+            ... attachementConfig
+
+        } as ObjectAttachment);
+    }
+
+    /**
+    * Limpa a lista de attachments do objeto atual. Similar ao DettachFromAll(), porém, isso limpa a lista do objeto pai, liberando todos os objetos subordinados/anexados a ele.
+    */
+    public ClearAttachments(): void{
+        const esteObjeto:ObjectBase = this;
+        esteObjeto.objProps.attachments = [];
     }
 
     public setProps( newObjProps:ObjectProps ): void{

@@ -414,19 +414,31 @@ export default class ObjectBase extends Base{
                 
                 const objetoAnexar : ObjectBase|null = cena.getObjectBySomething( idObjetoAnexar );
                            
-                if( objetoAnexar ){
+                if( objetoAnexar != undefined && objetoAnexar != null ){
 
-                    // Acompanha a posição do objeto
-                    objetoAnexar.setPosition( objeto.getPosition() as ObjectPosition );
+                    //Se for um anexo simples, ele simplismente faz assim mesmo
+                    if( typeof anexo == 'string' ) {
+                        // Acompanha a posição do objeto
+                        objetoAnexar.setPosition( objeto.getPosition() as ObjectPosition );
+                    }
 
                     // Mais opções de anexo
                     if( typeof anexo == 'object' )
                     {
                         // Se tem um ajuste de posição EM RELAÇÂO AO OBJETO, aplica
                         if( anexo.position ){
+                            // Acompanha a posição do objeto
+                            objetoAnexar.setPosition( objeto.getPosition() as ObjectPosition );
+
+                            // Alem disso, permite fazer um ajuste de posição
                             objetoAnexar.somarX( anexo.position.x || 0 );
                             objetoAnexar.somarY( anexo.position.y || 0 );
                             objetoAnexar.somarZ( anexo.position.z || 0 );
+                        }
+
+                        //Se vai copiar a memsa escala do objeto
+                        if( anexo.sameScale == true ){
+                            objetoAnexar.setScale( objeto.getScale() as ObjectScale );
                         }
 
                         // Se tem uma escala especifica para ele
@@ -435,9 +447,17 @@ export default class ObjectBase extends Base{
                         }
                         // Se tem redução de escala
                         if( anexo.scaleReduce ){
-                            objetoAnexar.somarEscalaX( anexo.scaleReduce.x || 0 );
-                            objetoAnexar.somarEscalaY( anexo.scaleReduce.y || 0 );
-                            objetoAnexar.somarEscalaZ( anexo.scaleReduce.z || 0 );
+                            if( typeof anexo.scaleReduce == 'object' ){
+                                objetoAnexar.somarEscalaX( anexo.scaleReduce.x || 0 );
+                                objetoAnexar.somarEscalaY( anexo.scaleReduce.y || 0 );
+                                objetoAnexar.somarEscalaZ( anexo.scaleReduce.z || 0 );
+
+                            //Se o scaleReduce for um numero, todos os eixos sofrem igual
+                            }else if(typeof anexo.scaleReduce == 'number'){
+                                objetoAnexar.somarEscalaX( anexo.scaleReduce || 0 );
+                                objetoAnexar.somarEscalaY( anexo.scaleReduce || 0 );
+                                objetoAnexar.somarEscalaZ( anexo.scaleReduce || 0 );
+                            }
                         }
 
                         //Se tem outras coisas

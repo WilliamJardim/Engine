@@ -40,6 +40,7 @@ export default interface ObjectProps{
             { 
                 name: 'MyCube', 
                 position: {z: 8},
+                sameScale: false, 
                 scale: {x: 9, y: 9, z: 9},
                 scaleReduce: { x: -5, y: -5, z: -5 }
             },

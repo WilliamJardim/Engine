@@ -36,6 +36,19 @@ export class GameCamera{
         //Define as propriedades do objeto
         this.objProps   = (objProps || {
           havePhysics: true,
+          
+          /*
+          attachments: [
+            { 
+                name: 'MyCube', 
+                //position: {z: 8},
+                sameScale: true,
+                //scale: {x: 9, y: 9, z: 9},
+                //scaleReduce: { x: -0.2, y: -0.2, z: -0.2 }
+                scaleReduce: -0.6
+            }
+          ]*/
+
         }as ObjectProps);
         
         // O ObjectBase responsavel pela camera

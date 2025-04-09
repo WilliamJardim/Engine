@@ -18,5 +18,6 @@ export default interface ObjectAttachment{
 
     position: ObjectPosition; // A posição do objeto em anexo em relação ao objeto pai(a qual ele esta sendo anexado)
     scale: ObjectScale; 
-    scaleReduce: ObjectScale; // Se vai ter redução de escala
+    scaleReduce: ObjectScale|number; // Se vai ter redução de escala
+    sameScale: boolean;
 }

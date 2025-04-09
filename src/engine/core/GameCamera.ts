@@ -36,6 +36,7 @@ export class GameCamera{
         //Define as propriedades do objeto
         this.objProps   = (objProps || {
           havePhysics: true,
+          name: 'Player',
           
           /*
           attachments: [

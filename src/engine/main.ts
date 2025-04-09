@@ -30,6 +30,7 @@ export function EngineMain( scene: Scene,
     globalContext.set('sceneCameraControls', cameraControls);
     globalContext.set('gameScene', scene); //A cena que o jogo está rodando em si
     globalContext.set('htmlCanvas', document.querySelector("canvas") );
+    globalContext.set('PlayerRef', camera);
 
     // Cria um chao simples para testar
     const cuboChao = createCube( 
@@ -76,7 +77,7 @@ export function EngineMain( scene: Scene,
             invisible: false,
             opacity: 1,
             collide: true,
-            scaleReduce: 0,
+            scaleReduce: 1,
             ignoreCollisions: [
                 "OtherCube",
                 "AnotherCubo",

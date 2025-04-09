@@ -355,15 +355,14 @@ export default class ObjectBase extends Base{
                     }
 
                     //Impede que o objeto suba em cima de outro objeto
-                    if( //objetoAtualCena.objProps.havePhysics === false &&
-                        this.getPosition().y < objetoAtualCena.getPosition().y
-                    ){
+                    if( this.getPosition().y < objetoAtualCena.getPosition().y ){
                         this.setPosition({
                             y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y
                         })
                     }
+
                     /**
-                    * A linha comentada: objetoAtualCena.objProps.havePhysics === false , é desnecessaria, pois, o objeto não precisa ser estatico para nao poder ultrapassar
+                    * A linha que estava comentada: objetoAtualCena.objProps.havePhysics === false , é desnecessaria, pois, o objeto não precisa ser estatico para nao poder ultrapassar
                     * Porem é mais dificil de testar se objetos tiverem fisica, por que ficam caindo. Mais eu fiz um teste movendo o chao para baixo, e a caixa e o cubo cairam certinho como esperado, e o cubo não conseguiu ultrapassar a caixa por baixo
                     *
                     * DETALHE: Mais se não mover o chao pra baixo não deu pra testar pois quando eu tentei mover o cubo pra ficar em baixo da caixa ele ficou no meio da caixa,

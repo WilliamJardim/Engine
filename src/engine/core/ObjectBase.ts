@@ -30,6 +30,8 @@ export default class ObjectBase extends Base{
     public scene:Scene|null;
     public isFalling:boolean;
     public groundY:number; // A posição Y do chão atual em relação a este objeto
+    public objectBelow: ObjectBase|null; //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto
+    public hasMovedRecently:boolean; //Marca se a posição do objeto mudou no ultimo instante
 
     constructor(mesh: any, 
                 objProps?:ObjectProps
@@ -40,6 +42,8 @@ export default class ObjectBase extends Base{
         this.objProps  = objProps || ({} as ObjectProps);
 
         this.groundY = 0;
+        this.objectBelow = null;
+        this.hasMovedRecently = false;
 
         this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
         this.name        = this.objProps.name || undefined;
@@ -329,7 +333,9 @@ export default class ObjectBase extends Base{
             this.physicsState.havePhysics == true 
         ){
             /**
+            * FISICA DE QUEDA DO OBJETO
             * Para cada objeto da cena
+            * (Esse laço só executa uma vez por que tem códigos que criei que precisam do BREAK)
             */
             for( let objetoAtualCena of objetosCena )
             {
@@ -352,6 +358,7 @@ export default class ObjectBase extends Base{
                         //Diz que o objeto parou de cair
                         this.isFalling = false;
                         this.groundY = this.getPosition().y; // A posição da ultima colisão
+                        this.objectBelow = objetoAtualCena;
                     }
 
                     //Impede que o objeto suba em cima de outro objeto
@@ -379,6 +386,36 @@ export default class ObjectBase extends Base{
             }
 
             /**
+            * FISICA PARA IMPEDIR MOVIMENTO AO COLIDIR
+            * Para cada objeto da cena
+            * (Esse laço percorre novamente os objetos porém sem usar o break)
+            */
+            /*
+            for( let objetoAtualCena of objetosCena )
+            {
+                if( (objetoAtualCena.objProps.traverse != true) &&
+                    (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
+                     objetoAtualCena.id != this.id && 
+                     isProximity( this, objetoAtualCena, 2, true, false ) === true
+                ){
+                    // Impede que o objeto ultrapasse a posição X ou Z do outro objeto
+                    if( //Se o objectBelow ja tem algum valor
+                        this.objectBelow &&
+                        //Se nao for o chao/ou o objeto que ele esta em cima
+                        objetoAtualCena.id != this.objectBelow.id 
+                    ){
+                        // Condições de colisão com o eixo X
+                        // De um lado
+                        if( this.getPosition().x >= objetoAtualCena.getPosition().x && this.getPosition().x <= objetoAtualCena.getPosition().x + objetoAtualCena.getScale().x )
+                        {
+                            this.getPosition().x = objetoAtualCena.getPosition().x - (objetoAtualCena.getScale().x + this.getScale().x);
+                        }
+                    }
+                }
+            }
+            */
+
+            /**
             * Se o objeto está caindo 
             */
             if( this.isFalling === true )
@@ -403,7 +440,14 @@ export default class ObjectBase extends Base{
         const objetosCena : ObjectBase[]  =  Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                  .concat( this.scene!.additionalObjects );
 
-                                    
+        // Se o objeto atual estiver em cima de outro objeto, este objeto o carrega junto ao ser mover
+        if( objeto.objectBelow ){
+            //Se o objeto se moveu
+            if( objeto.objectBelow.hasMovedRecently ){
+                //
+            }
+        }                                
+    
     }
 
     /**

@@ -111,3 +111,38 @@ Adicionar a possibilidade da escala ser um número
 Ao criar ou importar um objeto, eu posso passar um número pra escala, e isso vai fazer ele definir a escala de X, Y e Z com o mesmo valor
 
 Adicionar as flags scaleReduce em todos os objetos, tanto na criação e importação, pra ficar fácil a manipulação
+
+
+(09/04/2025 20:44 PM - novas ideias minhas)
+
+# NOVO TIPO DE ATTACHEMENT
+Criar um sistema de attachements diferente alternativo
+
+Um objeto objectAttachement vai ter uma nova propriedade chamada "Type", que vai poder ser tanto "local" quanto "global"
+
+A diferença entre os dois vai ser a seguinte: no local, é feito um attachement igual já está sendo feito, onde a posição do anexo está em torno do objeto pai.
+
+Já o global o objeto anexado vai ter uma posição independente na cena. Porém, quando o objeto pai se mover, esse objeto anexado vai receber essa movimentação como uma adição de posição, que pode até mesmo ser um DELTA OU DIFERENÇA DE POSIÇÃO referente ao quanto até o objeto pai se moveu em cada eixo.
+
+Implementar algo parecido na lógica de um objeto poder carregar outro
+
+# COLISÃO IMPEDIR MOVIMENTO 
+na lógica de verificação de colisão pra impedir movimento ao colidir, ele vai seguir a lógica de colisão padrão, ou de proximidade, porém, PORÉM ele vai ignorar O OBJET-BELOW, pois é desnecessário, e isso muito provavelmente vai eliminar aquele problema de impedir o movimento mesmo longe dos objetos, por que o chão sempre pegava como colisão... Mais nesse caso, a minha lógica de Colisão de minha Engine deve ignorar o chão por que eu tratei isso de outra forma.
+
+# Rotação
+Adicionar rotação e getRotation na criação do objeto e também no attachements
+
+# ATTACHEMENT
+Possibilidade de criar um attachement sem que o objeto precise existir previamente na cena. Ou seja, por exemplo, ao criar um novo anexo, eu posso também passar um ObjectBase em um atributo opcional chamado "object". E Se eu usar "object", o name e o id vão ser ignorados, ou então, eu posso até pegar o name e id e definir na instância do ObjectBase que eu estou criando especificamente para o anexo. Com a possibilidade de dizer pra Engine qual o tipo do objeto, se ele é uma importação ou um objeto padrão, e quais propriedades ele vai ter 
+
+# Criação de objetos mais simples
+Possibilidade de criar objetos de forma muito simples e amigável, usando JSONs, mais isso como forma adicional, sem afetar a forma como a criação de objetos já é feita. Inclusive na hora de criar attachements eu posso também incluir uma possibilidade de criar um objeto específico para o anexo, como na minha ideia anterior, porém usando JSON, ou seja, informando o tipo do objeto, se é uma importação ou um objeto padrão, e os atributos, tudo num JSON só
+
+# OBJETOS DESLIZAR EM ESCADAS E SUPERFICIES INCLINADAS: 
+Adiconar esse comportamento, pra identificar quanto um objeto esta inclinado, e os objetos em cima dele podem deslizar descendo pra baixo
+
+# CRIAR UM SISTEMA DE MIRA DE OBJETO: 
+Ao apontar o meu cursor para um objeto ao longe dentro de um raio de alcance, eu conseguir obter quais são os objetos que estão dentro desse raio que eu estou apontando. Pra isso usar caixas imaginarias, como o ImaginaryObject
+
+# Mais eventos
+EVENTO onCreate no ObjectBase, que ao criar um objeto dispara uma função JavaScript

@@ -88,6 +88,16 @@ Bug: ao destruir objetos, eles continuam colidindo, mesmo que sumam da cena
 
 Bug: as vezes, dependendo da escala, os objetos ficam quicando sem parar no chão
 
+Bug: esse trecho
+<code>
+if( this.getPosition().y < objetoAtualCena.getPosition().y ){
+                        this.setPosition({
+                            //y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y
+                        })
+                    }
+</code>
+ele faz com que se o cubo estiver um pouco pra cima do chao, e o jogador estiver colidindo com ele e pular, ele cai no void, pois a logica de nao deixar ele ultrapassar o objeto joga ele pra baixo, e ultrapassa o chao
+
 
 # Objetos podem carregar outros objetos em cima dele
 criar uma lógica que quando um objeto estiver em cima de ouro objeto, .. se o objeto na qual ele está em cima de mover, os objetos que estão em cima dele vão todos se mover também, para simular que o objeto que ele está se apoiando o está carregando

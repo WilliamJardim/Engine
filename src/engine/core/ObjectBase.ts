@@ -390,13 +390,12 @@ export default class ObjectBase extends Base{
             * Para cada objeto da cena
             * (Esse laço percorre novamente os objetos porém sem usar o break)
             */
-            /*
             for( let objetoAtualCena of objetosCena )
             {
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isProximity( this, objetoAtualCena, 2, true, false ) === true
+                     isProximity( this, objetoAtualCena, 0.5, true, false ) === true
                 ){
                     // Impede que o objeto ultrapasse a posição X ou Z do outro objeto
                     if( //Se o objectBelow ja tem algum valor
@@ -404,16 +403,50 @@ export default class ObjectBase extends Base{
                         //Se nao for o chao/ou o objeto que ele esta em cima
                         objetoAtualCena.id != this.objectBelow.id 
                     ){
-                        // Condições de colisão com o eixo X
-                        // De um lado
-                        if( this.getPosition().x >= objetoAtualCena.getPosition().x && this.getPosition().x <= objetoAtualCena.getPosition().x + objetoAtualCena.getScale().x )
+                        // Bounding boxes de ambos os objetos
+                        const posA   : THREE.Vector3  = this.getPosition();
+                        const scaleA : THREE.Vector3  = this.getScale();
+
+                        const posB   : THREE.Vector3  = objetoAtualCena.getPosition();
+                        const scaleB : THREE.Vector3  = objetoAtualCena.getScale();
+
+                        // Zona do objeto atual
+                        const minA = { x: posA.x - scaleA.x / 2, z: posA.z - scaleA.z / 2 };
+                        const maxA = { x: posA.x + scaleA.x / 2, z: posA.z + scaleA.z / 2 };
+
+                        // Zona do objeto colisor, cujo objeto atual esta intersectando
+                        const minB = { x: posB.x - scaleB.x / 2, z: posB.z - scaleB.z / 2 };
+                        const maxB = { x: posB.x + scaleB.x / 2, z: posB.z + scaleB.z / 2 };
+
+                        const sobreposicaoX:number = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);
+                        const sobreposicaoZ:number = Math.min(maxA.z, maxB.z) - Math.max(minA.z, minB.z);
+
+                        // Se houver sobreposição em algum dos eixos então houve colisão
+                        if (sobreposicaoX > 0 && sobreposicaoZ > 0) 
                         {
-                            this.getPosition().x = objetoAtualCena.getPosition().x - (objetoAtualCena.getScale().x + this.getScale().x);
+                            // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
+                            if (sobreposicaoX < sobreposicaoZ) {
+                                // Empurra no X
+                                if (posA.x < posB.x) {
+                                    this.getPosition().x -= sobreposicaoX;
+                                } else {
+                                    this.getPosition().x += sobreposicaoX;
+                                }
+                                this.getVelocity().x = 0;
+
+                            } else {
+                                // Empurra no Z
+                                if (posA.z < posB.z) {
+                                    this.getPosition().z -= sobreposicaoZ;
+                                } else {
+                                    this.getPosition().z += sobreposicaoZ;
+                                }
+                                this.getVelocity().z = 0;
+                            }
                         }
                     }
                 }
             }
-            */
 
             /**
             * Se o objeto está caindo 

@@ -64,11 +64,9 @@ Fazer: Continuar o objeto imaginário
 (JA FIZ )Por padrão se um objeto não tem colisão, ele também não pode receber nem enviar eventos de Colisão. Porém com o collisionEvents habilitado, isso vai ser possível mesmo que o objeto não colida fisicamente
 
 
-# Colisão
+# (FEITO) Colisão
 As outras lógicas de Colisão, para por exemplo, o cubo não poder ultrapassar e passar por cima da caixa, ou seja, se ele está em baixo da caixa e tentar subir, ao colidir com a caixa, ele trava ali.
-
 O mesmo para as demais direções, em X e Z, para se o cubo colidir com os lados, ele travar também
-
 Uma outra opção para fazer isso seria: Se ele colidir com o objeto, para qualquer direção, ele trava e não ultrapassa
 
 

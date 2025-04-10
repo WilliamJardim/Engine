@@ -706,9 +706,7 @@ export default class ObjectBase extends Base{
         /**
         * Principal: Fisica, Movimentação e Eventos 
         */
-        if( (this.objProps.traverse != true) && (this.objProps.collide == true || this.objProps.collide == undefined ) ){
-            this.updatePhysics();
-        }
+        this.updatePhysics();
 
         this.updateMovement();
         this.updateEvents();

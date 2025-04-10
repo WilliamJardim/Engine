@@ -8,7 +8,7 @@ Uma pequena Game Engine construida em JavaScript.
 
 ## Estado dela
 <p align="center">
-    <img src="./images/demo.png" width="800px" height="500px" alt="Estado atual da Engine" />
+    <img src="./images/demo2.png" width="800px" height="500px" alt="Estado atual da Engine" />
 </p>
 
 ## Dependências

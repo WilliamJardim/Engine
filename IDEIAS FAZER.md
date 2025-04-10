@@ -156,3 +156,7 @@ Ao apontar o meu cursor para um objeto ao longe dentro de um raio de alcance, eu
 
 # Mais eventos
 EVENTO onCreate no ObjectBase, que ao criar um objeto dispara uma função JavaScript
+
+# Otimização do calculo de fisica
+Aplicar as verificações mais pesadas apenas se os objetos possivelmente colidem
+isso descarta varios objetos que obviamente não colidem

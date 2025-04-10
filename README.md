@@ -1,10 +1,15 @@
 ## Engine
 <p align="center">
-    <img src="./images/logo1024x1024-remaster.png" width="700px" height="700px" alt="Meu logo" />
+    <img src="./images/logo1024x1024-remaster.png" width="600px" height="600px" alt="Meu logo" />
 </p>
 
 ## Apresentação
 Uma pequena Game Engine construida em JavaScript.
+
+## Estado dela
+<p align="center">
+    <img src="./images/demo.png" width="600px" height="600px" alt="Estado atual da Engine" />
+</p>
 
 ## Dependências
 Este projeto utiliza o [Three.js](https://threejs.org/) como motor de renderização 3D.  

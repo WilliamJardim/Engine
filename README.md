@@ -7,7 +7,9 @@
 Uma pequena Game Engine construida em JavaScript.
 
 ## Estado dela
-<img src="./images/demo.png" width="600px" height="400px" alt="Estado atual da Engine" />
+<p align="center">
+    <img src="./images/demo.png" width="800px" height="500px" alt="Estado atual da Engine" />
+</p>
 
 ## Dependências
 Este projeto utiliza o [Three.js](https://threejs.org/) como motor de renderização 3D.  

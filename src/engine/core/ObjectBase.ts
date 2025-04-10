@@ -32,6 +32,7 @@ export default class ObjectBase extends Base{
     public groundY:number; // A posição Y do chão atual em relação a este objeto
     public objectBelow: ObjectBase|null; //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto
     public hasMovedRecently:boolean; //Marca se a posição do objeto mudou no ultimo instante
+    public isMovimentoTravadoPorColisao:boolean;
 
     constructor(mesh: any, 
                 objProps?:ObjectProps
@@ -44,6 +45,7 @@ export default class ObjectBase extends Base{
         this.groundY = 0;
         this.objectBelow = null;
         this.hasMovedRecently = false;
+        this.isMovimentoTravadoPorColisao = false; //Se o objeto atual esta travado por que esta tentando se mover para uma direção em que ele está colidindo com outro objeto
 
         this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
         this.name        = this.objProps.name || undefined;
@@ -362,7 +364,7 @@ export default class ObjectBase extends Base{
                     }
 
                     //Impede que o objeto suba em cima de outro objeto
-                    if( this.getPosition().y < objetoAtualCena.getPosition().y ){
+                    if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y < objetoAtualCena.getPosition().y ){
                         this.setPosition({
                             y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y
                         })
@@ -421,6 +423,8 @@ export default class ObjectBase extends Base{
                         const sobreposicaoX:number = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);
                         const sobreposicaoZ:number = Math.min(maxA.z, maxB.z) - Math.max(minA.z, minB.z);
 
+                        this.isMovimentoTravadoPorColisao = false;
+
                         // Se houver sobreposição em algum dos eixos então houve colisão
                         if (sobreposicaoX > 0 && sobreposicaoZ > 0) 
                         {
@@ -443,6 +447,8 @@ export default class ObjectBase extends Base{
                                 }
                                 this.getVelocity().z = 0;
                             }
+
+                            this.isMovimentoTravadoPorColisao = true;
                         }
                     }
                 }

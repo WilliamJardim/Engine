@@ -13,6 +13,8 @@ import postVertexShader from '../shaders/postVertexShader';
 import postFragmentShader from '../shaders/postFragmentShader';
 import ObjectProps from '../interfaces/ObjectProps';
 import ImaginaryObject from './ImaginaryObject';
+import ObjectEventLayer from '../interfaces/ObjectEventBlock';
+import ObjectEvents from '../interfaces/ObjectEvents';
 
 export default class Scene extends Base{
 
@@ -141,6 +143,18 @@ export default class Scene extends Base{
     * Remove um objeto da cena
     */
     public remove( objetoRemover:ObjectBase ): void{
+        //Se tem o evento whenDestroy, executa ele
+        if( objetoRemover.objEvents )
+        {   
+            objetoRemover.objEvents
+            .getEventos()
+            .forEach(function( eventos:ObjectEvents ){
+                if( eventos.whenDestroy ){
+                    eventos.whenDestroy.bind(objetoRemover)(objetoRemover);
+                }
+            });
+        }
+
         //Remove o objeto da cena
         this.objects = this.objects.filter(function( obj:ObjectBase ){
             if( obj.id != objetoRemover.id ){ return obj };

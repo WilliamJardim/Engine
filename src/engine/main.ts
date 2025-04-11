@@ -110,6 +110,14 @@ export function EngineMain( scene: Scene,
             // Cria um bloco de eventos para esse objeto
             events: [
                 {
+                    whenFall: function(){
+                        console.log('Objeto caindo');
+                    },
+
+                    whenDestroy: function( objeto:ObjectBase ){
+                        console.log('Objeto destruido');
+                    },
+
                     whenCollide: function( parametrosColisao:any ){
 
                         // Se a Caixa colidir com o Cubo

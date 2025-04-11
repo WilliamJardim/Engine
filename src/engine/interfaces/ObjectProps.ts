@@ -28,6 +28,8 @@ export default interface ObjectProps{
     opacity?: number,
     events?: ObjectEvents[]
 
+    onCreate?:Function|null;
+
     /**
     * Define quais objetos da cena vão estar grudados/anexados a este objeto
     * Uma lista de objetos que vão estar "grudados" no objeto atual. Pode ser um Array de strings ou de ObjectAttachment(s)

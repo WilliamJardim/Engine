@@ -22,8 +22,11 @@ E posso incluir combinar os dois
 Um mesmo objeto poderá fazer parte de mais de um grupo de Colisão.
 Ou seja, múltiplas condições grupais poderão ser aplicadas
 Eu posso unificar tudo isso em Grupos, onde eu posso dizer que os objetos podem ter grupos, e ao fazer parte desses grupos, eles trazem lógicas, físicas, regras de colisões, dentre outras regras
-Criar também eventos whenDestroy
+
+(FEITO) Criar também eventos whenDestroy
+
 whenFall
+
 whenMove
 
 # Historico de eventos
@@ -153,7 +156,7 @@ Adiconar esse comportamento, pra identificar quanto um objeto esta inclinado, e 
 Ao apontar o meu cursor para um objeto ao longe dentro de um raio de alcance, eu conseguir obter quais são os objetos que estão dentro desse raio que eu estou apontando. Pra isso usar caixas imaginarias, como o ImaginaryObject
 
 # Mais eventos
-EVENTO onCreate no ObjectBase, que ao criar um objeto dispara uma função JavaScript
+(FEITO) EVENTO onCreate no ObjectBase, que ao criar um objeto dispara uma função JavaScript
 
 # Otimização do calculo de fisica
 Aplicar as verificações mais pesadas apenas se os objetos possivelmente colidem

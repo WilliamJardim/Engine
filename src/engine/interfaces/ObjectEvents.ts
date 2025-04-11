@@ -1,4 +1,6 @@
 export default interface ObjectEvents{
     whenCollide?:Function,
-    whenProximity?:Function
+    whenProximity?:Function,
+    whenDestroy?:Function,
+    whenFall?:Function
 }

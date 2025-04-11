@@ -33,14 +33,17 @@ export default class ObjectBase extends Base{
     public objectBelow: ObjectBase|null; //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto
     public hasMovedRecently:boolean; //Marca se a posição do objeto mudou no ultimo instante
     public isMovimentoTravadoPorColisao:boolean;
+    public onCreate:Function|null;
 
     constructor(mesh: any, 
                 objProps?:ObjectProps
             
     ){
         super()
-       
+    
         this.objProps  = objProps || ({} as ObjectProps);
+
+        this.onCreate  = this.objProps.onCreate || null;
 
         this.groundY = 0;
         this.objectBelow = null;
@@ -95,6 +98,12 @@ export default class ObjectBase extends Base{
                 this.somarEscalaY( this.objProps.scaleReduce || 0 );
                 this.somarEscalaZ( this.objProps.scaleReduce || 0 );
             }
+        }
+
+        // Dispara o evento ao criar o objeto
+        if( this.onCreate )
+        {
+            this.onCreate.bind(this)()
         }
     }
 
@@ -383,7 +392,7 @@ export default class ObjectBase extends Base{
                     this.getVelocity().y = 0;
 
                     break;
-
+                    
                 }
             }
 
@@ -701,6 +710,17 @@ export default class ObjectBase extends Base{
                                 distance : getDistance(objeto, objetoAtualCena) 
                             });
                         }
+                    }
+                }
+
+                //Se tem o evento whenFall
+                if( eventosObjeto.whenFall )
+                {
+                    if( objeto.isFalling == true ){
+                        objeto.callEvent( eventosObjeto.whenFall, {
+                            self     : objeto,
+                            instante : new Date().getTime()
+                        });
                     }
                 }
             }

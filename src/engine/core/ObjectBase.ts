@@ -331,6 +331,8 @@ export default class ObjectBase extends Base{
     */
     public updatePhysics(): void{
 
+        const esteObjeto  : ObjectBase       = this;
+
         const objetosCena : ObjectBase[]     = Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                    .concat( this.scene!.additionalObjects );
 
@@ -471,6 +473,18 @@ export default class ObjectBase extends Base{
                 if( this.getVelocity().y != undefined ){
                     this.getVelocity().y += Math.abs( this.scene.gravity );
                     this.getPosition().y -= this.getVelocity().y;
+
+                    this.objEvents
+                    .getEventos()
+                    .forEach(function(eventosObjeto:ObjectEvents){
+                        if( eventosObjeto.whenFall )
+                        {
+                            esteObjeto.callEvent( eventosObjeto.whenFall, {
+                                self     : esteObjeto,
+                                instante : new Date().getTime()
+                            });
+                        }
+                    });
                 }
             }
 
@@ -710,17 +724,6 @@ export default class ObjectBase extends Base{
                                 distance : getDistance(objeto, objetoAtualCena) 
                             });
                         }
-                    }
-                }
-
-                //Se tem o evento whenFall
-                if( eventosObjeto.whenFall )
-                {
-                    if( objeto.isFalling == true ){
-                        objeto.callEvent( eventosObjeto.whenFall, {
-                            self     : objeto,
-                            instante : new Date().getTime()
-                        });
                     }
                 }
             }

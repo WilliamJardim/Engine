@@ -124,7 +124,7 @@ export default class Scene extends Base{
     /**
     * Adiciona um objeto na cena
     */
-    public add( objeto:ObjectBase ): void{
+    public add( objeto:any ): void{
         const is_ObjectBase = isObjectBase(objeto);
 
         //If is a instance of the Engine ObjectBase, get THREE.Mesh of this ObjectBase instance, add the ObjectBase instance to the update list 

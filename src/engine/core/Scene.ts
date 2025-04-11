@@ -121,7 +121,10 @@ export default class Scene extends Base{
         return this.canvasRef;
     }
 
-    public add( objeto:any ){
+    /**
+    * Adiciona um objeto na cena
+    */
+    public add( objeto:ObjectBase ): void{
         const is_ObjectBase = isObjectBase(objeto);
 
         //If is a instance of the Engine ObjectBase, get THREE.Mesh of this ObjectBase instance, add the ObjectBase instance to the update list 
@@ -132,7 +135,16 @@ export default class Scene extends Base{
         }else if( is_ObjectBase == false ){
             this.scene.add( objeto );
         }
+    }
 
+    /**
+    * Remove um objeto da cena
+    */
+    public remove( objetoRemover:ObjectBase ): void{
+        //Remove o objeto da cena
+        this.objects = this.objects.filter(function( obj:ObjectBase ){
+            if( obj.id != objetoRemover.id ){ return obj };
+        });
     }
 
     //Função que chama o loop "animate"

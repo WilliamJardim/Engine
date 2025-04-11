@@ -35,7 +35,11 @@ export default function removeObject(objeto:ObjectBase, scene:Scene) {
       }
     };
   
+    //Remove o objeto visualmente da cena
     disposeRecursivo( objeto.getMesh() );
     scene.scene.remove( objeto.getMesh() );
+
+    //Remove o objeto da lista de controle da Engine(assim ele deixa de receber colisão, eventos, fisica, etc...)
+    scene.remove( objeto );
   }
   

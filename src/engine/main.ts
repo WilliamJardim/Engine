@@ -110,6 +110,10 @@ export function EngineMain( scene: Scene,
             // Cria um bloco de eventos para esse objeto
             events: [
                 {
+                    loop: function( propioObjeto:ObjectBase ){
+                        
+                    },
+
                     whenFall: function(){
                         console.log('Objeto caindo');
                     },
@@ -203,6 +207,13 @@ export function EngineLoop( scene: Scene,
 
         });
     }
+
+    // Verificar se o isFalling está marcando certo
+    //if( globalContext.avaliable('CaixaRef') ){
+    //    if( globalContext.get('CaixaRef').isFalling ){
+    //       
+    //    }
+    //}
 
     //Faz a caixa ficar proximo do jogador
     //if( globalContext.avaliable('caixaRef') )

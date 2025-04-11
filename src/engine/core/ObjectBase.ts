@@ -726,6 +726,12 @@ export default class ObjectBase extends Base{
                         }
                     }
                 }
+
+                //Se tem o evento loop(um evento sem condições que sempre será executado se existir, pra permitir criar loops especificos para cada objeto)
+                if( eventosObjeto.loop )
+                {
+                    eventosObjeto.loop.bind(objeto)(objeto);
+                }
             }
 
         }

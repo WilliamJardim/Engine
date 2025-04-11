@@ -83,8 +83,11 @@ Cada objeto vai ter um getInpacto, e ao colidir,  se o impacto do objeto A for m
 Quanto mais forte for o impacto, mais o objeto vai se mover. E esse movimento vai ser um movimento complexo levando em conta a velocidade e a gravidez, pra ir perdendo velocidade aos poucos
 
 # BUG
-Bug no whenFall: A função whenFall só detecta queda no inicio do jogo, ou quando o chão é movido para baixo e os objetos começam a cair.
+(RESOLVIDO) Bug no whenFall: A função whenFall só detecta queda no inicio do jogo, ou quando o chão é movido para baixo e os objetos começam a cair.
 O problema é que quando ela não detecta, o isFalling do objeto não está como true
+
+Bug: o callEvent não está funcionando em certos momentos,
+ver se da pra corrigir ou substituir por chamada direita
 
 Bug: o código de corrigir posição dos objetos que caem está afetando a lógica de pulo
 

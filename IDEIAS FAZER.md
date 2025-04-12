@@ -217,3 +217,15 @@ AI O PROXIMO APARECE, AI O OUTRO NÂO, E ISSO SE REPETE
 Permitir que, além do ProxityBounds do propio objeto, eu tambem vou poder ter um ProxityBounds para colisao e proximidade na cena,
 e isso vai se tornar o padrão para todos os objetos, exceto para os que tiver ProxityBounds especificos
 
+
+# Fisica de rotação
+12/04/2025
+Enquanto o objeto estiver caindo, ele vai se rotacionar levemente de forma aleatoria para cada um dos lados(ou levando em conta a força do vento ou o impulso do empurrão, que nesse caso vai inclinar o objeto para a direção esperada)
+
+Quando o objeto cair no chão, ele vai parar de se rotacionar aleatoriamente, e rotacionar até atingir um ponto de rotação adequado.
+Exemplo: se ele tiver uma rotação inclinada perto da posição XYZ alinhada(0,0,0), ele vai terminar de alinhar, meio que rodando o X e Z levemente, até parar e ficar totalmente alinhado.
+
+Se ele tiver bem longe da posição XYZ alinhada(0,0,0), ele vai tombar pra alguma direção(aleatoria ou por tendencia como do a força do vento ou o impulso do empurrão, que nesse caso vai inclinar o objeto para a direção esperada)
+
+
+

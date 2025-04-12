@@ -83,6 +83,24 @@ export function EngineMain( scene: Scene,
                 "AnotherCubo",
             ],
             weight: 40,
+            events: [
+                {
+                    //Cubo ficar rodando
+                    loop: function( propioObjeto:ObjectBase ){
+                        propioObjeto.somarRotation( {x: 0.005, y: -0.001, z: 0.01} );
+
+                        if( propioObjeto.getRotation().x > 90 ){
+                            propioObjeto.setRotation({x: 0});
+                        }
+                        if( propioObjeto.getRotation().y > 90 ){
+                            propioObjeto.setRotation({y: 0});
+                        }
+                        if( propioObjeto.getRotation().y > 90 ){
+                            propioObjeto.setRotation({z: 0});
+                        }
+                    }
+                }
+            ]
         }
     );
 

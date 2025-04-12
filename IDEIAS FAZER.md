@@ -171,6 +171,26 @@ Ao apontar o meu cursor para um objeto ao longe dentro de um raio de alcance, eu
 Aplicar as verificações mais pesadas apenas se os objetos possivelmente colidem
 isso descarta varios objetos que obviamente não colidem
 
+11/04/2025
 # Criar evento ONCE, que executa uma função só uma vez
 # Criar evento PERIODIACAL, que executa uma função de tantos em tantos milisegundos
-11/04/2025
+
+# Lista de colisao e proximidade por objeto 
+a cena vai ter um atributo JSON collisions com chave e valor.
+Cada chave vai ser o id de um objeto e o valor vai ser suas respectivas colisões
+
+Mapear:
+
+  Por id
+  Por nome
+  Por classe
+
+# Métodos de consulta de colisão e proximidade
+métodos de consulta de colisão e proximidade dentro dos objetos:
+
+  isCollisionOf( outroObjeto )
+
+  isProximityOf( outroObjeto )
+
+Que vão ser funções especificas que ao invez de rodar o teste de colisão, vai apenas obter isso dos JSONs que a Engine está sempre mapeando
+

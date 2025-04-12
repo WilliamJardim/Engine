@@ -308,6 +308,16 @@ export default class ObjectBase extends Base{
         return this.physicsState.velocity;
     }
 
+    /**
+    * Acrescenta uma velocidade ao objeto
+    * @param velocidade 
+    */
+    public somarVelocity( velocidade:ObjectVelocity ): void{
+        if( velocidade.x ){ this.getVelocity().x += velocidade.x };
+        if( velocidade.y ){ this.getVelocity().y += velocidade.y };
+        if( velocidade.z ){ this.getVelocity().z += velocidade.z };
+    }
+
     public getRotation(): THREE.Vector3{
         return this.getMesh().rotation;
     }
@@ -788,10 +798,11 @@ export default class ObjectBase extends Base{
                     });
 
                     //O vento tambem empurra um pouco na queda
+                    //IDEIA: TROCAR ISSO por somarVelocity, e criar atualização de movimento do objeto para permitir acompanhar força, e desaceleração
                     this.somarPosition({
-                        x: randomX + ((wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ),
-                        y: randomY + ((wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ),
-                        z: randomZ + ((wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) )
+                        x: randomX + ( ((wind.deslocationTrend || {}).x || 0) + (wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ),
+                        y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ),
+                        z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) )
                     });
                 }
 

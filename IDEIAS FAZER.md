@@ -235,7 +235,23 @@ Tambem o jogador vai ter um peso
 # Força do vento na queda
 Na queda o vento empurra levemente objetos alterando a posição deles.
 Deixar isso mais realista.
-ADICIONAR UM NOVO VETOR PARA CONTROLAR O DESLOCAMENTE X Y Z DESSE MOVIMENTO AO CAIR EM FUNÇÂO DO VENTO
+(FEITO) ADICIONAR UM NOVO VETOR PARA CONTROLAR O DESLOCAMENTE X Y Z DESSE MOVIMENTO AO CAIR EM FUNÇÂO DO VENTO
+
+TROCAR ISSO por somarVelocity, e criar atualização de movimento do objeto para permitir acompanhar força, e desaceleração
+
+<code>
+//O vento tambem empurra um pouco na queda
+//IDEIA: TROCAR ISSO por somarVelocity, e criar atualização de movimento do objeto para permitir acompanhar força, e desaceleração
+this.somarPosition({
+    x: randomX + ( ((wind.deslocationTrend || {}).x || 0) + (wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ),
+    y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ),
+    z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) )
+});
+</code>
+
+ADICIONAR ATUALIZAÇÂO DE MOVIMENTO DO OBJETO, USANDO ESSE VELOCITY, O OBJETO VAI IR ANDANDO DE FORMA REALISTA COM ESSA ACELRAÇÂO, E TAMBEM VAI DESSACELERANDO GRADUALMENTE, PERDENDO VELOCIDADE, E PARANDO DE SE MOVER
+
+
 
 # Objetos quicam
 Alguns objetos podem quicar ao tocar no chão, e vão perdendo força

@@ -170,3 +170,7 @@ Ao apontar o meu cursor para um objeto ao longe dentro de um raio de alcance, eu
 # Otimização do calculo de fisica
 Aplicar as verificações mais pesadas apenas se os objetos possivelmente colidem
 isso descarta varios objetos que obviamente não colidem
+
+# Criar evento ONCE, que executa uma função só uma vez
+# Criar evento PERIODIACAL, que executa uma função de tantos em tantos milisegundos
+11/04/2025

@@ -33,6 +33,7 @@ export default class ObjectBase extends Base{
     public groundY:number; // A posição Y do chão atual em relação a este objeto
     public objectBelow: ObjectBase|null; //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto
     public infoCollisions:CollisionsData;
+    public infoProximity:CollisionsData;
     public isMovimentoTravadoPorColisao:boolean;
     public onCreate:Function|null;
 
@@ -58,6 +59,13 @@ export default class ObjectBase extends Base{
         this.scene = null;
 
         this.infoCollisions = {
+            objectNames: [],
+            objectIDs: [],
+            objectClasses: [],
+            objects: []
+        };
+
+        this.infoProximity = {
             objectNames: [],
             objectIDs: [],
             objectClasses: [],
@@ -343,7 +351,7 @@ export default class ObjectBase extends Base{
         const objetosCena : ObjectBase[]     = Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                    .concat( this.scene!.additionalObjects );
 
-        // Zera as informações de colisão
+        // Zera as informações de colisão com outros objetos
         this.infoCollisions = {
             objectNames: [],
             objectIDs: [],
@@ -351,13 +359,22 @@ export default class ObjectBase extends Base{
             objects: []
         };
 
-        //If this object have physics
+        // Zera as informações de proximidade com outros objetos
+        this.infoProximity = {
+            objectNames: [],
+            objectIDs: [],
+            objectClasses: [],
+            objects: []
+        };
+
+        //Se este objeto pode colidir
         if( (this.objProps.traverse != true) &&
             (this.objProps.collide == true || this.objProps.collide == undefined ) && 
             this.scene != null && 
             this.scene.gravity && 
             this.physicsState.havePhysics == true 
         ){
+    
             for( let objetoAtualCena of objetosCena )
             {
                 /**
@@ -365,25 +382,47 @@ export default class ObjectBase extends Base{
                 */
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
-                     objetoAtualCena.id != esteObjeto.id && 
-                     isCollision( esteObjeto, objetoAtualCena, 0.5 ) === true 
+                     objetoAtualCena.id != esteObjeto.id 
                 ){
-                    // Registra as colisões detectadas
-                    if(objetoAtualCena.name){
-                        esteObjeto.infoCollisions.objectNames.push( objetoAtualCena.name );
+                    //Se houve uma colisão(usando Bounding Box)
+                    if( isCollision( esteObjeto, objetoAtualCena, 0.5 ) === true ){
+                        // Registra as colisões detectadas
+                        if(objetoAtualCena.name){
+                            esteObjeto.infoCollisions.objectNames.push( objetoAtualCena.name );
+                        }
+                        if(objetoAtualCena.id){
+                            esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
+                        }
+                        if(objetoAtualCena.objProps.classes){
+                            objetoAtualCena.objProps.classes.forEach(function(){
+                                esteObjeto.infoCollisions.objectClasses.push( objetoAtualCena.id );
+                            });
+                        }
+                        esteObjeto.infoCollisions.objects.push( objetoAtualCena );
+
                     }
-                    if(objetoAtualCena.id){
-                        esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
+
+                    //Se houve uma proximidade
+                    if( isProximity( esteObjeto, objetoAtualCena, ( esteObjeto.objProps.proximityConfig || 100) ) === true ){
+                        // Registra as colisões detectadas
+                        if(objetoAtualCena.name){
+                            esteObjeto.infoProximity.objectNames.push( objetoAtualCena.name );
+                        }
+                        if(objetoAtualCena.infoProximity){
+                            esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
+                        }
+                        if(objetoAtualCena.objProps.classes){
+                            objetoAtualCena.objProps.classes.forEach(function(){
+                                esteObjeto.infoProximity.objectClasses.push( objetoAtualCena.id );
+                            });
+                        }
+                        esteObjeto.infoProximity.objects.push( objetoAtualCena );
+
                     }
-                    if(objetoAtualCena.objProps.classes){
-                        objetoAtualCena.objProps.classes.forEach(function(){
-                            esteObjeto.infoCollisions.objectClasses.push( objetoAtualCena.id );
-                        });
-                    }
-                    esteObjeto.infoCollisions.objects.push( objetoAtualCena );
                 }
             }
         }   
+
     }
 
     /**

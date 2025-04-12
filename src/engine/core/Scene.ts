@@ -140,6 +140,15 @@ export default class Scene extends Base{
     }
 
     /**
+    * Adiciona um objeto na lista de atualizações da cena 
+    */
+    public addToLogic( objeto:ObjectBase ): void{
+        if( this.objects ){
+            this.objects.push( objeto );
+        }
+    }
+
+    /**
     * Remove um objeto da cena
     */
     public remove( objetoRemover:ObjectBase ): void{

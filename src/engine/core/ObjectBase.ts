@@ -16,6 +16,7 @@ import ObjectVelocity from '../interfaces/ObjectVelocity';
 import ImaginaryObject from './ImaginaryObject';
 import ObjectScale from '../interfaces/ObjectScale';
 import ObjectAttachment from '../interfaces/ObjectAttachment';
+import CollisionsData from '../interfaces/CollisionsData';
 
 export default class ObjectBase extends Base{
     
@@ -31,7 +32,7 @@ export default class ObjectBase extends Base{
     public isFalling:boolean;
     public groundY:number; // A posição Y do chão atual em relação a este objeto
     public objectBelow: ObjectBase|null; //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto
-    public hasMovedRecently:boolean; //Marca se a posição do objeto mudou no ultimo instante
+    public infoCollisions:CollisionsData;
     public isMovimentoTravadoPorColisao:boolean;
     public onCreate:Function|null;
 
@@ -47,7 +48,6 @@ export default class ObjectBase extends Base{
 
         this.groundY = 0;
         this.objectBelow = null;
-        this.hasMovedRecently = false;
         this.isMovimentoTravadoPorColisao = false; //Se o objeto atual esta travado por que esta tentando se mover para uma direção em que ele está colidindo com outro objeto
 
         this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
@@ -56,6 +56,13 @@ export default class ObjectBase extends Base{
         this.objEvents = new ObjectEventLayer(this.objProps.events || []);
 
         this.scene = null;
+
+        this.infoCollisions = {
+            objectNames: [],
+            objectIDs: [],
+            objectClasses: [],
+            objects: []
+        };
 
         this.movimentState = {
             forward: false,
@@ -327,6 +334,59 @@ export default class ObjectBase extends Base{
     }
 
     /**
+    * Atualiza status de colisão e proximidade com outros objetos 
+    */
+    public updateCollisionState(): void{
+
+        const esteObjeto  : ObjectBase       = this;
+
+        const objetosCena : ObjectBase[]     = Array<ObjectBase>(0).concat( this.scene!.objects )
+                                                                   .concat( this.scene!.additionalObjects );
+
+        // Zera as informações de colisão
+        this.infoCollisions = {
+            objectNames: [],
+            objectIDs: [],
+            objectClasses: [],
+            objects: []
+        };
+
+        //If this object have physics
+        if( (this.objProps.traverse != true) &&
+            (this.objProps.collide == true || this.objProps.collide == undefined ) && 
+            this.scene != null && 
+            this.scene.gravity && 
+            this.physicsState.havePhysics == true 
+        ){
+            for( let objetoAtualCena of objetosCena )
+            {
+                /**
+                * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO
+                */
+                if( (objetoAtualCena.objProps.traverse != true) &&
+                    (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
+                     objetoAtualCena.id != esteObjeto.id && 
+                     isCollision( esteObjeto, objetoAtualCena, 0.5 ) === true 
+                ){
+                    // Registra as colisões detectadas
+                    if(objetoAtualCena.name){
+                        esteObjeto.infoCollisions.objectNames.push( objetoAtualCena.name );
+                    }
+                    if(objetoAtualCena.id){
+                        esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
+                    }
+                    if(objetoAtualCena.objProps.classes){
+                        objetoAtualCena.objProps.classes.forEach(function(){
+                            esteObjeto.infoCollisions.objectClasses.push( objetoAtualCena.id );
+                        });
+                    }
+                    esteObjeto.infoCollisions.objects.push( objetoAtualCena );
+                }
+            }
+        }   
+    }
+
+    /**
     * Atualiza a fisica do objeto 
     */
     public updatePhysics(): void{
@@ -335,7 +395,7 @@ export default class ObjectBase extends Base{
 
         const objetosCena : ObjectBase[]     = Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                    .concat( this.scene!.additionalObjects );
-
+        
         this.isFalling = true;
 
         //If this object have physics
@@ -505,7 +565,7 @@ export default class ObjectBase extends Base{
         // Se o objeto atual estiver em cima de outro objeto, este objeto o carrega junto ao ser mover
         if( objeto.objectBelow ){
             //Se o objeto se moveu
-            if( objeto.objectBelow.hasMovedRecently ){
+            if( objeto.objectBelow ){
                 //
             }
         }                                
@@ -742,6 +802,11 @@ export default class ObjectBase extends Base{
         * Principal: Fisica, Movimentação e Eventos 
         */
         this.updatePhysics();
+
+        /**
+        * Igualmente importante, atualiza quais objetos estão colidindo/e os que estão proximos com quais objetos 
+        */
+        this.updateCollisionState();
 
         this.updateMovement();
         this.updateEvents();

@@ -1,4 +1,6 @@
+import * as THREE from 'three';
 import ObjectBase from "../../core/ObjectBase";
+import ProximityBounds from '../interfaces/ProximityBounds';
 
 /**
 * Verifica se dois objetos estão colidindo:
@@ -7,58 +9,59 @@ import ObjectBase from "../../core/ObjectBase";
 * @param objB - Object 2 
 * @returns {boolean} - Se está colidindo ou não
 */
-export default function isCollision(objA:any, objB:any): boolean{
+export default function isCollision(objA:any, objB:any, limites: ProximityBounds|number = 0): boolean{
+ 
+    const getLimite = (eixo: 'x' | 'y' | 'z'): number => {
+       //Se o limites for um numero, todos os eixos tem o mesmo valor
+       if (typeof limites === 'number'){
+            return limites;
+       }
 
-    /**
-    * Informações do objeto 1
-    * Coordenadas e escala
-    */
-    const object1_position : any        = objA.getMesh().position,
-          X_object1        : number     = object1_position.x,
-          Y_object1        : number     = object1_position.y,
-          Z_object1        : number     = object1_position.z;
+       const valor = limites[eixo];
+       return typeof valor === 'number' ? valor : 0;
+    };
 
-    const object1_scale    : any        = objA.getMesh().scale,
-          scaleX_object1   : number     = object1_scale.x,
-          scaleY_object1   : number     = object1_scale.y,
-          scaleZ_object1   : number     = object1_scale.z;
+    // Bounding boxes de ambos os objetos
+    const posA   : THREE.Vector3  = objA.getPosition();
+    const scaleA : THREE.Vector3  = objA.getScale();
 
+    const posB   : THREE.Vector3  = objB.getPosition();
+    const scaleB : THREE.Vector3  = objB.getScale();
 
-    /**
-    * Informações do objeto 2 
-    * Coordenadas e escala
-    */
-    const object2_position : any        = objB.getMesh().position,
-          X_object2        : number     = object2_position.x,
-          Y_object2        : number     = object2_position.y,
-          Z_object2        : number     = object2_position.z;
+    // Zona do objeto atual
+    const minA = { 
+                   x: posA.x - (scaleA.x / 2) - getLimite('x'),
+                   y: posA.y - (scaleA.y / 2) - getLimite('y'),
+                   z: posA.z - (scaleA.z / 2) - getLimite('z')
+                 };
 
-    const object2_scale    : any        = objB.getMesh().scale,
-          scaleX_object2   : number     = object2_scale.x,
-          scaleY_object2   : number     = object2_scale.y,
-          scaleZ_object2   : number     = object2_scale.z;
+    const maxA = { 
+                   x: posA.x + (scaleA.x / 2) + getLimite('x'), 
+                   y: posA.y + (scaleA.y / 2) + getLimite('y'),
+                   z: posA.z + (scaleA.z / 2) + getLimite('z'), 
+                 };
 
-    
-    /**
-    * Testando se teve colisão 
-    */
-    const collisionX:boolean = (X_object1 < X_object2 + scaleX_object2) && 
-                               (X_object1 + scaleX_object1 > X_object2 );
+    // Zona do objeto colisor, cujo objeto atual esta intersectando
+    const minB = { 
+                   x: posB.x - scaleB.x / 2, 
+                   y: posB.y - scaleB.y / 2,
+                   z: posB.z - scaleB.z / 2
+                 };
 
-    const collisionY:boolean = (Y_object1 < Y_object2 + scaleY_object2) && 
-                               (Y_object1 + scaleY_object1 > Y_object2 );
+    const maxB = { 
+                   x: posB.x + scaleB.x / 2,
+                   y: posB.y + scaleB.y / 2, 
+                   z: posB.z + scaleB.z / 2
+                 };
 
-    const collisionZ:boolean = (Z_object1 < Z_object2 + scaleZ_object2) && 
-                               (Z_object1 + scaleZ_object1 > Z_object2 );
-    
-    /**
-    * Se em todos os tres eixos colidiu
-    */
-    if( collisionX == true && 
-        collisionY == true && 
-        collisionZ == true
-    ){
-        return true;
+    const sobreposicaoX:number = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);
+    const sobreposicaoY:number = Math.min(maxA.y, maxB.y) - Math.max(minA.y, minB.y);
+    const sobreposicaoZ:number = Math.min(maxA.z, maxB.z) - Math.max(minA.z, minB.z);
+
+    // Se houver sobreposição em algum dos eixos então houve colisão
+    if (sobreposicaoX > 0 && sobreposicaoY > 0 && sobreposicaoZ > 0) 
+    {
+      return true;
     }
 
     return false;

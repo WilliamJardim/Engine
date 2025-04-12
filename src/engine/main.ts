@@ -111,7 +111,7 @@ export function EngineMain( scene: Scene,
             events: [
                 {
                     loop: function( propioObjeto:ObjectBase ){
-                        
+                        console.log( propioObjeto.infoCollisions )
                     },
 
                     whenFall: function(){

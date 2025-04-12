@@ -37,6 +37,8 @@ export class GameCamera{
         this.objProps   = (objProps || {
           havePhysics: true,
           name: 'Player',
+          collide: true,
+          collisionEvents: true,
           
           /*
           attachments: [
@@ -182,6 +184,13 @@ export class GameCamera{
       
          this.getPosition().y = 1.6; // Altura inicial da câmera (simula a altura de uma pessoa)
          this.getPosition().z = 5;
+
+         // Incluir o Player na logica de atualização da cena
+         /*
+          setTimeout(function(){
+              contexto.scene.addToLogic( contexto.objectBase );
+          }, 1000);
+         */
     }
 
     /**

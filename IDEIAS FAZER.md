@@ -86,6 +86,9 @@ Quanto mais forte for o impacto, mais o objeto vai se mover. E esse movimento va
 (RESOLVIDO) Bug no whenFall: A função whenFall só detecta queda no inicio do jogo, ou quando o chão é movido para baixo e os objetos começam a cair.
 O problema é que quando ela não detecta, o isFalling do objeto não está como true
 
+Bug: O jogador não está incluido na lista de atualizações de objetos da cena, por isso, ele não aparece em verificações de colisão
+IDEIA RESOLVER: Colocar que o crosshair é um objeto ObjectBase, com configuração de seguir. E ignorar colisão, ele é apenas visual.
+
 Bug: o callEvent não está funcionando em certos momentos,
 ver se da pra corrigir ou substituir por chamada direita
 

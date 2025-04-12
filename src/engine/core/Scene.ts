@@ -221,21 +221,30 @@ export default class Scene extends Base{
     * @param objB 
     * @returns {boolean}
     */
-    public queryIfObjectIsProximityOf( objA: ObjectBase, objB: ObjectBase ): boolean{
-        if( objA.name != undefined && 
-            objB.name != undefined && 
-            this.proximityBinaryTable.byName[ objA.name ] != undefined &&
-            this.proximityBinaryTable.byName[ objA.name ][ objB.name ] != undefined 
-        ){
-            return this.proximityBinaryTable.byName[ objA.name ][ objB.name ] == true;
+    public queryIfObjectIsProximityOf( objA: ObjectBase|string, objB: ObjectBase|string ): boolean{
+
+        //Se eu passar dois objetos do tipo ObjectBase
+        if( typeof objA == 'object' && typeof objB == 'object' ){
+
+            if( objA.name != undefined && 
+                objB.name != undefined && 
+                this.proximityBinaryTable.byName[ objA.name ] != undefined &&
+                this.proximityBinaryTable.byName[ objA.name ][ objB.name ] != undefined 
+            ){
+                return this.proximityBinaryTable.byName[ objA.name ][ objB.name ] == true;
 
 
-        }else if( objA.id != undefined && 
-                  objB.id != undefined && 
-                  this.proximityBinaryTable.byID[ objA.id ] != undefined &&
-                  this.proximityBinaryTable.byID[ objA.id ][ objB.id ] != undefined 
-        ){
-            return this.proximityBinaryTable.byID[ objA.id ][ objB.id ] == true;
+            }else if( objA.id != undefined && 
+                    objB.id != undefined && 
+                    this.proximityBinaryTable.byID[ objA.id ] != undefined &&
+                    this.proximityBinaryTable.byID[ objA.id ][ objB.id ] != undefined 
+            ){
+                return this.proximityBinaryTable.byID[ objA.id ][ objB.id ] == true;
+            }
+
+        //Senao, se for só o name ou o id dos objetos em string, Nesse caso, ele ja vai entender tanto se for o name quanto o id
+        }else if( typeof objA == 'string' && typeof objB == 'string' ){
+            return this.proximityBinaryTable.byName[ objA ][ objB ] == true || this.proximityBinaryTable.byID[ objA ][ objB ] == true; 
         }
 
         return false;
@@ -250,20 +259,28 @@ export default class Scene extends Base{
     * @returns {boolean}
     */
     public queryIfObjectIsCollisionOf( objA: ObjectBase, objB: ObjectBase ): boolean{
-        if( objA.name != undefined && 
-            objB.name != undefined  && 
-            this.collisionBinaryTable.byName[ objA.name ] != undefined &&
-            this.collisionBinaryTable.byName[ objA.name ][ objB.name ] != undefined
-        ){
-            return this.collisionBinaryTable.byName[ objA.name ][ objB.name ] == true;
+
+        //Se eu passar dois objetos do tipo ObjectBase
+        if( typeof objA == 'object' && typeof objB == 'object' ){
+            if( objA.name != undefined && 
+                objB.name != undefined  && 
+                this.collisionBinaryTable.byName[ objA.name ] != undefined &&
+                this.collisionBinaryTable.byName[ objA.name ][ objB.name ] != undefined
+            ){
+                return this.collisionBinaryTable.byName[ objA.name ][ objB.name ] == true;
 
 
-        }else if( objA.id != undefined && 
-                  objB.id != undefined && 
-                  this.collisionBinaryTable.byID[ objA.id ] != undefined &&
-                  this.collisionBinaryTable.byID[ objA.id ][ objB.id ] != undefined
-        ){
-            return this.collisionBinaryTable.byID[ objA.id ][ objB.id ] == true;
+            }else if( objA.id != undefined && 
+                    objB.id != undefined && 
+                    this.collisionBinaryTable.byID[ objA.id ] != undefined &&
+                    this.collisionBinaryTable.byID[ objA.id ][ objB.id ] != undefined
+            ){
+                return this.collisionBinaryTable.byID[ objA.id ][ objB.id ] == true;
+            }
+
+        //Senao, se for só o name ou o id dos objetos em string, Nesse caso, ele ja vai entender tanto se for o name quanto o id
+        }else if( typeof objA == 'string' && typeof objB == 'string' ){
+            return this.collisionBinaryTable.byName[ objA ][ objB ] == true || this.collisionBinaryTable.byID[ objA ][ objB ] == true;
         }
 
         return false;

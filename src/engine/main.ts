@@ -208,6 +208,29 @@ export function EngineLoop( scene: Scene,
         });
     }
 
+    /*
+    if( globalContext.avaliable('CaixaRef') ){
+        if( globalContext.get('CaixaRef').scene ){
+            console.log( globalContext.get('CaixaRef').scene.proximityBinaryTable );
+            if( globalContext.get('CaixaRef').scene.proximityBinaryTable.byName['Caixa'] ){
+                if( globalContext.get('CaixaRef').scene.proximityBinaryTable.byName['Caixa']['MyCube'] == true ){
+                    debugger
+                }
+            }
+            //
+        }
+    }*/
+
+    // Outra forma melhor que inventei para verificar colisao e proximidade
+    /*
+    if( globalContext.avaliable('CaixaRef') && globalContext.avaliable('CuboRef') ){
+        if( globalContext.get('CaixaRef').scene ){
+            if( globalContext.get('CaixaRef').isProximityOf( globalContext.get('CuboRef') ) ){
+                
+            }
+        }
+    }*/
+
     //console.log( scene.proximityTable );
 
     // Verificar se o isFalling está marcando certo

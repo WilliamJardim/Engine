@@ -375,6 +375,28 @@ export default class ObjectBase extends Base{
             this.physicsState.havePhysics == true 
         ){
     
+            // Limpa a tabela de colisões do objeto
+            if( esteObjeto.scene && esteObjeto.name ){
+                esteObjeto.scene.clearObjectCollisionFromTableByName( esteObjeto.name );
+            }
+            if( esteObjeto.scene && esteObjeto.id ){
+                esteObjeto.scene.clearObjectCollisionFromTableByName( esteObjeto.id );
+            }
+            if( esteObjeto.scene && esteObjeto.objProps.classes ){
+                esteObjeto.scene.clearObjectCollisionFromTableByCLASSES( esteObjeto.objProps.classes );
+            }
+
+            // Limpa a tabela de proximidade do objeto
+            if( esteObjeto.scene && esteObjeto.name ){
+                esteObjeto.scene.clearObjectProximityFromTableByName( esteObjeto.name );
+            }
+            if( esteObjeto.scene && esteObjeto.id ){
+                esteObjeto.scene.clearObjectProximityFromTableByID( esteObjeto.id );
+            }
+            if( esteObjeto.scene && esteObjeto.objProps.classes ){
+                esteObjeto.scene.clearObjectProximityFromTableByCLASSES( esteObjeto.objProps.classes );
+            }
+
             for( let objetoAtualCena of objetosCena )
             {
                 /**
@@ -384,18 +406,7 @@ export default class ObjectBase extends Base{
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != esteObjeto.id 
                 ){
-                    // Limpa a tabela de colisões do objeto
-                    if( esteObjeto.scene && esteObjeto.name ){
-                        esteObjeto.scene.clearObjectCollisionFromTableByName( esteObjeto.name );
-                    }
-                    if( esteObjeto.scene && esteObjeto.id ){
-                        esteObjeto.scene.clearObjectCollisionFromTableByName( esteObjeto.id );
-                    }
-                    if( esteObjeto.scene && esteObjeto.objProps.classes ){
-                        esteObjeto.scene.clearObjectCollisionFromTableByCLASSES( esteObjeto.objProps.classes );
-                    }
-
-
+    
                     //Se houve uma colisão(usando Bounding Box)
                     if( isCollision( esteObjeto, objetoAtualCena, 0.5 ) === true ){
                         // Registra as colisões detectadas
@@ -406,8 +417,23 @@ export default class ObjectBase extends Base{
                             if( esteObjeto.scene && esteObjeto.name && !esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] ){
                                 esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] = [];
                             }
+                            if( esteObjeto.scene && esteObjeto.name && !esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] ){
+                                esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] = {};
+                            }
                             if( esteObjeto.scene && esteObjeto.name ){
                                 esteObjeto.scene.collisionTable.byName[ esteObjeto.name ].push( objetoAtualCena );
+
+                                if( objetoAtualCena.name ){ esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.name ] = true; }
+                                if( objetoAtualCena.id   ){ esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ] = true;   }
+
+                                if( objetoAtualCena.objProps.classes ){
+                                    objetoAtualCena.objProps.classes.forEach(function(nomeClasse:string){
+                                        if( esteObjeto.scene ){
+                                            //As classes tambem são inclusas se houver, para permitir facil acesso
+                                            esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.id ][ nomeClasse ] = true;
+                                        }
+                                    }); 
+                                }
                             }
                         }
                         if(objetoAtualCena.id){
@@ -417,8 +443,22 @@ export default class ObjectBase extends Base{
                             if( esteObjeto.scene && esteObjeto.id && !esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] ){
                                 esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] = [];
                             }
+                            if( esteObjeto.scene && esteObjeto.id && !esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ] ){
+                                esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ] = {};
+                            }
                             if( esteObjeto.scene && esteObjeto.id ){
                                 esteObjeto.scene.collisionTable.byID[ esteObjeto.id ].push( objetoAtualCena );
+
+                                if( objetoAtualCena.name ){ esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.name ] = true; };
+                                if( objetoAtualCena.id   ){ esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id ] = true;   };
+
+                                if( objetoAtualCena.objProps.classes ){
+                                    objetoAtualCena.objProps.classes.forEach(function(nomeClasse:string){
+                                        if( esteObjeto.scene ){
+                                            esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ nomeClasse ] = true;
+                                        }
+                                    }); 
+                                }
                             }
                         }
                         if(objetoAtualCena.objProps.classes){
@@ -427,26 +467,21 @@ export default class ObjectBase extends Base{
 
                                 //Registra tambem na tabela mestre da cena
                                 if( esteObjeto.scene && nomeClasse && !esteObjeto.scene.collisionTable.byID[ nomeClasse ] ){
-                                    esteObjeto.scene.collisionTable.byID[ nomeClasse ] = [];
+                                    esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] = [];
+                                }
+                                if( esteObjeto.scene && nomeClasse && !esteObjeto.scene.collisionBinaryTable.byID[ nomeClasse ] ){
+                                    esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] = {};
                                 }
                                 if( esteObjeto.scene && nomeClasse ){
-                                    esteObjeto.scene.collisionTable.byID[ nomeClasse ].push( objetoAtualCena );
+                                    esteObjeto.scene.collisionTable.byClasses[ nomeClasse ].push( objetoAtualCena );
+                                    
+                                    if( objetoAtualCena.name ){ esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = true; };
+                                    if( objetoAtualCena.id   ){ esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.id ] = true;   };
                                 }
                             });
                         }
                         esteObjeto.infoCollisions.objects.push( objetoAtualCena );
 
-                    }
-
-                    // Limpa a tabela de proximidade do objeto
-                    if( esteObjeto.scene && esteObjeto.name ){
-                        esteObjeto.scene.clearObjectProximityFromTableByName( esteObjeto.name );
-                    }
-                    if( esteObjeto.scene && esteObjeto.id ){
-                        esteObjeto.scene.clearObjectProximityFromTableByID( esteObjeto.id );
-                    }
-                    if( esteObjeto.scene && esteObjeto.objProps.classes ){
-                        esteObjeto.scene.clearObjectProximityFromTableByCLASSES( esteObjeto.objProps.classes );
                     }
 
                     //Se houve uma proximidade
@@ -459,8 +494,14 @@ export default class ObjectBase extends Base{
                             if( esteObjeto.scene && esteObjeto.name && !esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] ){
                                 esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] = [];
                             }
+                            if( esteObjeto.scene && esteObjeto.name && !esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ] ){
+                                esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ] = {};
+                            }
                             if( esteObjeto.scene && esteObjeto.name ){
                                 esteObjeto.scene.proximityTable.byName[ esteObjeto.name ].push( objetoAtualCena );
+
+                                if( objetoAtualCena.name ){ esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.name ] = true; };
+                                if( objetoAtualCena.id   ){ esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ] = true;   };
                             }
                         }
                         if(objetoAtualCena.infoProximity){
@@ -470,8 +511,14 @@ export default class ObjectBase extends Base{
                             if( esteObjeto.scene && esteObjeto.id && !esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] ){
                                 esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] = [];
                             }
+                            if( esteObjeto.scene && esteObjeto.id && !esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ] ){
+                                esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ] = {};
+                            }
                             if( esteObjeto.scene && esteObjeto.id ){
                                 esteObjeto.scene.proximityTable.byID[ esteObjeto.id ].push( objetoAtualCena );
+
+                                if( objetoAtualCena.name ){ esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.name ] = true; };
+                                if( objetoAtualCena.id   ){ esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id ] = true;   };
                             }
                         }
                         if(objetoAtualCena.objProps.classes){
@@ -482,8 +529,14 @@ export default class ObjectBase extends Base{
                                 if( esteObjeto.scene && nomeClasse && !esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] ){
                                     esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] = [];
                                 }
+                                if( esteObjeto.scene && nomeClasse && !esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] ){
+                                    esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] = {};
+                                }
                                 if( esteObjeto.scene && nomeClasse ){
                                     esteObjeto.scene.proximityTable.byClasses[ nomeClasse ].push( objetoAtualCena );
+
+                                    if( objetoAtualCena.name ){ esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = true; };
+                                    if( objetoAtualCena.id   ){ esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.id ] = true;   };
                                 }
                             });
                         }
@@ -925,5 +978,33 @@ export default class ObjectBase extends Base{
         * Atualiza os "attachments" ou "objeto anexados/grudados" ao objeto atual
         */
         this.updateAttachments();
+    }
+
+    /**
+    * Outros métodos 
+    */
+
+    /**
+    * Verifica se um objeto está colidindo com ESTE OBJETO
+    * @param outroObjeto 
+    * @returns {boolean}
+    */
+    isCollisionOf( outroObjeto:ObjectBase ): boolean{
+        if(this.scene){
+            return this.scene.queryIfObjectIsCollisionOf( this, outroObjeto );
+        }
+        return false;
+    }
+
+    /**
+    * Verifica se um objeto está proximo DESTE OBJETO
+    * @param outroObjeto 
+    * @returns {boolean}
+    */
+    isProximityOf( outroObjeto:ObjectBase ): boolean{
+        if(this.scene){
+            return this.scene.queryIfObjectIsProximityOf( this, outroObjeto );
+        }
+        return false;
     }
 }

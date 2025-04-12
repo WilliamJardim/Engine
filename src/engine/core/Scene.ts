@@ -17,6 +17,8 @@ import ObjectEventLayer from '../interfaces/ObjectEventBlock';
 import ObjectEvents from '../interfaces/ObjectEvents';
 import CollisionTable from '../interfaces/CollisionTable';
 import ProximityTable from '../interfaces/ProximityTable';
+import CollisionBinaryTable from '../interfaces/CollisionBinaryTable';
+import ProximityBinaryTable from '../interfaces/ProximityBinaryTable';
 
 export default class Scene extends Base{
 
@@ -36,7 +38,9 @@ export default class Scene extends Base{
     public objectTableByName:any;
 
     public collisionTable:CollisionTable;
+    public collisionBinaryTable:CollisionBinaryTable;
     public proximityTable:ProximityTable;
+    public proximityBinaryTable:ProximityBinaryTable;
 
     constructor( canvasRef:any ){
         super();
@@ -79,16 +83,30 @@ export default class Scene extends Base{
 
         // Tabela de objetos colidindo com outros objetos
         this.collisionTable = {
-            byName    : {} as Record<string, Array<ObjectBase>>,
-            byID      : {} as Record<string, Array<ObjectBase>>,
-            byClasses : {} as Record<string, Array<ObjectBase>>
+            byName    : {},
+            byID      : {},
+            byClasses : {}
+        };
+
+        // Tabela BINARIA de objetos colidindo com outros objetos
+        this.collisionBinaryTable = {
+            byName    : {},
+            byID      : {},
+            byClasses : {}
         };
 
         // Tabela de objetos proximos de outros objetos
         this.proximityTable = {
-            byName    : {} as Record<string, Array<ObjectBase>>,
-            byID      : {} as Record<string, Array<ObjectBase>>,
-            byClasses : {} as Record<string, Array<ObjectBase>>
+            byName    : {},
+            byID      : {},
+            byClasses : {}
+        };
+
+        // Tabela BINARIA de objetos colidindo com outros objetos
+        this.proximityBinaryTable = {
+            byName    : {},
+            byID      : {},
+            byClasses : {}
         };
 
         //Shaders de pós-processamento
@@ -116,18 +134,27 @@ export default class Scene extends Base{
     public clearCollisionTable(): void{
         // Tabela de objetos colidindo com outros objetos
         this.collisionTable = {
-            byName    : {} as Record<string, Array<ObjectBase>>,
-            byID      : {} as Record<string, Array<ObjectBase>>,
-            byClasses : {} as Record<string, Array<ObjectBase>>
+            byName    : {},
+            byID      : {},
+            byClasses : {}
         };
+
+        /*
+        this.collisionBinaryTable = {
+            byName    : {},
+            byID      : {},
+            byClasses : {}
+        };*/
     }
 
     public clearObjectCollisionFromTableByName( objectName: string ): void{
         this.collisionTable.byName[objectName] = [];
+        //this.collisionBinaryTable.byName[objectName] = {};
     }
 
     public clearObjectCollisionFromTableByID( objectID: string ): void{
         this.collisionTable.byID[objectID] = [];
+        //this.collisionBinaryTable.byID[objectID] = {};
     }
 
     public clearObjectCollisionFromTableByCLASSES( objectClasses: string|string[] ): void{
@@ -135,10 +162,12 @@ export default class Scene extends Base{
 
         if( typeof objectClasses == 'string' ){
             this.collisionTable.byClasses[objectClasses] = [];
+            //this.collisionBinaryTable.byClasses[objectClasses] = {};
 
         }else if( typeof objectClasses == 'object' ){
             objectClasses.forEach(function(nomeClasse:string){
                 contexto.collisionTable.byClasses[nomeClasse] = [];
+                //contexto.collisionBinaryTable.byClasses[nomeClasse] = {};
             })
         }
     }
@@ -146,18 +175,27 @@ export default class Scene extends Base{
     public clearProximityTable(): void{
         // Tabela de objetos proximos de outros objetos
         this.proximityTable = {
-            byName    : {} as Record<string, Array<ObjectBase>>,
-            byID      : {} as Record<string, Array<ObjectBase>>,
-            byClasses : {} as Record<string, Array<ObjectBase>>
+            byName    : {},
+            byID      : {},
+            byClasses : {}
         };
+
+        /*
+        this.proximityBinaryTable = {
+            byName    : {},
+            byID      : {},
+            byClasses : {}
+        };*/
     }
 
     public clearObjectProximityFromTableByName( objectName: string ): void{
         this.proximityTable.byName[objectName] = [];
+        this.collisionBinaryTable.byName[objectName] = {};
     }
 
     public clearObjectProximityFromTableByID( objectID: string ): void{
         this.proximityTable.byID[objectID] = [];
+        this.collisionBinaryTable.byName[objectID] = {};
     }
 
     public clearObjectProximityFromTableByCLASSES( objectClasses: string|string[] ): void{
@@ -165,12 +203,70 @@ export default class Scene extends Base{
 
         if( typeof objectClasses == 'string' ){
             this.proximityTable.byClasses[objectClasses] = [];
+            //this.collisionBinaryTable.byClasses[objectClasses] = {};
 
         }else if( typeof objectClasses == 'object' ){
             objectClasses.forEach(function(nomeClasse:string){
                 contexto.proximityTable.byClasses[nomeClasse] = [];
+                //contexto.collisionBinaryTable.byClasses[nomeClasse] = {};
             })
         }
+    }
+
+    /**
+    * Verifica se dois objetos na cena estão proximos um do outro
+    * Pode ser tanto pelo "name" quanto pelo "id"
+    * 
+    * @param objA 
+    * @param objB 
+    * @returns {boolean}
+    */
+    public queryIfObjectIsProximityOf( objA: ObjectBase, objB: ObjectBase ): boolean{
+        if( objA.name != undefined && 
+            objB.name != undefined && 
+            this.proximityBinaryTable.byName[ objA.name ] != undefined &&
+            this.proximityBinaryTable.byName[ objA.name ][ objB.name ] != undefined 
+        ){
+            return this.proximityBinaryTable.byName[ objA.name ][ objB.name ] == true;
+
+
+        }else if( objA.id != undefined && 
+                  objB.id != undefined && 
+                  this.proximityBinaryTable.byID[ objA.id ] != undefined &&
+                  this.proximityBinaryTable.byID[ objA.id ][ objB.id ] != undefined 
+        ){
+            return this.proximityBinaryTable.byID[ objA.id ][ objB.id ] == true;
+        }
+
+        return false;
+    }
+
+    /**
+    * Verifica se dois objetos na cena estão colidindo um com o outro
+    * Pode ser tanto pelo "name" quanto pelo "id"
+    * 
+    * @param objA 
+    * @param objB 
+    * @returns {boolean}
+    */
+    public queryIfObjectIsCollisionOf( objA: ObjectBase, objB: ObjectBase ): boolean{
+        if( objA.name != undefined && 
+            objB.name != undefined  && 
+            this.collisionBinaryTable.byName[ objA.name ] != undefined &&
+            this.collisionBinaryTable.byName[ objA.name ][ objB.name ] != undefined
+        ){
+            return this.collisionBinaryTable.byName[ objA.name ][ objB.name ] == true;
+
+
+        }else if( objA.id != undefined && 
+                  objB.id != undefined && 
+                  this.collisionBinaryTable.byID[ objA.id ] != undefined &&
+                  this.collisionBinaryTable.byID[ objA.id ][ objB.id ] != undefined
+        ){
+            return this.collisionBinaryTable.byID[ objA.id ][ objB.id ] == true;
+        }
+
+        return false;
     }
 
     /**

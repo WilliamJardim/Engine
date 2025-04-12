@@ -186,7 +186,7 @@ Mapear:
   Por classe
 
 # Métodos de consulta de colisão e proximidade
-métodos de consulta de colisão e proximidade dentro dos objetos:
+(FEITO) métodos de consulta de colisão e proximidade dentro dos objetos:
 
   isCollisionOf( outroObjeto )
 
@@ -202,8 +202,6 @@ métodos de consulta de colisão e proximidade dentro dos objetos:
   Em cada um desses métodos, se eu passar um segundo parametro, eu posso dizer que eu quero um range diferente do atual, e isso vai resultar numa nova verificação
 
 Que vão ser funções especificas que ao invez de rodar o teste de colisão, vai apenas obter isso dos JSONs que a Engine está sempre mapeando
-
-CONTINUAR
 
 BUG: As vezes a colisao fica ocilando. Ou seja, ele detecta sim que o objeto esta colidindo ou proximo dele, e inclui na tabela de colisoes desse objeto na cena,
 PORÈM, OS OUTROS OBJETOS FICAM SEMPRE lÀ

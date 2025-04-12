@@ -17,6 +17,7 @@ import ImaginaryObject from './ImaginaryObject';
 import ObjectScale from '../interfaces/ObjectScale';
 import ObjectAttachment from '../interfaces/ObjectAttachment';
 import CollisionsData from '../interfaces/CollisionsData';
+import ObjectRotation from '../interfaces/ObjectRotation';
 
 export default class ObjectBase extends Base{
     
@@ -95,6 +96,10 @@ export default class ObjectBase extends Base{
         //Se tem posição
         if( this.objProps.position ){
             this.setPosition( this.objProps.position );
+        }
+        //Se tem rotação
+        if( this.objProps.rotation ){
+            this.setRotation( this.objProps.rotation );
         }
         //Se tem escala
         if( this.objProps.scale ){
@@ -243,6 +248,16 @@ export default class ObjectBase extends Base{
         this.getPosition().z += z;
     }
 
+    /**
+    * Acrescenta uma posição ao objeto
+    * @param rotation 
+    */
+    public somarPosition( position:ObjectPosition ): void{
+        if( position.x ){ this.getPosition().x += position.x };
+        if( position.y ){ this.getPosition().y += position.y };
+        if( position.z ){ this.getPosition().z += position.z };
+    }
+
     public setScale( scale: ObjectScale|number ): ObjectBase{
         const mesh: THREE.Mesh = this.getMesh();
 
@@ -278,8 +293,54 @@ export default class ObjectBase extends Base{
         this.getScale().z += z;
     }
 
+    /**
+    * Acrescenta uma escala ao objeto
+    * @param rotation 
+    */
+    public somarEscala( scale:ObjectScale ): void{
+        if( scale.x ){ this.getScale().x += scale.x };
+        if( scale.y ){ this.getScale().y += scale.y };
+        if( scale.z ){ this.getScale().z += scale.z };
+    }
+
     public getVelocity(): ObjectVelocity{
         return this.physicsState.velocity;
+    }
+
+    public getRotation(): THREE.Vector3{
+        return this.getMesh().rotation;
+    }
+
+    public setRotation( rotation: ObjectRotation ): ObjectBase{
+        const mesh: THREE.Mesh = this.getMesh();
+        mesh.rotation.x = rotation.x || mesh.rotation.x;
+        mesh.rotation.y = rotation.y || mesh.rotation.y;
+        mesh.rotation.z = rotation.z || mesh.rotation.z;
+
+        //Retorna ele mesmo modificado
+        return this;
+    }
+
+    public somarRotationX( x:number ): void{
+        this.getRotation().x += x;
+    }
+    
+    public somarRotationY( y:number ): void{
+        this.getRotation().y += y;
+    }
+
+    public somarRotationZ( z:number ): void{
+        this.getRotation().z += z;
+    }
+
+    /**
+    * Acrescenta uma rotação ao objeto
+    * @param rotation 
+    */
+    public somarRotation( rotation:ObjectRotation ): void{
+        if( rotation.x ){ this.getRotation().x += rotation.x };
+        if( rotation.y ){ this.getRotation().y += rotation.y };
+        if( rotation.z ){ this.getRotation().z += rotation.z };
     }
 
     /**
@@ -818,6 +879,15 @@ export default class ObjectBase extends Base{
                                 objetoAnexar.somarEscalaY( anexo.scaleReduce || 0 );
                                 objetoAnexar.somarEscalaZ( anexo.scaleReduce || 0 );
                             }
+                        }
+
+                        //Se tem rotação
+                        if( anexo.rotation ){
+                            objetoAnexar.setRotation( anexo.rotation );
+                        }
+                        //Se tem incremento de rotação nos eixos
+                        if( anexo.rotationIncrement ){
+                            objetoAnexar.somarRotation( anexo.rotationIncrement );
                         }
 
                         //Se tem outras coisas

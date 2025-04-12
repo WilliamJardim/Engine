@@ -1,4 +1,5 @@
 import ObjectPosition from "./ObjectPosition";
+import ObjectRotation from "./ObjectRotation";
 import ObjectScale from "./ObjectScale";
 
 /**
@@ -17,6 +18,8 @@ export default interface ObjectAttachment{
     invisible?: boolean, //Se o objeto em anexo vai ou não ser invisivel
 
     position: ObjectPosition; // A posição do objeto em anexo em relação ao objeto pai(a qual ele esta sendo anexado)
+    rotation: ObjectRotation;
+    rotationIncrement: ObjectRotation;
     scale: ObjectScale|number; 
     scaleReduce: ObjectScale|number; // Se vai ter redução de escala
     sameScale: boolean;

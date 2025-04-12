@@ -989,7 +989,7 @@ export default class ObjectBase extends Base{
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isCollisionOf( outroObjeto:ObjectBase, limites?:ProximityBounds|number|undefined ): boolean{
+    isCollisionOf( outroObjeto:ObjectBase|string, limites?:ProximityBounds|number|undefined ): boolean{
         if(this.scene){
             return this.scene.queryIfObjectIsCollisionOf( this, outroObjeto, limites );
         }
@@ -1001,7 +1001,7 @@ export default class ObjectBase extends Base{
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isProximityOf( outroObjeto:ObjectBase, limites?:ProximityBounds|number|undefined ): boolean{
+    isProximityOf( outroObjeto:ObjectBase|string, limites?:ProximityBounds|number|undefined ): boolean{
         if(this.scene){
             return this.scene.queryIfObjectIsProximityOf( this, outroObjeto, limites );
         }

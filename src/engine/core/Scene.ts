@@ -21,6 +21,7 @@ import CollisionBinaryTable from '../interfaces/CollisionBinaryTable';
 import ProximityBinaryTable from '../interfaces/ProximityBinaryTable';
 import ProximityBounds from '../utils/interfaces/ProximityBounds';
 import isProximity from '../utils/logic/isProximity';
+import {globalContext} from '../../engine/main.ts';
 
 export default class Scene extends Base{
 
@@ -227,22 +228,24 @@ export default class Scene extends Base{
 
         // Se vai usar o calculo da propia Engine mesmo, nos limites que ela ja calculou
         if( limites == undefined ){
-            //Se eu passar dois objetos do tipo ObjectBase
-            if( typeof objA == 'object' && typeof objB == 'object' ){
-
+            //Se eu passar dois objetos do tipo ObjectBase, ou um ObjectBase e uma string
+            if( (typeof objA == 'object' && typeof objB == 'object') || 
+                (typeof objA == 'object' && typeof objB == 'string') 
+            
+            ){
                 if( objA.name != undefined && 
-                    objB.name != undefined && 
+                    ( ( typeof objB == 'object' && objB.name != undefined ) || typeof objB == 'string' ) && 
                     this.proximityBinaryTable.byName[ objA.name ] != undefined &&
-                    this.proximityBinaryTable.byName[ objA.name ][ objB.name ] != undefined 
+                    this.proximityBinaryTable.byName[ objA.name ][ typeof objB == 'object' ? objB.name! : objB ] != undefined 
                 ){
-                    return this.proximityBinaryTable.byName[ objA.name ][ objB.name ] == true;
+                    return this.proximityBinaryTable.byName[ objA.name ][ typeof objB == 'object' ? objB.name! : objB ] == true;
                     
                 }else if( objA.id != undefined && 
-                        objB.id != undefined && 
-                        this.proximityBinaryTable.byID[ objA.id ] != undefined &&
-                        this.proximityBinaryTable.byID[ objA.id ][ objB.id ] != undefined 
+                          ( ( typeof objB == 'object' && objB.id != undefined) || typeof objB == 'string' ) && 
+                          this.proximityBinaryTable.byID[ objA.id ] != undefined &&
+                          this.proximityBinaryTable.byID[ objA.id ][ typeof objB == 'object' ? objB.id : objB ] != undefined 
                 ){
-                    return this.proximityBinaryTable.byID[ objA.id ][ objB.id ] == true;
+                    return this.proximityBinaryTable.byID[ objA.id ][ typeof objB == 'object' ? objB.id : objB ] == true;
                 }
 
             //Senao, se for só o name ou o id dos objetos em string, Nesse caso, ele ja vai entender tanto se for o name quanto o id
@@ -252,7 +255,19 @@ export default class Scene extends Base{
 
         //Se tem limites personalizados vai fazer um novo calculo
         }else{
-            return isProximity( objA, objB, limites ) == true;
+            if( typeof objB == 'object' ){
+                return isProximity( objA, objB, limites ) == true;
+
+            //Se for uma string, ele pega o objeto que tem esse nome
+            }else if( typeof objB == 'string' ){
+                return isProximity( objA, this.getObjectByName(objB), limites )
+
+            }else if( typeof objA == 'string' ){
+                return isProximity( this.getObjectByName(objA), objB, limites )
+
+            }else if( typeof objA == 'string' && typeof objB == 'string' ){
+                return isProximity( this.getObjectByName(objA), this.getObjectByName(objB), limites )
+            }
         }
 
         return false;
@@ -266,7 +281,7 @@ export default class Scene extends Base{
     * @param objB 
     * @returns {boolean}
     */
-    public queryIfObjectIsCollisionOf( objA: ObjectBase, objB: ObjectBase, limites?:ProximityBounds|number|undefined ): boolean{
+    public queryIfObjectIsCollisionOf( objA: ObjectBase|string, objB: ObjectBase|string, limites?:ProximityBounds|number|undefined ): boolean{
 
         // Se vai usar o calculo da propia Engine mesmo, nos limites que ela ja calculou
         if( limites == undefined ){

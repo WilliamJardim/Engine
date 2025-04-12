@@ -226,10 +226,15 @@ export function EngineLoop( scene: Scene,
     if( globalContext.avaliable('CaixaRef') && globalContext.avaliable('CuboRef') ){
         if( globalContext.get('CaixaRef').scene ){
             if( globalContext.get('CaixaRef').isProximityOf( globalContext.get('CuboRef') ) ){
-                
+                debugger
+            }
+
+            if( globalContext.get('CaixaRef').isProximityOf( 'MyCube' ) ){
+                debugger
             }
         }
-    }*/
+    }
+    */
 
     //console.log( scene.proximityTable );
 

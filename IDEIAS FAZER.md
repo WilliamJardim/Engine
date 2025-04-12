@@ -228,4 +228,15 @@ Exemplo: se ele tiver uma rotação inclinada perto da posição XYZ alinhada(0,
 Se ele tiver bem longe da posição XYZ alinhada(0,0,0), ele vai tombar pra alguma direção(aleatoria ou por tendencia como do a força do vento ou o impulso do empurrão, que nesse caso vai inclinar o objeto para a direção esperada)
 
 
+# Força do vento
+O vento vai poder empurrar objetos e o jogador automaticamente, dependendo do peso deles, e do peso dos objetos
+Tambem o jogador vai ter um peso
+
+# Força do vento na queda
+Na queda o vento empurra levemente objetos alterando a posição deles.
+Deixar isso mais realista.
+ADICIONAR UM NOVO VETOR PARA CONTROLAR O DESLOCAMENTE X Y Z DESSE MOVIMENTO AO CAIR EM FUNÇÂO DO VENTO
+
+# Objetos quicam
+Alguns objetos podem quicar ao tocar no chão, e vão perdendo força
 

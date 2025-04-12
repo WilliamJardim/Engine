@@ -23,6 +23,7 @@ import ProximityBounds from '../utils/interfaces/ProximityBounds';
 import isProximity from '../utils/logic/isProximity';
 import {globalContext} from '../../engine/main.ts';
 import isCollision from '../utils/logic/isCollision.ts';
+import Wind from '../interfaces/Wind.ts';
 
 export default class Scene extends Base{
 
@@ -46,8 +47,23 @@ export default class Scene extends Base{
     public proximityTable:ProximityTable;
     public proximityBinaryTable:ProximityBinaryTable;
 
+    /**
+    * Configurações do vento para física
+    */
+    public wind:Wind;
+
     constructor( canvasRef:any ){
         super();
+
+        this.wind = {
+            orientation : { x: 0.005, 
+                            y: 0.001, 
+                            z: 0.001},
+
+            intensity   : { x: 0, 
+                            y: 0, 
+                            z: 0 }
+        };
 
         this.posicaoYchao = 1.6;
         this.gravity = -0.03;     // Gravidade que puxa para baixo

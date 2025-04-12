@@ -203,3 +203,7 @@ métodos de consulta de colisão e proximidade dentro dos objetos:
 
 Que vão ser funções especificas que ao invez de rodar o teste de colisão, vai apenas obter isso dos JSONs que a Engine está sempre mapeando
 
+# Configurações de limites de colisão e proximidade globais na cena
+Permitir que, além do ProxityBounds do propio objeto, eu tambem vou poder ter um ProxityBounds para colisao e proximidade na cena,
+e isso vai se tornar o padrão para todos os objetos, exceto para os que tiver ProxityBounds especificos
+

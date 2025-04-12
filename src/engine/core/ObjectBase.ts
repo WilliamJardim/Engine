@@ -787,7 +787,7 @@ export default class ObjectBase extends Base{
                             ) &&
                             /** Se houve uma colisão de fato **/
                             (
-                                isCollision( objeto, objetoAtualCena ) == true 
+                                isCollision( objeto, objetoAtualCena, 0.5 ) == true 
                             )
                         ) {
                             objeto.callEvent( eventosObjeto.whenCollide, {

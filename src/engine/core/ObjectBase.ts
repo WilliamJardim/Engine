@@ -997,6 +997,56 @@ export default class ObjectBase extends Base{
     }
 
     /**
+    * Traz todos os objetos que estão colidindo com ESTE OBJETO
+    */
+    getCollisions( limites?:ProximityBounds|number|undefined ): ObjectBase[]{
+        const esteObjeto : ObjectBase = this;
+
+        //Se não tem limites personalizados
+        if( limites == undefined ){
+            return this.infoCollisions.objects;
+
+        //Se tem limites de zona de colisão personalizado
+        }else{
+            if(this.scene){
+                //Traz só os objetos que estão colidindo dentro da zona definida no "limites"
+                return this.scene.objects.filter(
+                    function( objetoAtual:ObjectBase ){ 
+                        return isCollision( esteObjeto, objetoAtual, limites ) == true && esteObjeto.id !== objetoAtual.id;
+                    }
+                );
+            }
+        }
+
+        return [];
+    }
+
+    /**
+    * Traz todos os objetos que estão proximos DESTE OBJETO
+    */
+    getProximity( limites?:ProximityBounds|number|undefined ): ObjectBase[]{
+        const esteObjeto : ObjectBase = this;
+
+        //Se não tem limites personalizados
+        if( limites == undefined ){
+            return this.infoProximity.objects;
+
+        //Se tem limites de zona de colisão personalizado
+        }else{
+            if(this.scene){
+                //Traz só os objetos que estão colidindo dentro da zona definida no "limites"
+                return this.scene.objects.filter(
+                    function( objetoAtual:ObjectBase ){ 
+                        return isProximity( esteObjeto, objetoAtual, limites ) && esteObjeto.id !== objetoAtual.id;
+                    }
+                );
+            }
+        }
+
+        return [];
+    }
+
+    /**
     * Verifica se um objeto está proximo DESTE OBJETO
     * @param outroObjeto 
     * @returns {boolean}

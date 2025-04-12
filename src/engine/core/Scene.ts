@@ -22,6 +22,7 @@ import ProximityBinaryTable from '../interfaces/ProximityBinaryTable';
 import ProximityBounds from '../utils/interfaces/ProximityBounds';
 import isProximity from '../utils/logic/isProximity';
 import {globalContext} from '../../engine/main.ts';
+import isCollision from '../utils/logic/isCollision.ts';
 
 export default class Scene extends Base{
 
@@ -310,7 +311,7 @@ export default class Scene extends Base{
 
         //Se tem limites personalizados vai fazer um novo calculo
         }else{
-            return isProximity( objA, objB, limites ) == true;
+            return isCollision( objA, objB, limites ) == true;
         }
 
         return false;

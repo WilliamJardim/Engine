@@ -111,7 +111,7 @@ export function EngineMain( scene: Scene,
             events: [
                 {
                     loop: function( propioObjeto:ObjectBase ){
-                        console.log( propioObjeto.infoProximity )
+                        //console.log( propioObjeto.infoProximity )
                     },
 
                     whenFall: function(){
@@ -207,6 +207,8 @@ export function EngineLoop( scene: Scene,
 
         });
     }
+
+    //console.log( scene.proximityTable );
 
     // Verificar se o isFalling está marcando certo
     //if( globalContext.avaliable('CaixaRef') ){

@@ -203,6 +203,18 @@ métodos de consulta de colisão e proximidade dentro dos objetos:
 
 Que vão ser funções especificas que ao invez de rodar o teste de colisão, vai apenas obter isso dos JSONs que a Engine está sempre mapeando
 
+CONTINUAR
+
+BUG: As vezes a colisao fica ocilando. Ou seja, ele detecta sim que o objeto esta colidindo ou proximo dele, e inclui na tabela de colisoes desse objeto na cena,
+PORÈM, OS OUTROS OBJETOS FICAM SEMPRE lÀ
+MAIS O CUBO QUANDO CHEGA PERTO APARECE, MAIS DEPOIS SOME, DEPOIS APARECE DENOVO, ELE FICA OCILANOD
+
+MOSTRANDO NO CONSOLE DA NOTAR ISSO:
+FICA SEMPRE UM SIM E UM NÂO
+OU SEJA, UM APARECE O CUBO, E O OUTRO EM SEGUIDA NÂO
+AI O PROXIMO APARECE, AI O OUTRO NÂO, E ISSO SE REPETE
+
+
 # Configurações de limites de colisão e proximidade globais na cena
 Permitir que, além do ProxityBounds do propio objeto, eu tambem vou poder ter um ProxityBounds para colisao e proximidade na cena,
 e isso vai se tornar o padrão para todos os objetos, exceto para os que tiver ProxityBounds especificos

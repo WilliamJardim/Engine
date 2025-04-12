@@ -15,6 +15,8 @@ import ObjectProps from '../interfaces/ObjectProps';
 import ImaginaryObject from './ImaginaryObject';
 import ObjectEventLayer from '../interfaces/ObjectEventBlock';
 import ObjectEvents from '../interfaces/ObjectEvents';
+import CollisionTable from '../interfaces/CollisionTable';
+import ProximityTable from '../interfaces/ProximityTable';
 
 export default class Scene extends Base{
 
@@ -32,6 +34,9 @@ export default class Scene extends Base{
     
     public objectTableById:any;
     public objectTableByName:any;
+
+    public collisionTable:CollisionTable;
+    public proximityTable:ProximityTable;
 
     constructor( canvasRef:any ){
         super();
@@ -72,6 +77,20 @@ export default class Scene extends Base{
         // Tabela que vai manter os objetos indexados por Nome
         this.objectTableByName = {};
 
+        // Tabela de objetos colidindo com outros objetos
+        this.collisionTable = {
+            byName    : {} as Record<string, Array<ObjectBase>>,
+            byID      : {} as Record<string, Array<ObjectBase>>,
+            byClasses : {} as Record<string, Array<ObjectBase>>
+        };
+
+        // Tabela de objetos proximos de outros objetos
+        this.proximityTable = {
+            byName    : {} as Record<string, Array<ObjectBase>>,
+            byID      : {} as Record<string, Array<ObjectBase>>,
+            byClasses : {} as Record<string, Array<ObjectBase>>
+        };
+
         //Shaders de pós-processamento
         const postMaterial = new THREE.ShaderMaterial({
             vertexShader: postVertexShader(),
@@ -92,6 +111,66 @@ export default class Scene extends Base{
 
         this.scene.add(postQuad);
         
+    }
+
+    public clearCollisionTable(): void{
+        // Tabela de objetos colidindo com outros objetos
+        this.collisionTable = {
+            byName    : {} as Record<string, Array<ObjectBase>>,
+            byID      : {} as Record<string, Array<ObjectBase>>,
+            byClasses : {} as Record<string, Array<ObjectBase>>
+        };
+    }
+
+    public clearObjectCollisionFromTableByName( objectName: string ): void{
+        this.collisionTable.byName[objectName] = [];
+    }
+
+    public clearObjectCollisionFromTableByID( objectID: string ): void{
+        this.collisionTable.byID[objectID] = [];
+    }
+
+    public clearObjectCollisionFromTableByCLASSES( objectClasses: string|string[] ): void{
+        const contexto = this;
+
+        if( typeof objectClasses == 'string' ){
+            this.collisionTable.byClasses[objectClasses] = [];
+
+        }else if( typeof objectClasses == 'object' ){
+            objectClasses.forEach(function(nomeClasse:string){
+                contexto.collisionTable.byClasses[nomeClasse] = [];
+            })
+        }
+    }
+
+    public clearProximityTable(): void{
+        // Tabela de objetos proximos de outros objetos
+        this.proximityTable = {
+            byName    : {} as Record<string, Array<ObjectBase>>,
+            byID      : {} as Record<string, Array<ObjectBase>>,
+            byClasses : {} as Record<string, Array<ObjectBase>>
+        };
+    }
+
+    public clearObjectProximityFromTableByName( objectName: string ): void{
+        this.proximityTable.byName[objectName] = [];
+    }
+
+    public clearObjectProximityFromTableByID( objectID: string ): void{
+        this.proximityTable.byID[objectID] = [];
+    }
+
+    public clearObjectProximityFromTableByCLASSES( objectClasses: string|string[] ): void{
+        const contexto = this;
+
+        if( typeof objectClasses == 'string' ){
+            this.proximityTable.byClasses[objectClasses] = [];
+
+        }else if( typeof objectClasses == 'object' ){
+            objectClasses.forEach(function(nomeClasse:string){
+                contexto.proximityTable.byClasses[nomeClasse] = [];
+            })
+        }
     }
 
     /**
@@ -151,7 +230,7 @@ export default class Scene extends Base{
     /**
     * Remove um objeto da cena
     */
-    public remove( objetoRemover:ObjectBase ): void{
+    public remove( objetoRemover:ObjectBase|ImaginaryObject ): void{
         //Se tem o evento whenDestroy, executa ele
         if( objetoRemover.objEvents )
         {   
@@ -165,7 +244,7 @@ export default class Scene extends Base{
         }
 
         //Remove o objeto da cena
-        this.objects = this.objects.filter(function( obj:ObjectBase ){
+        this.objects = this.objects.filter(function( obj:ObjectBase|ImaginaryObject ){
             if( obj.id != objetoRemover.id ){ return obj };
         });
     }

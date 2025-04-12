@@ -384,22 +384,69 @@ export default class ObjectBase extends Base{
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != esteObjeto.id 
                 ){
+                    // Limpa a tabela de colisões do objeto
+                    if( esteObjeto.scene && esteObjeto.name ){
+                        esteObjeto.scene.clearObjectCollisionFromTableByName( esteObjeto.name );
+                    }
+                    if( esteObjeto.scene && esteObjeto.id ){
+                        esteObjeto.scene.clearObjectCollisionFromTableByName( esteObjeto.id );
+                    }
+                    if( esteObjeto.scene && esteObjeto.objProps.classes ){
+                        esteObjeto.scene.clearObjectCollisionFromTableByCLASSES( esteObjeto.objProps.classes );
+                    }
+
+
                     //Se houve uma colisão(usando Bounding Box)
                     if( isCollision( esteObjeto, objetoAtualCena, 0.5 ) === true ){
                         // Registra as colisões detectadas
                         if(objetoAtualCena.name){
                             esteObjeto.infoCollisions.objectNames.push( objetoAtualCena.name );
+
+                            //Registra tambem na tabela mestre da cena
+                            if( esteObjeto.scene && esteObjeto.name && !esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] ){
+                                esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] = [];
+                            }
+                            if( esteObjeto.scene && esteObjeto.name ){
+                                esteObjeto.scene.collisionTable.byName[ esteObjeto.name ].push( objetoAtualCena );
+                            }
                         }
                         if(objetoAtualCena.id){
                             esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
+
+                            //Registra tambem na tabela mestre da cena
+                            if( esteObjeto.scene && esteObjeto.id && !esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] ){
+                                esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] = [];
+                            }
+                            if( esteObjeto.scene && esteObjeto.id ){
+                                esteObjeto.scene.collisionTable.byID[ esteObjeto.id ].push( objetoAtualCena );
+                            }
                         }
                         if(objetoAtualCena.objProps.classes){
-                            objetoAtualCena.objProps.classes.forEach(function(){
-                                esteObjeto.infoCollisions.objectClasses.push( objetoAtualCena.id );
+                            objetoAtualCena.objProps.classes.forEach(function(nomeClasse:string){
+                                esteObjeto.infoCollisions.objectClasses.push( nomeClasse );
+
+                                //Registra tambem na tabela mestre da cena
+                                if( esteObjeto.scene && nomeClasse && !esteObjeto.scene.collisionTable.byID[ nomeClasse ] ){
+                                    esteObjeto.scene.collisionTable.byID[ nomeClasse ] = [];
+                                }
+                                if( esteObjeto.scene && nomeClasse ){
+                                    esteObjeto.scene.collisionTable.byID[ nomeClasse ].push( objetoAtualCena );
+                                }
                             });
                         }
                         esteObjeto.infoCollisions.objects.push( objetoAtualCena );
 
+                    }
+
+                    // Limpa a tabela de proximidade do objeto
+                    if( esteObjeto.scene && esteObjeto.name ){
+                        esteObjeto.scene.clearObjectProximityFromTableByName( esteObjeto.name );
+                    }
+                    if( esteObjeto.scene && esteObjeto.id ){
+                        esteObjeto.scene.clearObjectProximityFromTableByID( esteObjeto.id );
+                    }
+                    if( esteObjeto.scene && esteObjeto.objProps.classes ){
+                        esteObjeto.scene.clearObjectProximityFromTableByCLASSES( esteObjeto.objProps.classes );
                     }
 
                     //Se houve uma proximidade
@@ -407,13 +454,37 @@ export default class ObjectBase extends Base{
                         // Registra as colisões detectadas
                         if(objetoAtualCena.name){
                             esteObjeto.infoProximity.objectNames.push( objetoAtualCena.name );
+
+                            //Registra tambem na tabela mestre da cena
+                            if( esteObjeto.scene && esteObjeto.name && !esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] ){
+                                esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] = [];
+                            }
+                            if( esteObjeto.scene && esteObjeto.name ){
+                                esteObjeto.scene.proximityTable.byName[ esteObjeto.name ].push( objetoAtualCena );
+                            }
                         }
                         if(objetoAtualCena.infoProximity){
                             esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
+
+                            //Registra tambem na tabela mestre da cena
+                            if( esteObjeto.scene && esteObjeto.id && !esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] ){
+                                esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] = [];
+                            }
+                            if( esteObjeto.scene && esteObjeto.id ){
+                                esteObjeto.scene.proximityTable.byID[ esteObjeto.id ].push( objetoAtualCena );
+                            }
                         }
                         if(objetoAtualCena.objProps.classes){
-                            objetoAtualCena.objProps.classes.forEach(function(){
-                                esteObjeto.infoProximity.objectClasses.push( objetoAtualCena.id );
+                            objetoAtualCena.objProps.classes.forEach(function(nomeClasse:string){
+                                esteObjeto.infoProximity.objectClasses.push( nomeClasse );
+
+                                //Registra tambem na tabela mestre da cena
+                                if( esteObjeto.scene && nomeClasse && !esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] ){
+                                    esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] = [];
+                                }
+                                if( esteObjeto.scene && nomeClasse ){
+                                    esteObjeto.scene.proximityTable.byClasses[ nomeClasse ].push( objetoAtualCena );
+                                }
                             });
                         }
                         esteObjeto.infoProximity.objects.push( objetoAtualCena );

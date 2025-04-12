@@ -192,5 +192,14 @@ métodos de consulta de colisão e proximidade dentro dos objetos:
 
   isProximityOf( outroObjeto )
 
+  getCollisions()
+  getProximity()
+
+      retorna todos os objetos proximos ou colidindo.
+      podendo expandir o alçance passando um parametro de limites, fazendo uma nova verificação em tempo real
+
+  e inclusive incluir métodos que permitam verificações novas: que permitam especificar um range especifico.
+  Em cada um desses métodos, se eu passar um segundo parametro, eu posso dizer que eu quero um range diferente do atual, e isso vai resultar numa nova verificação
+
 Que vão ser funções especificas que ao invez de rodar o teste de colisão, vai apenas obter isso dos JSONs que a Engine está sempre mapeando
 

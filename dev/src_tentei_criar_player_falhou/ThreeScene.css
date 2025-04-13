@@ -1,0 +1,12 @@
+/* src/styles/ThreeScene.css */
+.canvas-container {
+    display: flex;
+    width: 800px;  /* Largura ocupando 100% da viewport */
+    height: 800px; /* Altura ocupando 100% da viewport */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000; /* Fundo preto para dar contraste */
+    overflow: hidden; /* Evitar barras de rolagem */
+    border: solid 1px white;
+  }

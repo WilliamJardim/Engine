@@ -33,7 +33,8 @@ export default class ObjectBase extends Base{
     public scene:Scene|null;
     public isFalling:boolean;
     public groundY:number; // A posição Y do chão atual em relação a este objeto
-    public objectBelow: ObjectBase|null; //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto
+    public objectBelow: ObjectBase|null; //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
+    public lastObjectBelow: ObjectBase|null; //O ultimo objeto cujo o objeto atual esteve em cima 
     public infoCollisions:CollisionsData;
     public infoProximity:CollisionsData;
     public isMovimentoTravadoPorColisao:boolean;
@@ -51,6 +52,7 @@ export default class ObjectBase extends Base{
 
         this.groundY = 0;
         this.objectBelow = null;
+        this.lastObjectBelow = null;
         this.isMovimentoTravadoPorColisao = false; //Se o objeto atual esta travado por que esta tentando se mover para uma direção em que ele está colidindo com outro objeto
 
         this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
@@ -324,9 +326,9 @@ export default class ObjectBase extends Base{
 
     public setRotation( rotation: ObjectRotation ): ObjectBase{
         const mesh: THREE.Mesh = this.getMesh();
-        mesh.rotation.x = rotation.x || mesh.rotation.x;
-        mesh.rotation.y = rotation.y || mesh.rotation.y;
-        mesh.rotation.z = rotation.z || mesh.rotation.z;
+        mesh.rotation.x = rotation.x !== undefined ? rotation.x : mesh.rotation.x;
+        mesh.rotation.y = rotation.y !== undefined ? rotation.y : mesh.rotation.y;
+        mesh.rotation.z = rotation.z !== undefined ? rotation.z : mesh.rotation.z;
 
         //Retorna ele mesmo modificado
         return this;
@@ -667,6 +669,7 @@ export default class ObjectBase extends Base{
                         this.isFalling = false;
                         this.groundY = this.getPosition().y; // A posição da ultima colisão
                         this.objectBelow = objetoAtualCena;
+                        this.lastObjectBelow = objetoAtualCena;
                     }
 
                     //Impede que o objeto suba em cima de outro objeto
@@ -765,6 +768,11 @@ export default class ObjectBase extends Base{
             */
             if( this.isFalling === true )
             {
+                /**
+                * Enquanto o objeto estiver caindo, ele não tem objeto abaixo dele 
+                */
+                this.objectBelow = null;
+
                 if( this.getVelocity().y != undefined ){
                     this.getVelocity().y += Math.abs( this.scene.gravity );
                     this.getPosition().y -= this.getVelocity().y;
@@ -804,6 +812,13 @@ export default class ObjectBase extends Base{
                         y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ),
                         z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) )
                     });
+                }
+
+            // Se o objeto não está caindo
+            }else{
+                //Se ele já está no chão
+                if( this.objectBelow != null && this.objProps.name != 'Player' ){
+                    this.setRotation({x:0, y: 0, z: 0})
                 }
 
             }

@@ -32,6 +32,7 @@ export default class ObjectBase extends Base{
     public physicsState:PhysicsState;
     public scene:Scene|null;
     public isFalling:boolean;
+    public isRecevingYMovementPhysics:boolean; //Indica se este objeto está recebendo uma fisica de movimento em Y O QUE VAI SER DIFERENTE DA FISICA DE QUEDA NO EIXO Y
     public groundY:number; // A posição Y do chão atual em relação a este objeto
     public objectBelow: ObjectBase|null; //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
     public lastObjectBelow: ObjectBase|null; //O ultimo objeto cujo o objeto atual esteve em cima 
@@ -95,6 +96,7 @@ export default class ObjectBase extends Base{
         this.setMesh( mesh );
 
         this.isFalling = false;
+        this.isRecevingYMovementPhysics = false;
 
         //Se tem posição
         if( this.objProps.position ){
@@ -240,15 +242,31 @@ export default class ObjectBase extends Base{
     }
 
     public somarX( x:number ): void{
-        this.getPosition().x += x;
+        this.getPosition().x! += x;
     }
     
     public somarY( y:number ): void{
-        this.getPosition().y += y;
+        this.getPosition().y! += y;
     }
 
     public somarZ( z:number ): void{
-        this.getPosition().z += z;
+        this.getPosition().z! += z;
+    }
+
+    public somarPosicaoX( x:number ): void{
+        this.getPosition().x! += x;
+    }
+    
+    public somarPosicaoY( y:number ): void{
+        this.getPosition().y! += y;
+    }
+
+    public somarPosicaoZ( z:number ): void{
+        this.getPosition().z! += z;
+    }
+
+    public somarEixo(eixo:string, valor:number): void{
+        (this.getPosition() as ObjectPosition)[eixo] += valor;
     }
 
     /**
@@ -256,9 +274,9 @@ export default class ObjectBase extends Base{
     * @param rotation 
     */
     public somarPosition( position:ObjectPosition ): void{
-        if( position.x ){ this.getPosition().x += position.x };
-        if( position.y ){ this.getPosition().y += position.y };
-        if( position.z ){ this.getPosition().z += position.z };
+        if( position.x ){ this.getPosition().x! += position.x };
+        if( position.y ){ this.getPosition().y! += position.y };
+        if( position.z ){ this.getPosition().z! += position.z };
     }
 
     public setScale( scale: ObjectScale|number ): ObjectBase{
@@ -318,6 +336,48 @@ export default class ObjectBase extends Base{
         if( velocidade.x ){ this.getVelocity().x += velocidade.x };
         if( velocidade.y ){ this.getVelocity().y += velocidade.y };
         if( velocidade.z ){ this.getVelocity().z += velocidade.z };
+    }
+
+    public subtrairVelocityX( velocidade:number ): void{
+        this.getVelocity().x -= velocidade
+    }
+
+    public subtrairVelocityY( velocidade:number ): void{
+        this.getVelocity().y -= velocidade
+    }
+
+    public subtrairVelocityZ( velocidade:number ): void{
+        this.getVelocity().z -= velocidade
+    }
+
+    public somarVelocityEixo(eixo:string, valor:number): void{
+        (this.getVelocity() as ObjectVelocity)[eixo] += valor;
+    }
+
+    public subtrairVelocityEixo(eixo:string, valor:number): void{
+        (this.getVelocity() as ObjectVelocity)[eixo] -= valor;
+    }
+
+    public setVelocity( velocidade:ObjectVelocity ): void{
+        if( velocidade.x ){ this.getVelocity().x = velocidade.x };
+        if( velocidade.y ){ this.getVelocity().y = velocidade.y };
+        if( velocidade.z ){ this.getVelocity().z = velocidade.z };
+    }
+
+    public setVelocityX( velocidade:number ): void{
+        this.getVelocity().x = velocidade;
+    }
+
+    public setVelocityY( velocidade:number ): void{
+        this.getVelocity().y = velocidade;
+    }
+
+    public setVelocityZ( velocidade:number ): void{
+        this.getVelocity().z = velocidade;
+    }
+
+    public setVelocityEixo( eixo:string, velocidade:number ): void{
+        (this.getVelocity() as ObjectVelocity)[eixo] = velocidade;
     }
 
     public getRotation(): THREE.Vector3{
@@ -689,10 +749,12 @@ export default class ObjectBase extends Base{
                     */
 
                     // Zera a velocidade do objeto pois ele já caiu
-                    this.getVelocity().y = 0;
+                    if( this.isRecevingYMovementPhysics == false ){
+                        this.getVelocity().y = 0;
+                    }
 
                     break;
-                    
+                    //Engine.get('CuboRef').somarVelocity({y:10})
                 }
             }
 
@@ -834,10 +896,79 @@ export default class ObjectBase extends Base{
     */
     public updateMovement(): void{
 
-        const objeto  : ObjectBase = this;
+        const objeto           : ObjectBase     = this;
+        const velocidadeObjeto : ObjectVelocity = objeto.getVelocity();
+        const scene            : Scene|null     = objeto.scene;
+        const gravity          : number         = ((scene||{}).gravity || 0);
 
         const objetosCena : ObjectBase[]  =  Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                  .concat( this.scene!.additionalObjects );
+
+        /**
+        * Fisica de movimento de acordo com a velocidade
+        */
+        const velocidadeX = velocidadeObjeto.x;
+        const sinalX      = Math.sign(velocidadeX);
+
+        const velocidadeY = velocidadeObjeto.y;
+        const sinalY      = Math.sign(velocidadeY);
+
+        const velocidadeZ = velocidadeObjeto.z;
+        const sinalZ      = Math.sign(velocidadeZ);
+
+        
+        if( velocidadeX != 0 )
+        {   
+            objeto.somarPosicaoX( velocidadeX );
+
+            let novaVelocidadeX = velocidadeObjeto.x - (gravity * -sinalX);
+
+            // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
+            if(Math.sign(novaVelocidadeX) !== sinalX){
+                novaVelocidadeX = 0;
+            }
+
+            objeto.setVelocityX( novaVelocidadeX );
+        }   
+
+        //Se o objeto não estiver caindo e SE NÂO ESTIVER NO CHÂO OU EM CIMA DE ALGO
+        //BUG: O EIXO Y NÂO CONSEGUE RECEBER UMA VELOCIDADE IGUAL NOS OUTROS POR CAUSA DA FISICA DE QUEDA QUE MANIPULA O EIXO Y
+        if( velocidadeY != 0 )
+        {   
+            //Engine.get('CuboRef').setVelocity({y:10})
+            if( objeto.isFalling == false && objeto.objectBelow == null ){
+                objeto.isRecevingYMovementPhysics = true;
+                objeto.somarPosicaoY( velocidadeY );
+
+                let novaVelocidadeY = velocidadeObjeto.y - (gravity * -sinalY);
+
+                // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
+                if(Math.sign(novaVelocidadeY) !== sinalY){
+                    novaVelocidadeY = 0;
+                    objeto.isRecevingYMovementPhysics = false;
+                }
+
+                objeto.setVelocityY( novaVelocidadeY );
+            }
+
+        }else{
+            objeto.isRecevingYMovementPhysics = false;
+        }
+        
+        if( velocidadeZ != 0 )
+        {   
+            objeto.somarPosicaoZ( velocidadeZ );
+
+            let novaVelocidadeZ = velocidadeObjeto.z - (gravity * -sinalZ);
+
+            // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
+            if(Math.sign(novaVelocidadeZ) !== sinalZ){
+                novaVelocidadeZ = 0;
+            }
+
+            objeto.setVelocityZ( novaVelocidadeZ );
+        }  
+
 
         // Se o objeto atual estiver em cima de outro objeto, este objeto o carrega junto ao ser mover
         if( objeto.objectBelow ){

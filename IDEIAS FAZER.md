@@ -256,3 +256,12 @@ ADICIONAR ATUALIZAÇÂO DE MOVIMENTO DO OBJETO, USANDO ESSE VELOCITY, O OBJETO V
 # Objetos quicam
 Alguns objetos podem quicar ao tocar no chão, e vão perdendo força
 
+# Detectar objetos acima e abaixo, dos lados,
+Na logica de detectar objetos proximos, reaproveitar o mesmo loop para mapear essas outras coisas de sentido
+object.getLeftCollisions()
+object.getRightCollisions()
+object.getLeftProximity();
+object.getRightProximity();
+
+isso pra cada um dos lados X Y Z
+

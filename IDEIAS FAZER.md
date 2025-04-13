@@ -265,3 +265,11 @@ object.getRightProximity();
 
 isso pra cada um dos lados X Y Z
 
+13/04/2025
+# Quando objetos colidem em X e Z
+Quando objetos colidem em X e Z, eles vão subtrair a velocidade ao invez de zerar,
+para simular a perda de velocidade ao bater por exemplo.
+
+# Inclinação do terreno vai afetar velocidade
+Certos terrenos inclinados podem aumentar ou diminuir a aceleração naturalmente
+

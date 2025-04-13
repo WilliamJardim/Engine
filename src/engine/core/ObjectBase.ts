@@ -901,6 +901,7 @@ export default class ObjectBase extends Base{
         const scene            : Scene|null     = objeto.scene;
         const gravity          : number         = ((scene||{}).gravity || 0);
         const atrito           : number         = (((scene||{}).atrito || 0));
+        const arrastoAr        : number         = (((scene||{}).arrastoAr || 0));
 
         const objetosCena : ObjectBase[]  =  Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                  .concat( this.scene!.additionalObjects );
@@ -916,7 +917,6 @@ export default class ObjectBase extends Base{
 
         const velocidadeZ = velocidadeObjeto.z;
         const sinalZ      = Math.sign(velocidadeZ);
-
         
         if( velocidadeX != 0 )
         {   
@@ -929,7 +929,14 @@ export default class ObjectBase extends Base{
                 novaVelocidadeX = 0;
             }
 
-            objeto.setVelocityX( novaVelocidadeX * atrito );
+            //No ar, ele vai ter arrasto do ar
+            if( objeto.isFalling == true ){
+                objeto.setVelocityX( novaVelocidadeX * arrastoAr );
+
+            //No chao, ele vai ter atrito
+            }else{
+                objeto.setVelocityX( novaVelocidadeX * atrito );
+            }
         }   
 
         //Se o objeto não estiver caindo e SE NÂO ESTIVER NO CHÂO OU EM CIMA DE ALGO
@@ -949,7 +956,7 @@ export default class ObjectBase extends Base{
                     objeto.isRecevingYMovementPhysics = false;
                 }
 
-                objeto.setVelocityY( novaVelocidadeY * atrito );
+                objeto.setVelocityY( novaVelocidadeY * arrastoAr );
             }
 
         }else{
@@ -967,7 +974,14 @@ export default class ObjectBase extends Base{
                 novaVelocidadeZ = 0;
             }
 
-            objeto.setVelocityZ( novaVelocidadeZ * atrito );
+            //No ar, ele vai ter arrasto do ar
+            if( objeto.isFalling == true ){
+                objeto.setVelocityZ( novaVelocidadeZ * arrastoAr );
+
+            //No chao, ele vai ter atrito
+            }else{
+                objeto.setVelocityZ( novaVelocidadeZ * atrito );
+            }
         }  
 
 

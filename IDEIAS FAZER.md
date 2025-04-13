@@ -273,3 +273,7 @@ para simular a perda de velocidade ao bater por exemplo.
 # Inclinação do terreno vai afetar velocidade
 Certos terrenos inclinados podem aumentar ou diminuir a aceleração naturalmente
 
+# Objetos podem ter movimentação simples SEM FISICA
+Adicionar um outro tipo de movimentação alternativo, sem usar fisica
+
+# Usar uma lógica deltaTime, para poder deixar os movimentos fluidos independente do FPS do jogo

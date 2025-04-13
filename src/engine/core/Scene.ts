@@ -35,6 +35,7 @@ export default class Scene extends Base{
     public camera:GameCamera;
     public clockCamera:THREE.Clock;
     public gravity:number;
+    public atrito:number;
 
     public objects:ObjectBase[];
     public additionalObjects:ObjectBase[];
@@ -71,6 +72,7 @@ export default class Scene extends Base{
 
         this.posicaoYchao = 1.6;
         this.gravity = -0.03;     // Gravidade que puxa para baixo
+        this.atrito  = 0.97;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
 
         //Obtem o canvas
         this.canvasRef = canvasRef;

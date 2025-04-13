@@ -900,6 +900,7 @@ export default class ObjectBase extends Base{
         const velocidadeObjeto : ObjectVelocity = objeto.getVelocity();
         const scene            : Scene|null     = objeto.scene;
         const gravity          : number         = ((scene||{}).gravity || 0);
+        const atrito           : number         = (((scene||{}).atrito || 0));
 
         const objetosCena : ObjectBase[]  =  Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                  .concat( this.scene!.additionalObjects );
@@ -928,7 +929,7 @@ export default class ObjectBase extends Base{
                 novaVelocidadeX = 0;
             }
 
-            objeto.setVelocityX( novaVelocidadeX );
+            objeto.setVelocityX( novaVelocidadeX * atrito );
         }   
 
         //Se o objeto não estiver caindo e SE NÂO ESTIVER NO CHÂO OU EM CIMA DE ALGO
@@ -948,7 +949,7 @@ export default class ObjectBase extends Base{
                     objeto.isRecevingYMovementPhysics = false;
                 }
 
-                objeto.setVelocityY( novaVelocidadeY );
+                objeto.setVelocityY( novaVelocidadeY * atrito );
             }
 
         }else{
@@ -966,7 +967,7 @@ export default class ObjectBase extends Base{
                 novaVelocidadeZ = 0;
             }
 
-            objeto.setVelocityZ( novaVelocidadeZ );
+            objeto.setVelocityZ( novaVelocidadeZ * atrito );
         }  
 
 

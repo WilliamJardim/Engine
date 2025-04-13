@@ -58,13 +58,13 @@ export default class Scene extends Base{
         super();
 
         this.wind = {
-            orientation : { x: 0.005, 
+            orientation : { x: 0.008, 
                             y: 0.001, 
-                            z: 0.001},
+                            z: 0.005},
 
             deslocationTrend: { x: 0.02, 
-                                y: 0.01, 
-                                z: 0.01},
+                                y: 0.001, 
+                                z: 0.001},
 
             intensity   : { x: 0, 
                             y: 0, 

@@ -88,7 +88,7 @@ export class GameCamera{
                                 stopJumpStartFallAgain: false,
                                 jumpVelocityY: 0,
                                 jumpCooldown: false,
-                                jumpStrength: 0.5 };
+                                jumpStrength: 30 };
         
         this.cameraVelocity = new THREE.Vector3();
         this.cameraDirection = new THREE.Vector3();

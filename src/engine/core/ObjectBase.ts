@@ -693,6 +693,9 @@ export default class ObjectBase extends Base{
         const objetosCena : ObjectBase[]     = Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                    .concat( this.scene!.additionalObjects );
         
+        const scene            : Scene|null     = esteObjeto.scene;
+        const gravity          : number         = ((scene||{}).gravity || -45);
+
         this.isFalling = true;
 
         //If this object have physics
@@ -862,9 +865,9 @@ export default class ObjectBase extends Base{
                     const randomZ = Math.random() * 0.00001;
 
                     this.somarRotation({
-                        x: randomX + ((wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ) * frameDelta * this.scene.frameDeltaIntensification,
-                        y: randomY + ((wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ) * frameDelta * this.scene.frameDeltaIntensification,
-                        z: randomZ + ((wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) ) * frameDelta * this.scene.frameDeltaIntensification
+                        x: randomX + ((wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ) * frameDelta * this.scene.frameDeltaIntensification * Math.abs(gravity) * 3,
+                        y: randomY + ((wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ) * frameDelta * this.scene.frameDeltaIntensification * Math.abs(gravity) * 3,
+                        z: randomZ + ((wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) ) * frameDelta * this.scene.frameDeltaIntensification * Math.abs(gravity) * 3
                     });
 
                     //O vento tambem empurra um pouco na queda

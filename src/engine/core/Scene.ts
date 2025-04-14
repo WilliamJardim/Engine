@@ -35,7 +35,7 @@ export default class Scene extends Base{
     public posicaoYchao:number;
     public camera:GameCamera;
     public sceneCounter:FrameCounter;
-    public frameDeltaIntensification:number = 60;
+    public frameDeltaIntensification:number = 1;
     public gravity:number;
     public atrito:number;
     public arrastoAr:number;
@@ -74,7 +74,7 @@ export default class Scene extends Base{
         };
 
         this.posicaoYchao = 1.6;
-        this.gravity = -0.03;     // Gravidade que puxa para baixo
+        this.gravity = -45;     // Gravidade que puxa para baixo
         this.atrito  = 0.97;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
         this.arrastoAr = 0.97;    // Arrast do ar(afeta objetos com aceleração que estiverem no ar)
 

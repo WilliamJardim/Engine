@@ -295,3 +295,5 @@ Aplicar na física de desaceleração uma desaceleração que leva em conta a ma
 
 NA PRATICA EU SÒ PRECISO CRIAR A LOGICA QUE quanto mais pesado e mais velocidade ele tiver atingido, MAIS LENTO vai ser pra ele desacelerar
 
+O PROBLEMA ESTÀ SENDO QUE A DESACELERAÇÂO È SEMPRE MUITO RAPIDA
+em alguns casos pode ser, mais, nem sempre. Precisa levar isso em conta

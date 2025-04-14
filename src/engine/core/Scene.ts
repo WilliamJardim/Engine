@@ -38,6 +38,7 @@ export default class Scene extends Base{
     public frameDeltaIntensification:number = 1;
     public objectPhysicsUpdateRate:number = 40;
     public objectPhysicsDesaceleracaoUpdateRate:number = 0.000000000005; //Afeta a velocidade de desaceleracao de objetos
+
     public gravity:number;
     public atrito:number;
     public arrastoAr:number;
@@ -101,7 +102,7 @@ export default class Scene extends Base{
 
         this.camera = new GameCamera(this);
 
-        this.sceneCounter = new FrameCounter( 60, 1000 );
+        this.sceneCounter = new FrameCounter( 1000, 1000 );
 
         this.objects = [];
 

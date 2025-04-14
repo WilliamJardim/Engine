@@ -12,6 +12,7 @@ import GlobalContext from './core/GlobalContext';
 import Scene from './core/Scene';
 import isCollision from './utils/logic/isCollision';
 import ProximityBounds from './utils/interfaces/ProximityBounds';
+import ObjectVelocity from './interfaces/ObjectVelocity';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
 export const globalContext = new GlobalContext({});
@@ -66,6 +67,8 @@ export function EngineMain( scene: Scene,
     scene.add(cuboChao);
     globalContext.set('ChaoRef', cuboChao);
 
+    var f = 0;
+
     // Cria um cubo simples para testar
     const cubo = createCube( 
         //The attributes
@@ -87,7 +90,11 @@ export function EngineMain( scene: Scene,
                 {
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
-                        
+                        if( propioObjeto.objectBelow != null && f == 0){
+                            propioObjeto.somarVelocity({ x: 5 } as ObjectVelocity);
+                            f = 1
+                        }
+                        console.log(propioObjeto.getVelocity().x)
                     }
                 }
             ]
@@ -120,6 +127,7 @@ export function EngineMain( scene: Scene,
                 {
                     loop: function( propioObjeto:ObjectBase ){
                         //console.log( propioObjeto.infoProximity )
+                        
                     },
 
                     whenFall: function(){

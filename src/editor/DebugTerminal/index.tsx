@@ -115,6 +115,7 @@ export default function DebugTerminal()
 
         // Converte alguns termos para globalContext
         let termosContextoGlobal = entradaUsuario.split('Engine').join('globalContext'); //Por exemplo, toda vez que houver Engine, ele entende que é o contexto global da Engine e da Cena
+        termosContextoGlobal = entradaUsuario.split('E').join('globalContext'); 
         entradaUsuarioAtual = termosContextoGlobal;
 
         // Salva o comando executado

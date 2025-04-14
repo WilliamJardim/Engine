@@ -81,7 +81,8 @@ export default class ObjectBase extends Base{
             forward: false,
             backward: false,
             right: false,
-            left: false
+            left: false,
+            steps: 1
         };
 
         this.physicsState = this.movimentState.physics || {
@@ -265,8 +266,24 @@ export default class ObjectBase extends Base{
         this.getPosition().z! += z;
     }
 
+    public subtrairPosicaoX( x:number ): void{
+        this.getPosition().x! -= x;
+    }
+    
+    public subtrairPosicaoY( y:number ): void{
+        this.getPosition().y! -= y;
+    }
+
+    public subtrairPosicaoZ( z:number ): void{
+        this.getPosition().z! -= z;
+    }
+
     public somarEixo(eixo:string, valor:number): void{
         (this.getPosition() as ObjectPosition)[eixo] += valor;
+    }
+
+    public subtrairEixo(eixo:string, valor:number): void{
+        (this.getPosition() as ObjectPosition)[eixo] -= valor;
     }
 
     /**
@@ -909,12 +926,31 @@ export default class ObjectBase extends Base{
         const frameDeltaIntensification: number = (((scene||{}).frameDeltaIntensification || 1));
         const objectPhysicsUpdateRate:number    = (((scene||{}).objectPhysicsUpdateRate || 10));
         const objectPhysicsDesaceleracaoUpdateRate:number = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
+        const movimentState:MovementState       = objeto.movimentState;
 
         const objetosCena : ObjectBase[]  =  Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                  .concat( this.scene!.additionalObjects );
 
         /**
-        * Fisica de movimento de acordo com a velocidade
+        * Movimento simples de objeto, SEM USAR FISICA 
+        * Realiza uma movimentação simples, para cada uma das direções possiveis, sem usar fisica.
+        */
+        if( movimentState.forward == true ){
+            objeto.somarPosicaoX( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+        }
+        if( movimentState.backward == true ){
+            objeto.subtrairPosicaoX( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+        }
+        if( movimentState.left == true ){
+            objeto.subtrairPosicaoZ( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+        }
+        if( movimentState.right == true ){
+            objeto.somarPosicaoZ( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+        }
+
+        /**
+        * Fisica de movimento de acordo com a velocidade com desaceleração gradual da velocidade.
+        * OBS: Aqui não tem mecanica de acionar movimentos de acordo com o movimentState, apenas lida com a atualização do movimento e faz a desaceleração natural QUANDO O OBJETO TEM UMA VELOCIDADE ATIVA EM SEUS EIXOS
         */
         const velocidadeX = velocidadeObjeto.x;
         const sinalX      = Math.sign(velocidadeX);

@@ -5,6 +5,7 @@ export default interface MovementState{
     backward: boolean, 
     left: boolean, 
     right: boolean,
+    steps: number; //Número de passos que o objeto dá(o tento que ele vai andar por movimentação baisca, em qualquer eixo)
 
     isJumping?: boolean,      // Controle se está pulando ou não
     stopJumpStartFallAgain?: boolean,
@@ -13,7 +14,4 @@ export default interface MovementState{
     jumpCooldown?: boolean,   // Evitar pular várias vezes rapidamente
 
     physics?: PhysicsState,
-
-    //Movimento diagonal
-    diagonal?: MovementState
 }

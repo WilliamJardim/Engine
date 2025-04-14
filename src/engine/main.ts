@@ -90,11 +90,16 @@ export function EngineMain( scene: Scene,
                 {
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
-                        if( propioObjeto.objectBelow != null && f == 0){
-                            propioObjeto.somarVelocity({ x: 25 } as ObjectVelocity);
-                            f = 1
+                        if( propioObjeto.objectBelow != null ){
+                            console.log(propioObjeto.getVelocity().x)
+
+                            if( f <= 300 ){
+                                propioObjeto.somarVelocity({ x: 1.2 } as ObjectVelocity);
+                                f++;
+                            }
                         }
-                        console.log(propioObjeto.getVelocity().x)
+                        
+                        
                     }
                 }
             ]

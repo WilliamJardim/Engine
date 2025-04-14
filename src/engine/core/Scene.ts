@@ -24,6 +24,7 @@ import isProximity from '../utils/logic/isProximity';
 import {globalContext} from '../../engine/main.ts';
 import isCollision from '../utils/logic/isCollision.ts';
 import Wind from '../interfaces/Wind.ts';
+import FrameCounter from './FrameCounter.ts';
 
 export default class Scene extends Base{
 
@@ -33,7 +34,8 @@ export default class Scene extends Base{
     public canvasRef:React.RefObject<HTMLDivElement>;
     public posicaoYchao:number;
     public camera:GameCamera;
-    public clockCamera:THREE.Clock;
+    public sceneCounter:FrameCounter;
+    public frameDeltaIntensification:number = 60;
     public gravity:number;
     public atrito:number;
     public arrastoAr:number;
@@ -97,7 +99,7 @@ export default class Scene extends Base{
 
         this.camera = new GameCamera(this);
 
-        this.clockCamera = new THREE.Clock();
+        this.sceneCounter = new FrameCounter( 60, 1000 );
 
         this.objects = [];
 
@@ -440,33 +442,36 @@ export default class Scene extends Base{
                               context.camera.getControls() );
     
             //Outras coisas que vão acontecer
-            const frameDelta = context.clockCamera.getDelta(); // Tempo entre frames
-            
+            const frameDelta = context.sceneCounter.calculateFrameDelta(); // Tempo entre frames
+
             //Atualiza a camera
             context.camera.Update( frameDelta );
     
             //Atualiza o pulo
-            context.updateJump();
+            context.updateJump( frameDelta );
     
             //Atualiza a posição do crosshair
             UpdateCrosshair( context, 
                              context.camera,
-                             context.camera.getCrosshair() );
+                             context.camera.getCrosshair(),
+                             frameDelta );
     
             //Atualiza para onde a camera está apontando
             TrackCrosshair( context, 
                             context.camera,
                             context.camera.getCrosshair(),
                             context.camera.getRaycaster(),
-                            context.camera.getMousePosition() );
+                            context.camera.getMousePosition(),
+                            frameDelta );
     
             EngineLoop( context, 
                         context.renderer,
                         context.canvasRef,
                         context.camera, 
-                        context.camera.getControls() );
+                        context.camera.getControls(),
+                        frameDelta );
 
-            context.updateObjects();
+            context.updateObjects( frameDelta );
 
             // 1. Renderizar a cena normal para o framebuffer
             context.renderer.setRenderTarget(context.renderTarget);
@@ -494,7 +499,7 @@ export default class Scene extends Base{
     /**
     * Update all objects in the scene 
     */
-    public updateObjects(): void{
+    public updateObjects( frameDelta:number ): void{
 
         const context = this;
 
@@ -528,7 +533,7 @@ export default class Scene extends Base{
                 /**
                 * Update the object 
                 */
-                currentObject.updateObject();
+                currentObject.updateObject( frameDelta );
 
             }catch(e){
                 console.log(e)
@@ -540,7 +545,7 @@ export default class Scene extends Base{
     //Função para atualizar o pulo do personagem em primeira pessoa
     //TODO: CONTINUAR ESSA LOGICA QUE TÁ BUGADA
     //BUG: ESSA FUNÇÂO FAZ A CAMERA FICAR UM POUCO ACIMA DO CHÂO QUANDO PULA PERTO DA CAIXA
-    public updateJump() {
+    public updateJump( frameDelta:number ) {
         const cameraMovement = this.camera.getMovement();
 
         if(cameraMovement.jumpVelocityY == undefined){
@@ -552,51 +557,11 @@ export default class Scene extends Base{
             // Aplica a gravidade (reduz a velocidade vertical a cada frame)
 
             // Se está subindo, aplicamos a gravidade para diminuir a velocidade
-            cameraMovement.jumpVelocityY -= this.gravity;  // Acelera negativamente para reduzir a velocidade de subida
-            this.camera.getPosition().y += cameraMovement.jumpVelocityY;  // Move a câmera para cima
+            cameraMovement.jumpVelocityY -= this.gravity * frameDelta * this.frameDeltaIntensification;  // Acelera negativamente para reduzir a velocidade de subida
+            this.camera.getPosition().y += cameraMovement.jumpVelocityY * frameDelta * this.frameDeltaIntensification;  // Move a câmera para cima
             this.camera.objectBase.isFalling = true
         }
     }
-
-    /*
-    public updateJump(deltaTime: number) {
-        const movement = this.camera.getMovement();
-        const position = this.camera.getPosition();
-    
-        const GRAVITY = -9800; // unidades por segundo ao quadrado (ajuste conforme necessário)
-        const JUMP_FORCE = 3500; // impulso inicial do pulo (ajuste conforme necessário)
-        const TERMINAL_VELOCITY = -20000; // velocidade máxima de queda
-    
-        // Inicializa se ainda não tiver
-        if (movement.jumpVelocityY === undefined) movement.jumpVelocityY = 0;
-        if (movement.isJumping === undefined) movement.isJumping = false;
-    
-        // Se apertou o botão de pulo e está no chão
-        if (movement.isJumping == true && this.camera.objectBase.isFalling == false ) {
-            movement.jumpVelocityY = JUMP_FORCE;
-            movement.isJumping = false; // Zera o sinal de pulo
-        }
-    
-        // Aplica física do pulo
-        if (movement.isJumping || this.camera.objectBase.isFalling) {
-            // Aplica gravidade
-            movement.jumpVelocityY += GRAVITY * deltaTime;
-            movement.jumpVelocityY = Math.max(movement.jumpVelocityY, TERMINAL_VELOCITY);
-    
-            // Move a câmera com base na velocidade atual
-            position.y += movement.jumpVelocityY * deltaTime;
-    
-            // Verifica se chegou ao chão
-            if (position.y <= this.camera.objectBase.groundY) {
-                //position.y = this.camera.objectBase.groundY;
-                //movement.jumpVelocityY = 0;
-                //movement.isJumping = false;
-                //this.camera.objectBase.isFalling = false;
-            } else {
-                //this.camera.objectBase.isFalling = true;
-            }
-        }
-    }*/
 
     public handleResize(){
         if (!this.canvasRef.current) return;

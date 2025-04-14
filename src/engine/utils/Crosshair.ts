@@ -19,7 +19,8 @@ export default function createCrosshair(): Crosshair{
 //Atualiza a posição do Crosshair
 export function UpdateCrosshair( scene: Scene, 
                                  camera: GameCamera,
-                                 crosshair: Crosshair
+                                 crosshair: Crosshair,
+                                 frameDelta: number
 ): void{
     crosshair.position.copy( camera.getPosition() );
     crosshair.quaternion.copy( camera.getQuaternion() );
@@ -31,7 +32,9 @@ export function TrackCrosshair( scene: Scene,
                                 camera: GameCamera,
                                 crosshair: Crosshair,
                                 raycaster: THREE.Raycaster,
-                                mousePosition: THREE.Vector2 ){
+                                mousePosition: THREE.Vector2,
+                                frameDelta: number
+){
 
     raycaster.setFromCamera( mousePosition, camera.getCamera() );
   

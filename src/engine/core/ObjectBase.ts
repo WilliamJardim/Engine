@@ -478,7 +478,7 @@ export default class ObjectBase extends Base{
     /**
     * Atualiza status de colisão e proximidade com outros objetos 
     */
-    public updateCollisionState(): void{
+    public updateCollisionState( frameDelta:number ): void{
 
         const esteObjeto  : ObjectBase       = this;
 
@@ -686,7 +686,7 @@ export default class ObjectBase extends Base{
     /**
     * Atualiza a fisica do objeto 
     */
-    public updatePhysics(): void{
+    public updatePhysics( frameDelta:number ): void{
 
         const esteObjeto  : ObjectBase       = this;
 
@@ -836,8 +836,8 @@ export default class ObjectBase extends Base{
                 this.objectBelow = null;
 
                 if( this.getVelocity().y != undefined ){
-                    this.getVelocity().y += Math.abs( this.scene.gravity );
-                    this.getPosition().y -= this.getVelocity().y;
+                    this.getVelocity().y += Math.abs( this.scene.gravity ) * frameDelta * this.scene.frameDeltaIntensification;
+                    this.getPosition().y -= this.getVelocity().y * frameDelta * this.scene.frameDeltaIntensification;
 
                     this.objEvents
                     .getEventos()
@@ -862,16 +862,16 @@ export default class ObjectBase extends Base{
                     const randomZ = Math.random() * 0.00001;
 
                     this.somarRotation({
-                        x: randomX + ((wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ),
-                        y: randomY + ((wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ),
-                        z: randomZ + ((wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) )
+                        x: randomX + ((wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ) * frameDelta * this.scene.frameDeltaIntensification,
+                        y: randomY + ((wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ) * frameDelta * this.scene.frameDeltaIntensification,
+                        z: randomZ + ((wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) ) * frameDelta * this.scene.frameDeltaIntensification
                     });
 
                     //O vento tambem empurra um pouco na queda
                     this.somarVelocity({
-                        x: randomX + ( ((wind.deslocationTrend || {}).x || 0) + (wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ),
-                        y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ),
-                        z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) )
+                        x: randomX + ( ((wind.deslocationTrend || {}).x || 0) + (wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ) * frameDelta,
+                        y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ) * frameDelta,
+                        z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) ) * frameDelta
                     });
                 }
 
@@ -893,7 +893,7 @@ export default class ObjectBase extends Base{
     /**
     * Atualiza a movimentação do objeto, e do objeto em relação aos outros objetos na cena, como por exemplo objetos que podem carregar ele
     */
-    public updateMovement(): void{
+    public updateMovement( frameDelta:number ): void{
 
         const objeto           : ObjectBase     = this;
         const velocidadeObjeto : ObjectVelocity = objeto.getVelocity();
@@ -901,6 +901,7 @@ export default class ObjectBase extends Base{
         const gravity          : number         = ((scene||{}).gravity || 0);
         const atrito           : number         = (((scene||{}).atrito || 0));
         const arrastoAr        : number         = (((scene||{}).arrastoAr || 0));
+        const frameDeltaIntensification: number = (((scene||{}).frameDeltaIntensification || 60));
 
         const objetosCena : ObjectBase[]  =  Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                  .concat( this.scene!.additionalObjects );
@@ -919,9 +920,9 @@ export default class ObjectBase extends Base{
         
         if( velocidadeX != 0 )
         {   
-            objeto.somarPosicaoX( velocidadeX );
+            objeto.somarPosicaoX( velocidadeX * frameDelta * frameDeltaIntensification );
 
-            let novaVelocidadeX = velocidadeObjeto.x - (gravity * -sinalX);
+            let novaVelocidadeX = velocidadeObjeto.x - (gravity * -sinalX) * frameDelta * frameDeltaIntensification;
 
             // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
             if(Math.sign(novaVelocidadeX) !== sinalX){
@@ -930,11 +931,11 @@ export default class ObjectBase extends Base{
 
             //No ar, ele vai ter arrasto do ar
             if( objeto.isFalling == true ){
-                objeto.setVelocityX( novaVelocidadeX * arrastoAr );
+                objeto.setVelocityX( novaVelocidadeX * arrastoAr * frameDelta * frameDeltaIntensification );
 
             //No chao, ele vai ter atrito
             }else{
-                objeto.setVelocityX( novaVelocidadeX * atrito );
+                objeto.setVelocityX( novaVelocidadeX * atrito * frameDelta * frameDeltaIntensification );
             }
         }   
 
@@ -945,9 +946,9 @@ export default class ObjectBase extends Base{
             //Engine.get('CuboRef').setVelocity({y:10})
             if( objeto.isFalling == false && objeto.objectBelow == null ){
                 objeto.isRecevingYMovementPhysics = true;
-                objeto.somarPosicaoY( velocidadeY );
+                objeto.somarPosicaoY( velocidadeY * frameDelta );
 
-                let novaVelocidadeY = velocidadeObjeto.y - (gravity * -sinalY);
+                let novaVelocidadeY = velocidadeObjeto.y - (gravity * -sinalY) * frameDelta * frameDeltaIntensification;
 
                 // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
                 if(Math.sign(novaVelocidadeY) !== sinalY){
@@ -955,7 +956,7 @@ export default class ObjectBase extends Base{
                     objeto.isRecevingYMovementPhysics = false;
                 }
 
-                objeto.setVelocityY( novaVelocidadeY * arrastoAr );
+                objeto.setVelocityY( novaVelocidadeY * arrastoAr * frameDelta * frameDeltaIntensification );
             }
 
         }else{
@@ -964,9 +965,9 @@ export default class ObjectBase extends Base{
         
         if( velocidadeZ != 0 )
         {   
-            objeto.somarPosicaoZ( velocidadeZ );
+            objeto.somarPosicaoZ( velocidadeZ * frameDelta * frameDeltaIntensification );
 
-            let novaVelocidadeZ = velocidadeObjeto.z - (gravity * -sinalZ);
+            let novaVelocidadeZ = velocidadeObjeto.z - (gravity * -sinalZ) * frameDelta * frameDeltaIntensification;
 
             // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
             if(Math.sign(novaVelocidadeZ) !== sinalZ){
@@ -975,11 +976,11 @@ export default class ObjectBase extends Base{
 
             //No ar, ele vai ter arrasto do ar
             if( objeto.isFalling == true ){
-                objeto.setVelocityZ( novaVelocidadeZ * arrastoAr );
+                objeto.setVelocityZ( novaVelocidadeZ * arrastoAr * frameDelta * frameDeltaIntensification );
 
             //No chao, ele vai ter atrito
             }else{
-                objeto.setVelocityZ( novaVelocidadeZ * atrito );
+                objeto.setVelocityZ( novaVelocidadeZ * atrito * frameDelta * frameDeltaIntensification );
             }
         }  
 
@@ -997,7 +998,7 @@ export default class ObjectBase extends Base{
     /**
     * Atualize objetos anexados/grudados 
     */
-    public updateAttachments(): void{
+    public updateAttachments( frameDelta:number ): void{
 
         const objeto  : ObjectBase = this;
         const cena    : Scene|null = objeto.getScene();
@@ -1124,7 +1125,7 @@ export default class ObjectBase extends Base{
     /**
     * Atualiza os eventos internos do objeto 
     */
-    public updateEvents(): void{
+    public updateEvents( frameDelta:number ): void{
         const objeto  : ObjectBase       = this;
         const eventos : ObjectEventLayer = objeto.objEvents;
 
@@ -1228,24 +1229,24 @@ export default class ObjectBase extends Base{
         }
     }
 
-    public updateObject(): void{
+    public updateObject( frameDelta:number ): void{
         /**
         * Principal: Fisica, Movimentação e Eventos 
         */
-        this.updatePhysics();
+        this.updatePhysics( frameDelta );
 
         /**
         * Igualmente importante, atualiza quais objetos estão colidindo/e os que estão proximos com quais objetos 
         */
-        this.updateCollisionState();
+        this.updateCollisionState( frameDelta );
 
-        this.updateMovement();
-        this.updateEvents();
+        this.updateMovement( frameDelta );
+        this.updateEvents( frameDelta );
 
         /**
         * Atualiza os "attachments" ou "objeto anexados/grudados" ao objeto atual
         */
-        this.updateAttachments();
+        this.updateAttachments( frameDelta );
     }
 
     /**

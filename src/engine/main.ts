@@ -194,7 +194,8 @@ export function EngineLoop( scene: Scene,
                             renderer: THREE.WebGLRenderer,
                             canvasRef: React.RefObject<HTMLDivElement>,
                             camera: GameCamera, 
-                            cameraControls: PointerLockControls 
+                            cameraControls: PointerLockControls,
+                            frameDelta: number 
 ): void{
 
     const htmlCanvas = globalContext.get('htmlCanvas');

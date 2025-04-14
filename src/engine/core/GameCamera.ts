@@ -221,7 +221,7 @@ export class GameCamera{
         cameraControls.moveForward(-cameraVelocity.z * frameDelta);
 
         //Atualiza o ObjectBase
-        this.objectBase.updateObject();
+        this.objectBase.updateObject( frameDelta );
     }
 
     public setAspect( aspecto:number ): void{

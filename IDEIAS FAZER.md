@@ -288,3 +288,4 @@ Se um objeto em alta velocidade bater num Objeto com massa muito maior que a del
 
 Um objeto vai poder ter física de bola, que vai fazer o objeto quicar quando cair no chão
 
+BUG: Por causa do frame delta, se o jogador e os objetos estiverem caindo e eu abrir a tela de outro aplicativo enquanto o jogo está rodando no naveador, quando eu volto, eles não colidiram com o chao, e estão caindo infinitamente no void

@@ -277,3 +277,14 @@ Certos terrenos inclinados podem aumentar ou diminuir a aceleração naturalment
 Adicionar um outro tipo de movimentação alternativo, sem usar fisica
 
 # Usar uma lógica deltaTime, para poder deixar os movimentos fluidos independente do FPS do jogo
+
+14/04/2025
+# Novas ideias
+Um objeto pode carregar o outro que estiver em cima dele
+
+Se um objeto em alta velocidade colidir com outro objeto, acontece empurrão dele pra pra frente 
+
+Se um objeto em alta velocidade bater num Objeto com massa muito maior que a dele, ou um objeto estático, como uma parede por exemplo, esse objeto que bateu vai perder um pouco da aceleração, e vai recochetear(voltar) para traz na direção oposta da colisão 
+
+Um objeto vai poder ter física de bola, que vai fazer o objeto quicar quando cair no chão
+

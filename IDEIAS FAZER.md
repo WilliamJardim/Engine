@@ -289,3 +289,9 @@ Se um objeto em alta velocidade bater num Objeto com massa muito maior que a del
 Um objeto vai poder ter física de bola, que vai fazer o objeto quicar quando cair no chão
 
 BUG: Por causa do frame delta, se o jogador e os objetos estiverem caindo e eu abrir a tela de outro aplicativo enquanto o jogo está rodando no naveador, quando eu volto, eles não colidiram com o chao, e estão caindo infinitamente no void
+
+# DESACELERAÇÂO QUE LEVA EM CONTA A MASSA DO OBJETO COM FORÇA DELE
+Aplicar na física de desaceleração uma desaceleração que leva em conta a massa, ou seja que leva em conta o peso do objeto. Ou seja quanto mais pesado e mais velocidade ele tiver atingido, mais rápido ele vai atualizar a posição dele e MAIS LENTO vai ser pra ele desacelerar
+
+NA PRATICA EU SÒ PRECISO CRIAR A LOGICA QUE quanto mais pesado e mais velocidade ele tiver atingido, MAIS LENTO vai ser pra ele desacelerar
+

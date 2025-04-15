@@ -35,9 +35,11 @@ export default class Scene extends Base{
     public posicaoYchao:number;
     public camera:GameCamera;
     public sceneCounter:FrameCounter;
-    public frameDeltaIntensification:number = 1;
+    public normalSpeed = 1;
+    public slowSpeed = 0.05;
+    public frameDeltaIntensification:number = this.normalSpeed;
     public objectPhysicsUpdateRate:number = 1; //Permite intensificar os efeitos da fisica nos objetos
-    public objectPhysicsDesaceleracaoUpdateRate:number = 7.5; //Afeta a velocidade de desaceleracao de objetos
+    public objectPhysicsDesaceleracaoUpdateRate:number = 5.5; //Afeta a velocidade de desaceleracao de objetos
 
     public gravity:number;
     public atrito:number = 1;

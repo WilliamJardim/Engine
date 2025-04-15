@@ -37,11 +37,11 @@ export default class Scene extends Base{
     public sceneCounter:FrameCounter;
     public frameDeltaIntensification:number = 1;
     public objectPhysicsUpdateRate:number = 1; //Permite intensificar os efeitos da fisica nos objetos
-    public objectPhysicsDesaceleracaoUpdateRate:number = 0.000000000005; //Afeta a velocidade de desaceleracao de objetos
+    public objectPhysicsDesaceleracaoUpdateRate:number = 2.5; //Afeta a velocidade de desaceleracao de objetos
 
     public gravity:number;
-    public atrito:number;
-    public arrastoAr:number;
+    public atrito:number = 1;
+    public arrastoAr:number = 1;
 
     public objects:ObjectBase[];
     public additionalObjects:ObjectBase[];
@@ -78,8 +78,8 @@ export default class Scene extends Base{
 
         this.posicaoYchao = 1.6;
         this.gravity = -45;     // Gravidade que puxa para baixo
-        this.atrito  = 0.97;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
-        this.arrastoAr = 0.97;    // Arrast do ar(afeta objetos com aceleração que estiverem no ar)
+        this.atrito  = 1;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
+        this.arrastoAr = 1;    // Arrast do ar(afeta objetos com aceleração que estiverem no ar)
 
         //Obtem o canvas
         this.canvasRef = canvasRef;

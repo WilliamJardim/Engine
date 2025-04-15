@@ -114,9 +114,9 @@ export default function DebugTerminal()
         entradaUsuarioAtual = entradaUsuarioAtual.trim();
 
         // Converte alguns termos para globalContext
-        let termosContextoGlobal = entradaUsuario.split('Engine').join('globalContext'); //Por exemplo, toda vez que houver Engine, ele entende que é o contexto global da Engine e da Cena
-        termosContextoGlobal = entradaUsuario.split('E').join('globalContext'); 
-        entradaUsuarioAtual = termosContextoGlobal;
+        let termosContextoGlobal;
+        termosContextoGlobal = entradaUsuario.split('Engine').join('globalContext'); //Por exemplo, toda vez que houver Engine, ele entende que é o contexto global da Engine e da Cena
+        entradaUsuarioAtual  = termosContextoGlobal;
 
         // Salva o comando executado
         adicionarHistorico( entradaUsuarioAtual );

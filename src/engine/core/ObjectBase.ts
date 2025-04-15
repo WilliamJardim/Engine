@@ -966,7 +966,7 @@ export default class ObjectBase extends Base{
             objeto.somarPosicaoX( velocidadeX * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
 
             // Vai desacelerando
-            let novaVelocidadeX = (velocidadeObjeto.x - (gravity * -sinalX) * objectPhysicsDesaceleracaoUpdateRate * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate ) 
+            let novaVelocidadeX = (velocidadeObjeto.x - objectPhysicsDesaceleracaoUpdateRate * sinalX * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
 
             // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
             if(Math.sign(novaVelocidadeX) !== sinalX){
@@ -987,12 +987,12 @@ export default class ObjectBase extends Base{
         //BUG: O EIXO Y NÂO CONSEGUE RECEBER UMA VELOCIDADE IGUAL NOS OUTROS POR CAUSA DA FISICA DE QUEDA QUE MANIPULA O EIXO Y
         if( velocidadeY != 0 )
         {   
-            //Engine.get('CuboRef').setVelocity({y:10})
+            //Engine.get('CuboRef').setVelocity({x:5})
             if( objeto.isFalling == false && objeto.objectBelow == null ){
                 objeto.isRecevingYMovementPhysics = true;
                 objeto.somarPosicaoY( velocidadeY * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
 
-                let novaVelocidadeY = (velocidadeObjeto.y - (gravity * -sinalY) * objectPhysicsDesaceleracaoUpdateRate * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate ) 
+                let novaVelocidadeY = (velocidadeObjeto.y - objectPhysicsDesaceleracaoUpdateRate * sinalY * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
 
                 // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
                 if(Math.sign(novaVelocidadeY) !== sinalY){
@@ -1013,7 +1013,7 @@ export default class ObjectBase extends Base{
         {   
             objeto.somarPosicaoZ( velocidadeZ * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
 
-            let novaVelocidadeZ = (velocidadeObjeto.z - (gravity * -sinalZ) * objectPhysicsDesaceleracaoUpdateRate * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate ) ;
+            let novaVelocidadeZ = (velocidadeObjeto.z - objectPhysicsDesaceleracaoUpdateRate * sinalZ * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
 
             // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
             if(Math.sign(novaVelocidadeZ) !== sinalZ){

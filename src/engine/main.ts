@@ -93,7 +93,7 @@ export function EngineMain( scene: Scene,
                         if( propioObjeto.objectBelow != null ){
                             console.log(propioObjeto.getVelocity().x)
 
-                            if( f <= 300 ){
+                            if( f <= 5 ){
                                 propioObjeto.somarVelocity({ x: 1.2 } as ObjectVelocity);
                                 f++;
                             }

@@ -37,7 +37,7 @@ export default class Scene extends Base{
     public sceneCounter:FrameCounter;
     public frameDeltaIntensification:number = 1;
     public objectPhysicsUpdateRate:number = 1; //Permite intensificar os efeitos da fisica nos objetos
-    public objectPhysicsDesaceleracaoUpdateRate:number = 2.5; //Afeta a velocidade de desaceleracao de objetos
+    public objectPhysicsDesaceleracaoUpdateRate:number = 7.5; //Afeta a velocidade de desaceleracao de objetos
 
     public gravity:number;
     public atrito:number = 1;

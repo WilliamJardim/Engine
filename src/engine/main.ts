@@ -39,6 +39,7 @@ export function EngineMain( scene: Scene,
         {
             material: createMaterialByImage('/textures/grama.jpg'), //The material,
             name: 'Chao',
+            classes: ['ground'],
             isNPC: false,
             havePhysics: false,
             invisible: false,

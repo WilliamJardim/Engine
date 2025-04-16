@@ -134,6 +134,16 @@ export default class ObjectBase extends Base{
     }
 
     /**
+    * Verifica se este objeto tem uma classe especifica 
+    */
+    public haveClass( className:string ): boolean{
+        if(this.objProps.classes){
+            return this.objProps.classes.includes(className);
+        }
+        return false;
+    }
+
+    /**
     * Retorna todos os objetos anexados ao objeto atual
     */
     public getAttachments(): Array<string|ObjectAttachment>|undefined{
@@ -1030,14 +1040,44 @@ export default class ObjectBase extends Base{
             }
         }  
 
+        //Engine.get('CuboRef').getPosition().x = Engine.get('CaixaRef').getPosition().x
+        //Engine.get('CuboRef').getPosition().y = Engine.get('CaixaRef').getPosition().y + 50
+        //Engine.get('CaixaRef').somarVelocity({x: 10});
+        //Engine.get('CaixaRef').somarVelocity({x: 120});
 
-        // Se o objeto atual estiver em cima de outro objeto, este objeto o carrega junto ao ser mover
-        if( objeto.objectBelow ){
-            //Se o objeto se moveu
-            if( objeto.objectBelow ){
-                //
-            }
-        }                                
+        /**
+        * Se o objeto atual estiver em cima de outro objeto, este objeto o carrega junto ao ser mover
+        * OBS: Isso tava anulando a fisica de desaceleração e só funcionava ao realizar movimentos com força de aceleração E NAO TA FUNCIONANDO EM MOVIMENTOS SIMPLES
+        * Pra nao anular a fisica de desaceleração eu adicionei limitações.
+        */
+        if( objeto.objectBelow != undefined && 
+            objeto.objectBelow != null &&
+            //O objeto abaixo precisa ter fisica e poder colidir
+            objeto.objectBelow.objProps.havePhysics == true &&
+            objeto.objectBelow.objProps.collide == true &&
+            //O objeto atual tambem precisa ter fisica e poder colidir
+            objeto.objProps.havePhysics == true &&
+            objeto.objProps.collide == true &&
+            //Essa regra não vale para chãos
+            objeto.objectBelow.haveClass('ground') == false
+        ){
+             const esteObjeto       = objeto;
+             const objetoAbaixoDele = objeto.objectBelow;
+             
+             const coeficiente     = 0.5; // pode ser dinâmico
+             const massa           = esteObjeto.getMassaTotal();
+             const normal          = massa * Math.abs(gravity);
+             const atritoCalculado = coeficiente * normal;
+
+             const deltaVX = objetoAbaixoDele.getVelocity().x - esteObjeto.getVelocity().x;
+             const deltaVZ = objetoAbaixoDele.getVelocity().z - esteObjeto.getVelocity().z;
+
+             const forcaX = Math.min(Math.abs(deltaVX), atritoCalculado) * Math.sign(deltaVX);
+             const forcaZ = Math.min(Math.abs(deltaVZ), atritoCalculado) * Math.sign(deltaVZ);
+
+             esteObjeto.getVelocity().x += forcaX;
+             esteObjeto.getVelocity().z += forcaZ;   
+        }                            
     
     }
 

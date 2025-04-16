@@ -233,11 +233,11 @@ O vento vai poder empurrar objetos e o jogador automaticamente, dependendo do pe
 Tambem o jogador vai ter um peso
 
 # Força do vento na queda
-Na queda o vento empurra levemente objetos alterando a posição deles.
+(FIZ) Na queda o vento empurra levemente objetos alterando a posição deles.
 Deixar isso mais realista.
 (FEITO) ADICIONAR UM NOVO VETOR PARA CONTROLAR O DESLOCAMENTE X Y Z DESSE MOVIMENTO AO CAIR EM FUNÇÂO DO VENTO
 
-TROCAR ISSO por somarVelocity, e criar atualização de movimento do objeto para permitir acompanhar força, e desaceleração
+(FIZ) TROCAR ISSO por somarVelocity, e criar atualização de movimento do objeto para permitir acompanhar força, e desaceleração
 
 <code>
 //O vento tambem empurra um pouco na queda
@@ -249,7 +249,7 @@ this.somarPosition({
 });
 </code>
 
-ADICIONAR ATUALIZAÇÂO DE MOVIMENTO DO OBJETO, USANDO ESSE VELOCITY, O OBJETO VAI IR ANDANDO DE FORMA REALISTA COM ESSA ACELRAÇÂO, E TAMBEM VAI DESSACELERANDO GRADUALMENTE, PERDENDO VELOCIDADE, E PARANDO DE SE MOVER
+(FIZ) ADICIONAR ATUALIZAÇÂO DE MOVIMENTO DO OBJETO, USANDO ESSE VELOCITY, O OBJETO VAI IR ANDANDO DE FORMA REALISTA COM ESSA ACELRAÇÂO, E TAMBEM VAI DESSACELERANDO GRADUALMENTE, PERDENDO VELOCIDADE, E PARANDO DE SE MOVER
 
 
 
@@ -274,13 +274,13 @@ para simular a perda de velocidade ao bater por exemplo.
 Certos terrenos inclinados podem aumentar ou diminuir a aceleração naturalmente
 
 # Objetos podem ter movimentação simples SEM FISICA
-Adicionar um outro tipo de movimentação alternativo, sem usar fisica
+(FIZ) Adicionar um outro tipo de movimentação alternativo, sem usar fisica
 
 # Usar uma lógica deltaTime, para poder deixar os movimentos fluidos independente do FPS do jogo
 
 14/04/2025
 # Novas ideias
-Um objeto pode carregar o outro que estiver em cima dele
+(FIZ) Um objeto pode carregar o outro que estiver em cima dele
 
 Se um objeto em alta velocidade colidir com outro objeto, acontece empurrão dele pra pra frente 
 

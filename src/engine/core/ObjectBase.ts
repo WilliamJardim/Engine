@@ -41,6 +41,9 @@ export default class ObjectBase extends Base{
     public isMovimentoTravadoPorColisao:boolean;
     public onCreate:Function|null;
 
+    /** OUTROS ATRIBUTOS **/
+    public lastPosition:ObjectPosition = {x: 0, y: 0, z: 0};
+
     constructor(mesh: any, 
                 objProps?:ObjectProps
             
@@ -238,8 +241,18 @@ export default class ObjectBase extends Base{
         return this.scene;
     }
 
+    /**
+    * Obtém a posição: X Y Z do objeto na cena
+    */
     public getPosition(): THREE.Vector3{
         return this.getMesh().position;
+    }
+
+    /**
+    * Obtém a posição ANTERIOR: X Y Z do objeto na cena
+    */
+    public getLastPosition(): ObjectPosition{
+        return this.lastPosition;
     }
 
     public setPosition( position: ObjectPosition ): ObjectBase{
@@ -942,6 +955,16 @@ export default class ObjectBase extends Base{
                                                                  .concat( this.scene!.additionalObjects );
 
         /**
+        * Salva posição atual do objeto ANTES DE QUALQUER MOVIMENTO OCORRER, como sendo a posição anterior dele,
+        * Pois se um movimento ocorrer, a posição anterior vai estar registrada para fins de calculos. 
+        */
+        objeto.lastPosition = { 
+                                x: Number( objeto.getPosition().x ),
+                                y: Number( objeto.getPosition().y ),
+                                z: Number( objeto.getPosition().z ),
+                              } as ObjectPosition;
+
+        /**
         * Movimento simples de objeto, SEM USAR FISICA 
         * Realiza uma movimentação simples, para cada uma das direções possiveis, sem usar fisica.
         */
@@ -1054,6 +1077,9 @@ export default class ObjectBase extends Base{
         * Essa fisica não é aplicada se o objeto estiver em cima do chão e nem em cima de objetos sem fisica pra evitar anular a fisica de desaceleração
         *
         * O delta da velocidade aqui nesse contexto é um pequeno valor numérico que vai dizer o quanto o objeto vai ter que andar para poder acompanhar o objeto abaixo dele
+        *
+        * Em outras palavras: 
+        * Esse código faz com que, se um determinado objeto estiver em cima de outro objeto que está se movendo, Então, esse objeto que está em cima dele se move junto
         */
         if( objeto.objectBelow != undefined && 
             objeto.objectBelow != null &&
@@ -1080,34 +1106,44 @@ export default class ObjectBase extends Base{
              const forcaX = Math.min(Math.abs(deltaVelocidadeX), atritoCalculado) * Math.sign(deltaVelocidadeX);
              const forcaZ = Math.min(Math.abs(deltaVelocidadeZ), atritoCalculado) * Math.sign(deltaVelocidadeZ);
 
+             /**
+             * Acompanha o movimento do objeto que ele está em baixo 
+             */
              esteObjeto.getVelocity().x += forcaX;
              esteObjeto.getVelocity().z += forcaZ;   
         }      
         
         /**
+        * Quase identifico ao anterior:
         * Outra lógica para criar mecanica do objeto ao se mover carregar outro objeto que está em cima dele 
-        * PORÈM para objetos que não tem fisica e usam movimentos não orientados a força, para contornar a limitação do anterior
+        * PORÈM especifico para objetos que não tem fisica e usam movimentos não orientados a força, para contornar a limitação do anterior
         * 
-        * BUG: AINDA NÂO ESTÀ FUNCIONANDO
-        * 
+        * Em outras palavras: 
+        * Esse código faz com que, se um determinado objeto estiver em cima de outro objeto que está se movendo, Então, esse objeto que está em cima dele se move junto
         */
         //Engine.get('CaixaRef').movimentState.forward = true;
         //Engine.get('Cubo2Ref').movimentState.forward = true;
-        //console.log(Engine.get('PlayerRef').objectBase.objectBelow)
+        //Engine.get('Cubo2Ref').somarX(45);
         if( objeto.objectBelow != undefined && 
             objeto.objectBelow != null &&
             //O objeto abaixo NÂO PODE TER fisica
             objeto.objectBelow.objProps.havePhysics == false &&
             // Porém o objeto ainda assim deve colidir
-            objeto.objectBelow.objProps.collide == true
+            objeto.objectBelow.objProps.collide == true &&
+            //Essa regra não vale para chãos
+            objeto.objectBelow.haveClass('ground') == false
         ){
             const esteObjeto          = objeto;
             const objetoAbaixoDele    = objeto.objectBelow;
-            const posicaoAnteriorDele = objetoAbaixoDele.getPosition();
+            const posicaoAtualDele    = objetoAbaixoDele.getPosition();
+            const posicaoAnteriorDele = objetoAbaixoDele.getLastPosition();
 
-            const deltaPosicaoX = objetoAbaixoDele.getPosition().x - posicaoAnteriorDele.x;
-            const deltaPosicaoZ = objetoAbaixoDele.getPosition().z - posicaoAnteriorDele.z;
+            const deltaPosicaoX       = posicaoAtualDele.x - (posicaoAnteriorDele.x || 0);
+            const deltaPosicaoZ       = posicaoAtualDele.z - (posicaoAnteriorDele.z || 0);
 
+            /**
+            * Acompanha o movimento do objeto que ele está em baixo 
+            */
             esteObjeto.getPosition().x += deltaPosicaoX;
             esteObjeto.getPosition().z += deltaPosicaoZ;
         }
@@ -1359,7 +1395,14 @@ export default class ObjectBase extends Base{
         */
         this.updateCollisionState( frameDelta );
 
+        /**
+        * Atualiza os movimentos do objeto 
+        */
         this.updateMovement( frameDelta );
+
+        /**
+        * Atualiza os eventos do objeto 
+        */
         this.updateEvents( frameDelta );
 
         /**

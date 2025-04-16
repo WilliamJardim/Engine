@@ -1049,6 +1049,9 @@ export default class ObjectBase extends Base{
         * Se o objeto atual estiver em cima de outro objeto, este objeto o carrega junto ao ser mover
         * OBS: Isso tava anulando a fisica de desaceleração e só funcionava ao realizar movimentos com força de aceleração E NAO TA FUNCIONANDO EM MOVIMENTOS SIMPLES
         * Pra nao anular a fisica de desaceleração eu adicionei limitações.
+        * 
+        * Explicação: Se um objeto recebe uma força, e tem outro objeto em cima dele, esse objeto é carregado em cima dele junto, como se fosse uma plataforma que pode carregar outros objetos em cima dele. 
+        * Essa fisica não é aplicada se o objeto estiver em cima do chão e nem em cima de objetos sem fisica pra evitar anular a fisica de desaceleração
         */
         if( objeto.objectBelow != undefined && 
             objeto.objectBelow != null &&

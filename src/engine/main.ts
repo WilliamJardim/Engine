@@ -111,6 +111,43 @@ export function EngineMain( scene: Scene,
     scene.add(cubo);
     globalContext.set('CuboRef', cubo);
 
+    // Cria um cubo simples para testar
+    const cubo2 = createCube( 
+        //The attributes
+        {
+            material: createMaterialByImage('/textures/1piso.png'), //The material,
+            name: 'MyCube2',
+            isNPC: false,
+            havePhysics: false,
+            invisible: false,
+            opacity: 1,
+            collide: true,
+            scaleReduce: 1.5,
+            ignoreCollisions: [
+                "OtherCube",
+                "AnotherCubo",
+            ],
+            weight: 40,
+            position: {
+                x: 0,
+                y: -40,
+                z: 0
+            },
+            events: [
+                {
+                    //Cubo ficar rodando
+                    loop: function( propioObjeto:ObjectBase ){
+                        
+                    }
+                }
+            ]
+        }
+    );
+
+    // Adiciona o cubo na cena
+    scene.add(cubo2);
+    globalContext.set('Cubo2Ref', cubo2);
+
     //Importa uma caixa
     importObjectFrom({
         caminho: 'objs/box.obj',

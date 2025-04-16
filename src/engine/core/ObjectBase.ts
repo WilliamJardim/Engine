@@ -1052,6 +1052,8 @@ export default class ObjectBase extends Base{
         * 
         * Explicação: Se um objeto recebe uma força, e tem outro objeto em cima dele, esse objeto é carregado em cima dele junto, como se fosse uma plataforma que pode carregar outros objetos em cima dele. 
         * Essa fisica não é aplicada se o objeto estiver em cima do chão e nem em cima de objetos sem fisica pra evitar anular a fisica de desaceleração
+        *
+        * O delta da velocidade aqui nesse contexto é um pequeno valor numérico que vai dizer o quanto o objeto vai ter que andar para poder acompanhar o objeto abaixo dele
         */
         if( objeto.objectBelow != undefined && 
             objeto.objectBelow != null &&
@@ -1072,15 +1074,43 @@ export default class ObjectBase extends Base{
              const normal          = massa * Math.abs(gravity);
              const atritoCalculado = coeficiente * normal;
 
-             const deltaVX = objetoAbaixoDele.getVelocity().x - esteObjeto.getVelocity().x;
-             const deltaVZ = objetoAbaixoDele.getVelocity().z - esteObjeto.getVelocity().z;
+             const deltaVelocidadeX = objetoAbaixoDele.getVelocity().x - esteObjeto.getVelocity().x;
+             const deltaVelocidadeZ = objetoAbaixoDele.getVelocity().z - esteObjeto.getVelocity().z;
 
-             const forcaX = Math.min(Math.abs(deltaVX), atritoCalculado) * Math.sign(deltaVX);
-             const forcaZ = Math.min(Math.abs(deltaVZ), atritoCalculado) * Math.sign(deltaVZ);
+             const forcaX = Math.min(Math.abs(deltaVelocidadeX), atritoCalculado) * Math.sign(deltaVelocidadeX);
+             const forcaZ = Math.min(Math.abs(deltaVelocidadeZ), atritoCalculado) * Math.sign(deltaVelocidadeZ);
 
              esteObjeto.getVelocity().x += forcaX;
              esteObjeto.getVelocity().z += forcaZ;   
-        }                            
+        }      
+        
+        /**
+        * Outra lógica para criar mecanica do objeto ao se mover carregar outro objeto que está em cima dele 
+        * PORÈM para objetos que não tem fisica e usam movimentos não orientados a força, para contornar a limitação do anterior
+        * 
+        * BUG: AINDA NÂO ESTÀ FUNCIONANDO
+        * 
+        */
+        //Engine.get('CaixaRef').movimentState.forward = true;
+        //Engine.get('Cubo2Ref').movimentState.forward = true;
+        //console.log(Engine.get('PlayerRef').objectBase.objectBelow)
+        if( objeto.objectBelow != undefined && 
+            objeto.objectBelow != null &&
+            //O objeto abaixo NÂO PODE TER fisica
+            objeto.objectBelow.objProps.havePhysics == false &&
+            // Porém o objeto ainda assim deve colidir
+            objeto.objectBelow.objProps.collide == true
+        ){
+            const esteObjeto          = objeto;
+            const objetoAbaixoDele    = objeto.objectBelow;
+            const posicaoAnteriorDele = objetoAbaixoDele.getPosition();
+
+            const deltaPosicaoX = objetoAbaixoDele.getPosition().x - posicaoAnteriorDele.x;
+            const deltaPosicaoZ = objetoAbaixoDele.getPosition().z - posicaoAnteriorDele.z;
+
+            esteObjeto.getPosition().x += deltaPosicaoX;
+            esteObjeto.getPosition().z += deltaPosicaoZ;
+        }
     
     }
 

@@ -301,3 +301,5 @@ em alguns casos pode ser, mais, nem sempre. Precisa levar isso em conta
 18/04/2025
 BUG: O bug de alguns objetos ficarem quicando sem parar, tremendo, quando caem em cima de outros objetos é por causa de escala
 ao usar o scaleReduce ou criar objetos com escala definida, isso afeta a lógica de colisão e não fica muito bom, gerando bugs como esses
+é isso que afeta tambem o isFalling, quando o cubo por exemplo cai em cima de outro cubo achatado com escalas diferentes, as vezes o cubo fica tremendo quicando, sendo impedido de ultrapassar o Y, porém ao mesmo tempo, tremendo. ele ficando cainda/não caindo, muito rapidamente, talves pela correação de posição
+

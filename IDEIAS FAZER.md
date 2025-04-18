@@ -297,3 +297,7 @@ NA PRATICA EU SÒ PRECISO CRIAR A LOGICA QUE quanto mais pesado e mais velocidad
 
 O PROBLEMA ESTÀ SENDO QUE A DESACELERAÇÂO È SEMPRE MUITO RAPIDA
 em alguns casos pode ser, mais, nem sempre. Precisa levar isso em conta
+
+18/04/2025
+BUG: O bug de alguns objetos ficarem quicando sem parar, tremendo, quando caem em cima de outros objetos é por causa de escala
+ao usar o scaleReduce ou criar objetos com escala definida, isso afeta a lógica de colisão e não fica muito bom, gerando bugs como esses

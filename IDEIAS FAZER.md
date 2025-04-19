@@ -366,6 +366,9 @@ Fiz uma nova mudança, simplismente comentando o código que faz a correção da
 BUG: Com essa mudança, de vez enquanto os objetos afundam um pouquinho ao cair, e isso varia um pouco tambem.
 
 BUG UM POUCO PIOR: As vezes o jogador vai no void quando ele cai no chão principal
+Isso acontece por causa do bug anterior, de vez enquanto os objetos afundam um pouquinho ao cair INCLUSIVE O JOGADOR
+(Se eu aumentar um pouco a escala do chão por exemplo o jogador afunda um pouco E PARA mais não cai)
+
 
 BUG UM POUCO PIOR: Por exemplo: Quando a caixa cai em cima do cubo reta ou mais pro lado direito não acontece nada, fica tudo ok, ela fica em cima do cubo como esperado
 PORÈM, se a caixa cair em cima do cubo mais pelo lado esquerdo, a posição Z do cubo é ajustada, deslocando ele levemente pro lado direito.

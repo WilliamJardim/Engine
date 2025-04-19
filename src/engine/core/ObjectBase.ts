@@ -818,7 +818,7 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isProximity( this, objetoAtualCena, 0.5, true, false ) === true
+                     isCollision( this, objetoAtualCena ) === true
                 ){
                     // Impede que o objeto ultrapasse a posição X ou Z do outro objeto
                     if( //Se o objectBelow ja tem algum valor
@@ -834,21 +834,44 @@ export default class ObjectBase extends Base{
                         const scaleB : THREE.Vector3  = objetoAtualCena.getScale();
 
                         // Zona do objeto atual
-                        const minA = { x: posA.x - scaleA.x / 2, z: posA.z - scaleA.z / 2 };
-                        const maxA = { x: posA.x + scaleA.x / 2, z: posA.z + scaleA.z / 2 };
+                        const minA = { 
+                                       x: posA.x - scaleA.x / 2, 
+                                       z: posA.z - scaleA.z / 2,
+                                       y: posA.y - scaleA.y / 2 
+                                     };
+
+                        const maxA = { 
+                                       x: posA.x + scaleA.x / 2, 
+                                       z: posA.z + scaleA.z / 2,
+                                       y: posA.y + scaleA.y / 2 
+                                     };
 
                         // Zona do objeto colisor, cujo objeto atual esta intersectando
-                        const minB = { x: posB.x - scaleB.x / 2, z: posB.z - scaleB.z / 2 };
-                        const maxB = { x: posB.x + scaleB.x / 2, z: posB.z + scaleB.z / 2 };
+                        const minB = { 
+                                       x: posB.x - scaleB.x / 2, 
+                                       z: posB.z - scaleB.z / 2,
+                                       y: posB.y - scaleB.y / 2
+                                     };
+
+                        const maxB = { 
+                                       x: posB.x + scaleB.x / 2, 
+                                       z: posB.z + scaleB.z / 2,
+                                       y: posB.y + scaleB.y / 2 
+                                     };
 
                         const sobreposicaoX:number = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);
                         const sobreposicaoZ:number = Math.min(maxA.z, maxB.z) - Math.max(minA.z, minB.z);
+                        const sobreposicaoY:number = Math.min(maxA.y, maxB.y) - Math.max(minA.y, minB.y);
 
                         this.isMovimentoTravadoPorColisao = false;
 
                         // Se houver sobreposição em algum dos eixos então houve colisão
-                        if (sobreposicaoX > 0 && sobreposicaoZ > 0) 
-                        {
+                        if ( 
+                            //Somente X e Z
+                            (sobreposicaoX > 0 && sobreposicaoZ > 0)
+                            //Ou se teve em Y e tambem em X e Z
+                            //|| (sobreposicaoY > 0 && sobreposicaoX > 0 && sobreposicaoZ > 0) 
+                        ){
                             // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
                             if (sobreposicaoX < sobreposicaoZ) {
                                 // Empurra no X
@@ -868,6 +891,18 @@ export default class ObjectBase extends Base{
                                 }
                                 this.getVelocity().z = 0;
                             }
+
+                            //Se teve em Y
+                            /*
+                            if( sobreposicaoY > 0 )
+                            {
+                                if (posA.y < posB.y) {
+                                    this.getPosition().y += sobreposicaoY + this.getScale().y;
+                                }
+
+                                this.getVelocity().y = 0;
+                            }
+                            */
 
                             this.isMovimentoTravadoPorColisao = true;
                         }

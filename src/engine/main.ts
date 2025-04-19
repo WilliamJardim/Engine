@@ -136,7 +136,7 @@ export function EngineMain( scene: Scene,
             scale: {
                 y: 1,
                 z: 10,
-                x: 80
+                x: 1
             },
             events: [
                 {

@@ -853,22 +853,24 @@ export default class ObjectBase extends Base{
                         // Se houver sobreposição em algum dos eixos então houve colisão
                         if (sobreposicaoX > 0 && sobreposicaoZ > 0) 
                         {
+                            const tolerancia = 1.2;
+
                             // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
                             if (sobreposicaoX < sobreposicaoZ) {
                                 // Empurra no X
                                 if (posA.x < posB.x) {
-                                    this.getPosition().x -= sobreposicaoX;
+                                    this.getPosition().x -= (sobreposicaoX + tolerancia);
                                 } else {
-                                    this.getPosition().x += sobreposicaoX;
+                                    this.getPosition().x += (sobreposicaoX + tolerancia);
                                 }
                                 this.getVelocity().x = 0;
 
                             } else {
                                 // Empurra no Z
                                 if (posA.z < posB.z) {
-                                    this.getPosition().z -= sobreposicaoZ;
+                                    this.getPosition().z -= (sobreposicaoZ + tolerancia);
                                 } else {
-                                    this.getPosition().z += sobreposicaoZ;
+                                    this.getPosition().z += (sobreposicaoZ + tolerancia);
                                 }
                                 this.getVelocity().z = 0;
                             }
@@ -1051,7 +1053,8 @@ export default class ObjectBase extends Base{
         
         //globalContext.get('CuboRef').somarVelocity({x:5})
         //globalContext.get('CuboRef').somarVelocity({x:1})
-        //globalContext.get('CuboRef').somarVelocity({z:-5})
+        //globalContext.get('CuboRef').somarVelocity({z:-50})
+        //globalContext.get('CaixaRef').somarVelocity({z:-50})
         if( velocidadeZ != 0 )
         {   
             objeto.somarPosicaoZ( velocidadeZ * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );

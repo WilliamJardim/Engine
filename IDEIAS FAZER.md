@@ -358,32 +358,35 @@ BUG: Ao tentar deixar a colisão mais precisa, apenas o jogador fica tremendo e 
 
 Fiz umas mudanças, e melhorou um pouco, mais afetou a logica:
 
-NOVOS BUGS:
+# 19.04.2025 - mudança que depois eu desfiz por que não deu certo como eu queria:
+https://github.com/WilliamJardim/Engine/commit/8c015d3b1342093495d9f34f93e300fc49deca10
 
-BUG: AGORA A CAIXA FICA ULTRAPASSANDO A METADE DO CHÂO 
-Isso ainda é um problema de lidar com escalas no eixo Y.
+    NOVOS BUGS:
 
-BUG: Um objeto ao colidir com o jogador empura ele como esperado PORÈM AO CORRIGIR A POSIÇÂO ELE ACABA EMPURRANDO O JOGADOR PRO LADO AO INVEZ DE APENAS EMPURRAR ELE PRA FRENTE, isso é alguma coisa na logica de impedir movimentos na colisão que ajusta a posição
-ISSO ACONTECE SÒ QUANDO O JOGADOR E O OBJETO AMBOS ESTÂO EM CIMA DE OUTRO CUBO GRANDE(OU SEJA EM CIMA DE OUTRO CHÂO)
-mais no chão principal isso não ocorre, ele empura corretamente SOMENTE NO CHÂO PRINCIPAL
-JA EM CIMA DO SEGUNDO CUBO(que se torna o segundo chão, ele acontece esse bug e além de empurrar e joga o jogador pro lado ao invez de apenas empurrar pra frente)
-ESSE MESMO BUG ACONTECE NÂO SÒ COM O JOGADOR MAIS COM QUALQUER OUTRO OBJETO, TIPO A CAIXA POR EXEMPLO
-mais aparentemente o jogador é o mais afetado por esse bug
+    BUG: AGORA A CAIXA FICA ULTRAPASSANDO A METADE DO CHÂO 
+    Isso ainda é um problema de lidar com escalas no eixo Y.
 
-19/04/2025
-BUG: Melhorei um pouco a colisão, 
-PORÈM, AS VEZES OS OBJETOS AINDA AFUNDAM UM POUCO AO CAIR, AS VEZES MAIS OUTRAS MENOS
-TEVE VEZES QUE ELA CAIU E FICOU BEM AFUNDADA NO CHÂO
+    BUG: Um objeto ao colidir com o jogador empura ele como esperado PORÈM AO CORRIGIR A POSIÇÂO ELE ACABA EMPURRANDO O JOGADOR PRO LADO AO INVEZ DE APENAS EMPURRAR ELE PRA FRENTE, isso é alguma coisa na logica de impedir movimentos na colisão que ajusta a posição
+    ISSO ACONTECE SÒ QUANDO O JOGADOR E O OBJETO AMBOS ESTÂO EM CIMA DE OUTRO CUBO GRANDE(OU SEJA EM CIMA DE OUTRO CHÂO)
+    mais no chão principal isso não ocorre, ele empura corretamente SOMENTE NO CHÂO PRINCIPAL
+    JA EM CIMA DO SEGUNDO CUBO(que se torna o segundo chão, ele acontece esse bug e além de empurrar e joga o jogador pro lado ao invez de apenas empurrar pra frente)
+    ESSE MESMO BUG ACONTECE NÂO SÒ COM O JOGADOR MAIS COM QUALQUER OUTRO OBJETO, TIPO A CAIXA POR EXEMPLO
+    mais aparentemente o jogador é o mais afetado por esse bug
 
-BUG: A camera fica muito proxima do chão na maiora das vezes
+    19/04/2025
+    BUG: Melhorei um pouco a colisão, 
+    PORÈM, AS VEZES OS OBJETOS AINDA AFUNDAM UM POUCO AO CAIR, AS VEZES MAIS OUTRAS MENOS
+    TEVE VEZES QUE ELA CAIU E FICOU BEM AFUNDADA NO CHÂO
 
-------------------------------
-BUG: Dependendo da posição Y do objeto, o jogador sobe em cima do objeto
-por exemplo, por causa desse "BUG: AS VEZES OS OBJETOS AINDA AFUNDAM UM POUCO AO CAIR, AS VEZES MAIS OUTRAS MENOS", dependendo de como a caixa está afundada, só de eu colidir com ela eu já sou teleportado pra cima da caixa, MAIS AS VEZES ISSO NÂO ACONTECE, DEPENDE DO NIVEL DE AFUNDAMENTO DA CAIXA AO CAIR
+    BUG: A camera fica muito proxima do chão na maiora das vezes
 
-SE HÀ SOBREPOSIÇÂO Y NA COLISÂO, ELE JA TELEPORTA O JOGADOR PRA CIMA DO OBJETO
+    ------------------------------
+    BUG: Dependendo da posição Y do objeto, o jogador sobe em cima do objeto
+    por exemplo, por causa desse "BUG: AS VEZES OS OBJETOS AINDA AFUNDAM UM POUCO AO CAIR, AS VEZES MAIS OUTRAS MENOS", dependendo de como a caixa está afundada, só de eu colidir com ela eu já sou teleportado pra cima da caixa, MAIS AS VEZES ISSO NÂO ACONTECE, DEPENDE DO NIVEL DE AFUNDAMENTO DA CAIXA AO CAIR
 
+    SE HÀ SOBREPOSIÇÂO Y NA COLISÂO, ELE JA TELEPORTA O JOGADOR PRA CIMA DO OBJETO
 
+    **EU VOLTEI O CÒDIGO PRA TRAZ, E REMOVI ESSAS MUDANÇAS, mais se eu tentar fazer elas obviamente vai acontecer denovo.**
 
 
 

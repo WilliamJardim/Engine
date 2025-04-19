@@ -173,8 +173,8 @@ export function EngineMain( scene: Scene,
 
             position: {
                 x: 0,
-                y: 10,
-                z: -5
+                y: 5,
+                z: -2.5
             },
 
             //Define configuraçao de detecção de proximidade

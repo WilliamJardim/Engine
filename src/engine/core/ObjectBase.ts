@@ -866,7 +866,7 @@ export default class ObjectBase extends Base{
                         // Se houver sobreposição em algum dos eixos então houve colisão
                         if (sobreposicaoX > 0 && sobreposicaoZ > 0) 
                         {
-                            const tolerancia = 0.8;
+                            const tolerancia = 0.0;
 
                             // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
                             if (sobreposicaoX < sobreposicaoZ) {

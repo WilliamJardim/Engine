@@ -96,9 +96,11 @@ export function EngineMain( scene: Scene,
                 {
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
+                        //propioObjeto.somarPosicaoX(0.005);
+
                         if( propioObjeto.objectBelow != null ){
                             console.log(propioObjeto.getVelocity().x)
-
+                            
                             if( f <= 10 ){
                                 //propioObjeto.somarVelocity({ x: 1.5 } as ObjectVelocity);
                                 //f++;
@@ -126,7 +128,7 @@ export function EngineMain( scene: Scene,
             havePhysics: false,
             invisible: false,
             opacity: 1,
-            collide: true,
+            collide: false,
             scaleReduce: 1.5,
             ignoreCollisions: [
                 "OtherCube",
@@ -141,7 +143,7 @@ export function EngineMain( scene: Scene,
             scale: {
                 y: 1,
                 z: 10,
-                x: 50
+                x: 10
             },
             events: [
                 {

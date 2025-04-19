@@ -361,6 +361,20 @@ BUG: por causa do BUG MAIOR, se um objeto cair em cima de outro, enquanto estão
 BUG: Quando um objeto empurra outro(por exemplo somando a velocidade e o objeto vir correndo e bater), Assim como no BUG MAIOR, SE ESTIVER EM CIMA DE OUTRO OBJETO(OU SEJA, EM UM NIVEL Y MAIS ALTO QUE O DO CHÂO PRINCIPAL), ele ao invez de só empurrar o objeto, tambem altera a posição Z e X na correção de posição, e isso não deveria acontecer.
 E no chão principal isso não acontece
 
+# 19.04.2025
+Fiz uma nova mudança, simplismente comentando o código que faz a correção da posição Y na função updatePhysics
+BUG: Com essa mudança, de vez enquanto os objetos afundam um pouquinho ao cair, e isso varia um pouco tambem.
+
+BUG UM POUCO PIOR: As vezes o jogador vai no void quando ele cai no chão principal
+
+BUG UM POUCO PIOR: Por exemplo: Quando a caixa cai em cima do cubo reta ou mais pro lado direito não acontece nada, fica tudo ok, ela fica em cima do cubo como esperado
+PORÈM, se a caixa cair em cima do cubo mais pelo lado esquerdo, a posição Z do cubo é ajustada, deslocando ele levemente pro lado direito.
+Isso não deveria acontecer
+PORÈM ESSE BUG EU TESTEI E JÀ ACONTECIA NA MINHA VERSÂO ANTIGA
+
+PORÈM ISSO acontece provavelmente por que, como eu removi a correção da posição Y pra ele parar de tremer, as vezes ele pode afundar um pouquinho ao cair, e ai isso conflita com a outra logica de corrigir posição X e Z na lógica de colisão, o que pode fazer o cubo
+
+
 
 # 19.04.2025 - mudança que depois eu desfiz por que não deu certo como eu queria:
 Fiz umas mudanças, e melhorou um pouco, mais afetou a logica:

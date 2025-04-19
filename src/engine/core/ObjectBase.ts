@@ -764,6 +764,21 @@ export default class ObjectBase extends Base{
                 ){
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
+                    //Diz que o objeto parou de cair
+                    this.isFalling = false;
+                    this.groundY = this.getPosition().y; // A posição da ultima colisão
+                    this.objectBelow = objetoAtualCena;
+                    this.lastObjectBelow = objetoAtualCena;
+
+                    //Impede que o objeto suba em cima de outro objeto
+                    if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y < objetoAtualCena.getPosition().y ){
+                        this.setPosition({
+                            y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y
+                        })
+                    }
+                    //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
+                    //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
+                    /*
                     if( this.getPosition().y > objetoAtualCena.getPosition().y )
                     {
                         this.setPosition({
@@ -776,13 +791,7 @@ export default class ObjectBase extends Base{
                         this.objectBelow = objetoAtualCena;
                         this.lastObjectBelow = objetoAtualCena;
                     }
-
-                    //Impede que o objeto suba em cima de outro objeto
-                    if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y < objetoAtualCena.getPosition().y ){
-                        this.setPosition({
-                            y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y
-                        })
-                    }
+                    */
 
                     /**
                     * A linha que estava comentada: objetoAtualCena.objProps.havePhysics === false , é desnecessaria, pois, o objeto não precisa ser estatico para nao poder ultrapassar

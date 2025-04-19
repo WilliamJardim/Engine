@@ -81,11 +81,16 @@ export function EngineMain( scene: Scene,
             invisible: false,
             opacity: 1,
             collide: true,
-            scaleReduce: 1,
+            scaleReduce: 1.4,
             ignoreCollisions: [
                 "OtherCube",
                 "AnotherCubo",
             ],
+            position: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
             weight: 40,
             events: [
                 {
@@ -95,8 +100,8 @@ export function EngineMain( scene: Scene,
                             console.log(propioObjeto.getVelocity().x)
 
                             if( f <= 10 ){
-                                propioObjeto.somarVelocity({ x: 1.5 } as ObjectVelocity);
-                                f++;
+                                //propioObjeto.somarVelocity({ x: 1.5 } as ObjectVelocity);
+                                //f++;
                             }
                         }
                         
@@ -121,7 +126,7 @@ export function EngineMain( scene: Scene,
             havePhysics: false,
             invisible: false,
             opacity: 1,
-            collide: true,
+            collide: false,
             scaleReduce: 1.5,
             ignoreCollisions: [
                 "OtherCube",
@@ -136,7 +141,7 @@ export function EngineMain( scene: Scene,
             scale: {
                 y: 1,
                 z: 10,
-                x: 1
+                x: 50
             },
             events: [
                 {
@@ -162,6 +167,12 @@ export function EngineMain( scene: Scene,
             name: 'Caixa',
             collide: true,
             havePhysics: true,
+
+            position: {
+                x: 0,
+                y: 10,
+                z: 0
+            },
 
             //Define configuraçao de detecção de proximidade
             proximityConfig: {
@@ -208,14 +219,6 @@ export function EngineMain( scene: Scene,
 
         // Depois que o objeto for carregado
         callback: function(objetoCarregado: ObjectBase){
-
-            //Define a posição do objeto
-            objetoCarregado.setPosition({
-                x: -5,
-                y: 0,
-                z: 0
-            });
-
             //Adiciona o objeto na cena
             scene.add( objetoCarregado );
 

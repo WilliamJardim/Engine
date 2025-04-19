@@ -760,7 +760,7 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isCollision( this, objetoAtualCena, 0.5 ) === true 
+                     isCollision( this, objetoAtualCena ) === true 
                 ){
                     //const posicaoChao = objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y) + ( this.name != 'Player' ? this.getScale().y : 0);
                     const posicaoChao = objetoAtualCena.getPosition().y + objetoAtualCena.getScale().y;
@@ -818,7 +818,7 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isCollision( this, objetoAtualCena, 0.5 ) === true
+                     isCollision( this, objetoAtualCena ) === true
                 ){
                     // Impede que o objeto ultrapasse a posição X ou Z do outro objeto
                     if( //Se o objectBelow ja tem algum valor

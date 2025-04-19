@@ -489,6 +489,46 @@ ESSE ERRO ACONTECE EM ALGUM MOMENTO POR CAUSA DESSE TRECHO DE CÒDIGO QUE CORRIG
 </code>
 
 
+BUG: Quando um objeto está em cima de outro objeto, ele não recebe força
+a força que é aplicado sobre ele usando o somarVelocity por exemplo tem um efeito minimo quase inperceptivel
+E ESSE BUG OCORRE POR CAUSA DESSE TRECHO DE CÒDIGO QUE SOMA AS FORÇAS PARA FAZER O OBJETO SE MOVER USANDO ATRITO QUANDO ESTA EM CIMA DE OUTRO OBJETO QUE PODE SER MOVER
+talvez vou ter que repensar essa logica até mesmo usando algum couldown
+<code>
+if( objeto.objectBelow != undefined && 
+            objeto.objectBelow != null &&
+            //O objeto abaixo precisa ter fisica e poder colidir
+            objeto.objectBelow.objProps.havePhysics == true &&
+            objeto.objectBelow.objProps.collide == true &&
+            //O objeto atual tambem precisa ter fisica e poder colidir
+            objeto.objProps.havePhysics == true &&
+            objeto.objProps.collide == true &&
+            //Essa regra não vale para chãos
+            objeto.objectBelow.haveClass('ground') == false
+        ){
+             const esteObjeto       = objeto;
+             const objetoAbaixoDele = objeto.objectBelow;
+             
+             const coeficiente     = 0.5; // pode ser dinâmico
+             const massa           = esteObjeto.getMassaTotal();
+             const normal          = massa * Math.abs(gravity);
+             const atritoCalculado = coeficiente * normal;
+
+             const deltaVelocidadeX = objetoAbaixoDele.getVelocity().x - esteObjeto.getVelocity().x;
+             const deltaVelocidadeZ = objetoAbaixoDele.getVelocity().z - esteObjeto.getVelocity().z;
+
+             const forcaX = Math.min(Math.abs(deltaVelocidadeX), atritoCalculado) * Math.sign(deltaVelocidadeX);
+             const forcaZ = Math.min(Math.abs(deltaVelocidadeZ), atritoCalculado) * Math.sign(deltaVelocidadeZ);
+
+             /**
+             * Acompanha o movimento do objeto que ele está em baixo 
+             */
+             esteObjeto.getVelocity().x += forcaX;
+             esteObjeto.getVelocity().z += forcaZ;   
+        }      
+</code>
+
+
+
 
 # NOVAS IDEIAS 19/04/2025
 IDEIA: Criar a propriedade objectAbove, similar ao objectBelow, porém que armazena o objeto em cima do objeto atual

@@ -760,29 +760,33 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isProximity( this, objetoAtualCena, 0.8, true, false ) === true 
+                     isCollision( this, objetoAtualCena, 0 ) === true 
                 ){
+                    //const posicaoChao = objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y) + ( this.name != 'Player' ? this.getScale().y : 0);
+                    const posicaoChao = objetoAtualCena.getPosition().y + objetoAtualCena.getScale().y;
+
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
-                    if( this.getPosition().y > objetoAtualCena.getPosition().y )
-                    {
-                        this.setPosition({
-                            y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
-                        });
+                    /*
+                    this.setPosition({
+                        y: posicaoChao
+                    });
+                    */
 
-                        //Diz que o objeto parou de cair
-                        this.isFalling = false;
-                        this.groundY = this.getPosition().y; // A posição da ultima colisão
-                        this.objectBelow = objetoAtualCena;
-                        this.lastObjectBelow = objetoAtualCena;
-                    }
+                    //Diz que o objeto parou de cair
+                    this.isFalling = false;
+                    this.groundY = posicaoChao; // A posição da ultima colisão
+                    this.objectBelow = objetoAtualCena;
+                    this.lastObjectBelow = objetoAtualCena;
 
                     //Impede que o objeto suba em cima de outro objeto
+                    /*
                     if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y < objetoAtualCena.getPosition().y ){
                         this.setPosition({
                             y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y
                         })
                     }
+                    */
 
                     /**
                     * A linha que estava comentada: objetoAtualCena.objProps.havePhysics === false , é desnecessaria, pois, o objeto não precisa ser estatico para nao poder ultrapassar
@@ -800,6 +804,7 @@ export default class ObjectBase extends Base{
 
                     break;
                     //Engine.get('CuboRef').somarVelocity({y:10})
+                    //globalContext.get('CuboRef').somarVelocity({x:-10})
                 }
             }
 
@@ -1042,6 +1047,7 @@ export default class ObjectBase extends Base{
         
         //globalContext.get('CuboRef').somarVelocity({x:5})
         //globalContext.get('CuboRef').somarVelocity({x:1})
+        //globalContext.get('CuboRef').somarVelocity({x:-10})
         if( velocidadeZ != 0 )
         {   
             objeto.somarPosicaoZ( velocidadeZ * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );

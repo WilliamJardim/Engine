@@ -81,7 +81,7 @@ export function EngineMain( scene: Scene,
             invisible: false,
             opacity: 1,
             collide: true,
-            scaleReduce: 1.5,
+            scaleReduce: 3.5,
             ignoreCollisions: [
                 "OtherCube",
                 "AnotherCubo",
@@ -132,6 +132,11 @@ export function EngineMain( scene: Scene,
                 x: 0,
                 y: -40,
                 z: 0
+            },
+            scale: {
+                y: 1,
+                z: 10,
+                x: 80
             },
             events: [
                 {

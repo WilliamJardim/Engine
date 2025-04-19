@@ -1051,6 +1051,7 @@ export default class ObjectBase extends Base{
         
         //globalContext.get('CuboRef').somarVelocity({x:5})
         //globalContext.get('CuboRef').somarVelocity({x:1})
+        //globalContext.get('CuboRef').somarVelocity({z:-5})
         if( velocidadeZ != 0 )
         {   
             objeto.somarPosicaoZ( velocidadeZ * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );

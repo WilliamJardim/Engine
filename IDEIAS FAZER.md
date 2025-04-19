@@ -301,7 +301,7 @@ em alguns casos pode ser, mais, nem sempre. Precisa levar isso em conta
 18/04/2025
 BUG: O bug de alguns objetos ficarem quicando sem parar, tremendo, quando caem em cima de outros objetos é por causa de escala
 ao usar o scaleReduce ou criar objetos com escala definida, isso afeta a lógica de colisão e não fica muito bom, gerando bugs como esses
-é isso que afeta tambem o isFalling, quando o cubo por exemplo cai em cima de outro cubo achatado com escalas diferentes, as vezes o cubo fica tremendo quicando, sendo impedido de ultrapassar o Y, porém ao mesmo tempo, tremendo. ele ficando cainda/não caindo, muito rapidamente, talves pela correação de posição
+é isso que afeta tambem o isFalling, quando o cubo por exemplo cai em cima de outro cubo achatado com escalas diferentes, as vezes o cubo fica tremendo quicando, sendo impedido de ultrapassar o Y, porém ao mesmo tempo, tremendo. ele ficando cainda/não caindo, muito rapidamente, talves pela correção de posição
 
 19/04/2025
 Na minha Engine O que faz o cubo e outros objetos ficarem quicando é a logica de colisão(mais especificamente a lógica dos objetos cairem com a gravidade no updatePhysics)
@@ -349,16 +349,21 @@ A colisão funciona com escalas sim, e redução de escala ou aumento de escala,
 essa foi uma das ultimas tentativas que eu fiz. Mais ainda não consegui fazer o que eu quero.
 
 
-BUG: Ao tentar deixar a colisão mais precisa, o cubo ao colidir com a caixa, enquanto ambos estão em cima de outro objeto, ao invez de empurrar ela, a caixa cai pra baixo, atravessando esse objeto que ela tava em cima
+BUG MAIOR: Ao tentar deixar a colisão mais precisa, o cubo ao colidir(por exemplo somando a velocidade e o objeto vir correndo e bater) com a caixa, enquanto ambos estão em cima de outro objeto, ao invez de empurrar ela, a caixa cai pra baixo, atravessando esse objeto que ela tava em cima
 Isso não só por causa da logica de colisão que tentei mexer, por que eu testei com a minha lógica anterior, e aconteceu esse mesmo bug porém de um jeito um pouco diferente,
 ESSE PROBLEMA DELE ATRAVESSAR SÒ ACONTECE QUANDO OS OBJETOS ESTAO EM CIMA DE OUTRO OBJETO(OU SEJA, EM UM NIVEL Y MAIS ALTO QUE O DO CHÂO PRINCIPAL)
 Eu acho que ele pode estar bugando alguma correção de posição em algum tipo de colisão e jogando a assim caixa para o "Y mais baixo", que deve ser o que a Engine reconhece e impede ultrapassar.
 
 BUG: Ao tentar deixar a colisão mais precisa, apenas o jogador fica tremendo e quicando a camera ao colidir com algum chão.
 
-Fiz umas mudanças, e melhorou um pouco, mais afetou a logica:
+BUG: por causa do BUG MAIOR, se um objeto cair em cima de outro, enquanto estão em cima DE OUTRO OBJETO(OU SEJA, EM UM NIVEL Y MAIS ALTO QUE O DO CHÂO PRINCIPAL), o objeto que caiu NÂO fica em cima do outro, como esperado, e pior, ele fica tremendo muito, e tambem ocorre outro BUG, o objeto que caiu tem sua posição ajustada(pela lógica de correção de posição) e fica mais pro lado, sendo que a posição Z ou X dele não deveria mudar nesse caso.
+
+BUG: Quando um objeto empurra outro(por exemplo somando a velocidade e o objeto vir correndo e bater), Assim como no BUG MAIOR, SE ESTIVER EM CIMA DE OUTRO OBJETO(OU SEJA, EM UM NIVEL Y MAIS ALTO QUE O DO CHÂO PRINCIPAL), ele ao invez de só empurrar o objeto, tambem altera a posição Z e X na correção de posição, e isso não deveria acontecer.
+E no chão principal isso não acontece
+
 
 # 19.04.2025 - mudança que depois eu desfiz por que não deu certo como eu queria:
+Fiz umas mudanças, e melhorou um pouco, mais afetou a logica:
 https://github.com/WilliamJardim/Engine/commit/8c015d3b1342093495d9f34f93e300fc49deca10
 
     NOVOS BUGS:

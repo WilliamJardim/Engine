@@ -304,6 +304,51 @@ ao usar o scaleReduce ou criar objetos com escala definida, isso afeta a lógica
 é isso que afeta tambem o isFalling, quando o cubo por exemplo cai em cima de outro cubo achatado com escalas diferentes, as vezes o cubo fica tremendo quicando, sendo impedido de ultrapassar o Y, porém ao mesmo tempo, tremendo. ele ficando cainda/não caindo, muito rapidamente, talves pela correação de posição
 
 19/04/2025
+Na minha Engine O que faz o cubo e outros objetos ficarem quicando é a logica de colisão(mais especificamente a lógica dos objetos cairem com a gravidade no updatePhysics)
+Ao levar em conta apenas as escalas Y sem dividir por algum valor, esse problema parou
+<code>
+                        this.setPosition({
+                            y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y) + 0
+                        });
+
+</code>
+Isso funciona, mais afeta a lógica do pulo do jogador, tornando o pulo quase inesxistente, e os cubos e objetos embora não quiquem, eles e a colisão funcione melhor com outros objetos, a colisão no eixo Y com o chão fica bugada ainda, fazendo os objetos atravessarem um pouquinho o chão, por causa da escala dele.
+EU AUMENTEI A ESCALA DO CHÂO PARA 50, e ficou bom, ficou melhor pelo menos. Mais ainda não é o que eu queria.
+PORÈM O JOGADOR CONSEGUE ATRAVESSAR UM POUCO O EIXO Y DA CAIXA AO FICAR EM CIMA DELA
+
+Se eu tento fazer algo como:
+<code>
+this.setPosition({
+                            y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y) + (this.name == 'Player' ? this.getScale().y : 0)
+                        });
+Fica melhor, mais o jogador fica toda hora sendo jogador pra cima e caindo até o chão, e depois é jogado pra cima denovo.
+Ai o problema de ATRAVESSAR UM POUCO O EIXO Y DA CAIXA NÂO OCORRE, MAIS AO FICAR EM CIMA DA CAIXA O JOGADOR AINDA QUICA TREMENDO                       
+</code>
+
+Remover o scaleReduce tambem ajudou um pouco.
+O maior problema tem sido as escalas dos objetos
+A colisão funciona com escalas sim, e redução de escala ou aumento de escala, mais é mais complicado de ajustar
+
+<code>
+                /**
+                * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
+                */
+                if( (objetoAtualCena.objProps.traverse != true) &&
+                    (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
+                     objetoAtualCena.id != this.id && 
+                     isProximity( this, objetoAtualCena, 0.6, true, false ) === true 
+                ){
+                    //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
+                    //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
+                    if( this.getPosition().y > objetoAtualCena.getPosition().y )
+                    {
+                        this.setPosition({
+                            y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y) + (this.name == 'Player' ? 0 : 0)
+                        });
+</code>
+essa foi uma das ultimas tentativas que eu fiz. Mais ainda não consegui fazer o que eu quero.
+
+
 BUG: Ao tentar deixar a colisão mais precisa, o cubo ao colidir com a caixa, enquanto ambos estão em cima de outro objeto, ao invez de empurrar ela, a caixa cai pra baixo, atravessando esse objeto que ela tava em cima
 Isso não só por causa da logica de colisão que tentei mexer, por que eu testei com a minha lógica anterior, e aconteceu esse mesmo bug porém de um jeito um pouco diferente,
 ESSE PROBLEMA DELE ATRAVESSAR SÒ ACONTECE QUANDO OS OBJETOS ESTAO EM CIMA DE OUTRO OBJETO(OU SEJA, EM UM NIVEL Y MAIS ALTO QUE O DO CHÂO PRINCIPAL)

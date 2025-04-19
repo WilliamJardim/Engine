@@ -760,33 +760,29 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isCollision( this, objetoAtualCena ) === true 
+                     isProximity( this, objetoAtualCena, 0.8, true, false ) === true 
                 ){
-                    //const posicaoChao = objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y) + ( this.name != 'Player' ? this.getScale().y : 0);
-                    const posicaoChao = objetoAtualCena.getPosition().y + objetoAtualCena.getScale().y;
-
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
-                    /*
-                    this.setPosition({
-                        y: posicaoChao
-                    });
-                    */
+                    if( this.getPosition().y > objetoAtualCena.getPosition().y )
+                    {
+                        this.setPosition({
+                            y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
+                        });
 
-                    //Diz que o objeto parou de cair
-                    this.isFalling = false;
-                    this.groundY = posicaoChao; // A posição da ultima colisão
-                    this.objectBelow = objetoAtualCena;
-                    this.lastObjectBelow = objetoAtualCena;
+                        //Diz que o objeto parou de cair
+                        this.isFalling = false;
+                        this.groundY = this.getPosition().y; // A posição da ultima colisão
+                        this.objectBelow = objetoAtualCena;
+                        this.lastObjectBelow = objetoAtualCena;
+                    }
 
                     //Impede que o objeto suba em cima de outro objeto
-                    /*
                     if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y < objetoAtualCena.getPosition().y ){
                         this.setPosition({
                             y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y
                         })
                     }
-                    */
 
                     /**
                     * A linha que estava comentada: objetoAtualCena.objProps.havePhysics === false , é desnecessaria, pois, o objeto não precisa ser estatico para nao poder ultrapassar
@@ -804,7 +800,6 @@ export default class ObjectBase extends Base{
 
                     break;
                     //Engine.get('CuboRef').somarVelocity({y:10})
-                    //globalContext.get('CuboRef').somarVelocity({x:-10})
                 }
             }
 
@@ -818,7 +813,7 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isCollision( this, objetoAtualCena ) === true
+                     isProximity( this, objetoAtualCena, 0.5, true, false ) === true
                 ){
                     // Impede que o objeto ultrapasse a posição X ou Z do outro objeto
                     if( //Se o objectBelow ja tem algum valor
@@ -834,44 +829,21 @@ export default class ObjectBase extends Base{
                         const scaleB : THREE.Vector3  = objetoAtualCena.getScale();
 
                         // Zona do objeto atual
-                        const minA = { 
-                                       x: posA.x - scaleA.x / 2, 
-                                       z: posA.z - scaleA.z / 2,
-                                       y: posA.y - scaleA.y / 2 
-                                     };
-
-                        const maxA = { 
-                                       x: posA.x + scaleA.x / 2, 
-                                       z: posA.z + scaleA.z / 2,
-                                       y: posA.y + scaleA.y / 2 
-                                     };
+                        const minA = { x: posA.x - scaleA.x / 2, z: posA.z - scaleA.z / 2 };
+                        const maxA = { x: posA.x + scaleA.x / 2, z: posA.z + scaleA.z / 2 };
 
                         // Zona do objeto colisor, cujo objeto atual esta intersectando
-                        const minB = { 
-                                       x: posB.x - scaleB.x / 2, 
-                                       z: posB.z - scaleB.z / 2,
-                                       y: posB.y - scaleB.y / 2
-                                     };
-
-                        const maxB = { 
-                                       x: posB.x + scaleB.x / 2, 
-                                       z: posB.z + scaleB.z / 2,
-                                       y: posB.y + scaleB.y / 2 
-                                     };
+                        const minB = { x: posB.x - scaleB.x / 2, z: posB.z - scaleB.z / 2 };
+                        const maxB = { x: posB.x + scaleB.x / 2, z: posB.z + scaleB.z / 2 };
 
                         const sobreposicaoX:number = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);
                         const sobreposicaoZ:number = Math.min(maxA.z, maxB.z) - Math.max(minA.z, minB.z);
-                        const sobreposicaoY:number = Math.min(maxA.y, maxB.y) - Math.max(minA.y, minB.y);
 
                         this.isMovimentoTravadoPorColisao = false;
 
                         // Se houver sobreposição em algum dos eixos então houve colisão
-                        if ( 
-                            //Somente X e Z
-                            (sobreposicaoX > 0 && sobreposicaoZ > 0)
-                            //Ou se teve em Y e tambem em X e Z
-                            || (sobreposicaoY > 0 && sobreposicaoX > 0 && sobreposicaoZ > 0) 
-                        ){
+                        if (sobreposicaoX > 0 && sobreposicaoZ > 0) 
+                        {
                             // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
                             if (sobreposicaoX < sobreposicaoZ) {
                                 // Empurra no X
@@ -890,18 +862,6 @@ export default class ObjectBase extends Base{
                                     this.getPosition().z += sobreposicaoZ;
                                 }
                                 this.getVelocity().z = 0;
-                            }
-
-                            //Se teve em Y
-                            if (sobreposicaoY > 0) {
-                                const margemToleranciaY = scaleA.y + scaleB.y;                              
-                            
-                                if (posA.y < posB.y) {
-                                    //this.getPosition().y = Math.min(this.getPosition().y, posB.y - scaleA.y / 2 - margemToleranciaY);
-                                } else {
-                                    this.getPosition().y = Math.max(this.getPosition().y, maxB.y + scaleA.y / 2 + margemToleranciaY);
-                                }
-                                this.getVelocity().y = 0;
                             }
 
                             this.isMovimentoTravadoPorColisao = true;
@@ -1082,7 +1042,6 @@ export default class ObjectBase extends Base{
         
         //globalContext.get('CuboRef').somarVelocity({x:5})
         //globalContext.get('CuboRef').somarVelocity({x:1})
-        //globalContext.get('CuboRef').somarVelocity({x:-10})
         if( velocidadeZ != 0 )
         {   
             objeto.somarPosicaoZ( velocidadeZ * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );

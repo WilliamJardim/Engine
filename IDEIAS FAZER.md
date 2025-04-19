@@ -303,3 +303,10 @@ BUG: O bug de alguns objetos ficarem quicando sem parar, tremendo, quando caem e
 ao usar o scaleReduce ou criar objetos com escala definida, isso afeta a lógica de colisão e não fica muito bom, gerando bugs como esses
 é isso que afeta tambem o isFalling, quando o cubo por exemplo cai em cima de outro cubo achatado com escalas diferentes, as vezes o cubo fica tremendo quicando, sendo impedido de ultrapassar o Y, porém ao mesmo tempo, tremendo. ele ficando cainda/não caindo, muito rapidamente, talves pela correação de posição
 
+19/04/2025
+BUG: Ao tentar deixar a colisão mais precisa, o cubo ao colidir com a caixa, enquanto ambos estão em cima de outro objeto, ao invez de empurrar ela, a caixa cai pra baixo, atravessando esse objeto que ela tava em cima
+Isso não só por causa da logica de colisão que tentei mexer, por que eu testei com a minha lógica anterior, e aconteceu esse mesmo bug porém de um jeito um pouco diferente,
+ESSE PROBLEMA DELE ATRAVESSAR SÒ ACONTECE QUANDO OS OBJETOS ESTAO EM CIMA DE OUTRO OBJETO(OU SEJA, EM UM NIVEL Y MAIS ALTO QUE O DO CHÂO PRINCIPAL)
+Eu acho que ele pode estar bugando alguma correção de posição em algum tipo de colisão e jogando a assim caixa para o "Y mais baixo", que deve ser o que a Engine reconhece e impede ultrapassar.
+
+BUG: Ao tentar deixar a colisão mais precisa, apenas o jogador fica tremendo e quicando a camera ao colidir com algum chão.

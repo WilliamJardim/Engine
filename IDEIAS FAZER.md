@@ -374,6 +374,7 @@ BUG UM POUCO PIOR: Por exemplo: Quando a caixa cai em cima do cubo reta ou mais 
 PORÈM, se a caixa cair em cima do cubo mais pelo lado esquerdo, a posição Z do cubo é ajustada, deslocando ele levemente pro lado direito.
 Isso não deveria acontecer
 PORÈM ESSE BUG EU TESTEI E JÀ ACONTECIA NA MINHA VERSÂO ANTIGA
+porém parece que isso piorou um pouco com as mudanças que fiz hoje
 
 PORÈM ISSO acontece provavelmente por que, como eu removi a correção da posição Y pra ele parar de tremer, as vezes ele pode afundar um pouquinho ao cair, e ai isso conflita com a outra logica de corrigir posição X e Z na lógica de colisão, o que pode fazer o cubo
 As vezes o vento joga a caixa mais pro lado que o bug não afeta, e as vezes joga mais pro lado esquerdo que é o lado que esse bug está ocorrendo
@@ -437,6 +438,9 @@ Esse bug ocorre por que, a zona de colisão padrao agora é a posição + escala
 SE EU DIMINUIR A ZONA DE PROXIMIDADE, ESSE PROBLEMA SE TORNA MENOS FREQUENTE MAIS AINDA ASSIM ACONTECE
 QUANTO MAIOR A ZONA DE PROXIMIDADE MAIS CHANCES TEM DE ACONTECER
 
+ESSE BUG AINDA OCORRE MAIS MELHOROU UM POUCO COM MINHAS MUDANÇAS que fiz
+
+
 
 BUG: Se o cubo estiver empurrando a caixa no eixo Z, e o jogador estiver na frente da caixa isso funciona
 POREM SE O CUBO CONTINUAR AUMENTANDO A VELOCIDADE EMPURRANDO CADA VEZ MAIS A CAIXA, O JOGADOR COMEÇA ATRAVESSAR MAIS O EIXO Z OU X DA CAIXA
@@ -444,6 +448,10 @@ Aparentemente isso tambem piorou um pouquinho depois da ultima mudança que fiz.
 
 BUG: De vez enquando, quando a caixa cai no chão, ela fica afundada no chão
 
+BUG UM POUCO PIOR: Por exemplo: Quando a caixa cai em cima do cubo reta ou mais pro lado direito não acontece nada, fica tudo ok, ela fica em cima do cubo como esperado
+PORÈM, se a caixa cair em cima do cubo mais pelo lado esquerdo, a posição Z do cubo é ajustada, deslocando ele levemente pro lado direito.
+Isso não deveria acontecer
+PORÈM ESSE BUG EU TESTEI E JÀ ACONTECIA NA MINHA VERSÂO ANTIGA
 
 
 # NOVAS IDEIAS 19/04/2025

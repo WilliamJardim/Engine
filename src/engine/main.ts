@@ -88,7 +88,7 @@ export function EngineMain( scene: Scene,
             ],
             position: {
                 x: 0,
-                y: 0,
+                y: -2,
                 z: 0
             },
             weight: 40,
@@ -97,7 +97,7 @@ export function EngineMain( scene: Scene,
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
                         //propioObjeto.somarPosicaoX(0.005);
-                        console.log(propioObjeto.isFalling, propioObjeto.objectBelow)
+                        //console.log(propioObjeto.isFalling, propioObjeto.objectBelow)
 
                         if( propioObjeto.objectBelow != null ){
                             //console.log(propioObjeto.getVelocity().x)
@@ -173,8 +173,8 @@ export function EngineMain( scene: Scene,
 
             position: {
                 x: 0,
-                y: 5,
-                z: -2.5
+                y: 1,
+                z: 0
             },
 
             //Define configuraçao de detecção de proximidade
@@ -278,6 +278,11 @@ export function EngineLoop( scene: Scene,
 
         });
     }
+
+    //
+    //if( globalContext.avaliable('PlayerRef') ){
+    //    console.log(globalContext.get('PlayerRef').objectBase.objectBelow)
+    //}
 
     /*
     if( globalContext.avaliable('CaixaRef') ){

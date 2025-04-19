@@ -64,6 +64,7 @@ export default class Scene extends Base{
     constructor( canvasRef:any ){
         super();
 
+        /*
         this.wind = {
             orientation : { x: 0.008, 
                             y: 0.001, 
@@ -72,6 +73,19 @@ export default class Scene extends Base{
             deslocationTrend: { x: 0.02, 
                                 y: 0.001, 
                                 z: 0.001},
+
+            intensity   : { x: 0, 
+                            y: 0, 
+                            z: 0 }
+        };*/
+        this.wind = {
+            orientation : { x: 0.000, 
+                            y: 0.000, 
+                            z: 0.000},
+
+            deslocationTrend: { x: 0.00, 
+                                y: 0.000, 
+                                z: 0.000},
 
             intensity   : { x: 0, 
                             y: 0, 

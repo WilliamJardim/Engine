@@ -760,7 +760,8 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isCollision( this, objetoAtualCena, 0.5 ) === true 
+                     //no ar, o objeto tem um alcançe de colisão maior, pra evitar o bug dele não conseguir detectar o objeto para ele parar em cima ao cair
+                     isCollision( this, objetoAtualCena, (this.isFalling == true ? 0.8 : 0.5) ) === true 
                 ){
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
@@ -866,7 +867,9 @@ export default class ObjectBase extends Base{
                         // Se houver sobreposição em algum dos eixos então houve colisão
                         if (sobreposicaoX > 0 && sobreposicaoZ > 0) 
                         {
-                            const tolerancia = 0.0;
+                            //Se for o jogador não quero usar tolerando pra não bugar a posição dele
+                            //Mais se for objetos, eu uso pra evitar eles "grudarem" ao colidirem
+                            const tolerancia = this.name != 'Player' ? 1.2 : 0.0;
 
                             // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
                             if (sobreposicaoX < sobreposicaoZ) {

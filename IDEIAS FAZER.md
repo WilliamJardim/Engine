@@ -381,6 +381,7 @@ As vezes o vento joga a caixa mais pro lado que o bug não afeta, e as vezes jog
 BUG: Se o cubo estiver empurrando a caixa no eixo Z, isso funciona, porém
 POREM QUANDO O CUBO E A CAIXA CHEGAM NO VOID(ENQUANTO O CUBO ESTÀ COLIDINDO COM A CAIXA EMPURRANDO ELA), a caixa fica grudada no cubo, e ambos não caem no void
 ESSE BUG COMEÇOU A ACONTECER DEPOIS ULTIMA MUDANÇA QUE EU FIZ NO updatePhysics:
+O objectBelow ainda é o chão mesmo ele estando no void, e o objectBelow do cubo se torna a caixa, E ISSO TA ERRADO
 <code>
                 /**
                 * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
@@ -430,6 +431,11 @@ ANTES TAVA:
                     [...]
 </code>
 ASSIM COMO TAVA ANTES NÂO DAVA ESSE BUG, MAIS OCORRIA OUTROS BUGS QUE EU TAMBEM NÂO GOSTEI NEM UM POUCO.
+
+Esse bug ocorre por que, a zona de colisão padrao agora é a posição + escala + 0.8, então, qualquer objeto proximo(dentro dessa zona) vai settar o groundY, isFalling e objectBelow
+
+SE EU DIMINUIR A ZONA DE PROXIMIDADE, ESSE PROBLEMA SE TORNA MENOS FREQUENTE MAIS AINDA ASSIM ACONTECE
+QUANTO MAIOR A ZONA DE PROXIMIDADE MAIS CHANCES TEM DE ACONTECER
 
 
 BUG: Se o cubo estiver empurrando a caixa no eixo Z, e o jogador estiver na frente da caixa isso funciona

@@ -760,15 +760,26 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isProximity( this, objetoAtualCena, 0.8, true, false ) === true 
+                     isProximity( this, objetoAtualCena, 0.2, true, false ) === true 
                 ){
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
+                    /*
+                    if( this.getPosition().y > objetoAtualCena.getPosition().y )
+                    {
+                        //Diz que o objeto parou de cair
+                        this.isFalling = false;
+                        this.groundY = this.getPosition().y; // A posição da ultima colisão
+                        this.objectBelow = objetoAtualCena;
+                        this.lastObjectBelow = objetoAtualCena;
+                    }
+                    */
                     //Diz que o objeto parou de cair
                     this.isFalling = false;
                     this.groundY = this.getPosition().y; // A posição da ultima colisão
                     this.objectBelow = objetoAtualCena;
                     this.lastObjectBelow = objetoAtualCena;
+                    
 
                     //Impede que o objeto suba em cima de outro objeto
                     if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y < objetoAtualCena.getPosition().y ){
@@ -853,7 +864,7 @@ export default class ObjectBase extends Base{
                         // Se houver sobreposição em algum dos eixos então houve colisão
                         if (sobreposicaoX > 0 && sobreposicaoZ > 0) 
                         {
-                            const tolerancia = 1.2;
+                            const tolerancia = 0;
 
                             // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
                             if (sobreposicaoX < sobreposicaoZ) {
@@ -863,7 +874,7 @@ export default class ObjectBase extends Base{
                                 } else {
                                     this.getPosition().x += (sobreposicaoX + tolerancia);
                                 }
-                                this.getVelocity().x = 0;
+                                //this.getVelocity().x = 0;
 
                             } else {
                                 // Empurra no Z
@@ -872,7 +883,7 @@ export default class ObjectBase extends Base{
                                 } else {
                                     this.getPosition().z += (sobreposicaoZ + tolerancia);
                                 }
-                                this.getVelocity().z = 0;
+                                //this.getVelocity().z = 0;
                             }
 
                             this.isMovimentoTravadoPorColisao = true;
@@ -1054,6 +1065,7 @@ export default class ObjectBase extends Base{
         //globalContext.get('CuboRef').somarVelocity({x:5})
         //globalContext.get('CuboRef').somarVelocity({x:1})
         //globalContext.get('CuboRef').somarVelocity({z:-50})
+        //globalContext.get('CuboRef').somarVelocity({z:-30})
         //globalContext.get('CaixaRef').somarVelocity({z:-50})
         if( velocidadeZ != 0 )
         {   

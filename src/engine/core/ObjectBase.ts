@@ -864,34 +864,37 @@ export default class ObjectBase extends Base{
 
                         this.isMovimentoTravadoPorColisao = false;
 
-                        // Se houver sobreposição em algum dos eixos então houve colisão
-                        if (sobreposicaoX > 0 && sobreposicaoZ > 0) 
-                        {
-                            //Se for o jogador não quero usar tolerando pra não bugar a posição dele
-                            //Mais se for objetos, eu uso pra evitar eles "grudarem" ao colidirem
-                            const tolerancia = this.name != 'Player' ? 1.2 : 0.0;
+                        if( true ){
 
-                            // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
-                            if (sobreposicaoX < sobreposicaoZ) {
-                                // Empurra no X
-                                if (posA.x < posB.x) {
-                                    this.getPosition().x -= (sobreposicaoX + tolerancia);
-                                } else {
-                                    this.getPosition().x += (sobreposicaoX + tolerancia);
-                                }
-                                //this.getVelocity().x = 0;
+                            // Se houver sobreposição em algum dos eixos então houve colisão
+                            if (sobreposicaoX > 0 && sobreposicaoZ > 0 ) 
+                            {
+                                //Se for o jogador não quero usar tolerando pra não bugar a posição dele
+                                //Mais se for objetos, eu uso pra evitar eles "grudarem" ao colidirem
+                                const tolerancia = this.name != 'Player' ? 1.2 : 0.0;
 
-                            } else {
-                                // Empurra no Z
-                                if (posA.z < posB.z) {
-                                    this.getPosition().z -= (sobreposicaoZ + tolerancia);
+                                // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
+                                if (sobreposicaoX < sobreposicaoZ) {
+                                    // Empurra no X
+                                    if (posA.x < posB.x) {
+                                        this.getPosition().x -= (sobreposicaoX + tolerancia);
+                                    } else {
+                                        this.getPosition().x += (sobreposicaoX + tolerancia);
+                                    }
+                                    //this.getVelocity().x = 0;
+
                                 } else {
-                                    this.getPosition().z += (sobreposicaoZ + tolerancia);
+                                    // Empurra no Z
+                                    if (posA.z < posB.z) {
+                                        this.getPosition().z -= (sobreposicaoZ + tolerancia);
+                                    } else {
+                                        this.getPosition().z += (sobreposicaoZ + tolerancia);
+                                    }
+                                    //this.getVelocity().z = 0;
                                 }
-                                //this.getVelocity().z = 0;
+
+                                this.isMovimentoTravadoPorColisao = true;
                             }
-
-                            this.isMovimentoTravadoPorColisao = true;
                         }
                     }
                 }

@@ -452,6 +452,42 @@ BUG UM POUCO PIOR: Por exemplo: Quando a caixa cai em cima do cubo reta ou mais 
 PORÈM, se a caixa cair em cima do cubo mais pelo lado esquerdo, a posição Z do cubo é ajustada, deslocando ele levemente pro lado direito.
 Isso não deveria acontecer
 PORÈM ESSE BUG EU TESTEI E JÀ ACONTECIA NA MINHA VERSÂO ANTIGA
+mais piorou depois da minha mudança
+
+ESSE ERRO ACONTECE EM ALGUM MOMENTO POR CAUSA DESSE TRECHO DE CÒDIGO QUE CORRIGE A POSIÇÂO
+é ele quem causa o ajuste indevido na caixa em certos momentos ao cair em cima do cubo
+<code>
+// Se houver sobreposição em algum dos eixos então houve colisão
+                            if (sobreposicaoX > 0 && sobreposicaoZ > 0 ) 
+                            {
+                                //Se for o jogador não quero usar tolerando pra não bugar a posição dele
+                                //Mais se for objetos, eu uso pra evitar eles "grudarem" ao colidirem
+                                const tolerancia = this.name != 'Player' ? 1.2 : 0.0;
+
+                                // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
+                                if (sobreposicaoX < sobreposicaoZ) {
+                                    // Empurra no X
+                                    if (posA.x < posB.x) {
+                                        this.getPosition().x -= (sobreposicaoX + tolerancia);
+                                    } else {
+                                        this.getPosition().x += (sobreposicaoX + tolerancia);
+                                    }
+                                    //this.getVelocity().x = 0;
+
+                                } else {
+                                    // Empurra no Z
+                                    if (posA.z < posB.z) {
+                                        this.getPosition().z -= (sobreposicaoZ + tolerancia);
+                                    } else {
+                                        this.getPosition().z += (sobreposicaoZ + tolerancia);
+                                    }
+                                    //this.getVelocity().z = 0;
+                                }
+
+                                this.isMovimentoTravadoPorColisao = true;
+                            }
+</code>
+
 
 
 # NOVAS IDEIAS 19/04/2025

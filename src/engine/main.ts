@@ -120,6 +120,55 @@ export function EngineMain( scene: Scene,
     globalContext.set('CuboRef', cubo);
 
     // Cria um cubo simples para testar
+    const cuboN = createCube( 
+        //The attributes
+        {
+            material: createMaterialByImage('/textures/1piso.png'), //The material,
+            name: 'MyCubeN',
+            isNPC: false,
+            havePhysics: true,
+            invisible: false,
+            opacity: 1,
+            collide: true,
+            scaleReduce: 1.4,
+            ignoreCollisions: [
+                "OtherCube",
+                "AnotherCubo",
+            ],
+            position: {
+                x: 1,
+                y: -7,
+                z: 0
+            },
+            weight: 40,
+            events: [
+                {
+                    //Cubo ficar rodando
+                    loop: function( propioObjeto:ObjectBase ){
+                        //propioObjeto.somarPosicaoX(0.005);
+                        //console.log(propioObjeto.isFalling, propioObjeto.objectBelow)
+
+                        if( propioObjeto.objectBelow != null ){
+                            //console.log(propioObjeto.getVelocity().x)
+                            
+                            if( f <= 10 ){
+                                //propioObjeto.somarVelocity({ x: 1.5 } as ObjectVelocity);
+                                //f++;
+                            }
+                        }
+                        
+                        
+                    }
+                }
+            ]
+        }
+    );
+
+    // Adiciona o cubo na cena
+    scene.add(cuboN);
+    globalContext.set('CuboRefN', cuboN);
+
+    // Cria um cubo simples para testar
     const cubo2 = createCube( 
         //The attributes
         {
@@ -172,7 +221,7 @@ export function EngineMain( scene: Scene,
             havePhysics: true,
 
             position: {
-                x: 0,
+                x: 8,
                 y: 1,
                 z: 0
             },

@@ -836,7 +836,7 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isProximity( this, objetoAtualCena, 0.5, true, false ) === true
+                     isProximity( this, objetoAtualCena, 0, true, false ) === true
                 ){
                     // Impede que o objeto ultrapasse a posição X ou Z do outro objeto
                     if( //Se o objectBelow ja tem algum valor
@@ -877,18 +877,36 @@ export default class ObjectBase extends Base{
                                 if (sobreposicaoX < sobreposicaoZ) {
                                     // Empurra no X
                                     if (posA.x < posB.x) {
-                                        this.getPosition().x -= (sobreposicaoX + tolerancia);
+                                        //this.getPosition().x -= (sobreposicaoX + tolerancia);
+                                        
+                                        if( posA.x <= minB.x ){
+                                            this.getPosition().x -= sobreposicaoX;
+                                        }
+
                                     } else {
-                                        this.getPosition().x += (sobreposicaoX + tolerancia);
+                                        //this.getPosition().x += (sobreposicaoX + tolerancia);
+                                        
+                                        if( posA.x >= maxB.x ){
+                                            this.getPosition().x += sobreposicaoX;
+                                        }
                                     }
                                     //this.getVelocity().x = 0;
 
                                 } else {
                                     // Empurra no Z
                                     if (posA.z < posB.z) {
-                                        this.getPosition().z -= (sobreposicaoZ + tolerancia);
+                                        //this.getPosition().z -= (sobreposicaoZ + tolerancia);
+                                        
+                                        if( posA.z <= minB.z ){
+                                            this.getPosition().z -= sobreposicaoZ;
+                                        }
+
                                     } else {
-                                        this.getPosition().z += (sobreposicaoZ + tolerancia);
+                                        //this.getPosition().z += (sobreposicaoZ + tolerancia);
+                                        
+                                        if( posA.z >= maxB.z ){
+                                            this.getPosition().z += sobreposicaoZ;
+                                        }
                                     }
                                     //this.getVelocity().z = 0;
                                 }

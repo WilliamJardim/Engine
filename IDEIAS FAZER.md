@@ -386,6 +386,10 @@ https://github.com/WilliamJardim/Engine/commit/8c015d3b1342093495d9f34f93e300fc4
 
     SE HÀ SOBREPOSIÇÂO Y NA COLISÂO, ELE JA TELEPORTA O JOGADOR PRA CIMA DO OBJETO
 
+    BUG: Isso eliminou a lógica do objeto poder para em cima de outro quando cair em cima de outro.
+
+    BUG: Isso causou que objetos grudavam ao colidir, afetando ou dificultando algumas logicas como o de mover objetos em cima do outro
+
     **EU VOLTEI O CÒDIGO PRA TRAZ, E REMOVI ESSAS MUDANÇAS, mais se eu tentar fazer elas obviamente vai acontecer denovo.**
 
 

@@ -370,6 +370,19 @@ JA EM CIMA DO SEGUNDO CUBO(que se torna o segundo chão, ele acontece esse bug e
 ESSE MESMO BUG ACONTECE NÂO SÒ COM O JOGADOR MAIS COM QUALQUER OUTRO OBJETO, TIPO A CAIXA POR EXEMPLO
 mais aparentemente o jogador é o mais afetado por esse bug
 
+19/04/2025
+BUG: Melhorei um pouco a colisão, 
+PORÈM, AS VEZES OS OBJETOS AINDA AFUNDAM UM POUCO AO CAIR, AS VEZES MAIS OUTRAS MENOS
+TEVE VEZES QUE ELA CAIU E FICOU BEM AFUNDADA NO CHÂO
+
+BUG: A camera fica muito proxima do chão na maiora das vezes
+
+------------------------------
+BUG: Dependendo da posição Y do objeto, o jogador sobe em cima do objeto
+por exemplo, por causa desse "BUG: AS VEZES OS OBJETOS AINDA AFUNDAM UM POUCO AO CAIR, AS VEZES MAIS OUTRAS MENOS", dependendo de como a caixa está afundada, só de eu colidir com ela eu já sou teleportado pra cima da caixa, MAIS AS VEZES ISSO NÂO ACONTECE, DEPENDE DO NIVEL DE AFUNDAMENTO DA CAIXA AO CAIR
+
+SE HÀ SOBREPOSIÇÂO Y NA COLISÂO, ELE JA TELEPORTA O JOGADOR PRA CIMA DO OBJETO
+
 
 
 

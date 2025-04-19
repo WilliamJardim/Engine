@@ -760,7 +760,7 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isCollision( this, objetoAtualCena, 0 ) === true 
+                     isCollision( this, objetoAtualCena, 0.5 ) === true 
                 ){
                     //const posicaoChao = objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y) + ( this.name != 'Player' ? this.getScale().y : 0);
                     const posicaoChao = objetoAtualCena.getPosition().y + objetoAtualCena.getScale().y;
@@ -818,7 +818,7 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isCollision( this, objetoAtualCena ) === true
+                     isCollision( this, objetoAtualCena, 0.5 ) === true
                 ){
                     // Impede que o objeto ultrapasse a posição X ou Z do outro objeto
                     if( //Se o objectBelow ja tem algum valor
@@ -870,7 +870,7 @@ export default class ObjectBase extends Base{
                             //Somente X e Z
                             (sobreposicaoX > 0 && sobreposicaoZ > 0)
                             //Ou se teve em Y e tambem em X e Z
-                            //|| (sobreposicaoY > 0 && sobreposicaoX > 0 && sobreposicaoZ > 0) 
+                            || (sobreposicaoY > 0 && sobreposicaoX > 0 && sobreposicaoZ > 0) 
                         ){
                             // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
                             if (sobreposicaoX < sobreposicaoZ) {
@@ -893,16 +893,16 @@ export default class ObjectBase extends Base{
                             }
 
                             //Se teve em Y
-                            /*
-                            if( sobreposicaoY > 0 )
-                            {
+                            if (sobreposicaoY > 0) {
+                                const margemToleranciaY = scaleA.y + scaleB.y;                              
+                            
                                 if (posA.y < posB.y) {
-                                    this.getPosition().y += sobreposicaoY + this.getScale().y;
+                                    //this.getPosition().y = Math.min(this.getPosition().y, posB.y - scaleA.y / 2 - margemToleranciaY);
+                                } else {
+                                    this.getPosition().y = Math.max(this.getPosition().y, maxB.y + scaleA.y / 2 + margemToleranciaY);
                                 }
-
                                 this.getVelocity().y = 0;
                             }
-                            */
 
                             this.isMovimentoTravadoPorColisao = true;
                         }

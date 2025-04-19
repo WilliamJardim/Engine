@@ -375,6 +375,8 @@ PORÈM ESSE BUG EU TESTEI E JÀ ACONTECIA NA MINHA VERSÂO ANTIGA
 PORÈM ISSO acontece provavelmente por que, como eu removi a correção da posição Y pra ele parar de tremer, as vezes ele pode afundar um pouquinho ao cair, e ai isso conflita com a outra logica de corrigir posição X e Z na lógica de colisão, o que pode fazer o cubo
 As vezes o vento joga a caixa mais pro lado que o bug não afeta, e as vezes joga mais pro lado esquerdo que é o lado que esse bug está ocorrendo
 
+# NOVAS IDEIAS 19/04/2025
+IDEIA: Criar a propriedade objectAbove, similar ao objectBelow, porém que armazena o objeto em cima do objeto atual
 
 
 # 19.04.2025 - mudança que depois eu desfiz por que não deu certo como eu queria:

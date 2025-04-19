@@ -380,9 +380,63 @@ As vezes o vento joga a caixa mais pro lado que o bug não afeta, e as vezes jog
 
 BUG: Se o cubo estiver empurrando a caixa no eixo Z, isso funciona, porém
 POREM QUANDO O CUBO E A CAIXA CHEGAM NO VOID(ENQUANTO O CUBO ESTÀ COLIDINDO COM A CAIXA EMPURRANDO ELA), a caixa fica grudada no cubo, e ambos não caem no void
+ESSE BUG COMEÇOU A ACONTECER DEPOIS ULTIMA MUDANÇA QUE EU FIZ NO updatePhysics:
+<code>
+                /**
+                * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
+                */
+                if( (objetoAtualCena.objProps.traverse != true) &&
+                    (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
+                     objetoAtualCena.id != this.id && 
+                     isProximity( this, objetoAtualCena, 0.8, true, false ) === true 
+                ){
+                    //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
+                    //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
+                    //Diz que o objeto parou de cair
+                    this.isFalling = false;
+                    this.groundY = this.getPosition().y; // A posição da ultima colisão
+                    this.objectBelow = objetoAtualCena;
+                    this.lastObjectBelow = objetoAtualCena;
+
+                    [...]
+</code>
+
+ANTES TAVA:
+(https://github.com/WilliamJardim/Engine/blob/838efff76dd5b7b597ae450de8897bf74d98430a/src/engine/core/ObjectBase.ts)
+<code>
+                /**
+                * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
+                */
+                if( (objetoAtualCena.objProps.traverse != true) &&
+                    (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
+                     objetoAtualCena.id != this.id && 
+                     isProximity( this, objetoAtualCena, 0.8, true, false ) === true 
+                ){
+                    //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
+                    //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
+                    if( this.getPosition().y > objetoAtualCena.getPosition().y )
+                    {
+                        this.setPosition({
+                            y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
+                        });
+
+                        //Diz que o objeto parou de cair
+                        this.isFalling = false;
+                        this.groundY = this.getPosition().y; // A posição da ultima colisão
+                        this.objectBelow = objetoAtualCena;
+                        this.lastObjectBelow = objetoAtualCena;
+                    }
+
+                    [...]
+</code>
+ASSIM COMO TAVA ANTES NÂO DAVA ESSE BUG, MAIS OCORRIA OUTROS BUGS QUE EU TAMBEM NÂO GOSTEI NEM UM POUCO.
+
 
 BUG: Se o cubo estiver empurrando a caixa no eixo Z, e o jogador estiver na frente da caixa isso funciona
 POREM SE O CUBO CONTINUAR AUMENTANDO A VELOCIDADE EMPURRANDO CADA VEZ MAIS A CAIXA, O JOGADOR COMEÇA ATRAVESSAR MAIS O EIXO Z OU X DA CAIXA
+Aparentemente isso tambem piorou um pouquinho depois da ultima mudança que fiz.
+
+BUG: De vez enquando, quando a caixa cai no chão, ela fica afundada no chão
 
 
 

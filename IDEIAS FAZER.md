@@ -361,8 +361,16 @@ Fiz umas mudanças, e melhorou um pouco, mais afetou a logica:
 NOVOS BUGS:
 
 BUG: AGORA A CAIXA FICA ULTRAPASSANDO A METADE DO CHÂO 
-Isso ainda é um problema de lidar com escalas.
+Isso ainda é um problema de lidar com escalas no eixo Y.
 
 BUG: Um objeto ao colidir com o jogador empura ele como esperado PORÈM AO CORRIGIR A POSIÇÂO ELE ACABA EMPURRANDO O JOGADOR PRO LADO AO INVEZ DE APENAS EMPURRAR ELE PRA FRENTE, isso é alguma coisa na logica de impedir movimentos na colisão que ajusta a posição
+ISSO ACONTECE SÒ QUANDO O JOGADOR E O OBJETO AMBOS ESTÂO EM CIMA DE OUTRO CUBO GRANDE(OU SEJA EM CIMA DE OUTRO CHÂO)
+mais no chão principal isso não ocorre, ele empura corretamente SOMENTE NO CHÂO PRINCIPAL
+JA EM CIMA DO SEGUNDO CUBO(que se torna o segundo chão, ele acontece esse bug e além de empurrar e joga o jogador pro lado ao invez de apenas empurrar pra frente)
+ESSE MESMO BUG ACONTECE NÂO SÒ COM O JOGADOR MAIS COM QUALQUER OUTRO OBJETO, TIPO A CAIXA POR EXEMPLO
+mais aparentemente o jogador é o mais afetado por esse bug
+
+
+
 
 

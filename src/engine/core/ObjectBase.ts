@@ -760,11 +760,11 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
-                     isProximity( this, objetoAtualCena, 0.2, true, false ) === true 
+                     isCollision( this, objetoAtualCena, 0.5 ) === true 
                 ){
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
-                    /*
+                    
                     if( this.getPosition().y > objetoAtualCena.getPosition().y )
                     {
                         //Diz que o objeto parou de cair
@@ -773,12 +773,14 @@ export default class ObjectBase extends Base{
                         this.objectBelow = objetoAtualCena;
                         this.lastObjectBelow = objetoAtualCena;
                     }
-                    */
+                    
+                    /*
                     //Diz que o objeto parou de cair
                     this.isFalling = false;
                     this.groundY = this.getPosition().y; // A posição da ultima colisão
                     this.objectBelow = objetoAtualCena;
                     this.lastObjectBelow = objetoAtualCena;
+                    */
                     
 
                     //Impede que o objeto suba em cima de outro objeto
@@ -864,7 +866,7 @@ export default class ObjectBase extends Base{
                         // Se houver sobreposição em algum dos eixos então houve colisão
                         if (sobreposicaoX > 0 && sobreposicaoZ > 0) 
                         {
-                            const tolerancia = 0;
+                            const tolerancia = 0.8;
 
                             // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
                             if (sobreposicaoX < sobreposicaoZ) {

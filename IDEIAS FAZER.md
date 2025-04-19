@@ -355,3 +355,14 @@ ESSE PROBLEMA DELE ATRAVESSAR SÒ ACONTECE QUANDO OS OBJETOS ESTAO EM CIMA DE OU
 Eu acho que ele pode estar bugando alguma correção de posição em algum tipo de colisão e jogando a assim caixa para o "Y mais baixo", que deve ser o que a Engine reconhece e impede ultrapassar.
 
 BUG: Ao tentar deixar a colisão mais precisa, apenas o jogador fica tremendo e quicando a camera ao colidir com algum chão.
+
+Fiz umas mudanças, e melhorou um pouco, mais afetou a logica:
+
+NOVOS BUGS:
+
+BUG: AGORA A CAIXA FICA ULTRAPASSANDO A METADE DO CHÂO 
+Isso ainda é um problema de lidar com escalas.
+
+BUG: Um objeto ao colidir com o jogador empura ele como esperado PORÈM AO CORRIGIR A POSIÇÂO ELE ACABA EMPURRANDO O JOGADOR PRO LADO AO INVEZ DE APENAS EMPURRAR ELE PRA FRENTE, isso é alguma coisa na logica de impedir movimentos na colisão que ajusta a posição
+
+

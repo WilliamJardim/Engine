@@ -145,19 +145,9 @@ export function EngineMain( scene: Scene,
                 {
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
-                        //propioObjeto.somarPosicaoX(0.005);
-                        //console.log(propioObjeto.isFalling, propioObjeto.objectBelow)
-
-                        if( propioObjeto.objectBelow != null ){
-                            //console.log(propioObjeto.getVelocity().x)
-                            
-                            if( f <= 10 ){
-                                //propioObjeto.somarVelocity({ x: 1.5 } as ObjectVelocity);
-                                //f++;
-                            }
-                        }
                         
                         
+                    
                     }
                 }
             ]
@@ -221,9 +211,9 @@ export function EngineMain( scene: Scene,
             havePhysics: true,
 
             position: {
-                x: 8,
+                x: 0,
                 y: 1,
-                z: 1
+                z: -1
             },
 
             //Define configuraçao de detecção de proximidade

@@ -948,24 +948,27 @@ export default class ObjectBase extends Base{
                 /**
                 * Aplica fisica de rotação na queda de acordo com o vento
                 */
-                if( this.objProps.name != 'Player' ){
-                    const wind:Wind = this.scene.wind;
-                    const randomX = Math.random() * 0.00001;
-                    const randomY = Math.random() * 0.00001;
-                    const randomZ = Math.random() * 0.00001;
+                if( this.scene.wind != null )
+                {
+                    if( this.objProps.name != 'Player' ){
+                        const wind:Wind = this.scene.wind;
+                        const randomX = Math.random() * 0.00001;
+                        const randomY = Math.random() * 0.00001;
+                        const randomZ = Math.random() * 0.00001;
 
-                    this.somarRotation({
-                        x: randomX + ((wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ) * Math.abs(gravity) * 4.8 * frameDelta * frameDeltaIntensification,
-                        y: randomY + ((wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ) * Math.abs(gravity) * 4.8 * frameDelta * frameDeltaIntensification,
-                        z: randomZ + ((wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) ) * Math.abs(gravity) * 4.8 * frameDelta * frameDeltaIntensification
-                    });
+                        this.somarRotation({
+                            x: randomX + ((wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ) * Math.abs(gravity) * 4.8 * frameDelta * frameDeltaIntensification,
+                            y: randomY + ((wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ) * Math.abs(gravity) * 4.8 * frameDelta * frameDeltaIntensification,
+                            z: randomZ + ((wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) ) * Math.abs(gravity) * 4.8 * frameDelta * frameDeltaIntensification
+                        });
 
-                    //O vento tambem empurra um pouco na queda
-                    this.somarVelocity({
-                        x: randomX + ( ((wind.deslocationTrend || {}).x || 0) + (wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ),
-                        y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ),
-                        z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) )
-                    });
+                        //O vento tambem empurra um pouco na queda
+                        this.somarVelocity({
+                            x: randomX + ( ((wind.deslocationTrend || {}).x || 0) + (wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ),
+                            y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ),
+                            z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) )
+                        });
+                    }
                 }
 
             // Se o objeto não está caindo

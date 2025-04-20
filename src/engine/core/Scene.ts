@@ -35,7 +35,7 @@ export default class Scene extends Base{
     public posicaoYchao:number;
     public camera:GameCamera;
     public sceneCounter:FrameCounter;
-    public normalSpeed = 0.8;
+    public normalSpeed = 1;
     public slowSpeed = 0.05;
     public frameDeltaIntensification:number = this.normalSpeed;
     public objectPhysicsUpdateRate:number = 1; //Permite intensificar os efeitos da fisica nos objetos
@@ -59,10 +59,12 @@ export default class Scene extends Base{
     /**
     * Configurações do vento para física
     */
-    public wind:Wind;
+    public wind:Wind|null;
 
     constructor( canvasRef:any ){
         super();
+
+        this.wind = null;
 
         /*
         this.wind = {
@@ -78,19 +80,6 @@ export default class Scene extends Base{
                             y: 0, 
                             z: 0 }
         };*/
-        this.wind = {
-            orientation : { x: 0.000, 
-                            y: 0.000, 
-                            z: 0.000},
-
-            deslocationTrend: { x: 0.00, 
-                                y: 0.000, 
-                                z: 0.000},
-
-            intensity   : { x: 0, 
-                            y: 0, 
-                            z: 0 }
-        };
 
         this.posicaoYchao = 1.6;
         this.gravity = -45;     // Gravidade que puxa para baixo

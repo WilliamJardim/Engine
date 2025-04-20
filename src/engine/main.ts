@@ -89,7 +89,7 @@ export function EngineMain( scene: Scene,
             position: {
                 x: 0,
                 y: -2,
-                z: 0
+                z: -0.5
             },
             weight: 40,
             events: [
@@ -213,7 +213,7 @@ export function EngineMain( scene: Scene,
             position: {
                 x: 0,
                 y: 1,
-                z: -1
+                z: 1.5
             },
 
             //Define configuraçao de detecção de proximidade

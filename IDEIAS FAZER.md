@@ -527,8 +527,9 @@ if( objeto.objectBelow != undefined &&
         }      
 </code>
 
-
-
+BUG: Se o objeto recebe uma velocidade e começa a acelerar, ao colidir com outro objeto,
+ao invez dele apenas seguir acelerando e empurrando o outro objeto, como antes. Ele faz algo estranho: ELE FICA BRECANDO/ENROSCANDO EM CERTOS MOMENTOS
+não é por causa do código acima sobre o movimento usando atrito. Mais sei que tambem ocorre na hora de corrigir a posição na colisão
 
 # NOVAS IDEIAS 19/04/2025
 IDEIA: Criar a propriedade objectAbove, similar ao objectBelow, porém que armazena o objeto em cima do objeto atual

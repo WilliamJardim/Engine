@@ -842,7 +842,7 @@ export default class ObjectBase extends Base{
                     if( //Se o objectBelow ja tem algum valor
                         this.objectBelow &&
                         //Se nao for o chao/ou o objeto que ele esta em cima
-                        objetoAtualCena.id != this.objectBelow.id 
+                        objetoAtualCena.id != this.objectBelow.id
                     ){
                         // Bounding boxes de ambos os objetos
                         const posA   : THREE.Vector3  = this.getPosition();
@@ -879,15 +879,15 @@ export default class ObjectBase extends Base{
                                     if (posA.x < posB.x) {
                                         //this.getPosition().x -= (sobreposicaoX + tolerancia);
                                         
-                                        if( posA.x <= minB.x ){
-                                            this.getPosition().x -= sobreposicaoX;
+                                        if( posA.x < minB.x ){
+                                            this.getPosition().x -= (sobreposicaoX + tolerancia);
                                         }
 
                                     } else {
                                         //this.getPosition().x += (sobreposicaoX + tolerancia);
                                         
-                                        if( posA.x >= maxB.x ){
-                                            this.getPosition().x += sobreposicaoX;
+                                        if( posA.x > maxB.x ){
+                                            this.getPosition().x += (sobreposicaoX + tolerancia);
                                         }
                                     }
                                     //this.getVelocity().x = 0;
@@ -897,15 +897,15 @@ export default class ObjectBase extends Base{
                                     if (posA.z < posB.z) {
                                         //this.getPosition().z -= (sobreposicaoZ + tolerancia);
                                         
-                                        if( posA.z <= minB.z ){
-                                            this.getPosition().z -= sobreposicaoZ;
+                                        if( posA.z < minB.z ){
+                                            this.getPosition().z -= (sobreposicaoZ + tolerancia);
                                         }
 
                                     } else {
                                         //this.getPosition().z += (sobreposicaoZ + tolerancia);
                                         
-                                        if( posA.z >= maxB.z ){
-                                            this.getPosition().z += sobreposicaoZ;
+                                        if( posA.z > maxB.z ){
+                                            this.getPosition().z += (sobreposicaoZ + tolerancia);
                                         }
                                     }
                                     //this.getVelocity().z = 0;

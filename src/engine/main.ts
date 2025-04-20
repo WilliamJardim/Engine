@@ -136,7 +136,7 @@ export function EngineMain( scene: Scene,
                 "AnotherCubo",
             ],
             position: {
-                x: 1,
+                x: -5,
                 y: -7,
                 z: 0
             },

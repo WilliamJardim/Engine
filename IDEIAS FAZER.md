@@ -532,6 +532,8 @@ ao invez dele apenas seguir acelerando e empurrando o outro objeto, como antes. 
 não é por causa do código acima sobre o movimento usando atrito. Mais sei que tambem ocorre na hora de corrigir a posição na colisão
 ESSE BUG JA ACONTECIA NO MEU ANTIGO TAMBEM
 
+BUG: Se ambos objetos cairem meio que juntos, por estarem proximos dentro do isProximity das logicas, isso faz com que a gravidade seja aplicada de forma igual pra ambos, e que fiquem caindo juntos devagarzinho por que eles ficam alternando entre caindo/não caindo
+
 # NOVAS IDEIAS 19/04/2025
 IDEIA: Criar a propriedade objectAbove, similar ao objectBelow, porém que armazena o objeto em cima do objeto atual
 

@@ -927,14 +927,23 @@ export default class ObjectBase extends Base{
                 * Enquanto o objeto estiver caindo, ele não tem objeto abaixo dele 
                 */
                 this.objectBelow = null;
-
-                if( this.getVelocity().y != undefined ){
+            
+                if( this.getVelocity().y != undefined )
+                {
+                    /**
+                    * Faz o object decrementar a posição Y com a gravidade
+                    */
                     this.getVelocity().y += Math.abs( this.scene.gravity ) * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate;
                     this.getPosition().y -= this.getVelocity().y * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate;
 
+                    /**
+                    * Executa os eventos de queda 
+                    */
                     this.objEvents
                     .getEventos()
                     .forEach(function(eventosObjeto:ObjectEvents){
+
+                        //Chama o evento whenFall
                         if( eventosObjeto.whenFall )
                         {
                             esteObjeto.callEvent( eventosObjeto.whenFall, {
@@ -942,6 +951,7 @@ export default class ObjectBase extends Base{
                                 instante : new Date().getTime()
                             });
                         }
+
                     });
                 }
 
@@ -964,9 +974,9 @@ export default class ObjectBase extends Base{
 
                         //O vento tambem empurra um pouco na queda
                         this.somarVelocity({
-                            x: randomX + ( ((wind.deslocationTrend || {}).x || 0) + (wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ),
-                            y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ),
-                            z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) )
+                            x: randomX + ( ((wind.deslocationTrend || {}).x || 0) + (wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 0) ),
+                            y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 0) ),
+                            z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 0) )
                         });
                     }
                 }

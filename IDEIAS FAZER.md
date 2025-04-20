@@ -534,6 +534,13 @@ ESSE BUG JA ACONTECIA NO MEU ANTIGO TAMBEM
 
 BUG: Se ambos objetos cairem meio que juntos, por estarem proximos dentro do isProximity das logicas, isso faz com que a gravidade seja aplicada de forma igual pra ambos, e que fiquem caindo juntos devagarzinho por que eles ficam alternando entre caindo/não caindo
 
+BUG: Quando tem dois objetos emfileirados, e um outro objeto em cima do ultimo(meio de lado),... se o primeiro objeto vem com uma velocidade, esbarrando/empurrando o objeto da frente, .... o objeto que esta em cima dele sai de cima dele vai pra cima do objeto que está empurrando ele(isso foi algo NÂO PROGRAMADO NA LOGICA DE ATRITO), E tem momentos em que o objeto que está em cima desse outro objeto afunda mais um pouco quase na metade do objeto e fica meio de lado. Isso pode ter ocorrido por pelo menos tres hipoteses:
+
+   (1) - A lógica de queda afundou um pouco o objeto, e a logica de correçao de posição X e Y acabou ajudando a ficar mais de lad
+   (2) - A logica de queda afundou um pouco o objeto, e a outra logica do atrito deslocou o objeto um pouco mais pro lado
+   (3) - Um pouco dos dois
+
+
 # NOVAS IDEIAS 19/04/2025
 IDEIA: Criar a propriedade objectAbove, similar ao objectBelow, porém que armazena o objeto em cima do objeto atual
 

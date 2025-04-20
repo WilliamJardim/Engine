@@ -223,7 +223,7 @@ export function EngineMain( scene: Scene,
             position: {
                 x: 8,
                 y: 1,
-                z: 0
+                z: 1
             },
 
             //Define configuraçao de detecção de proximidade
@@ -285,7 +285,7 @@ export function EngineMain( scene: Scene,
     directionalLight.position.set(5, 10, 7.5);
     scene.add( directionalLight );
 
-    
+    //Engine.get('CuboRef').somarVelocity({x:50})
 
 }
 

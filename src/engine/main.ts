@@ -211,9 +211,9 @@ export function EngineMain( scene: Scene,
             havePhysics: true,
 
             position: {
-                x: 0,
+                x: 1.8,
                 y: 1,
-                z: 1.5
+                z: 1.8
             },
 
             //Define configuraçao de detecção de proximidade

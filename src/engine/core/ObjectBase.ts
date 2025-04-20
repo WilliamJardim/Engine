@@ -852,68 +852,85 @@ export default class ObjectBase extends Base{
                         const scaleB : THREE.Vector3  = objetoAtualCena.getScale();
 
                         // Zona do objeto atual
-                        const minA = { x: posA.x - scaleA.x / 2, z: posA.z - scaleA.z / 2 };
-                        const maxA = { x: posA.x + scaleA.x / 2, z: posA.z + scaleA.z / 2 };
+                        const minA = { 
+                                       x: posA.x - scaleA.x / 2, 
+                                       z: posA.z - scaleA.z / 2,
+                                       y: posA.y - scaleA.y / 2
+                                     };
+
+                        const maxA = { 
+                                       x: posA.x + scaleA.x / 2, 
+                                       z: posA.z + scaleA.z / 2,
+                                       y: posA.y + scaleA.y / 2
+                                     };
 
                         // Zona do objeto colisor, cujo objeto atual esta intersectando
-                        const minB = { x: posB.x - scaleB.x / 2, z: posB.z - scaleB.z / 2 };
-                        const maxB = { x: posB.x + scaleB.x / 2, z: posB.z + scaleB.z / 2 };
+                        const minB = { 
+                                       x: posB.x - scaleB.x / 2, 
+                                       z: posB.z - scaleB.z / 2,
+                                       y: posB.y - scaleB.y / 2 
+                                     };
+
+                        const maxB = { 
+                                       x: posB.x + scaleB.x / 2, 
+                                       z: posB.z + scaleB.z / 2,
+                                       y: posB.y + scaleB.y / 2
+                                     };
 
                         const sobreposicaoX:number = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);
                         const sobreposicaoZ:number = Math.min(maxA.z, maxB.z) - Math.max(minA.z, minB.z);
 
                         this.isMovimentoTravadoPorColisao = false;
 
-                        if( true ){
+                        // Se houver sobreposição em algum dos eixos então houve colisão
+                        //IDEIA ADICIONAR: && this.getPosition().y <= maxB.y
+                        if (sobreposicaoX > 0 && sobreposicaoZ > 0 ) 
+                        {
+                            //Se for o jogador não quero usar tolerando pra não bugar a posição dele
+                            //Mais se for objetos, eu uso pra evitar eles "grudarem" ao colidirem
+                            const tolerancia = this.name != 'Player' ? 1.2 : 0.0;
 
-                            // Se houver sobreposição em algum dos eixos então houve colisão
-                            if (sobreposicaoX > 0 && sobreposicaoZ > 0 ) 
-                            {
-                                //Se for o jogador não quero usar tolerando pra não bugar a posição dele
-                                //Mais se for objetos, eu uso pra evitar eles "grudarem" ao colidirem
-                                const tolerancia = this.name != 'Player' ? 1.2 : 0.0;
-
-                                // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
-                                if (sobreposicaoX < sobreposicaoZ) {
-                                    // Empurra no X
-                                    if (posA.x < posB.x) {
-                                        //this.getPosition().x -= (sobreposicaoX + tolerancia);
-                                        
-                                        if( posA.x < minB.x ){
-                                            this.getPosition().x -= (sobreposicaoX + tolerancia);
-                                        }
-
-                                    } else {
-                                        //this.getPosition().x += (sobreposicaoX + tolerancia);
-                                        
-                                        if( posA.x > maxB.x ){
-                                            this.getPosition().x += (sobreposicaoX + tolerancia);
-                                        }
+                            // Corrigir no eixo de menor sobreposição (para evitar "grudar" no canto)
+                            if (sobreposicaoX < sobreposicaoZ) {
+                                // Empurra no X
+                                if (posA.x < posB.x) {
+                                    //this.getPosition().x -= (sobreposicaoX + tolerancia);
+                                    
+                                    if( posA.x < minB.x ){
+                                        this.getPosition().x -= (sobreposicaoX + tolerancia);
                                     }
-                                    //this.getVelocity().x = 0;
 
                                 } else {
-                                    // Empurra no Z
-                                    if (posA.z < posB.z) {
-                                        //this.getPosition().z -= (sobreposicaoZ + tolerancia);
-                                        
-                                        if( posA.z < minB.z ){
-                                            this.getPosition().z -= (sobreposicaoZ + tolerancia);
-                                        }
-
-                                    } else {
-                                        //this.getPosition().z += (sobreposicaoZ + tolerancia);
-                                        
-                                        if( posA.z > maxB.z ){
-                                            this.getPosition().z += (sobreposicaoZ + tolerancia);
-                                        }
+                                    //this.getPosition().x += (sobreposicaoX + tolerancia);
+                                    
+                                    if( posA.x > maxB.x ){
+                                        this.getPosition().x += (sobreposicaoX + tolerancia);
                                     }
-                                    //this.getVelocity().z = 0;
                                 }
+                                //this.getVelocity().x = 0;
 
-                                this.isMovimentoTravadoPorColisao = true;
+                            } else {
+                                // Empurra no Z
+                                if (posA.z < posB.z) {
+                                    //this.getPosition().z -= (sobreposicaoZ + tolerancia);
+                                    
+                                    if( posA.z < minB.z ){
+                                        this.getPosition().z -= (sobreposicaoZ + tolerancia);
+                                    }
+
+                                } else {
+                                    //this.getPosition().z += (sobreposicaoZ + tolerancia);
+                                    
+                                    if( posA.z > maxB.z ){
+                                        this.getPosition().z += (sobreposicaoZ + tolerancia);
+                                    }
+                                }
+                                //this.getVelocity().z = 0;
                             }
+
+                            this.isMovimentoTravadoPorColisao = true;
                         }
+                        
                     }
                 }
             }

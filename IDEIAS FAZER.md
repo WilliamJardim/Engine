@@ -588,4 +588,6 @@ Nos Attachments adicionar uma propriedade ignoreAttacherCollision, que permite d
 NO movimentSinalyzer, criar uma vericação melhor e mais profunda, que verifica os N ultimos frames, se o objeto se moveu(ou se a posição X, Y e Z do objetou mudou do frame antigo para o frame atual), e para qual direção. Essa pode ser mais pesada, então, ela pode ser opcional
 Isso vai ajudar a quando mesmo eu usar métodos como setPosition ou somarX, a Engine saiba onde o objeto estava antes, onde esta agora, e para qual direação ele se moveu, isso vai ajudar no calculo das fisicas de impacto e empurrão, pra ficar bem amplo
 
+Tambem criar um historico dos ultimos N frames, de cada objeto, para poder acessar informações dele, como posição, rotação, estados, etc. posso até criar esse historico direto na cena, com informações completas da cena completa, nos ultimos N frames
+
 

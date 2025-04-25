@@ -1350,7 +1350,7 @@ export default class ObjectBase extends Base{
                         {
                             if( objeto.objProps.ignoreCollisions != undefined )
                             {
-                                objeto.objProps.ignoreCollisions.push( objetoAnexar.id );
+                                if( objeto.objProps.ignoreCollisions.includes(objetoAnexar.id) == false ){ objeto.objProps.ignoreCollisions.push( objetoAnexar.id ) };
                             }
                         }
 

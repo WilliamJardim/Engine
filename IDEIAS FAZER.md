@@ -582,3 +582,6 @@ https://github.com/WilliamJardim/Engine/commit/8c015d3b1342093495d9f34f93e300fc4
 
 
 
+# IDEIA 25/04/2025
+Nos Attachments adicionar uma propriedade ignoreAttacherCollision, que permite desativar a colisão do objeto em anexo COM O OBJETO DONO DESSA RELAÇÂO
+

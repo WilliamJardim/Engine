@@ -228,22 +228,24 @@ export function EngineMain( scene: Scene,
                 {
                     loop: function( propioObjeto:ObjectBase ){
                         //console.log( propioObjeto.infoProximity )
-                        
+                        if( propioObjeto.movimentSinalyzer.forward ){
+                            console.log( 'Caixa se movendo para direita' );
+                        }
                     },
 
                     whenFall: function(){
-                        console.log('Objeto caindo');
+                        //console.log('Objeto caindo');
                     },
 
                     whenDestroy: function( objeto:ObjectBase ){
-                        console.log('Objeto destruido');
+                        //console.log('Objeto destruido');
                     },
 
                     whenCollide: function( parametrosColisao:any ){
 
                         // Se a Caixa colidir com o Cubo
                         if( parametrosColisao.target.name == 'MyCube' ){
-                            console.log('Cubo Colidiou com Caixa');
+                            //console.log('Cubo Colidiou com Caixa');
                         }
                     },
 
@@ -251,7 +253,7 @@ export function EngineMain( scene: Scene,
 
                         // Se a Caixa colidir com o Cubo
                         if( parametrosProximidade.target.name == 'MyCube' ){
-                            console.log('Cubo próximo da Caixa');
+                            //console.log('Cubo próximo da Caixa');
                         }
 
                     }

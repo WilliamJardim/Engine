@@ -29,6 +29,7 @@ export default class ObjectBase extends Base{
     public objProps:ObjectProps;
     public objEvents:ObjectEventLayer;
     public movimentState:MovementState;
+    public movimentSinalyzer:MovementState; //Indica se o objeto está se movendo para essas direções, quer por força ou de forma direta
     public physicsState:PhysicsState;
     public scene:Scene|null;
     public isFalling:boolean;
@@ -88,6 +89,13 @@ export default class ObjectBase extends Base{
             steps: 1
         };
 
+        this.movimentSinalyzer =  {
+            forward: false,
+            backward: false,
+            right: false,
+            left: false
+        };
+
         this.physicsState = this.movimentState.physics || {
 
             //Define a velocidade inicial do objeto
@@ -134,6 +142,20 @@ export default class ObjectBase extends Base{
         {
             this.onCreate.bind(this)()
         }
+    }
+
+    /**
+    * Reseta algumas coisas basicas, antes de qualquer loop de lógica 
+    */
+    public pre_loop_reset(): void{
+
+        this.movimentSinalyzer =  {
+            forward: false,
+            backward: false,
+            right: false,
+            left: false
+        };
+
     }
 
     /**
@@ -376,6 +398,18 @@ export default class ObjectBase extends Base{
         if( velocidade.x ){ this.getVelocity().x += velocidade.x };
         if( velocidade.y ){ this.getVelocity().y += velocidade.y };
         if( velocidade.z ){ this.getVelocity().z += velocidade.z };
+    }
+
+    public somarVelocityX( velocidade:number ): void{
+        this.getVelocity().x += velocidade
+    }
+
+    public somarVelocityY( velocidade:number ): void{
+        this.getVelocity().y += velocidade
+    }
+
+    public somarVelocityZ( velocidade:number ): void{
+        this.getVelocity().z += velocidade
     }
 
     public subtrairVelocityX( velocidade:number ): void{
@@ -941,6 +975,11 @@ export default class ObjectBase extends Base{
             if( this.isFalling === true )
             {
                 /**
+                * Sinaliza que um movimento para baixo está ocorrendo neste objeto 
+                */
+                this.movimentSinalyzer.down = true;
+
+                /**
                 * Enquanto o objeto estiver caindo, ele não tem objeto abaixo dele 
                 */
                 this.objectBelow = null;
@@ -1047,16 +1086,20 @@ export default class ObjectBase extends Base{
         * Realiza uma movimentação simples, para cada uma das direções possiveis, sem usar fisica.
         */
         if( movimentState.forward == true ){
-            objeto.somarPosicaoX( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.somarPosicaoX( (movimentState.steps || 1) * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.movimentSinalyzer.forward = true;
         }
         if( movimentState.backward == true ){
-            objeto.subtrairPosicaoX( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.subtrairPosicaoX( (movimentState.steps || 1) * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.movimentSinalyzer.backward = true;
         }
         if( movimentState.left == true ){
-            objeto.subtrairPosicaoZ( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.subtrairPosicaoZ( (movimentState.steps || 1)* frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.movimentSinalyzer.left = true;
         }
         if( movimentState.right == true ){
-            objeto.somarPosicaoZ( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.somarPosicaoZ( (movimentState.steps || 1) * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.movimentSinalyzer.right = true;
         }
 
         /**
@@ -1092,6 +1135,13 @@ export default class ObjectBase extends Base{
             }else{
                 objeto.setVelocityX( novaVelocidadeX * atrito );
             }
+
+            // Indica qual direção o objeto está se movendo
+            if( sinalX == 1 ){
+                objeto.movimentSinalyzer.forward = true;
+            }else{
+                objeto.movimentSinalyzer.backward = true;
+            }
         }   
 
         //Se o objeto não estiver caindo e SE NÂO ESTIVER NO CHÂO OU EM CIMA DE ALGO
@@ -1112,6 +1162,13 @@ export default class ObjectBase extends Base{
                 }
 
                 objeto.setVelocityY( novaVelocidadeY * arrastoAr );
+
+                // Indica qual direção o objeto está se movendo
+                if( sinalY == 1 ){
+                    objeto.movimentSinalyzer.up = true;
+                }else{
+                    objeto.movimentSinalyzer.down = true;
+                }
             }
 
         }else{
@@ -1141,6 +1198,13 @@ export default class ObjectBase extends Base{
             //No chao, ele vai ter atrito
             }else{
                 objeto.setVelocityZ( novaVelocidadeZ * atrito );
+            }
+
+            // Indica qual direção o objeto está se movendo
+            if( sinalZ == 1 ){
+                objeto.movimentSinalyzer.right = true;
+            }else{
+                objeto.movimentSinalyzer.left = true;
             }
         }  
 
@@ -1475,6 +1539,11 @@ export default class ObjectBase extends Base{
     }
 
     public updateObject( frameDelta:number ): void{
+        /**
+        * Reseta algumas coisas antes do loop 
+        */
+        this.pre_loop_reset();
+
         /**
         * Principal: Fisica, Movimentação e Eventos 
         */

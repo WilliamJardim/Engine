@@ -585,3 +585,7 @@ https://github.com/WilliamJardim/Engine/commit/8c015d3b1342093495d9f34f93e300fc4
 # IDEIA 25/04/2025
 Nos Attachments adicionar uma propriedade ignoreAttacherCollision, que permite desativar a colisão do objeto em anexo COM O OBJETO DONO DESSA RELAÇÂO
 
+NO movimentSinalyzer, criar uma vericação melhor e mais profunda, que verifica os N ultimos frames, se o objeto se moveu(ou se a posição X, Y e Z do objetou mudou do frame antigo para o frame atual), e para qual direção. Essa pode ser mais pesada, então, ela pode ser opcional
+Isso vai ajudar a quando mesmo eu usar métodos como setPosition ou somarX, a Engine saiba onde o objeto estava antes, onde esta agora, e para qual direação ele se moveu, isso vai ajudar no calculo das fisicas de impacto e empurrão, pra ficar bem amplo
+
+

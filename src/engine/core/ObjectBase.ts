@@ -1281,6 +1281,15 @@ export default class ObjectBase extends Base{
                     // Mais opções de anexo
                     if( typeof anexo == 'object' )
                     {
+                        // Se ele NÂO DEVE COLIDIR COM O OBOJETO DONO DO ANEXO
+                        if( anexo.attacherCollision != null && anexo.attacherCollision != undefined && anexo.attacherCollision == false )
+                        {
+                            if( objeto.objProps.ignoreCollisions != undefined )
+                            {
+                                objeto.objProps.ignoreCollisions.push( objetoAnexar.id );
+                            }
+                        }
+
                         // Se tem um ajuste de posição EM RELAÇÂO AO OBJETO, aplica
                         if( anexo.position ){
                             // Acompanha a posição do objeto

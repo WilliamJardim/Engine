@@ -591,3 +591,12 @@ Isso vai ajudar a quando mesmo eu usar métodos como setPosition ou somarX, a En
 Tambem criar um historico dos ultimos N frames, de cada objeto, para poder acessar informações dele, como posição, rotação, estados, etc. posso até criar esse historico direto na cena, com informações completas da cena completa, nos ultimos N frames
 
 
+# BUG 26.04.2025
+As vezes, quando um objeto com fisica empurra outro, o jogador e todo o resto do cenario se move para frente
+
+# BUG 26.04.2025
+Fazer com que a antiga lógica de impedir movimento ao colidir QUE NÂO USA FISICA seja usada apenas se os objetos em questão não tem fisica, se é um movimento direto sem fisica.
+por que se for uma colisão com força, a logica de empurrão(reagir ao impacto) já está funcionando
+
+# IDEIA 26.04.2025
+Adicionar massa na logica do empurrão do updateCollisionReactions, pra ter logica de impacto realista

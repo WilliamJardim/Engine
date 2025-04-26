@@ -564,8 +564,9 @@ export default class Scene extends Base{
                        (objetoB.objProps.collide == true) &&
                        (objetoB.name != 'Chao')
                     ){
+                    
                         //Se o objeto A é quem está se movendo E O OBJETO B ESTÀ PARADO
-                        if( velocidadeX_objetoA != 0 && velocidadeX_objetoB == 0 )
+                        if( velocidadeX_objetoA != 0 )
                         {
                             const percaX_objetoA : number  = (porcentagemPerca/100) * velocidadeX_objetoA;
                             const objetoA_isMovingForward  : boolean = movementA.forward  ? true : false;
@@ -592,7 +593,7 @@ export default class Scene extends Base{
                         }
 
                         //Se o objeto B é quem está se movendo e o objeto A está parado
-                        if( velocidadeX_objetoB != 0 && velocidadeX_objetoA == 0 )
+                        if( velocidadeX_objetoB != 0  )
                         {
                             const percaX_objetoB : number  = (porcentagemPerca/100) * velocidadeX_objetoB;
                             const objetoB_isMovingForward  : boolean = movementB.forward  ? true : false;

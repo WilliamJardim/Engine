@@ -136,9 +136,9 @@ export function EngineMain( scene: Scene,
                 "AnotherCubo",
             ],
             position: {
-                x: -50,
+                x: 0,
                 y: -7,
-                z: 0
+                z: -50
             },
             weight: 40,
             events: [

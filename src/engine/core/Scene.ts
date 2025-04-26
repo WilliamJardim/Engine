@@ -565,7 +565,8 @@ export default class Scene extends Base{
                        (objetoB.name != 'Chao')
                     ){
                     
-                        //Se o objeto A é quem está se movendo E O OBJETO B ESTÀ PARADO
+                        //Se o objeto A é quem está se movendo
+                        //No eixo X
                         if( velocidadeX_objetoA != 0 )
                         {
                             const percaX_objetoA : number  = (porcentagemPerca/100) * velocidadeX_objetoA;
@@ -591,8 +592,35 @@ export default class Scene extends Base{
                                 }
                             }
                         }
+                        //No eixo Z
+                        if( velocidadeZ_objetoA != 0 )
+                        {
+                            const percaZ_objetoA : number  = (porcentagemPerca/100) * velocidadeZ_objetoA;
+                            const objetoA_isMovingRight  : boolean = movementA.right  ? true : false;
+                            const objetoA_isMovingLeft   : boolean = movementA.left   ? true : false;
 
-                        //Se o objeto B é quem está se movendo e o objeto A está parado
+                            if( objetoA_isMovingRight ){
+                                objetoA.getVelocity().z -= percaZ_objetoA;
+
+                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                {
+                                    objetoB.getVelocity().z += percaZ_objetoA;
+                                }
+
+                            }else if( objetoA_isMovingLeft ){
+                                objetoA.getVelocity().z += percaZ_objetoA;
+
+                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                {
+                                    objetoB.getVelocity().z -= percaZ_objetoA;
+                                }
+                            }
+                        }
+
+                        //Se o objeto B é quem está se movendo
+                        //No eixo X
                         if( velocidadeX_objetoB != 0  )
                         {
                             const percaX_objetoB : number  = (porcentagemPerca/100) * velocidadeX_objetoB;
@@ -615,6 +643,32 @@ export default class Scene extends Base{
                                 if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
                                 {
                                     objetoA.getVelocity().x += percaX_objetoB;
+                                }
+                            }
+                        }
+                        //No eixo Z
+                        if( velocidadeZ_objetoB != 0  )
+                        {
+                            const percaZ_objetoB : number  = (porcentagemPerca/100) * velocidadeZ_objetoB;
+                            const objetoB_isMovingRight  : boolean = movementB.right  ? true : false;
+                            const objetoB_isMovingLeft   : boolean = movementB.left   ? true : false;
+
+                            if( objetoB_isMovingRight ){
+                                objetoB.getVelocity().z -= percaZ_objetoB;
+
+                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                {
+                                    objetoA.getVelocity().z += percaZ_objetoB;
+                                }
+
+                            }else if( objetoB_isMovingLeft ){
+                                objetoB.getVelocity().z -= percaZ_objetoB;
+
+                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                {
+                                    objetoA.getVelocity().z += percaZ_objetoB;
                                 }
                             }
                         }

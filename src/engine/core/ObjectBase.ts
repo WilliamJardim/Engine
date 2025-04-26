@@ -865,6 +865,7 @@ export default class ObjectBase extends Base{
             * Para cada objeto da cena
             * (Esse laço percorre novamente os objetos porém sem usar o break)
             */
+            /*
             for( let objetoAtualCena of objetosCena )
             {
                 if( (objetoAtualCena.objProps.traverse != true) &&
@@ -967,7 +968,8 @@ export default class ObjectBase extends Base{
                         
                     }
                 }
-            }
+            }*/
+            
 
             /**
             * Se o objeto está caindo 
@@ -1183,6 +1185,8 @@ export default class ObjectBase extends Base{
         //globalContext.get('CuboRefN').somarVelocity({x:15})
         //globalContext.get('CuboRefN').somarVelocity({x:95})
         //globalContext.get('CuboRefN').somarVelocity({x:105})
+        //globalContext.get('CuboRefN').somarVelocity({x:45})
+        //globalContext.get('CuboRef').somarVelocity({x:-45})
         if( velocidadeZ != 0 )
         {   
             objeto.somarPosicaoZ( velocidadeZ * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
@@ -1215,6 +1219,8 @@ export default class ObjectBase extends Base{
         * Perca e Transferencia de velocidade ao colidir com outro objeto com fisica
         * IDEIA EM TESTES
         * BUG: MUITO PROVAVLEMENTE ISSO DA DANDO CONFLITO COM A LOGICA DE CORRIGR A POSIÇÂO QUE SOMA A VELOCIDADE TAMBEM
+        * 
+        * BUG: A logica está sendo aplicada em quem recebe a colisão, e isso tá afetando ambos os objetos envolvidos. Preciso melhorar
         */
         /*
         if( objeto.name != "Player" && velocidadeX != 0 || velocidadeY != 0 || velocidadeZ != 0 )
@@ -1251,23 +1257,24 @@ export default class ObjectBase extends Base{
 
                             //objeto.getVelocity().x = -objeto.getVelocity().x;
                             //objeto.getVelocity().x -= 500;
-                            objeto.getVelocity().x = 0
+                            objeto.getVelocity().x = -50;
 
                             // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
                             if( objetoAtualCena.objProps.havePhysics == true && objetoAtualCena.objProps.collide == true )
                             {
-                                objetoAtualCena.getVelocity().x += (percaX);
+                                objetoAtualCena.getVelocity().x += 50;
                             }
+                            //debugger
 
                         }else if( isMovingBackward ){
                             //Perde % da velocidade atual
-                            objeto.getVelocity().x += percaX;
+                            //objeto.getVelocity().x += percaX;
 
                             // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                            if( objetoAtualCena.objProps.havePhysics == true && objetoAtualCena.objProps.collide == true )
-                            {
-                                objetoAtualCena.getVelocity().x -= (percaX);
-                            }
+                            //if( objetoAtualCena.objProps.havePhysics == true && objetoAtualCena.objProps.collide == true )
+                            //{
+                            //    objetoAtualCena.getVelocity().x -= (percaX);
+                            //}
                         }
                     }
 
@@ -1277,13 +1284,13 @@ export default class ObjectBase extends Base{
                         //objeto.getVelocity().y = -objeto.getVelocity().y;
 
                         //Perde 50% da velocidade atual
-                        objeto.getVelocity().y -= percaY;
+                        //objeto.getVelocity().y -= percaY;
 
                         // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                        if( objetoAtualCena.objProps.havePhysics == true && objetoAtualCena.objProps.collide == true )
-                        {
-                            objetoAtualCena.getVelocity().y += (percaY);
-                        }
+                        //if( objetoAtualCena.objProps.havePhysics == true && objetoAtualCena.objProps.collide == true )
+                        //{
+                        //    objetoAtualCena.getVelocity().y += (percaY);
+                        //}
                     }
 
                     if( velocidadeZ != 0 )
@@ -1292,13 +1299,13 @@ export default class ObjectBase extends Base{
                         //objeto.getVelocity().z -= percaZ;
 
                         // Inverte o sentido da velocidade atual dele
-                        objeto.getVelocity().z = -objeto.getVelocity().z;
+                        //objeto.getVelocity().z = -objeto.getVelocity().z;
 
                         // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                        if( objetoAtualCena.objProps.havePhysics == true && objetoAtualCena.objProps.collide == true )
-                        {
-                            objetoAtualCena.getVelocity().z += (percaZ + 10);
-                        }
+                        //if( objetoAtualCena.objProps.havePhysics == true && objetoAtualCena.objProps.collide == true )
+                        //{
+                        //    objetoAtualCena.getVelocity().z += (percaZ + 10);
+                        //}
                     }
                 }
             }
@@ -1323,6 +1330,7 @@ export default class ObjectBase extends Base{
         * Em outras palavras: 
         * Esse código faz com que, se um determinado objeto estiver em cima de outro objeto que está se movendo, Então, esse objeto que está em cima dele se move junto
         */
+        /*
         if( objeto.objectBelow != undefined && 
             objeto.objectBelow != null &&
             //O objeto abaixo precisa ter fisica e poder colidir
@@ -1348,12 +1356,10 @@ export default class ObjectBase extends Base{
              const forcaX = Math.min(Math.abs(deltaVelocidadeX), atritoCalculado) * Math.sign(deltaVelocidadeX);
              const forcaZ = Math.min(Math.abs(deltaVelocidadeZ), atritoCalculado) * Math.sign(deltaVelocidadeZ);
 
-             /**
-             * Acompanha o movimento do objeto que ele está em baixo 
-             */
+             // Acompanha o movimento do objeto que ele está em baixo 
              esteObjeto.getVelocity().x += forcaX;
              esteObjeto.getVelocity().z += forcaZ;   
-        }      
+        }*/  
         
         /**
         * Quase identifico ao anterior:
@@ -1366,6 +1372,7 @@ export default class ObjectBase extends Base{
         //Engine.get('CaixaRef').movimentState.forward = true;
         //Engine.get('Cubo2Ref').movimentState.forward = true;
         //Engine.get('Cubo2Ref').somarX(45);
+        /*
         if( objeto.objectBelow != undefined && 
             objeto.objectBelow != null &&
             //O objeto abaixo NÂO PODE TER fisica
@@ -1383,13 +1390,12 @@ export default class ObjectBase extends Base{
             const deltaPosicaoX       = posicaoAtualDele.x - (posicaoAnteriorDele.x || 0);
             const deltaPosicaoZ       = posicaoAtualDele.z - (posicaoAnteriorDele.z || 0);
 
-            /**
-            * Acompanha o movimento do objeto que ele está em baixo 
-            */
+            // Acompanha o movimento do objeto que ele está em baixo 
             esteObjeto.getPosition().x += deltaPosicaoX;
             esteObjeto.getPosition().z += deltaPosicaoZ;
         }
-    
+        */
+        
     }
 
     /**

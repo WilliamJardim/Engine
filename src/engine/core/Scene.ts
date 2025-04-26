@@ -25,6 +25,8 @@ import {globalContext} from '../../engine/main.ts';
 import isCollision from '../utils/logic/isCollision.ts';
 import Wind from '../interfaces/Wind.ts';
 import FrameCounter from './FrameCounter.ts';
+import { xor } from 'three/tsl';
+import MovementState from '../interfaces/MovementState.ts';
 
 export default class Scene extends Base{
 
@@ -479,6 +481,8 @@ export default class Scene extends Base{
                         context.camera.getControls(),
                         frameDelta );
 
+            context.updateGeneral( frameDelta );
+
             context.updateObjects( frameDelta );
 
             // 1. Renderizar a cena normal para o framebuffer
@@ -502,6 +506,122 @@ export default class Scene extends Base{
                     this.camera.getControls() );
 
             
+    }
+
+    /**
+    * Update in general  
+    */
+    public updateGeneral( frameDelta:number )
+    {
+        this.updateCollisionReactions();
+    }
+
+    /**
+    * Update object collision reaction 
+    */
+    public updateCollisionReactions()
+    {
+        const objetosCena: ObjectBase[] = this.objects;
+
+        for (let i = 0; i < objetosCena.length; i++) 
+        {
+            for (let j = 0; j < objetosCena.length; j++) 
+            {
+                /**
+                * Parametros do objeto A 
+                */
+                const objetoA   : ObjectBase    = objetosCena[i];
+                const movementA : MovementState = objetoA.movimentSinalyzer;
+
+                const velocidadeX_objetoA = objetoA.getVelocity().x;
+                const velocidadeY_objetoA = objetoA.getVelocity().y;
+                const velocidadeZ_objetoA = objetoA.getVelocity().z;
+
+                /**
+                * Parametros do objeto B 
+                */
+                const objetoB   : ObjectBase    = objetosCena[j];
+                const movementB : MovementState = objetoB.movimentSinalyzer;
+
+                const velocidadeX_objetoB = objetoB.getVelocity().x;
+                const velocidadeY_objetoB = objetoB.getVelocity().y;
+                const velocidadeZ_objetoB = objetoB.getVelocity().z;
+
+                /**
+                * Parametros da perca e tranferencia de velocidade 
+                */
+                const porcentagemPerca : number  = 90; // Porcentagem de perca de velocidade ao colidir
+
+                if( objetoA.name != "Player" && objetoB.name != "Player" )
+                {
+                   // Para cada objeto da cena, verifica se ele colidiu com o objeto atual, para aplicar a tranferencia e perca de velocidade 
+                   //Se houve colisão com ele
+                   if( objetoA.isCollisionOf(objetoB, 0.001) == true && 
+                       //Se nao for o objeto abaixo dele
+                       (objetoA.objectBelow == null || objetoB.id != objetoA.objectBelow.id) &&
+                       //Se nao for ele mesmo
+                       (objetoA.id != objetoB.id) &&
+                       (objetoB.objProps.collide == true) &&
+                       (objetoB.name != 'Chao')
+                    ){
+                        //Se o objeto A é quem está se movendo E O OBJETO B ESTÀ PARADO
+                        if( velocidadeX_objetoA != 0 && velocidadeX_objetoB == 0 )
+                        {
+                            const percaX_objetoA : number  = (porcentagemPerca/100) * velocidadeX_objetoA;
+                            const objetoA_isMovingForward  : boolean = movementA.forward  ? true : false;
+                            const objetoA_isMovingBackward : boolean = movementA.backward ? true : false;
+
+                            if( objetoA_isMovingForward ){
+                                objetoA.getVelocity().x -= percaX_objetoA;
+
+                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                {
+                                    objetoB.getVelocity().x += percaX_objetoA;
+                                }
+
+                            }else if( objetoA_isMovingBackward ){
+                                objetoA.getVelocity().x += percaX_objetoA;
+
+                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                {
+                                    objetoB.getVelocity().x -= percaX_objetoA;
+                                }
+                            }
+                        }
+
+                        //Se o objeto B é quem está se movendo e o objeto A está parado
+                        if( velocidadeX_objetoB != 0 && velocidadeX_objetoA == 0 )
+                        {
+                            const percaX_objetoB : number  = (porcentagemPerca/100) * velocidadeX_objetoB;
+                            const objetoB_isMovingForward  : boolean = movementB.forward  ? true : false;
+                            const objetoB_isMovingBackward : boolean = movementB.backward ? true : false;
+
+                            if( objetoB_isMovingForward ){
+                                objetoB.getVelocity().x -= percaX_objetoB;
+
+                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                {
+                                    objetoA.getVelocity().x += percaX_objetoB;
+                                }
+
+                            }else if( objetoB_isMovingBackward ){
+                                objetoB.getVelocity().x -= percaX_objetoB;
+
+                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                {
+                                    objetoA.getVelocity().x += percaX_objetoB;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
     /**

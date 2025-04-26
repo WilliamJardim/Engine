@@ -136,7 +136,7 @@ export function EngineMain( scene: Scene,
                 "AnotherCubo",
             ],
             position: {
-                x: -5,
+                x: -50,
                 y: -7,
                 z: 0
             },
@@ -264,9 +264,9 @@ export function EngineMain( scene: Scene,
         // Depois que o objeto for carregado
         callback: function(objetoCarregado: ObjectBase){
             //Adiciona o objeto na cena
-            scene.add( objetoCarregado );
+            //scene.add( objetoCarregado );
 
-            globalContext.set('CaixaRef', objetoCarregado);
+            //globalContext.set('CaixaRef', objetoCarregado);
         }
     })
 

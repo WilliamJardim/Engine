@@ -596,7 +596,8 @@ As vezes, quando um objeto com fisica empurra outro, o jogador e todo o resto do
 
 # BUG 26.04.2025
 Fazer com que a antiga lógica de impedir movimento ao colidir(ou seja, a correação de posição) QUE NÂO USA FISICA seja usada apenas se os objetos em questão não tem fisica, se é um movimento direto sem fisica.
-por que se for uma colisão com força, a logica de empurrão(reagir ao impacto) já está funcionando
+SO PODE VALOR PARA OBJETOS COM MOVIMENTOS SEM FISICA
+por que se for uma colisão com força fisica, a logica de empurrão(reagir ao impacto) já está funcionando
 TALVES ATÈ CRIAR UMA LOGICA DE CORREÇÂO DE POSICAO QUE RODE NA CENA MESMO, NO MESMO ESTILO DA LOGICA updateCollisionReactions
 
 # IDEIA 26.04.2025

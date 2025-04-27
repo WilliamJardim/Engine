@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import Base from "./Base";
 import ObjectProps from '../interfaces/ObjectProps';
 import PhysicsState from '../interfaces/PhysicsState';
@@ -19,6 +18,7 @@ import ObjectAttachment from '../interfaces/ObjectAttachment';
 import CollisionsData from '../interfaces/CollisionsData';
 import ObjectRotation from '../interfaces/ObjectRotation';
 import Wind from '../interfaces/Wind';
+import MeshRepresentation from "../interfaces/MeshRepresentation";
 
 export default class ObjectBase extends Base{
     
@@ -266,7 +266,7 @@ export default class ObjectBase extends Base{
     /**
     * Obtém a posição: X Y Z do objeto na cena
     */
-    public getPosition(): THREE.Vector3{
+    public getPosition(): ObjectPosition{
         return this.getMesh().position;
     }
 
@@ -278,7 +278,7 @@ export default class ObjectBase extends Base{
     }
 
     public setPosition( position: ObjectPosition ): ObjectBase{
-        const mesh: THREE.Mesh = this.getMesh();
+        const mesh: MeshRepresentation = this.getMesh();
         mesh.position.x = position.x || mesh.position.x;
         mesh.position.y = position.y || mesh.position.y;
         mesh.position.z = position.z || mesh.position.z;
@@ -342,7 +342,7 @@ export default class ObjectBase extends Base{
     }
 
     public setScale( scale: ObjectScale|number ): ObjectBase{
-        const mesh: THREE.Mesh = this.getMesh();
+        const mesh: MeshRepresentation = this.getMesh();
 
         if( typeof scale == 'object' ){
             mesh.scale.x = scale.x || mesh.scale.x;
@@ -360,7 +360,7 @@ export default class ObjectBase extends Base{
         return this;
     }
 
-    public getScale(): THREE.Vector3{
+    public getScale(): ObjectScale{
         return this.getMesh().scale;
     }
 
@@ -454,12 +454,12 @@ export default class ObjectBase extends Base{
         (this.getVelocity() as ObjectVelocity)[eixo] = velocidade;
     }
 
-    public getRotation(): THREE.Vector3{
+    public getRotation(): ObjectRotation{
         return this.getMesh().rotation;
     }
 
     public setRotation( rotation: ObjectRotation ): ObjectBase{
-        const mesh: THREE.Mesh = this.getMesh();
+        const mesh: MeshRepresentation = this.getMesh();
         mesh.rotation.x = rotation.x !== undefined ? rotation.x : mesh.rotation.x;
         mesh.rotation.y = rotation.y !== undefined ? rotation.y : mesh.rotation.y;
         mesh.rotation.z = rotation.z !== undefined ? rotation.z : mesh.rotation.z;
@@ -469,15 +469,24 @@ export default class ObjectBase extends Base{
     }
 
     public somarRotationX( x:number ): void{
-        this.getRotation().x += x;
+        if( this.getRotation() != undefined && this.getRotation().x !== undefined )
+        {
+            this.getRotation().x! += x;
+        }
     }
     
     public somarRotationY( y:number ): void{
-        this.getRotation().y += y;
+        if( this.getRotation() != undefined && this.getRotation().y !== undefined )
+        {
+            this.getRotation().y! += y;
+        }
     }
 
     public somarRotationZ( z:number ): void{
-        this.getRotation().z += z;
+        if( this.getRotation() != undefined && this.getRotation().z !== undefined )
+        {
+            this.getRotation().z! += z;
+        }
     }
 
     /**
@@ -485,9 +494,9 @@ export default class ObjectBase extends Base{
     * @param rotation 
     */
     public somarRotation( rotation:ObjectRotation ): void{
-        if( rotation.x ){ this.getRotation().x += rotation.x };
-        if( rotation.y ){ this.getRotation().y += rotation.y };
-        if( rotation.z ){ this.getRotation().z += rotation.z };
+        if( rotation.x ){ this.getRotation().x! += rotation.x };
+        if( rotation.y ){ this.getRotation().y! += rotation.y };
+        if( rotation.z ){ this.getRotation().z! += rotation.z };
     }
 
     /**
@@ -800,13 +809,16 @@ export default class ObjectBase extends Base{
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
                     
-                    if( this.getPosition().y > objetoAtualCena.getPosition().y )
+                    if( this.getPosition().y != undefined && objetoAtualCena.getPosition().y != undefined )
                     {
-                        //Diz que o objeto parou de cair
-                        this.isFalling = false;
-                        this.groundY = this.getPosition().y; // A posição da ultima colisão
-                        this.objectBelow = objetoAtualCena;
-                        this.lastObjectBelow = objetoAtualCena;
+                        if( this.getPosition().y! > objetoAtualCena.getPosition().y! )
+                        {
+                            //Diz que o objeto parou de cair
+                            this.isFalling = false;
+                            this.groundY = this.getPosition().y!; // A posição da ultima colisão
+                            this.objectBelow = objetoAtualCena;
+                            this.lastObjectBelow = objetoAtualCena;
+                        }
                     }
                     
                     /*
@@ -818,11 +830,17 @@ export default class ObjectBase extends Base{
                     */
                     
 
-                    //Impede que o objeto suba em cima de outro objeto
-                    if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y < objetoAtualCena.getPosition().y ){
-                        this.setPosition({
-                            y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y
-                        })
+                    if( this.getPosition().y            != undefined && 
+                        this.getScale().y               != undefined && 
+                        objetoAtualCena.getPosition().y != undefined &&
+                        objetoAtualCena.getScale().y    != undefined 
+                    ){
+                        //Impede que o objeto suba em cima de outro objeto
+                        if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y! < objetoAtualCena.getPosition().y! ){
+                            this.setPosition({
+                                y: objetoAtualCena.getPosition().y! - objetoAtualCena.getScale().y! - this.getScale().y!
+                            })
+                        }
                     }
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
@@ -880,11 +898,11 @@ export default class ObjectBase extends Base{
                         objetoAtualCena.id != this.objectBelow.id
                     ){
                         // Bounding boxes de ambos os objetos
-                        const posA   : THREE.Vector3  = this.getPosition();
-                        const scaleA : THREE.Vector3  = this.getScale();
+                        const posA   : MeshRepresentation  = this.getPosition();
+                        const scaleA : MeshRepresentation  = this.getScale();
 
-                        const posB   : THREE.Vector3  = objetoAtualCena.getPosition();
-                        const scaleB : THREE.Vector3  = objetoAtualCena.getScale();
+                        const posB   : MeshRepresentation  = objetoAtualCena.getPosition();
+                        const scaleB : MeshRepresentation  = objetoAtualCena.getScale();
 
                         // Zona do objeto atual
                         const minA = { 
@@ -985,13 +1003,13 @@ export default class ObjectBase extends Base{
                 */
                 this.objectBelow = null;
             
-                if( this.getVelocity().y != undefined )
+                if( this.getVelocity().y != undefined && this.getPosition().y != undefined )
                 {
                     /**
                     * Faz o object decrementar a posição Y com a gravidade
                     */
                     this.getVelocity().y += Math.abs( this.scene.gravity ) * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate;
-                    this.getPosition().y -= this.getVelocity().y * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate;
+                    this.getPosition().y! -= this.getVelocity().y * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate;
 
                     /**
                     * Executa os eventos de queda 
@@ -1289,12 +1307,12 @@ export default class ObjectBase extends Base{
             const posicaoAtualDele    = objetoAbaixoDele.getPosition();
             const posicaoAnteriorDele = objetoAbaixoDele.getLastPosition();
 
-            const deltaPosicaoX       = posicaoAtualDele.x - (posicaoAnteriorDele.x || 0);
-            const deltaPosicaoZ       = posicaoAtualDele.z - (posicaoAnteriorDele.z || 0);
+            const deltaPosicaoX       = posicaoAtualDele.x! - (posicaoAnteriorDele.x || 0);
+            const deltaPosicaoZ       = posicaoAtualDele.z! - (posicaoAnteriorDele.z || 0);
 
             // Acompanha o movimento do objeto que ele está em baixo 
-            esteObjeto.getPosition().x += deltaPosicaoX;
-            esteObjeto.getPosition().z += deltaPosicaoZ;
+            esteObjeto.getPosition().x! += deltaPosicaoX;
+            esteObjeto.getPosition().z! += deltaPosicaoZ;
         }
         
     }

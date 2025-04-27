@@ -100,7 +100,7 @@ export class GameCamera{
 
         // Adicionar o crosshair à câmera
         this.crosshair = createCrosshair();
-        this.sceneRenderer.add(this.crosshair);
+        this.sceneRenderer.addToRender(this.crosshair);
     
         // Adicionar um RayCaster para permitir rastrear onde o jogador está apontando
         this.raycaster = new THREE.Raycaster();

@@ -1,11 +1,13 @@
 import React from 'react';
 import * as THREE from 'three';
+import { TrackCrosshair, UpdateCrosshair } from '../utils/Crosshair';
+import ObjectBase from '../core/ObjectBase';
 import { GameCamera } from "./GameCamera";
 import Scene from '../core/Scene';
-import { TrackCrosshair, UpdateCrosshair } from '../utils/Crosshair';
 
 export default class SceneRenderer{
     public engineScene:Scene;
+    public toRenderAssociation:Map<string, THREE.Mesh>;
     public scene:THREE.Scene;
     public renderer:THREE.WebGLRenderer;
     public renderTarget:THREE.WebGLRenderTarget;
@@ -16,6 +18,9 @@ export default class SceneRenderer{
     constructor( canvasRef:any ){
         // Cria a cena da Engine
         this.engineScene = new Scene();
+
+        // Cria um mapa que associa o id dos objetos da minha engine com o que o Three vai desenhar
+        this.toRenderAssociation = new Map<string, THREE.Mesh>();
 
         //Obtem o canvas
         this.canvasRef = canvasRef;
@@ -39,13 +44,14 @@ export default class SceneRenderer{
         this.camera = new GameCamera(this);
     }
 
-    public add( objeto:any ): void{
+    /**
+    * Adiciona um objeto na cena que o Three está renderizando para que este objeto seja renderizado visualmente
+    */
+    public addToRender( objeto:any ): void{
         this.scene.add( objeto );
     }
 
     //Função para atualizar o pulo do personagem em primeira pessoa
-    //TODO: CONTINUAR ESSA LOGICA QUE TÁ BUGADA
-    //BUG: ESSA FUNÇÂO FAZ A CAMERA FICAR UM POUCO ACIMA DO CHÂO QUANDO PULA PERTO DA CAIXA
     public updateJump( frameDelta:number ) {
         const cameraMovement = this.camera.getMovement();
 
@@ -62,6 +68,48 @@ export default class SceneRenderer{
             this.camera.getPosition().y += cameraMovement.jumpVelocityY * frameDelta * 1;  // Move a câmera para cima
             this.camera.objectBase.isFalling = true
         }
+    }
+
+    /**
+    * Atualiza os objetos visualmente
+    */
+    public updateObjectsVisually(): void{
+
+        const engineScene = this.engineScene;
+
+        const engineSceneObjects = Array<ObjectBase>(0).concat( engineScene.objects )
+                                                       .concat( engineScene.additionalObjects );
+
+        /**
+        * Para cada objeto da cena da minha engine 
+        */
+        for( let i = 0 ; i < engineSceneObjects.length ; i++ )
+        {
+            const objetoAtual:ObjectBase = engineSceneObjects[i];
+
+            //Se o objeto já não foi criado na renderização do Three, cria ele pela primeira vez
+            if ( !this.toRenderAssociation.has(objetoAtual.id) ) 
+            {
+                const threeMesh:THREE.Mesh = new THREE.Mesh();
+                
+                this.addToRender(threeMesh);
+                this.toRenderAssociation.set(objetoAtual.id, threeMesh);
+            }   
+
+            /**
+            * Atualiza visualmente a posição, rotação e escala dos objetos
+            */
+            const threeMesh:THREE.Mesh = this.toRenderAssociation.get(objetoAtual.id) as THREE.Mesh;
+
+            if(threeMesh)
+            {
+                threeMesh.position.copy( objetoAtual.getMesh().position );
+                threeMesh.rotation.copy( objetoAtual.getMesh().rotation );
+                threeMesh.scale.copy( objetoAtual.getMesh().scale );
+            }
+        }
+
+
     }
 
     //Função que chama o loop "animate"
@@ -84,6 +132,9 @@ export default class SceneRenderer{
             const frameDelta = context.engineScene.sceneCounter.calculateFrameDelta(); // Tempo entre frames
 
             context.engineScene.loop( frameDelta, context.firstRender );
+
+            // Atualiza a visualização dos objetos
+            context.updateObjectsVisually();
 
             //Atualiza a camera
             context.camera.Update( frameDelta );

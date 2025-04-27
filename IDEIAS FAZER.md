@@ -602,3 +602,78 @@ TALVES ATÈ CRIAR UMA LOGICA DE CORREÇÂO DE POSICAO QUE RODE NA CENA MESMO, NO
 
 # IDEIA 26.04.2025
 Adicionar massa na logica do empurrão do updateCollisionReactions, pra ter logica de impacto realista
+
+# IDEIAS novas
+Quando um objeto estático (ou com movimento estático) colidir com um objeto com física, ... Em vez de só corrigir a posição X ou Z, ele pode aplicar uma força da direção correspondente enquanto ele estiver colidindo, porém, com um limite de velocidade.um comportamento de empurrar objetos devagarinho andando pra frente e tocando neles
+Criar resposta a colisão, tanto via força, quando tem impacto de um objeto com outro. Tanto também quando um objeto com movimento simples/estático colide com outro objeto com física como falei e outras coisas
+Fazer isso no mesmo estilo do que eu já fiz com empurrões de física.
+Porém muito bem pensado pra não atrapalhar nenhuma lógica,  pra objetos que recebem movimento sem física
+
+## OBJETOS PRESOS
+Se um objeto tiver preso em outro objeto, e esse objeto preso receber uma força/velocidade, então, essa força será aplicada/transferida para o objeto pai(a qual preso)
+Quando o objeto receber força, ele vai somar não apenas a posição, mais também a rotação, pra ter uma rotação baseada em velocidade. O que vai causar uma rotação gradual, forte, ou rápida, dependendo da força, da orientação,etc... E ainda vai ter o mesmo efeito de desaceleração
+
+A rotação do objeto vai influenciar a direção pra onde ele vai.
+Então, ao receber força em X por exemplo, ao invés dele sempre andar pra frente, .. ele vai poder andar meio diagonal, dependendo da rotação/ângulo que o objeto está
+
+Outra ideia: Sempre que o objeto receber uma colisão, ele vai calcular em que posição o objeto que colidiu com ele bateu... Ai, ele vai se deslocar com força no eixo correspondente, porém levando em conta a direção da batida. Por exemplo se foi de lado, ele vai receber uma força equivalente também no lado correspondente.
+(Derrepente essa força pode estar espelhando a força principal em X ou Z por exemplo)
+
+Adicionar que um objeto pode estar amarrado em outro. E se isso acontecer e ele receber uma força,... Ao invés de mudar posição, essa força vai agir apenas na rotação
+
+Adicionar que a colisão leva em conta a rotação dos objetos 
+
+Se necessário criar outro medo collisionAndRot
+Pra verificar também a rotação na colisão 
+Ao invés de modificar o método de colisão que já tem
+
+Objetos em cima de objetos rodando podem se mover de acordo com a rotação deles
+Criar que ao encostar em outro objeto, pela diagonal e ir andando devagar, ele vai empurrando o objeto na diagonal.
+E pra isso criar uma mecânica pra empurrar objetos sem física. Se encostar nele e sair andando. Algo que não conflite com a física que possa ser desativado por objeto, e não afeta a correção de posição
+
+# ACHATAMENTO
+Depois criar um sistema de achatamento 
+
+Tipo, se um objeto colidir em alta velocidade com outro, dependendo do material dele, ele vai receber um achatamento(mudança de escalas X, Y, Z realista, usando velocidade e física)
+
+# REBOTE
+Quando um objeto bate em outro, ele perde velocidade, e essa parte que ele perdeu se torna a velocidade do objeto que recebeu a colisão.
+
+Isso vai ser mais realista
+
+*Lógica de rebote*
+
+Se um objeto se chocar com alguém objeto que não tem física, tipo uma parede. Ou então, se chocar com alguém objeto muito pesado ou que tenha uma força maior que a dele, .. então este objeto que se chocou vai perder 73% da sua velocidade. E essa velocidade vai ser invertida multiplicando por -1 
+
+Isso vai criar efeito de rebote.
+
+Aí se o objeto que se chocar tiver uma força maior que a do objeto que ele colidir, então, o objeto que recebeu a colisão vai ganhar velocidade no eixo correspondente.
+
+Talvez nisso eu posso até fazer uma lógica de transferência de velocidade, para o objeto que se chocou perder um pouco tipo 20% da velocidade e isso ser transferido para o objeto que recebeu a colisão.
+
+Quando um objeto bate em outro, ele perde velocidade, e essa parte que ele perdeu se torna a velocidade do objeto que recebeu a colisão.
+
+Isso vai ser mais realista
+
+
+# IMPEDIR OBJETOS GRUDADOS (SE EU PRECISAR)
+Ideia pra corrigir bugs dos objetos ficarem grudados: adicionar uma exceção para que se os objetos estiverem no ar, ele teleporta mais pra frente, pra evitar o grude
+Duas ideias que tive pra corrigir dois bugs terríveis
+
+1:
+Pra corrigir os objetos afundando, eu posso tentar limitar a posição que o Y do objeto pode chegar, quando está caindo ou quando eu faço ele parar de cair. Eu posso também incluir um código que define a posição do objeto só que, de um jeito diferente, apenas travando a posição Y que o objeto pode chegar.
+
+2:
+Pra corrigir aquele bug que um objeto fica grudado no outro ao ser empurrado e quando chega no void eles se tornam chão delas mesmos e não caem, .... Eu posso fazer a lógica de corrigir posição X e Z usar tipo um Timeout, pra não ficar toda hora mexendo na posição, e isso daria mais tempo pro objeto poder ter sua posição afetada pela física do mundo ou por outros objetos que afetarem ele
+
+3:
+Também posso aplicar a mesma ideia de limitar a posição Y nos eixos X e Z também, ao invés de definir posição, monitorar pra limitar
+
+4:
+Não descarte. Que é aquela minha outra ideia de limitar o movimento. Talvez criando um gerenciador de posições personalizado que eu vou poder negar a movimentação de certos objetos dependendo das regras que eu criar.
+
+5:
+Essa aqui, pode ser útil também
+
+
+

@@ -10,16 +10,17 @@ import MovementState from './engine/interfaces/MovementState';
 import createCrosshair, { TrackCrosshair, UpdateCrosshair } from './engine/utils/Crosshair';
 import { GameCamera } from './engine/renderer/GameCamera';
 import Scene from './engine/core/Scene';
+import SceneRenderer from './engine/renderer/SceneRenderer';
 
 const ThreeScene: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
 
-    const scene = new Scene(canvasRef);
-    const renderer = scene.renderer;
+    const sceneRenderer = new SceneRenderer(canvasRef);
+    const renderer = sceneRenderer.renderer;
 
-    scene.iniciar();
+    sceneRenderer.iniciar();
 
     // Limpeza ao desmontar o componente
     return () => {

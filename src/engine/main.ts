@@ -18,20 +18,13 @@ import ObjectVelocity from './interfaces/ObjectVelocity';
 export const globalContext = new GlobalContext({});
 
 /** Função que vai ser executada quanto a Engine for iniciada */
-export function EngineMain( scene: Scene, 
-                            renderer: THREE.WebGLRenderer,
-                            canvasRef: React.RefObject<HTMLDivElement>,
-                            camera: GameCamera, 
-                            cameraControls: PointerLockControls 
-): void{
+export function EngineMain( scene: Scene ): void{
 
     /**
     * Define algumas coisas uteis
     */
-    globalContext.set('sceneCameraControls', cameraControls);
     globalContext.set('gameScene', scene); //A cena que o jogo está rodando em si
     globalContext.set('htmlCanvas', document.querySelector("canvas") );
-    globalContext.set('PlayerRef', camera);
 
     // Cria um chao simples para testar
     const cuboChao = createCube( 
@@ -268,14 +261,7 @@ export function EngineMain( scene: Scene,
 
             //globalContext.set('CaixaRef', objetoCarregado);
         }
-    })
-
-    const light = new THREE.AmbientLight(0xffffff, 1); // Luz ambiente
-    scene.add( light );
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Luz direcional
-    directionalLight.position.set(5, 10, 7.5);
-    scene.add( directionalLight );
+    });
 
     //Engine.get('CuboRef').somarVelocity({x:50})
 
@@ -283,23 +269,12 @@ export function EngineMain( scene: Scene,
 
 
 /** Loop que vai ser executado ANTES da função de atualização */
-export function EngineBeforeLoop( scene: Scene, 
-                                  renderer: THREE.WebGLRenderer,
-                                  canvasRef: React.RefObject<HTMLDivElement>,
-                                  camera: GameCamera, 
-                                  cameraControls: PointerLockControls 
-): void{
+export function EngineBeforeLoop( scene: Scene ): void{
 
 }
 
 /** Loop que vai ser executado a todo momento depois que a função de atualização rodar */
-export function EngineLoop( scene: Scene, 
-                            renderer: THREE.WebGLRenderer,
-                            canvasRef: React.RefObject<HTMLDivElement>,
-                            camera: GameCamera, 
-                            cameraControls: PointerLockControls,
-                            frameDelta: number 
-): void{
+export function EngineLoop( scene: Scene, frameDelta: number ): void{
 
     const htmlCanvas = globalContext.get('htmlCanvas');
 
@@ -319,67 +294,5 @@ export function EngineLoop( scene: Scene,
 
         });
     }
-
-    //
-    //if( globalContext.avaliable('PlayerRef') ){
-    //    console.log(globalContext.get('PlayerRef').objectBase.objectBelow)
-    //}
-
-    /*
-    if( globalContext.avaliable('CaixaRef') ){
-        if( globalContext.get('CaixaRef').scene ){
-            console.log( globalContext.get('CaixaRef').scene.proximityBinaryTable );
-            if( globalContext.get('CaixaRef').scene.proximityBinaryTable.byName['Caixa'] ){
-                if( globalContext.get('CaixaRef').scene.proximityBinaryTable.byName['Caixa']['MyCube'] == true ){
-                    debugger
-                }
-            }
-            //
-        }
-    }*/
-
-    // Outra forma melhor que inventei para verificar colisao e proximidade
-    /*
-    if( globalContext.avaliable('CaixaRef') && globalContext.avaliable('CuboRef') ){
-        if( globalContext.get('CaixaRef').scene ){
-            if( globalContext.get('CaixaRef').isProximityOf( globalContext.get('CuboRef') ) ){
-                debugger
-            }
-
-            if( globalContext.get('CaixaRef').isProximityOf( 'MyCube' ) ){
-                debugger
-            }
-        }
-    }
-    */
-
-    //console.log( scene.proximityTable );
-
-    // Verificar se o isFalling está marcando certo
-    //if( globalContext.avaliable('CaixaRef') ){
-    //    if( globalContext.get('CaixaRef').isFalling ){
-    //       
-    //    }
-    //}
-
-    //Faz a caixa ficar proximo do jogador
-    //if( globalContext.avaliable('caixaRef') )
-    //{
-
-        //globalContext.get('caixaRef').setPosition({
-        //    z: camera.getCamera().position.x-50
-        //});
-
-    //}
-
-    //Detecta colisão
-    /*
-    if( globalContext.avaliable('CaixaRef') && globalContext.avaliable('CuboRef') )
-    {
-        if( isCollision( globalContext.get('CaixaRef'), globalContext.get('CuboRef') ) ){
-            console.log('Cubo Colidiou com Caixa');
-        }
-    }
-    */
 
 }

@@ -6,13 +6,14 @@ import createCrosshair, { TrackCrosshair, UpdateCrosshair } from '../utils/Cross
 import Base from '../core/Base';
 import ObjectBase from '../core/ObjectBase';
 import ObjectProps from '../interfaces/ObjectProps';
-import Scene from '../core/Scene';
+import SceneRenderer from './SceneRenderer';
+//import Scene from '../core/Scene';
 
 export class GameCamera{
     public  tipo = 'Camera';
     public  objectBase:ObjectBase;
     private objProps:ObjectProps;
-    private scene:Scene;
+    private sceneRenderer:SceneRenderer;
     private renderer:THREE.WebGLRenderer;
     private canvasRef:React.RefObject<HTMLDivElement>;
     private camera:THREE.PerspectiveCamera;
@@ -24,14 +25,17 @@ export class GameCamera{
     private cameraDirection:THREE.Vector3;
     private crosshair:Crosshair;
 
-    constructor( scene:Scene,
+    constructor( sceneRenderer:SceneRenderer,
                  objProps?:ObjectProps
                 
     ){
         const contexto = this;
-        const canvasRef = scene.getCanvas();
-        const renderer  = scene.getRenderer();
+        const canvasRef = sceneRenderer.getCanvas();
+        const renderer  = sceneRenderer.getRenderer();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
+
+        // Define o renderizador da cena
+        this.sceneRenderer = sceneRenderer;
 
         //Define as propriedades do objeto
         this.objProps   = (objProps || {
@@ -59,9 +63,9 @@ export class GameCamera{
                                           this.objProps );
         
         // Repassa coisas importantes
-        this.objectBase.scene = scene;
+        //this.objectBase.scene = scene;
 
-        this.scene = scene;
+        this.sceneRenderer = sceneRenderer;
 
         this.canvasRef = canvasRef;
 
@@ -96,7 +100,7 @@ export class GameCamera{
 
         // Adicionar o crosshair à câmera
         this.crosshair = createCrosshair();
-        this.scene.add(this.crosshair);
+        this.sceneRenderer.add(this.crosshair);
     
         // Adicionar um RayCaster para permitir rastrear onde o jogador está apontando
         this.raycaster = new THREE.Raycaster();
@@ -185,13 +189,6 @@ export class GameCamera{
       
          this.getPosition().y = 1.6; // Altura inicial da câmera (simula a altura de uma pessoa)
          this.getPosition().z = 5;
-
-         // Incluir o Player na logica de atualização da cena
-         /*
-          setTimeout(function(){
-              contexto.scene.addToLogic( contexto.objectBase );
-          }, 1000);
-         */
     }
 
     /**

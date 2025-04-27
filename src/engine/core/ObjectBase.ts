@@ -565,6 +565,11 @@ export default class ObjectBase extends Base{
 
         const esteObjeto  : ObjectBase       = this;
 
+        // Ignora se a cena ou objetos nao existirem
+        if( !this.scene || !this.scene.objects ){
+            return;
+        }
+
         const objetosCena : ObjectBase[]     = Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                    .concat( this.scene!.additionalObjects );
 
@@ -772,6 +777,11 @@ export default class ObjectBase extends Base{
     public updatePhysics( frameDelta:number ): void{
 
         const esteObjeto  : ObjectBase       = this;
+
+        // Ignora se a cena ou objetos nao existirem
+        if( !this.scene || !this.scene.objects ){
+            return;
+        }
 
         const objetosCena : ObjectBase[]     = Array<ObjectBase>(0).concat( this.scene!.objects )
                                                                    .concat( this.scene!.additionalObjects );
@@ -1075,6 +1085,11 @@ export default class ObjectBase extends Base{
     * Atualiza a movimentação do objeto, e do objeto em relação aos outros objetos na cena, como por exemplo objetos que podem carregar ele
     */
     public updateMovement( frameDelta:number ): void{
+
+        // Ignora se a cena ou objetos nao existirem
+        if( !this.scene || !this.scene.objects ){
+            return;
+        }
 
         const objeto           : ObjectBase     = this;
         const velocidadeObjeto : ObjectVelocity = objeto.getVelocity();

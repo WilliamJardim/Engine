@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Crosshair from '../interfaces/Crosshair';
 import { GameCamera } from '../renderer/GameCamera';
-import Scene from '../core/Scene';
+import SceneRenderer from '../renderer/SceneRenderer';
 
 export default function createCrosshair(): Crosshair{
     const crosshairSize = 0.02; // Tamanho do cursor no mundo
@@ -17,7 +17,7 @@ export default function createCrosshair(): Crosshair{
 };
 
 //Atualiza a posição do Crosshair
-export function UpdateCrosshair( scene: Scene, 
+export function UpdateCrosshair( sceneRenderer: SceneRenderer, 
                                  camera: GameCamera,
                                  crosshair: Crosshair,
                                  frameDelta: number
@@ -28,19 +28,19 @@ export function UpdateCrosshair( scene: Scene,
 }
 
 // Função de rastreamento dos objetos que o cursor está apontando
-export function TrackCrosshair( scene: Scene, 
+export function TrackCrosshair( sceneRenderer: SceneRenderer, 
                                 camera: GameCamera,
                                 crosshair: Crosshair,
                                 raycaster: THREE.Raycaster,
                                 mousePosition: THREE.Vector2,
                                 frameDelta: number
 ){
-
+    /*
     raycaster.setFromCamera( mousePosition, camera.getCamera() );
   
     //Copia algumas coisas uteis
     crosshair.raycaster = raycaster;
-    crosshair.scene = scene;
+    //crosshair.scene = scene;
     crosshair.camera = camera;
     crosshair.mousePosition = mousePosition;
 
@@ -58,4 +58,5 @@ export function TrackCrosshair( scene: Scene,
       //Armazena o target
       crosshair.target = target;
     }
+    */
   };

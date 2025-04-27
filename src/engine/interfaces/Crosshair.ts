@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GameCamera } from '../core/GameCamera';
+import { GameCamera } from '../renderer/GameCamera';
 import Scene from '../core/Scene';
 
 export default interface Crosshair extends THREE.Mesh{

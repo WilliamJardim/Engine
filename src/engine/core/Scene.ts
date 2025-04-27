@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import React from 'react';
 import Base from "./Base";
-import { GameCamera } from './GameCamera';
+import { GameCamera } from '../renderer/GameCamera.ts';
 import { EngineMain } from '../main'; // Importa a função EngineMain
 import { EngineLoop } from '../main'; // Importa a função EngineLoop
 import { UpdateCrosshair } from '../utils/Crosshair'; 

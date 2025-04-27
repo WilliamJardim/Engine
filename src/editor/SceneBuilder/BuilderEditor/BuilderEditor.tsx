@@ -10,7 +10,7 @@ import { EngineBeforeLoop } from '../../../engine/main' //Importa a função Eng
 import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import MovementState from '../../../engine/interfaces/MovementState';
 import createCrosshair, { TrackCrosshair, UpdateCrosshair } from '../../../engine/utils/Crosshair';
-import { GameCamera } from '../../../engine/core/GameCamera';
+import { GameCamera } from '../../../engine/renderer/GameCamera.ts';
 import Scene from '../../../engine/core/Scene';
 import { globalContext } from '../../../engine/main.ts';
 

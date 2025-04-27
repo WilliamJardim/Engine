@@ -3,10 +3,10 @@ import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import MovementState from '../interfaces/MovementState';
 import Crosshair from '../interfaces/Crosshair';
 import createCrosshair, { TrackCrosshair, UpdateCrosshair } from '../utils/Crosshair';
-import Base from './Base';
-import ObjectBase from './ObjectBase';
+import Base from '../core/Base';
+import ObjectBase from '../core/ObjectBase';
 import ObjectProps from '../interfaces/ObjectProps';
-import Scene from './Scene';
+import Scene from '../core/Scene';
 
 export class GameCamera{
     public  tipo = 'Camera';

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import Crosshair from '../interfaces/Crosshair';
-import { GameCamera } from '../core/GameCamera';
+import { GameCamera } from '../renderer/GameCamera';
 import Scene from '../core/Scene';
 
 export default function createCrosshair(): Crosshair{

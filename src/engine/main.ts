@@ -5,7 +5,7 @@ import createTexturedObject from './utils/createTexturedObject';
 import createMaterialByImage from './utils/createMaterialByImage';
 import createCube from './utils/createCube';
 import createPlane from './utils/createPlane';
-import { GameCamera } from './core/GameCamera';
+import { GameCamera } from './renderer/GameCamera';
 import ObjectBase from './core/ObjectBase';
 import importObjectFrom from './utils/importObject';
 import GlobalContext from './core/GlobalContext';

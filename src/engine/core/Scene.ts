@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import Base from "./Base";
 import { GameCamera } from './GameCamera';
 import { EngineMain } from '../main'; // Importa a função EngineMain
@@ -25,7 +25,6 @@ import {globalContext} from '../../engine/main.ts';
 import isCollision from '../utils/logic/isCollision.ts';
 import Wind from '../interfaces/Wind.ts';
 import FrameCounter from './FrameCounter.ts';
-import { xor } from 'three/tsl';
 import MovementState from '../interfaces/MovementState.ts';
 
 export default class Scene extends Base{

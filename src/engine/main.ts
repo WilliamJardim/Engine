@@ -1,10 +1,6 @@
 //Importações
-import * as THREE from 'three';
-import { PointerLockControls } from 'three/examples/jsm/Addons.js';
-import createTexturedObject from './utils/render/createTexturedObject';
 import createMaterialByImage from './utils/render/createMaterialByImage';
 import createCube from './utils/createCube';
-import { GameCamera } from './renderer/GameCamera';
 import ObjectBase from './core/ObjectBase';
 import GlobalContext from './core/GlobalContext';
 import Scene from './core/Scene';

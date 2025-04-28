@@ -371,7 +371,7 @@ export default class Scene extends Base{
                     firstRender,
                     renderizadorPronto,
                     frameDelta,
-                   frameNumber );
+                    frameNumber );
 
         context.updateGeneral( firstRender, renderizadorPronto, frameDelta, frameNumber );
 

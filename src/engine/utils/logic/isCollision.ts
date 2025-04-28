@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import ObjectBase from "../../core/ObjectBase";
 import ProximityBounds from '../interfaces/ProximityBounds';
 import ObjectPosition from '../../interfaces/ObjectPosition';

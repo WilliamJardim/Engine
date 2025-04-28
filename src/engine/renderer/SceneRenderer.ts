@@ -206,50 +206,20 @@ export default class SceneRenderer{
 
                 if(position != undefined && position != null)
                 {
-                    /*
-                    if( !isNaN(position.x) && position.x != undefined && position.x != null ){
-                        threeMesh.position.x = position.x;
-                    }
-                    if( !isNaN(position.y) && position.y != undefined && position.y != null ){
-                        threeMesh.position.y = position.y;
-                    }
-                    if( !isNaN(position.z) && position.z != undefined && position.z != null ){
-                        threeMesh.position.z = position.z;
-                    }
-                    */
                     threeMesh.position.x = position.x;
                     threeMesh.position.y = position.y;
                     threeMesh.position.z = position.z;
                 }
 
-                /*
-                O PROBLEMA QUE FAZ TUDO SUMIR È A ROTAÇÂO
                 if(rotation != undefined && rotation != null)
                 {
-                    if( !isNaN(scale.x) && scale.x != undefined && scale.x != null ){
-                        threeMesh.rotation.x = rotation.x;
-                    }
-                    if( !isNaN(scale.y) && scale.y != undefined && scale.y != null ){
-                        threeMesh.rotation.y = rotation.y;
-                    }
-                    if( !isNaN(scale.z) && scale.z != undefined && scale.z != null ){
-                        threeMesh.rotation.z = rotation.z;
-                    }
-                }*/
+                    threeMesh.rotation.x = rotation.x;
+                    threeMesh.rotation.y = rotation.y;
+                    threeMesh.rotation.z = rotation.z;
+                }
                 
                 if(scale != undefined && scale != null)
                 {
-                    /*
-                    if( !isNaN(scale.x) && scale.x != undefined && scale.x != null ){
-                        threeMesh.scale.x = scale.x;
-                    }
-                    if( !isNaN(scale.y) && scale.y != undefined && scale.y != null ){
-                        threeMesh.scale.y = scale.y;
-                    }
-                    if( !isNaN(scale.z) && scale.z != undefined && scale.z != null ){
-                        threeMesh.scale.z = scale.z;
-                    }
-                    */
                     threeMesh.scale.x = scale.x;
                     threeMesh.scale.y = scale.y;
                     threeMesh.scale.z = scale.z;

@@ -44,15 +44,15 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 y: -50,
                 z: 0
             },
-            scale: {
-                x: 510,
-                y: 1,
-                z: 500
-            },
             rotation: {
                 x: 0,
                 y: 0,
                 z: 0
+            },
+            scale: {
+                x: 510,
+                y: 1,
+                z: 500
             }
         }
     );
@@ -83,6 +83,11 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 x: 0,
                 y: -40,
                 z: -0.5
+            },
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 0
             },
             scale: {
                 x: 1,
@@ -134,16 +139,15 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 "OtherCube",
                 "AnotherCubo",
             ],
-            /*
-            position: {
-                x: 0,
-                y: -7,
-                z: -50
-            },*/
             position: {
                 x: 0,
                 y: -35,
                 z: -0.5
+            },
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 0
             },
             scale: {
                 x: 1,
@@ -189,6 +193,11 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             position: {
                 x: 0,
                 y: -40,
+                z: 0
+            },
+            rotation: {
+                x: 0,
+                y: 0,
                 z: 0
             },
             scale: {

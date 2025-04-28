@@ -116,6 +116,8 @@ export default class SceneRenderer{
                 const rotation : THREE.Vector3 = objetoAtual.getMesh().rotation as THREE.Vector3;
                 const scale    : THREE.Vector3 = objetoAtual.getMesh().scale    as THREE.Vector3;
 
+                debugger
+
                 if(position != undefined && position != null)
                 {
                     threeMesh.position.x = position.x;

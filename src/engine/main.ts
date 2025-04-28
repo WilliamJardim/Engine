@@ -1,13 +1,11 @@
 //Importações
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/examples/jsm/Addons.js';
-import createTexturedObject from './utils/createTexturedObject';
-import createMaterialByImage from './utils/createMaterialByImage';
+import createTexturedObject from './utils/render/createTexturedObject';
+import createMaterialByImage from './utils/render/createMaterialByImage';
 import createCube from './utils/createCube';
-import createPlane from './utils/createPlane';
 import { GameCamera } from './renderer/GameCamera';
 import ObjectBase from './core/ObjectBase';
-import importObjectFrom from './utils/importObject';
 import GlobalContext from './core/GlobalContext';
 import Scene from './core/Scene';
 import isCollision from './utils/logic/isCollision';
@@ -30,6 +28,7 @@ export function EngineMain( scene: Scene ): void{
     const cuboChao = createCube( 
         //The attributes
         {
+            type: 'Cube',
             material: createMaterialByImage('/textures/grama.jpg'), //The material,
             name: 'Chao',
             classes: ['ground'],
@@ -67,6 +66,7 @@ export function EngineMain( scene: Scene ): void{
     const cubo = createCube( 
         //The attributes
         {
+            type: 'Cube',
             material: createMaterialByImage('/textures/1piso.png'), //The material,
             name: 'MyCube',
             isNPC: false,
@@ -116,6 +116,7 @@ export function EngineMain( scene: Scene ): void{
     const cuboN = createCube( 
         //The attributes
         {
+            type: 'Cube',
             material: createMaterialByImage('/textures/1piso.png'), //The material,
             name: 'MyCubeN',
             isNPC: false,
@@ -155,6 +156,7 @@ export function EngineMain( scene: Scene ): void{
     const cubo2 = createCube( 
         //The attributes
         {
+            type: 'Cube',
             material: createMaterialByImage('/textures/1piso.png'), //The material,
             name: 'MyCube2',
             isNPC: false,
@@ -194,11 +196,13 @@ export function EngineMain( scene: Scene ): void{
     globalContext.set('Cubo2Ref', cubo2);
 
     //Importa uma caixa
+    /*
     importObjectFrom({
         caminho: 'objs/box.obj',
         haveMTL: true,
         
         objectProps: {
+            type: 'Model_OBJ',
             name: 'Caixa',
             collide: true,
             havePhysics: true,
@@ -261,7 +265,7 @@ export function EngineMain( scene: Scene ): void{
 
             //globalContext.set('CaixaRef', objetoCarregado);
         }
-    });
+    });*/
 
     //Engine.get('CuboRef').somarVelocity({x:50})
 

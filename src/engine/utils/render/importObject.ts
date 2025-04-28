@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
-import ObjectBase from '../core/ObjectBase';
-import ObjImport from '../interfaces/ObjImport';
-import ObjectProps from '../interfaces/ObjectProps';
+import ObjectBase from '../../core/ObjectBase';
+import ObjImport from '../../interfaces/ObjImport';
+import ObjectProps from '../../interfaces/ObjectProps';
 
 export default function importObjectFrom( parametros: ObjImport ){
     const loader = new OBJLoader();

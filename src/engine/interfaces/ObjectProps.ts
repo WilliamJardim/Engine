@@ -11,6 +11,7 @@ export default interface ObjectProps{
     [key: string]: any;
 
     material?: THREE.MeshStandardMaterial | null,
+    type: string, //Se é cubo, plano, esfera, ou modelo personalizado
     name?:string,
     classes?:string[],
     isNPC?: boolean,

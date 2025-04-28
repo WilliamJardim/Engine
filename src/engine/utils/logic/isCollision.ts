@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import ObjectBase from "../../core/ObjectBase";
 import ProximityBounds from '../interfaces/ProximityBounds';
+import ObjectPosition from '../../interfaces/ObjectPosition';
+import ObjectScale from '../../interfaces/ObjectScale';
 
 /**
 * Verifica se dois objetos estão colidindo:
@@ -22,36 +24,36 @@ export default function isCollision(objA:any, objB:any, limites: ProximityBounds
     };
 
     // Bounding boxes de ambos os objetos
-    const posA   : THREE.Vector3  = objA.getPosition();
-    const scaleA : THREE.Vector3  = objA.getScale();
+    const posA   : ObjectPosition  = objA.getPosition() || {};
+    const scaleA : ObjectScale     = objA.getScale()    || {};
 
-    const posB   : THREE.Vector3  = objB.getPosition();
-    const scaleB : THREE.Vector3  = objB.getScale();
+    const posB   : ObjectPosition  = objB.getPosition() || {};
+    const scaleB : ObjectScale     = objB.getScale()    || {};
 
     // Zona do objeto atual
     const minA = { 
-                   x: posA.x - (scaleA.x / 2) - getLimite('x'),
-                   y: posA.y - (scaleA.y / 2) - getLimite('y'),
-                   z: posA.z - (scaleA.z / 2) - getLimite('z')
+                   x: posA.x! - (scaleA.x / 2) - getLimite('x'),
+                   y: posA.y! - (scaleA.y / 2) - getLimite('y'),
+                   z: posA.z! - (scaleA.z / 2) - getLimite('z')
                  };
 
     const maxA = { 
-                   x: posA.x + (scaleA.x / 2) + getLimite('x'), 
-                   y: posA.y + (scaleA.y / 2) + getLimite('y'),
-                   z: posA.z + (scaleA.z / 2) + getLimite('z'), 
+                   x: posA.x! + (scaleA.x / 2) + getLimite('x'), 
+                   y: posA.y! + (scaleA.y / 2) + getLimite('y'),
+                   z: posA.z! + (scaleA.z / 2) + getLimite('z'), 
                  };
 
     // Zona do objeto colisor, cujo objeto atual esta intersectando
     const minB = { 
-                   x: posB.x - scaleB.x / 2, 
-                   y: posB.y - scaleB.y / 2,
-                   z: posB.z - scaleB.z / 2
+                   x: posB.x! - scaleB.x / 2, 
+                   y: posB.y! - scaleB.y / 2,
+                   z: posB.z! - scaleB.z / 2
                  };
 
     const maxB = { 
-                   x: posB.x + scaleB.x / 2,
-                   y: posB.y + scaleB.y / 2, 
-                   z: posB.z + scaleB.z / 2
+                   x: posB.x! + scaleB.x / 2,
+                   y: posB.y! + scaleB.y / 2, 
+                   z: posB.z! + scaleB.z / 2
                  };
 
     const sobreposicaoX:number = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);

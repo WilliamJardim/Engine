@@ -1,16 +1,11 @@
-import * as THREE from 'three';
-import ObjectBase from '../core/ObjectBase';
-import ObjectProps from '../interfaces/ObjectProps';
+import ObjectBase from "../core/ObjectBase";
+import ObjectProps from "../interfaces/ObjectProps";
 
-export default function createCube( objProps:ObjectProps 
-): ObjectBase{
-     // Criar um cubo
-     const geometry = new THREE.PlaneGeometry();
-     
-     const materialToCreate:THREE.MeshStandardMaterial | null | undefined = objProps.material;
+export default function createPlane( objProps:ObjectProps ): ObjectBase{
+    const propsObjeto = {...objProps} as ObjectProps;
 
-     const material = !materialToCreate ? new THREE.MeshBasicMaterial({ color: 0x00ff00 }) : materialToCreate;
-     const plane = new THREE.Mesh(geometry, material);
+    //Diz que é um cubo
+    propsObjeto.type = 'Plane';
 
-     return new ObjectBase(plane, objProps);
+    return new ObjectBase( propsObjeto );
 }

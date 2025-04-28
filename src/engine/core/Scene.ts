@@ -323,14 +323,8 @@ export default class Scene extends Base{
     /**
     * Adiciona um objeto na cena
     */
-    public add( objeto:any ): void{
-        const is_ObjectBase = isObjectBase(objeto);
-
-        //If is a instance of the Engine ObjectBase
-        if( is_ObjectBase == true ){
-            //this.scene.add( objeto.getMesh() );
-            this.objects.push( objeto );
-        }
+    public add( objeto:ObjectBase ): void{
+        this.objects.push( objeto );
     }
 
     /**

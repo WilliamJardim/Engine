@@ -251,7 +251,7 @@ export default class ObjectBase extends Base{
         return this.objProps;
     }
 
-    public getMesh(): any{
+    public getMesh(): MeshRepresentation{
         return this.mesh;
     }
 

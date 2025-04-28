@@ -4,10 +4,12 @@ import { TrackCrosshair, UpdateCrosshair } from '../utils/Crosshair';
 import ObjectBase from '../core/ObjectBase';
 import { GameCamera } from "./GameCamera";
 import Scene from '../core/Scene';
+import parseMeshType from '../utils/render/parseMeshType';
+import ObjectProps from '../interfaces/ObjectProps';
 
 export default class SceneRenderer{
     public engineScene:Scene;
-    public toRenderAssociation:Map<string, THREE.Mesh>;
+    public toRenderAssociation:Map<string, any>;
     public scene:THREE.Scene;
     public renderer:THREE.WebGLRenderer;
     public renderTarget:THREE.WebGLRenderTarget;
@@ -20,7 +22,7 @@ export default class SceneRenderer{
         this.engineScene = new Scene();
 
         // Cria um mapa que associa o id dos objetos da minha engine com o que o Three vai desenhar
-        this.toRenderAssociation = new Map<string, THREE.Mesh>();
+        this.toRenderAssociation = new Map<string, any>();
 
         //Obtem o canvas
         this.canvasRef = canvasRef;
@@ -48,7 +50,9 @@ export default class SceneRenderer{
     * Adiciona um objeto na cena que o Three está renderizando para que este objeto seja renderizado visualmente
     */
     public addToRender( objeto:any ): void{
-        this.scene.add( objeto );
+        if( objeto != null && objeto != undefined ){
+            this.scene.add( objeto );
+        }
     }
 
     //Função para atualizar o pulo do personagem em primeira pessoa
@@ -86,26 +90,54 @@ export default class SceneRenderer{
         for( let i = 0 ; i < engineSceneObjects.length ; i++ )
         {
             const objetoAtual:ObjectBase = engineSceneObjects[i];
+            const objProps:ObjectProps   = objetoAtual.objProps;
+            const tipoObjeto:string      = objProps.type;
 
             //Se o objeto já não foi criado na renderização do Three, cria ele pela primeira vez
             if ( !this.toRenderAssociation.has(objetoAtual.id) ) 
             {
-                const threeMesh:THREE.Mesh = new THREE.Mesh();
+                const newThreeMesh:THREE.Mesh|THREE.Object3D|THREE.Group|THREE.Group<any>|null = parseMeshType( tipoObjeto, objProps ); //Cria um objeto do THREE correspondente ao tipo usado
                 
-                this.addToRender(threeMesh);
-                this.toRenderAssociation.set(objetoAtual.id, threeMesh);
+                this.addToRender(newThreeMesh);
+                this.toRenderAssociation.set(objetoAtual.id, newThreeMesh);
             }   
 
             /**
             * Atualiza visualmente a posição, rotação e escala dos objetos
             */
-            const threeMesh:THREE.Mesh = this.toRenderAssociation.get(objetoAtual.id) as THREE.Mesh;
+            let threeMesh:THREE.Mesh|THREE.Object3D|THREE.Group|THREE.Group<any>|null = this.toRenderAssociation.get(objetoAtual.id);
 
-            if(threeMesh)
+            if( threeMesh != null && threeMesh != undefined )
             {
-                threeMesh.position.copy( objetoAtual.getMesh().position );
-                threeMesh.rotation.copy( objetoAtual.getMesh().rotation );
-                threeMesh.scale.copy( objetoAtual.getMesh().scale );
+                /**
+                * Espelha atributos que a minha engine informou
+                */
+                const position : THREE.Vector3 = objetoAtual.getMesh().position as THREE.Vector3;
+                const rotation : THREE.Vector3 = objetoAtual.getMesh().rotation as THREE.Vector3;
+                const scale    : THREE.Vector3 = objetoAtual.getMesh().scale    as THREE.Vector3;
+
+                if(position != undefined && position != null)
+                {
+                    threeMesh.position.x = position.x;
+                    threeMesh.position.y = position.y;
+                    threeMesh.position.z = position.z;
+                }
+
+                if(rotation != undefined && rotation != null)
+                {
+                    threeMesh.rotation.x = rotation.x;
+                    threeMesh.rotation.y = rotation.y;
+                    threeMesh.rotation.z = rotation.z;
+                }
+                
+                if(scale != undefined && scale != null)
+                {
+                    threeMesh.scale.x = scale.x;
+                    threeMesh.scale.y = scale.y;
+                    threeMesh.scale.z = scale.z;
+                }
+
+                threeMesh.visible = objetoAtual.objProps.invisible || true;
             }
         }
 

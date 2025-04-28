@@ -13,9 +13,9 @@ export default function createCubeMesh( objProps:ObjectProps ): THREE.Mesh{
 
      //Se tem posição
      if( objProps.position ){
-         cube.position.x = objProps.position.x || 0;
-         cube.position.y = objProps.position.y || 0;
-         cube.position.z = objProps.position.z || 0;
+         cube.position.x = objProps.position.x != undefined ? objProps.position.x : 0;
+         cube.position.y = objProps.position.y != undefined ? objProps.position.y : 0;
+         cube.position.z = objProps.position.z != undefined ? objProps.position.z : 0;
      }
      //Se tem rotação
      if( objProps.rotation ){

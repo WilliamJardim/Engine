@@ -16,7 +16,7 @@ import ObjectVelocity from './interfaces/ObjectVelocity';
 export const globalContext = new GlobalContext({});
 
 /** Função que vai ser executada quanto a Engine for iniciada */
-export function EngineMain( scene: Scene ): void{
+export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: number, frameNumber: number ): void{
 
     /**
     * Define algumas coisas uteis
@@ -81,8 +81,13 @@ export function EngineMain( scene: Scene ): void{
             ],
             position: {
                 x: 0,
-                y: -2,
+                y: -40,
                 z: -0.5
+            },
+            scale: {
+                x: 1,
+                y: 1,
+                z: 1
             },
             weight: 40,
             events: [
@@ -90,7 +95,7 @@ export function EngineMain( scene: Scene ): void{
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
                         //propioObjeto.somarPosicaoX(0.005);
-                        //console.log(propioObjeto.isFalling, propioObjeto.objectBelow)
+                        //console.log(propioObjeto.getPosition())
 
                         if( propioObjeto.objectBelow != null ){
                             //console.log(propioObjeto.getVelocity().x)
@@ -129,10 +134,21 @@ export function EngineMain( scene: Scene ): void{
                 "OtherCube",
                 "AnotherCubo",
             ],
+            /*
             position: {
                 x: 0,
                 y: -7,
                 z: -50
+            },*/
+            position: {
+                x: 0,
+                y: -35,
+                z: -0.5
+            },
+            scale: {
+                x: 1,
+                y: 1,
+                z: 1
             },
             weight: 40,
             events: [
@@ -184,7 +200,7 @@ export function EngineMain( scene: Scene ): void{
                 {
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
-                        
+                        console.log(propioObjeto.getPosition(), propioObjeto.getVelocity())
                     }
                 }
             ]
@@ -194,91 +210,16 @@ export function EngineMain( scene: Scene ): void{
     // Adiciona o cubo na cena
     scene.add(cubo2);
     globalContext.set('Cubo2Ref', cubo2);
-
-    //Importa uma caixa
-    /*
-    importObjectFrom({
-        caminho: 'objs/box.obj',
-        haveMTL: true,
-        
-        objectProps: {
-            type: 'Model_OBJ',
-            name: 'Caixa',
-            collide: true,
-            havePhysics: true,
-
-            position: {
-                x: 1.8,
-                y: 1,
-                z: 1.8
-            },
-
-            //Define configuraçao de detecção de proximidade
-            proximityConfig: {
-                x: 3,
-                y: 3,
-                z: 3
-            }as ProximityBounds,
-                        
-            // Cria um bloco de eventos para esse objeto
-            events: [
-                {
-                    loop: function( propioObjeto:ObjectBase ){
-                        //console.log( propioObjeto.infoProximity )
-                        if( propioObjeto.movimentSinalyzer.forward ){
-                            console.log( 'Caixa se movendo para direita' );
-                        }
-                    },
-
-                    whenFall: function(){
-                        //console.log('Objeto caindo');
-                    },
-
-                    whenDestroy: function( objeto:ObjectBase ){
-                        //console.log('Objeto destruido');
-                    },
-
-                    whenCollide: function( parametrosColisao:any ){
-
-                        // Se a Caixa colidir com o Cubo
-                        if( parametrosColisao.target.name == 'MyCube' ){
-                            //console.log('Cubo Colidiou com Caixa');
-                        }
-                    },
-
-                    whenProximity: function( parametrosProximidade:any ){
-
-                        // Se a Caixa colidir com o Cubo
-                        if( parametrosProximidade.target.name == 'MyCube' ){
-                            //console.log('Cubo próximo da Caixa');
-                        }
-
-                    }
-                }
-            ]
-        },
-
-        // Depois que o objeto for carregado
-        callback: function(objetoCarregado: ObjectBase){
-            //Adiciona o objeto na cena
-            //scene.add( objetoCarregado );
-
-            //globalContext.set('CaixaRef', objetoCarregado);
-        }
-    });*/
-
-    //Engine.get('CuboRef').somarVelocity({x:50})
-
 }
 
 
 /** Loop que vai ser executado ANTES da função de atualização */
-export function EngineBeforeLoop( scene: Scene ): void{
+export function EngineBeforeLoop( scene: Scene, frameDelta: number, frameNumber: number, firstRender: boolean, renderizadorPronto: boolean ): void{
 
 }
 
 /** Loop que vai ser executado a todo momento depois que a função de atualização rodar */
-export function EngineLoop( scene: Scene, frameDelta: number ): void{
+export function EngineLoop( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: number, frameNumber: number ): void{
 
     const htmlCanvas = globalContext.get('htmlCanvas');
 

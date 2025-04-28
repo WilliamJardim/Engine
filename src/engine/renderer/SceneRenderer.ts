@@ -2,22 +2,42 @@ import React from 'react';
 import * as THREE from 'three';
 import { TrackCrosshair, UpdateCrosshair } from '../utils/Crosshair';
 import ObjectBase from '../core/ObjectBase';
-import { GameCamera } from "./GameCamera";
 import Scene from '../core/Scene';
 import parseMeshType from '../utils/render/parseMeshType';
 import ObjectProps from '../interfaces/ObjectProps';
+import { PointerLockControls } from 'three/examples/jsm/Addons.js';
+import MovementState from '../interfaces/MovementState';
 
 export default class SceneRenderer{
     public engineScene:Scene;
     public toRenderAssociation:Map<string, any>;
     public scene:THREE.Scene;
     public renderer:THREE.WebGLRenderer;
-    public renderTarget:THREE.WebGLRenderTarget;
     public canvasRef:React.RefObject<HTMLDivElement>;
-    public camera:GameCamera;
+    public camera:THREE.PerspectiveCamera;
+    public cameraControls:PointerLockControls;
     public firstRender:boolean = true;
+    public mousePosition:THREE.Vector2;
+    public cameraVelocity:THREE.Vector3;
+    public cameraDirection:THREE.Vector3;
+    public cameraMovement:MovementState;
+    public provavelmentePronto:boolean = false; //Sinaliza se os objetos iniciais foram carregados
 
     constructor( canvasRef:any ){
+        const contexto = this;
+
+        this.provavelmentePronto = false;
+
+        this.cameraMovement = {
+            forward: false,
+            backward: false,
+            left: false,
+            right: false
+        }
+
+        this.cameraVelocity = new THREE.Vector3();
+        this.cameraDirection = new THREE.Vector3();
+
         // Cria a cena da Engine
         this.engineScene = new Scene();
 
@@ -36,14 +56,78 @@ export default class SceneRenderer{
 
         this.renderer = new THREE.WebGLRenderer();
 
-        // Criar Render Target (framebuffer)
-        this.renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
-            minFilter: THREE.LinearFilter,
-            magFilter: THREE.LinearFilter,
-            format: THREE.RGBAFormat
-        });
+        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
+        this.camera.position.set(20, -20, 50);
 
-        this.camera = new GameCamera(this);
+        //this.scene.add(this.camera);
+
+        this.cameraControls = new PointerLockControls(this.camera, this.renderer.domElement);
+        
+        this.mousePosition = new THREE.Vector2(0, 0); // Coordenadas do mouse (fixo no centro)
+            
+        // Atualiza a posição do mouse
+        function onMouseMove(event: MouseEvent) {
+            // Normaliza a posição do mouse para o intervalo de -1 a 1
+            contexto.mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
+            contexto.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
+    
+        // Adiciona o evento de movimento do mouse
+        window.addEventListener('mousemove', onMouseMove, false);
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            const cameraMovement = this.cameraMovement;
+        
+            switch (event.code) {
+                case 'ArrowUp':
+                case 'KeyW':
+                    cameraMovement.forward = true;
+                    break;
+                case 'ArrowDown':
+                case 'KeyS':
+                    cameraMovement.backward = true;
+                    break;
+                case 'ArrowLeft':
+                case 'KeyA':
+                    cameraMovement.left = true;
+                    break;
+                case 'ArrowRight':
+                case 'KeyD':
+                    cameraMovement.right = true;
+                    break;
+            }
+            };
+        
+        const onKeyUp = (event: KeyboardEvent) => {
+            const cameraMovement = this.cameraMovement;
+        
+            switch (event.code) {
+                case 'ArrowUp':
+                case 'KeyW':
+                    cameraMovement.forward = false;
+                    break;
+                case 'ArrowDown':
+                case 'KeyS':
+                    cameraMovement.backward = false;
+                    break;
+                case 'ArrowLeft':
+                case 'KeyA':
+                    cameraMovement.left = false;
+                    break;
+                case 'ArrowRight':
+                case 'KeyD':
+                    cameraMovement.right = false;
+                    break;
+            }
+            };
+        
+            document.addEventListener('keydown', onKeyDown);
+            document.addEventListener('keyup',   onKeyUp);
+
+            // Adicionar evento de clique para ativar o controle do cursor
+            this.canvasRef!.current!.addEventListener('click', () => {
+                contexto.cameraControls.lock();
+            });
     }
 
     /**
@@ -52,25 +136,6 @@ export default class SceneRenderer{
     public addToRender( objeto:any ): void{
         if( objeto != null && objeto != undefined ){
             this.scene.add( objeto );
-        }
-    }
-
-    //Função para atualizar o pulo do personagem em primeira pessoa
-    public updateJump( frameDelta:number ) {
-        const cameraMovement = this.camera.getMovement();
-
-        if(cameraMovement.jumpVelocityY == undefined){
-           cameraMovement.jumpVelocityY = 0;
-        }
-
-        // Se estiver pulando, aplicar o movimento vertical
-        if (cameraMovement.isJumping == true && cameraMovement.stopJumpStartFallAgain == false ) {
-            // Aplica a gravidade (reduz a velocidade vertical a cada frame)
-
-            // Se está subindo, aplicamos a gravidade para diminuir a velocidade
-            cameraMovement.jumpVelocityY -= -45 * frameDelta * 1;  // Acelera negativamente para reduzir a velocidade de subida
-            this.camera.getPosition().y += cameraMovement.jumpVelocityY * frameDelta * 1;  // Move a câmera para cima
-            this.camera.objectBase.isFalling = true
         }
     }
 
@@ -97,7 +162,7 @@ export default class SceneRenderer{
             if ( !this.toRenderAssociation.has(objetoAtual.id) ) 
             {
                 const newThreeMesh:THREE.Mesh|THREE.Object3D|THREE.Group|THREE.Group<any>|null = parseMeshType( tipoObjeto, objProps ); //Cria um objeto do THREE correspondente ao tipo usado
-                
+
                 this.addToRender(newThreeMesh);
                 this.toRenderAssociation.set(objetoAtual.id, newThreeMesh);
             }   
@@ -107,6 +172,29 @@ export default class SceneRenderer{
             */
             let threeMesh:THREE.Mesh|THREE.Object3D|THREE.Group|THREE.Group<any>|null = this.toRenderAssociation.get(objetoAtual.id);
 
+            /**
+            * Verifica se os objetos iniciais foram carregados corretamente 
+            */
+            /*
+            if (threeMesh != null && threeMesh != undefined) 
+            {
+                if (threeMesh instanceof THREE.Mesh) {
+                    if (threeMesh.geometry && threeMesh.material) {
+                        this.provavelmentePronto = true;
+                    }
+
+                } else if (threeMesh instanceof THREE.Group) {
+                    this.provavelmentePronto = true;
+                    
+                } else if (threeMesh instanceof THREE.Object3D) {
+                    this.provavelmentePronto = true;
+                }
+            }
+            */
+
+            // ENQUANTO ESSA LINHA DE CÒDIGO NUNCA FOR EXECUTADA, OS OBJETOS TODOS APARECEM NORMALMENTE
+            // MAIS A PARTIR DO MOMENTO EM QUE ESSA LINHA DE CÒDIGO È EXECUTADA, TUDO SOME
+            // E AI O RESTO DO BUG OCORRE, ALGUNS VOLTAM DEPOIS DE CAIR NO CHAO (os objetos com fisica), mais outros não voltam(como os objetos sem fisica)
             if( threeMesh != null && threeMesh != undefined )
             {
                 /**
@@ -116,30 +204,61 @@ export default class SceneRenderer{
                 const rotation : THREE.Vector3 = objetoAtual.getMesh().rotation as THREE.Vector3;
                 const scale    : THREE.Vector3 = objetoAtual.getMesh().scale    as THREE.Vector3;
 
-                debugger
-
                 if(position != undefined && position != null)
                 {
+                    /*
+                    if( !isNaN(position.x) && position.x != undefined && position.x != null ){
+                        threeMesh.position.x = position.x;
+                    }
+                    if( !isNaN(position.y) && position.y != undefined && position.y != null ){
+                        threeMesh.position.y = position.y;
+                    }
+                    if( !isNaN(position.z) && position.z != undefined && position.z != null ){
+                        threeMesh.position.z = position.z;
+                    }
+                    */
                     threeMesh.position.x = position.x;
                     threeMesh.position.y = position.y;
                     threeMesh.position.z = position.z;
                 }
 
+                /*
+                O PROBLEMA QUE FAZ TUDO SUMIR È A ROTAÇÂO
                 if(rotation != undefined && rotation != null)
                 {
-                    threeMesh.rotation.x = rotation.x;
-                    threeMesh.rotation.y = rotation.y;
-                    threeMesh.rotation.z = rotation.z;
-                }
+                    if( !isNaN(scale.x) && scale.x != undefined && scale.x != null ){
+                        threeMesh.rotation.x = rotation.x;
+                    }
+                    if( !isNaN(scale.y) && scale.y != undefined && scale.y != null ){
+                        threeMesh.rotation.y = rotation.y;
+                    }
+                    if( !isNaN(scale.z) && scale.z != undefined && scale.z != null ){
+                        threeMesh.rotation.z = rotation.z;
+                    }
+                }*/
                 
                 if(scale != undefined && scale != null)
                 {
+                    /*
+                    if( !isNaN(scale.x) && scale.x != undefined && scale.x != null ){
+                        threeMesh.scale.x = scale.x;
+                    }
+                    if( !isNaN(scale.y) && scale.y != undefined && scale.y != null ){
+                        threeMesh.scale.y = scale.y;
+                    }
+                    if( !isNaN(scale.z) && scale.z != undefined && scale.z != null ){
+                        threeMesh.scale.z = scale.z;
+                    }
+                    */
                     threeMesh.scale.x = scale.x;
                     threeMesh.scale.y = scale.y;
                     threeMesh.scale.z = scale.z;
                 }
 
-                threeMesh.visible = objetoAtual.objProps.invisible || true;
+                threeMesh.visible = true;
+
+                threeMesh.updateMatrix();
+                threeMesh.updateMatrixWorld(true);
             }
         }
 
@@ -163,39 +282,49 @@ export default class SceneRenderer{
             requestAnimationFrame(animate);
     
             //Outras coisas que vão acontecer
-            const frameDelta = context.engineScene.sceneCounter.calculateFrameDelta(); // Tempo entre frames
+            const frameDelta  = context.engineScene.sceneCounter.calculateFrameDelta(); // Tempo entre frames
+            const frameNumber = context.engineScene.sceneCounter.getFrameNumber();
 
-            context.engineScene.loop( frameDelta, context.firstRender );
+            // Só chama o loop da minha engine se o renderizador já está apto para renderizar coisas
+            context.engineScene.loop( frameDelta, frameNumber, context.firstRender, context.provavelmentePronto );
 
             // Atualiza a visualização dos objetos
             context.updateObjectsVisually();
 
-            //Atualiza a camera
-            context.camera.Update( frameDelta );
-    
-            //Atualiza o pulo
-            context.updateJump( frameDelta );
-    
-            //Atualiza a posição do crosshair
-            UpdateCrosshair( context, 
-                             context.camera,
-                             context.camera.getCrosshair(),
-                             frameDelta );
-    
-            //Atualiza para onde a camera está apontando
-            //TrackCrosshair( context, 
-            //                frameDelta );
+            // Atualiza a cemera livre
+            //context.cameraControls.update( frameDelta );       
+
+            // Movimento livre da camera
+            context.cameraVelocity.x -= context.cameraVelocity.x * 10.0 * frameDelta;
+            context.cameraVelocity.z -= context.cameraVelocity.z * 10.0 * frameDelta;
+            context.cameraDirection.z = Number(context.cameraMovement.forward) - Number(context.cameraMovement.backward);
+            context.cameraDirection.x = Number(context.cameraMovement.right) - Number(context.cameraMovement.left);
+
+            context.cameraDirection.normalize(); // Garante que a direção tenha comprimento 1
+
+            if (context.cameraMovement.forward == true || context.cameraMovement.backward == true){
+                context.cameraVelocity.z -= context.cameraDirection.z * 200.0 * frameDelta;
+            }
+
+            if (context.cameraMovement.left == true || context.cameraMovement.right == true ) {
+                context.cameraVelocity.x -= context.cameraDirection.x * 200.0 * frameDelta;
+            }
+
+            context.cameraControls.moveRight(-context.cameraVelocity.x * frameDelta);
+            context.cameraControls.moveForward(-context.cameraVelocity.z * frameDelta);
 
             // Renderizar a cena normal para o framebuffer
-            context.renderer.setRenderTarget(context.renderTarget);
             context.renderer.render( context.scene, 
-                                     context.camera.getCamera() );
-
-            debugger
+                                     context.camera );
 
             // Diz que a primeira renderização já terminou
             context.firstRender = false;
         }
+
+        //Aguarda um pouco o renderizador terminar de carregar os objetos
+        setTimeout(function(){
+            context.provavelmentePronto = true;
+        }, 500);
 
         animate();
     }
@@ -203,7 +332,7 @@ export default class SceneRenderer{
     public handleResize(){
         if (!this.canvasRef.current) return;
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.camera.setAspect( window.innerWidth / window.innerHeight );
+        this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
     }
 

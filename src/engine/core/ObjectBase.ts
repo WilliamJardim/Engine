@@ -1575,36 +1575,40 @@ export default class ObjectBase extends Base{
         }
     }
 
-    public updateObject( frameDelta:number ): void{
-        /**
-        * Reseta algumas coisas antes do loop 
-        */
-        this.pre_loop_reset();
+    public updateObject( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void{
+        if( renderizadorPronto == true )
+        {
+            /**
+            * Reseta algumas coisas antes do loop 
+            */
+            this.pre_loop_reset();
 
-        /**
-        * Principal: Fisica, Movimentação e Eventos 
-        */
-        this.updatePhysics( frameDelta );
+            /**
+            * Principal: Fisica, Movimentação e Eventos 
+            */
+            this.updatePhysics( frameDelta );
+            
+            /**
+            * Igualmente importante, atualiza quais objetos estão colidindo/e os que estão proximos com quais objetos 
+            */
+            this.updateCollisionState( frameDelta );
 
-        /**
-        * Igualmente importante, atualiza quais objetos estão colidindo/e os que estão proximos com quais objetos 
-        */
-        this.updateCollisionState( frameDelta );
+            /**
+            * Atualiza os movimentos do objeto 
+            */
+            this.updateMovement( frameDelta );
+            
 
-        /**
-        * Atualiza os movimentos do objeto 
-        */
-        this.updateMovement( frameDelta );
+            /**
+            * Atualiza os eventos do objeto 
+            */
+            this.updateEvents( frameDelta );
 
-        /**
-        * Atualiza os eventos do objeto 
-        */
-        this.updateEvents( frameDelta );
-
-        /**
-        * Atualiza os "attachments" ou "objeto anexados/grudados" ao objeto atual
-        */
-        this.updateAttachments( frameDelta );
+            /**
+            * Atualiza os "attachments" ou "objeto anexados/grudados" ao objeto atual
+            */
+            this.updateAttachments( frameDelta );
+        }
     }
 
     /**

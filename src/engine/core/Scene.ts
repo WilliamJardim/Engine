@@ -1,5 +1,4 @@
 import Base from "./Base";
-import { GameCamera } from '../renderer/GameCamera.ts';
 import { EngineMain } from '../main'; // Importa a função EngineMain
 import { EngineLoop } from '../main'; // Importa a função EngineLoop
 import { UpdateCrosshair } from '../utils/Crosshair'; 
@@ -30,7 +29,7 @@ export default class Scene extends Base{
     public slowSpeed = 0.05;
     public frameDeltaIntensification:number = this.normalSpeed;
     public objectPhysicsUpdateRate:number = 1; //Permite intensificar os efeitos da fisica nos objetos
-    public objectPhysicsDesaceleracaoUpdateRate:number = 5.5; //Afeta a velocidade de desaceleracao de objetos
+    public objectPhysicsDesaceleracaoUpdateRate:number = 9.5; //Afeta a velocidade de desaceleracao de objetos
 
     public gravity:number;
     public atrito:number = 1;
@@ -72,7 +71,7 @@ export default class Scene extends Base{
                             z: 0 }
         };*/
 
-        this.gravity = -45;     // Gravidade que puxa para baixo
+        this.gravity = -5;     // Gravidade que puxa para baixo
         this.atrito  = 1;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
         this.arrastoAr = 1;    // Arrast do ar(afeta objetos com aceleração que estiverem no ar)
 
@@ -359,22 +358,29 @@ export default class Scene extends Base{
     }
 
     //Função que chama o loop "animate"
-    public loop( frameDelta: number, firstRender: boolean = true ): void{
+    public loop( frameDelta: number, 
+                 frameNumber: number,
+                 firstRender: boolean = true, 
+                 renderizadorPronto: boolean = false 
+    ){
         const context = this;
 
-        EngineBeforeLoop( context );
+        EngineBeforeLoop( context, frameDelta, frameNumber, firstRender, renderizadorPronto );
     
         EngineLoop( context, 
-                    frameDelta );
+                    firstRender,
+                    renderizadorPronto,
+                    frameDelta,
+                   frameNumber );
 
-        context.updateGeneral( frameDelta );
+        context.updateGeneral( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
-        context.updateObjects( frameDelta );
+        context.updateObjects( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
         if( firstRender == true )
         {
             // Chamar a função EngineMain
-            EngineMain( this );
+            EngineMain( this, firstRender, renderizadorPronto, frameDelta, frameNumber );
         }
 
             
@@ -383,7 +389,7 @@ export default class Scene extends Base{
     /**
     * Update in general  
     */
-    public updateGeneral( frameDelta:number )
+    public updateGeneral( firstRender:boolean, renderizadorPronto:boolean, frameDelta:number, frameNumber: number )
     {
         this.updateCollisionReactions();
     }
@@ -554,7 +560,7 @@ export default class Scene extends Base{
     /**
     * Update all objects in the scene 
     */
-    public updateObjects( frameDelta:number ): void{
+    public updateObjects( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void{
 
         const context = this;
 
@@ -588,7 +594,7 @@ export default class Scene extends Base{
                 /**
                 * Update the object 
                 */
-                currentObject.updateObject( frameDelta );
+                currentObject.updateObject( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
             }catch(e){
                 console.log(e)

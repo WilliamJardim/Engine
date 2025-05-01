@@ -68,7 +68,7 @@ int main() {
     std::cout << "\n";
 
     // TESTANDO ALTERAR O VALOR DOS OBJETOS DIRETAMENTE
-    scene1.mudarValor( "TESTE 1" );
+    scene1.exemplo1 = "TESTE 1";
     scene2.mudarValor( "TESTE 2" );
 
     std::cout << "\n";

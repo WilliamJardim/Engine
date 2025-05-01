@@ -1,0 +1,1 @@
+ clang++ .\test.cpp -o test.exe

@@ -1,15 +1,17 @@
 import React from 'react';
 import * as THREE from 'three';
-import { TrackCrosshair, UpdateCrosshair } from '../utils/Crosshair';
 import ObjectBase from '../core/ObjectBase';
 import Scene from '../core/Scene';
 import parseMeshType from '../utils/render/parseMeshType';
 import ObjectProps from '../interfaces/ObjectProps';
 import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import MovementState from '../interfaces/MovementState';
+import InputListener from '../input/InputListener';
+import SceneConfig from '../interfaces/SceneConfig';
 
 export default class SceneRenderer{
     public engineScene:Scene;
+    public inputListener:InputListener;
     public toRenderAssociation:Map<string, any>;
     public scene:THREE.Scene;
     public renderer:THREE.WebGLRenderer;
@@ -17,7 +19,6 @@ export default class SceneRenderer{
     public camera:THREE.PerspectiveCamera;
     public cameraControls:PointerLockControls;
     public firstRender:boolean = true;
-    public mousePosition:THREE.Vector2;
     public cameraVelocity:THREE.Vector3;
     public cameraDirection:THREE.Vector3;
     public cameraMovement:MovementState;
@@ -27,6 +28,8 @@ export default class SceneRenderer{
         const contexto = this;
 
         this.provavelmentePronto = false;
+
+        this.inputListener = new InputListener();
 
         this.cameraMovement = {
             forward: false,
@@ -39,7 +42,10 @@ export default class SceneRenderer{
         this.cameraDirection = new THREE.Vector3();
 
         // Cria a cena da Engine
-        this.engineScene = new Scene();
+        this.engineScene = new Scene({
+            inputListener: this.inputListener
+            
+        }as SceneConfig);
 
         // Cria um mapa que associa o id dos objetos da minha engine com o que o Three vai desenhar
         this.toRenderAssociation = new Map<string, any>();
@@ -59,75 +65,48 @@ export default class SceneRenderer{
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
         this.camera.position.set(20, -20, 50);
 
-        //this.scene.add(this.camera);
-
         this.cameraControls = new PointerLockControls(this.camera, this.renderer.domElement);
         
-        this.mousePosition = new THREE.Vector2(0, 0); // Coordenadas do mouse (fixo no centro)
-            
-        // Atualiza a posição do mouse
-        function onMouseMove(event: MouseEvent) {
-            // Normaliza a posição do mouse para o intervalo de -1 a 1
-            contexto.mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
-            contexto.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        // Adicionar evento de clique para ativar o controle do cursor
+        this.canvasRef!.current!.addEventListener('click', () => {
+            contexto.cameraControls.lock();
+        });
+    }
+
+    public updateCameraMovement(){
+        /**
+        * Escuta o teclado e o mouse, para aplicar os eventos de camera
+        */
+        const cameraMovement = this.cameraMovement;
+        const inputListener  = this.inputListener;
+
+        // Esquerda
+        if( inputListener.isKey('A') == true ) {
+            cameraMovement.left = true;
+        }else if( inputListener.isKey('A') == false ) {
+            cameraMovement.left = false;
         }
-    
-        // Adiciona o evento de movimento do mouse
-        window.addEventListener('mousemove', onMouseMove, false);
 
-        const onKeyDown = (event: KeyboardEvent) => {
-            const cameraMovement = this.cameraMovement;
+        // Direita
+        if( inputListener.isKey('D') == true ) {
+            cameraMovement.right = true;
+        }else if( inputListener.isKey('D') == false ){
+            cameraMovement.right = false;
+        }
         
-            switch (event.code) {
-                case 'ArrowUp':
-                case 'KeyW':
-                    cameraMovement.forward = true;
-                    break;
-                case 'ArrowDown':
-                case 'KeyS':
-                    cameraMovement.backward = true;
-                    break;
-                case 'ArrowLeft':
-                case 'KeyA':
-                    cameraMovement.left = true;
-                    break;
-                case 'ArrowRight':
-                case 'KeyD':
-                    cameraMovement.right = true;
-                    break;
-            }
-            };
-        
-        const onKeyUp = (event: KeyboardEvent) => {
-            const cameraMovement = this.cameraMovement;
-        
-            switch (event.code) {
-                case 'ArrowUp':
-                case 'KeyW':
-                    cameraMovement.forward = false;
-                    break;
-                case 'ArrowDown':
-                case 'KeyS':
-                    cameraMovement.backward = false;
-                    break;
-                case 'ArrowLeft':
-                case 'KeyA':
-                    cameraMovement.left = false;
-                    break;
-                case 'ArrowRight':
-                case 'KeyD':
-                    cameraMovement.right = false;
-                    break;
-            }
-            };
-        
-            document.addEventListener('keydown', onKeyDown);
-            document.addEventListener('keyup',   onKeyUp);
+        // Frente
+        if( inputListener.isKey('W') == true ) {
+            cameraMovement.forward = true;
+        }else if( inputListener.isKey('W') == false ){
+            cameraMovement.forward = false;
+        }
 
-            // Adicionar evento de clique para ativar o controle do cursor
-            this.canvasRef!.current!.addEventListener('click', () => {
-                contexto.cameraControls.lock();
-            });
+        // Traz
+        if( inputListener.isKey('S') == true ) {
+            cameraMovement.backward = true;
+        }else if( inputListener.isKey('S') == false ){
+            cameraMovement.backward = false;
+        }
     }
 
     /**
@@ -139,7 +118,7 @@ export default class SceneRenderer{
         }
     }
 
-    /**
+    /** 
     * Atualiza os objetos visualmente
     */
     public updateObjectsVisually(): void{
@@ -171,26 +150,6 @@ export default class SceneRenderer{
             * Atualiza visualmente a posição, rotação e escala dos objetos
             */
             let threeMesh:THREE.Mesh|THREE.Object3D|THREE.Group|THREE.Group<any>|null = this.toRenderAssociation.get(objetoAtual.id);
-
-            /**
-            * Verifica se os objetos iniciais foram carregados corretamente 
-            */
-            /*
-            if (threeMesh != null && threeMesh != undefined) 
-            {
-                if (threeMesh instanceof THREE.Mesh) {
-                    if (threeMesh.geometry && threeMesh.material) {
-                        this.provavelmentePronto = true;
-                    }
-
-                } else if (threeMesh instanceof THREE.Group) {
-                    this.provavelmentePronto = true;
-                    
-                } else if (threeMesh instanceof THREE.Object3D) {
-                    this.provavelmentePronto = true;
-                }
-            }
-            */
 
             // ENQUANTO ESSA LINHA DE CÒDIGO NUNCA FOR EXECUTADA, OS OBJETOS TODOS APARECEM NORMALMENTE
             // MAIS A PARTIR DO MOMENTO EM QUE ESSA LINHA DE CÒDIGO È EXECUTADA, TUDO SOME
@@ -232,7 +191,6 @@ export default class SceneRenderer{
             }
         }
 
-
     }
 
     //Função que chama o loop "animate"
@@ -261,8 +219,8 @@ export default class SceneRenderer{
             // Atualiza a visualização dos objetos
             context.updateObjectsVisually();
 
-            // Atualiza a cemera livre
-            //context.cameraControls.update( frameDelta );       
+            // Atualiza os movimentos da camera
+            context.updateCameraMovement();  
 
             // Movimento livre da camera
             context.cameraVelocity.x -= context.cameraVelocity.x * 10.0 * frameDelta;

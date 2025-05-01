@@ -1,8 +1,6 @@
 import Base from "./Base";
 import { EngineMain } from '../main'; // Importa a função EngineMain
 import { EngineLoop } from '../main'; // Importa a função EngineLoop
-import { UpdateCrosshair } from '../utils/Crosshair'; 
-import { TrackCrosshair } from '../utils/Crosshair';
 import { EngineBeforeLoop } from '../main' //Importa a função EngineBeforeLoop
 import ObjectBase from './ObjectBase';
 import isObjectBase from '../utils/isObjectBase';
@@ -21,9 +19,14 @@ import isCollision from '../utils/logic/isCollision.ts';
 import Wind from '../interfaces/Wind.ts';
 import FrameCounter from './FrameCounter.ts';
 import MovementState from '../interfaces/MovementState.ts';
+import InputListener from "../input/InputListener.ts";
+import SceneConfig from "../interfaces/SceneConfig.ts";
 
 export default class Scene extends Base{
 
+    public sceneConfig:SceneConfig;
+    public inputListener:InputListener;
+    
     public sceneCounter:FrameCounter;
     public normalSpeed = 1;
     public slowSpeed = 0.05;
@@ -51,7 +54,7 @@ export default class Scene extends Base{
     */
     public wind:Wind|null;
 
-    constructor(){
+    constructor( sceneConfig:SceneConfig ){
         super();
 
         this.wind = null;
@@ -75,7 +78,10 @@ export default class Scene extends Base{
         this.atrito  = 1;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
         this.arrastoAr = 1;    // Arrast do ar(afeta objetos com aceleração que estiverem no ar)
 
-        this.sceneCounter = new FrameCounter( 1000, 1000 );
+        this.sceneConfig   = sceneConfig;
+        this.inputListener = sceneConfig.inputListener;
+ 
+        this.sceneCounter  = new FrameCounter( 1000, 1000 );
 
         this.objects = [];
 

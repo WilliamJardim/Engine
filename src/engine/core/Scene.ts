@@ -62,20 +62,20 @@ export default class Scene extends Base{
 
         this.wind = null;
 
-        /*
         this.wind = {
-            orientation : { x: 0.008, 
-                            y: 0.001, 
-                            z: 0.005},
+            orientation : { x: 0.5, 
+                            y: -0.1, 
+                            z: 0.3},
 
-            deslocationTrend: { x: 0.02, 
+            deslocationTrend: { x: 0.08, 
                                 y: 0.001, 
-                                z: 0.001},
+                                z: 0.01},
 
             intensity   : { x: 0, 
                             y: 0, 
                             z: 0 }
-        };*/
+        };
+
         this.gravity = -0.3;     // Gravidade que puxa para baixo
         this.atrito  = 1;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
         this.arrastoAr = 1;    // Arrast do ar(afeta objetos com aceleração que estiverem no ar)

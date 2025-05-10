@@ -1048,9 +1048,9 @@ export default class ObjectBase extends Base{
                 {
                     if( this.objProps.name != 'Player' ){
                         const wind:Wind = this.scene.wind;
-                        const randomX = Math.random() * 0.00001;
-                        const randomY = Math.random() * 0.00001;
-                        const randomZ = Math.random() * 0.00001;
+                        const randomX = Math.random() * 0.001;
+                        const randomY = Math.random() * 0.001;
+                        const randomZ = Math.random() * 0.001;
 
                         this.somarRotation({
                             x: randomX + ((wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ) * Math.abs(gravity) * 4.8 * frameDelta * frameDeltaIntensification,

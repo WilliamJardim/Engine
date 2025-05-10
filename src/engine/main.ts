@@ -98,7 +98,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
                         //propioObjeto.somarPosicaoX(0.005);
-                        //console.log(propioObjeto.getVelocity())
+                        console.log(propioObjeto.getVelocity())
 
                         if( propioObjeto.objectBelow != null ){
                             //console.log(propioObjeto.getVelocity().x)
@@ -158,7 +158,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
                         //propioObjeto.somarPosicaoX(0.005);
-                        console.log(propioObjeto.getVelocity())
+                        //console.log(propioObjeto.getVelocity())
 
                         if( propioObjeto.objectBelow != null ){
                             //console.log(propioObjeto.getVelocity().x)

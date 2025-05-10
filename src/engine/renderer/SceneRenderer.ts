@@ -8,6 +8,7 @@ import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 import MovementState from '../interfaces/MovementState';
 import InputListener from '../input/InputListener';
 import SceneConfig from '../interfaces/SceneConfig';
+import Camera from '../core/Camera';
 
 export default class SceneRenderer{
     public engineScene:Scene;
@@ -63,7 +64,7 @@ export default class SceneRenderer{
         this.renderer = new THREE.WebGLRenderer();
 
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
-        this.camera.position.set(20, -20, 50);
+        this.camera.position.set(20, -42, 50);
 
         this.cameraControls = new PointerLockControls(this.camera, this.renderer.domElement);
         
@@ -106,6 +107,41 @@ export default class SceneRenderer{
             cameraMovement.backward = true;
         }else if( inputListener.isKey('S') == false ){
             cameraMovement.backward = false;
+        }
+    }
+
+    /**
+    * Lê as cameras da engine, e faz o Three acompanhar acompanhar a posição da camera principal 
+    * Lembrando que a camera principal pode mudar a qualquer momento
+    */
+    public processCameras()
+    {   
+        const engineScene   : Scene    = this.engineScene;
+        const engineCameras : Camera[] = this.engineScene.cameras;
+
+        /**
+        * Faz a camera do renderizador acompanhar a camera principal 
+        */
+        for( let i = 0 ; i < engineCameras.length ; i++ )
+        {
+            const currentCamera: Camera = engineCameras[i];
+
+            if( currentCamera.isMainCamera() == true )
+            {   
+                if( currentCamera.getPosition().x != undefined )
+                {
+                    this.camera.position.x = currentCamera.getPosition().x!;
+                }
+                if( currentCamera.getPosition().y != undefined )
+                {
+                    this.camera.position.y = currentCamera.getPosition().y!;
+                }
+                if( currentCamera.getPosition().z != undefined )
+                {
+                    this.camera.position.z = currentCamera.getPosition().z!;
+                }
+                break;
+            }
         }
     }
 
@@ -221,6 +257,9 @@ export default class SceneRenderer{
 
             // Atualiza os movimentos da camera
             context.updateCameraMovement();  
+
+            // Atualiza as cameras
+            context.processCameras();
 
             // Movimento livre da camera
             context.cameraVelocity.x -= context.cameraVelocity.x * 10.0 * frameDelta;

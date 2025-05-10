@@ -7,6 +7,8 @@ import Scene from './core/Scene';
 import isCollision from './utils/logic/isCollision';
 import ProximityBounds from './utils/interfaces/ProximityBounds';
 import ObjectVelocity from './interfaces/ObjectVelocity';
+import Player from './core/Player';
+import ObjectProps from './interfaces/ObjectProps';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
 export const globalContext = new GlobalContext({});
@@ -205,7 +207,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 {
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
-                        console.log(propioObjeto.getPosition(), propioObjeto.getVelocity())
+                        //console.log(propioObjeto.getPosition(), propioObjeto.getVelocity())
                     }
                 }
             ]
@@ -215,6 +217,30 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     // Adiciona o cubo na cena
     scene.add(cubo2);
     globalContext.set('Cubo2Ref', cubo2);
+
+    //Cria o jogador
+    /*
+    const player = new Player({
+        position: {
+            x: 0,
+            y: -40,
+            z: 0
+        },
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        scale: {
+            y: 1,
+            z: 1,
+            x: 1
+        }
+    } as ObjectProps);
+    
+    scene.add(player);
+    globalContext.set('Jogador', player);
+    */
 }
 
 

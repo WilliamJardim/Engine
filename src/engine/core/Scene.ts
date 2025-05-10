@@ -21,6 +21,7 @@ import FrameCounter from './FrameCounter.ts';
 import MovementState from '../interfaces/MovementState.ts';
 import InputListener from "../input/InputListener.ts";
 import SceneConfig from "../interfaces/SceneConfig.ts";
+import Camera from "./Camera.ts";
 
 export default class Scene extends Base{
 
@@ -40,6 +41,8 @@ export default class Scene extends Base{
 
     public objects:ObjectBase[];
     public additionalObjects:ObjectBase[];
+
+    public cameras:Camera[];
     
     public objectTableById:any;
     public objectTableByName:any;
@@ -87,6 +90,10 @@ export default class Scene extends Base{
 
         //Here, we will put only object references(the instances), to be updated too, if they not are in the objects array.
         this.additionalObjects = [];
+
+        // Cameras
+        this.cameras = [];
+            
 
         // Tabela que vai manter os objetos indexados por ID
         this.objectTableById = {};
@@ -383,6 +390,8 @@ export default class Scene extends Base{
 
         context.updateObjects( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
+        context.updateCameras( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
         if( firstRender == true )
         {
             // Chamar a função EngineMain
@@ -566,7 +575,8 @@ export default class Scene extends Base{
     /**
     * Update all objects in the scene 
     */
-    public updateObjects( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void{
+    public updateObjects( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void
+    {
 
         const context = this;
 
@@ -607,6 +617,53 @@ export default class Scene extends Base{
             }
         }
 
+    }
+
+    /**
+    * Update all cameras in the scene
+    */
+    updateCameras( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number  ): void
+    {
+        const context = this;
+        const cameras = this.cameras;
+
+        for( let i = 0 ; i < cameras.length ; i++ )
+        {
+            const currentCamera = cameras[ i ];
+            const currentCameraIndex = i;
+
+            /**
+            * Atualiza uma tabela com os nomes dos objetos
+            */
+            if( currentCamera && currentCamera.objProps && currentCamera.getStatus() == true )
+            {
+                if( currentCamera.objProps.name != undefined ){
+                    context.objectTableByName[ currentCamera.objProps.name ] = currentCamera;
+                }
+                if( currentCamera.objProps.id != undefined ){
+                    context.objectTableById[ currentCamera.objProps.id ] = currentCamera;
+                }
+            }
+
+            try{
+                /**
+                * Repass some important informations into the  "currentObject"
+                */
+                currentCamera.scene = this;
+
+                /**
+                * Update the object 
+                */
+                currentCamera.updateCamera( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
+            }catch(e){
+                console.log('CAMERA ERRO', e);
+            }
+        }
+    }
+
+    getCameraByIndex( cameraIndex: number ){
+        this.cameras[ cameraIndex ];
     }
 
 }

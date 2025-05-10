@@ -455,6 +455,7 @@ export default class Scene extends Base{
                        //Se nao for ele mesmo
                        (objetoA.id != objetoB.id) &&
                        (objetoB.objProps.collide == true) &&
+                       (objetoA.objProps.collide == true) &&
                        (objetoB.name != 'Chao')
                     ){
                     

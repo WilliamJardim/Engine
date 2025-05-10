@@ -79,7 +79,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             ],
             position: {
                 x: 0,
-                y: -40,
+                y: -10,
                 z: -0.5
             },
             rotation: {
@@ -98,7 +98,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
                         //propioObjeto.somarPosicaoX(0.005);
-                        //console.log(propioObjeto.getPosition())
+                        //console.log(propioObjeto.getVelocity())
 
                         if( propioObjeto.objectBelow != null ){
                             //console.log(propioObjeto.getVelocity().x)
@@ -119,6 +119,66 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     // Adiciona o cubo na cena
     scene.add(cubo);
     globalContext.set('CuboRef', cubo);
+
+    // Cria um cubo simples para testar
+    const cubo3 = createCube( 
+        //The attributes
+        {
+            type: 'Cube',
+            material: createMaterialByImage('/textures/1piso.png'), //The material,
+            name: 'MyCube3',
+            isNPC: false,
+            havePhysics: true,
+            invisible: false,
+            opacity: 1,
+            collide: true,
+            scaleReduce: 3.4,
+            ignoreCollisions: [
+                "OtherCube",
+                "AnotherCubo",
+            ],
+            position: {
+                x: 10,
+                y: -18,
+                z: -0.5
+            },
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            scale: {
+                x: 1,
+                y: 1,
+                z: 1
+            },
+            weight: 40,
+            events: [
+                {
+                    //Cubo ficar rodando
+                    loop: function( propioObjeto:ObjectBase ){
+                        //propioObjeto.somarPosicaoX(0.005);
+                        console.log(propioObjeto.getVelocity())
+
+                        if( propioObjeto.objectBelow != null ){
+                            //console.log(propioObjeto.getVelocity().x)
+                            
+                            if( f <= 10 ){
+                                //propioObjeto.somarVelocity({ x: 1.5 } as ObjectVelocity);
+                                //f++;
+                            }
+                        }
+                        
+                        
+                    }
+                }
+            ]
+        }
+    );
+
+    // Adiciona o cubo na cena
+    scene.add(cubo3);
+    globalContext.set('CuboRef3', cubo3);
 
     // Cria um cubo simples para testar
     const cuboN = createCube( 
@@ -190,7 +250,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             weight: 40,
             position: {
                 x: 0,
-                y: -40,
+                y: -140,
                 z: 0
             },
             rotation: {

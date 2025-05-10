@@ -76,8 +76,7 @@ export default class Scene extends Base{
                             y: 0, 
                             z: 0 }
         };*/
-
-        this.gravity = -5;     // Gravidade que puxa para baixo
+        this.gravity = -0.3;     // Gravidade que puxa para baixo
         this.atrito  = 1;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
         this.arrastoAr = 1;    // Arrast do ar(afeta objetos com aceleração que estiverem no ar)
 

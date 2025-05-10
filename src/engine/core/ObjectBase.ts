@@ -33,13 +33,13 @@ export default class ObjectBase extends Base{
     public physicsState:PhysicsState;
     public scene:Scene|null;
     public isFalling:boolean;
-    public isRecevingYMovementPhysics:boolean; //Indica se este objeto está recebendo uma fisica de movimento em Y O QUE VAI SER DIFERENTE DA FISICA DE QUEDA NO EIXO Y
     public groundY:number; // A posição Y do chão atual em relação a este objeto
     public objectBelow: ObjectBase|null; //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
     public lastObjectBelow: ObjectBase|null; //O ultimo objeto cujo o objeto atual esteve em cima 
     public infoCollisions:CollisionsData;
     public infoProximity:CollisionsData;
     public isMovimentoTravadoPorColisao:boolean;
+    public isReceiving_Y_Velocity:boolean; // Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
     public onCreate:Function|null;
 
     /** OUTROS ATRIBUTOS **/
@@ -59,6 +59,8 @@ export default class ObjectBase extends Base{
         this.objectBelow = null;
         this.lastObjectBelow = null;
         this.isMovimentoTravadoPorColisao = false; //Se o objeto atual esta travado por que esta tentando se mover para uma direção em que ele está colidindo com outro objeto
+
+        this.isReceiving_Y_Velocity = false; //Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
 
         this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
         this.name        = this.objProps.name || undefined;
@@ -108,7 +110,6 @@ export default class ObjectBase extends Base{
         this.setMesh( mesh );
 
         this.isFalling = false;
-        this.isRecevingYMovementPhysics = false;
 
         //Se tem posição
         if( this.objProps.position ){
@@ -879,9 +880,9 @@ export default class ObjectBase extends Base{
                     */
 
                     // Zera a velocidade do objeto pois ele já caiu
-                    if( this.isRecevingYMovementPhysics == false ){
-                        this.getVelocity().y = 0;
-                    }
+                    // BUG: ISSO ESTÀ IMPEDINDO OS OBJETOS DE SUBIREM AO RECEBEREM UMA VELOCIDADE EXTERNA ex: Engine.get('CuboRef').somarVelocity({y:10})
+                    this.getVelocity().y = 0;
+
 
                     break;
                     //Engine.get('CuboRef').somarVelocity({y:10})
@@ -1018,8 +1019,8 @@ export default class ObjectBase extends Base{
                     /**
                     * Faz o object decrementar a posição Y com a gravidade
                     */
-                    this.getVelocity().y += Math.abs( this.scene.gravity ) * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate;
-                    this.getPosition().y! -= this.getVelocity().y * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate;
+                    this.getVelocity().y -= Math.abs( this.scene.gravity );
+                    //this.getPosition().y! -= this.getVelocity().y * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate;
 
                     /**
                     * Executa os eventos de queda 
@@ -1182,31 +1183,31 @@ export default class ObjectBase extends Base{
         //BUG: O EIXO Y NÂO CONSEGUE RECEBER UMA VELOCIDADE IGUAL NOS OUTROS POR CAUSA DA FISICA DE QUEDA QUE MANIPULA O EIXO Y
         if( velocidadeY != 0 )
         {   
-            //Engine.get('CuboRef').setVelocity({x:5})
-            if( objeto.isFalling == false && objeto.objectBelow == null ){
-                objeto.isRecevingYMovementPhysics = true;
-                objeto.somarPosicaoY( velocidadeY * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.somarPosicaoY( velocidadeY * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
 
-                let novaVelocidadeY = (velocidadeObjeto.y - objectPhysicsDesaceleracaoUpdateRate * sinalY * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            /** 
+            * Se o objeto está recebendo uma aceleração externa em Y
+            * (se não tivesse essa verificação iria dar conflito com a lógica da queda, eu testei)
+            */
+            if( objeto.isReceiving_Y_Velocity == true )
+            {
+                let novaVelocidadeY = ( velocidadeObjeto.y - objectPhysicsDesaceleracaoUpdateRate * sinalY );
 
                 // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
                 if(Math.sign(novaVelocidadeY) !== sinalY){
                     novaVelocidadeY = 0;
-                    objeto.isRecevingYMovementPhysics = false;
                 }
 
                 objeto.setVelocityY( novaVelocidadeY * arrastoAr );
-
-                // Indica qual direção o objeto está se movendo
-                if( sinalY == 1 ){
-                    objeto.movimentSinalyzer.up = true;
-                }else{
-                    objeto.movimentSinalyzer.down = true;
-                }
             }
 
-        }else{
-            objeto.isRecevingYMovementPhysics = false;
+            // Indica qual direção o objeto está se movendo
+            if( sinalY == 1 ){
+                objeto.movimentSinalyzer.up = true;
+            }else{
+                objeto.movimentSinalyzer.down = true;
+            }
+
         }
         
         //globalContext.get('CuboRef').somarVelocity({x:5})

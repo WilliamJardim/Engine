@@ -395,9 +395,16 @@ export default class ObjectBase extends Base{
     * Acrescenta uma velocidade ao objeto
     * @param velocidade 
     */
-    public somarVelocity( velocidade:ObjectVelocity ): void{
+    public somarVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void{
+
         if( velocidade.x ){ this.getVelocity().x += velocidade.x };
-        if( velocidade.y ){ this.getVelocity().y += velocidade.y };
+
+        if( velocidade.y ){ 
+            // Diz pra Engine que o objeto recebeu uma velocidade externa
+            this.isReceiving_Y_Velocity = isExternal;
+            this.getVelocity().y += velocidade.y 
+        };
+
         if( velocidade.z ){ this.getVelocity().z += velocidade.z };
     }
 
@@ -405,7 +412,10 @@ export default class ObjectBase extends Base{
         this.getVelocity().x += velocidade
     }
 
-    public somarVelocityY( velocidade:number ): void{
+    public somarVelocityY( velocidade:number, isExternal:boolean = true ): void{
+        // Diz pra Engine que o objeto recebeu uma velocidade externa
+        this.isReceiving_Y_Velocity = isExternal;
+
         this.getVelocity().y += velocidade
     }
 
@@ -417,7 +427,10 @@ export default class ObjectBase extends Base{
         this.getVelocity().x -= velocidade
     }
 
-    public subtrairVelocityY( velocidade:number ): void{
+    public subtrairVelocityY( velocidade:number, isExternal:boolean = true ): void{
+        // Diz pra Engine que o objeto recebeu uma velocidade externa
+        this.isReceiving_Y_Velocity = isExternal;
+
         this.getVelocity().y -= velocidade
     }
 
@@ -425,17 +438,36 @@ export default class ObjectBase extends Base{
         this.getVelocity().z -= velocidade
     }
 
-    public somarVelocityEixo(eixo:string, valor:number): void{
+    public somarVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void{
+        if( eixo == 'y' )
+        {
+            // Diz pra Engine que o objeto recebeu uma velocidade externa
+            this.isReceiving_Y_Velocity = isExternal;
+        }
+
         (this.getVelocity() as ObjectVelocity)[eixo] += valor;
     }
 
-    public subtrairVelocityEixo(eixo:string, valor:number): void{
+    public subtrairVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void{
+        if( eixo == 'y' )
+        {
+            // Diz pra Engine que o objeto recebeu uma velocidade externa
+            this.isReceiving_Y_Velocity = isExternal;
+        }
+
         (this.getVelocity() as ObjectVelocity)[eixo] -= valor;
     }
 
-    public setVelocity( velocidade:ObjectVelocity ): void{
+    public setVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void{
         if( velocidade.x ){ this.getVelocity().x = velocidade.x };
-        if( velocidade.y ){ this.getVelocity().y = velocidade.y };
+
+        if( velocidade.y ){ 
+            // Diz pra Engine que o objeto recebeu uma velocidade externa
+            this.isReceiving_Y_Velocity = isExternal;
+
+            this.getVelocity().y = velocidade.y 
+        };
+
         if( velocidade.z ){ this.getVelocity().z = velocidade.z };
     }
 
@@ -443,7 +475,10 @@ export default class ObjectBase extends Base{
         this.getVelocity().x = velocidade;
     }
 
-    public setVelocityY( velocidade:number ): void{
+    public setVelocityY( velocidade:number, isExternal:boolean = true ): void{
+        // Diz pra Engine que o objeto recebeu uma velocidade externa
+        this.isReceiving_Y_Velocity = isExternal;
+
         this.getVelocity().y = velocidade;
     }
 
@@ -451,7 +486,13 @@ export default class ObjectBase extends Base{
         this.getVelocity().z = velocidade;
     }
 
-    public setVelocityEixo( eixo:string, velocidade:number ): void{
+    public setVelocityEixo( eixo:string, velocidade:number, isExternal:boolean = true ): void{
+        if( eixo == 'y' )
+        {
+            // Diz pra Engine que o objeto recebeu uma velocidade externa
+            this.isReceiving_Y_Velocity = isExternal;
+        }
+
         (this.getVelocity() as ObjectVelocity)[eixo] = velocidade;
     }
 
@@ -829,6 +870,12 @@ export default class ObjectBase extends Base{
                             this.groundY = this.getPosition().y!; // A posição da ultima colisão
                             this.objectBelow = objetoAtualCena;
                             this.lastObjectBelow = objetoAtualCena;
+
+                            if( this.getVelocity().y == 0 )
+                            {
+                                // Diz que o objeto parou de receber uma velocidade em Y
+                                this.isReceiving_Y_Velocity = false;
+                            }
                         }
                     }
                     
@@ -881,7 +928,10 @@ export default class ObjectBase extends Base{
 
                     // Zera a velocidade do objeto pois ele já caiu
                     // BUG: ISSO ESTÀ IMPEDINDO OS OBJETOS DE SUBIREM AO RECEBEREM UMA VELOCIDADE EXTERNA ex: Engine.get('CuboRef').somarVelocity({y:10})
-                    this.getVelocity().y = 0;
+                    if( this.isReceiving_Y_Velocity == false )
+                    {
+                        this.getVelocity().y = 0;
+                    }
 
 
                     break;
@@ -1020,7 +1070,7 @@ export default class ObjectBase extends Base{
                     * Faz o object decrementar a posição Y com a gravidade
                     */
                     this.getVelocity().y -= Math.abs( this.scene.gravity );
-                    //this.getPosition().y! -= this.getVelocity().y * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate;
+                    //this.isReceiving_Y_Velocity = false; //Aqui tambem é algo interno da Engine
 
                     /**
                     * Executa os eventos de queda 
@@ -1058,12 +1108,14 @@ export default class ObjectBase extends Base{
                             z: randomZ + ((wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) ) * Math.abs(gravity) * 4.8 * frameDelta * frameDeltaIntensification
                         });
 
-                        //O vento tambem empurra um pouco na queda
+                        //O vento tambem empurra um pouco na queda 
                         this.somarVelocity({
                             x: randomX + ( ((wind.deslocationTrend || {}).x || 0) + (wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 0) ),
                             y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 0) ),
                             z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 0) )
-                        });
+                        
+                        //(como velocidade interna da engine)
+                        }, false);
                     }
                 }
 
@@ -1189,7 +1241,7 @@ export default class ObjectBase extends Base{
             * Se o objeto está recebendo uma aceleração externa em Y
             * (se não tivesse essa verificação iria dar conflito com a lógica da queda, eu testei)
             */
-            if( objeto.isReceiving_Y_Velocity == true )
+            if( this.isReceiving_Y_Velocity == true )
             {
                 let novaVelocidadeY = ( velocidadeObjeto.y - objectPhysicsDesaceleracaoUpdateRate * sinalY );
 
@@ -1198,7 +1250,7 @@ export default class ObjectBase extends Base{
                     novaVelocidadeY = 0;
                 }
 
-                objeto.setVelocityY( novaVelocidadeY * arrastoAr );
+                objeto.setVelocityY( novaVelocidadeY * arrastoAr, false );
             }
 
             // Indica qual direção o objeto está se movendo

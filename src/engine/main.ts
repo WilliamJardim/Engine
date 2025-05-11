@@ -79,7 +79,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             ],
             position: {
                 x: 0,
-                y: -10,
+                y: 10,
                 z: -0.5
             },
             rotation: {
@@ -139,7 +139,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             ],
             position: {
                 x: 10,
-                y: -18,
+                y: 10,
                 z: -0.5
             },
             rotation: {

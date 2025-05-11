@@ -675,5 +675,31 @@ Não descarte. Que é aquela minha outra ideia de limitar o movimento. Talvez cr
 5:
 Essa aqui, pode ser útil também
 
+# (RESOLVIDO) BUG
+10/05/2025
+Ideia pra poder corrigir aquele bug que o objeto não pode receber uma aceleração externa em Y:
 
+Adicionar que por padrão, toda vez que eu chamar o método "somarVelocity", ele vai definir a propriedade "isReceivingExternalAcceleration" como "true", e aí, o código que zera a velocidade não vai ser aplicado, enquanto essa propriedade do objeto não voltar a ser "false"
 
+Isso vai ser controlado via parâmetro do método "somarVelocity(45, true)"
+
+Por padrão vai ser true.
+
+Porém, em usos internos da Engine, ele vai enviar o parâmetro com "false" forçado.
+
+E se for true, e o objeto zerar a velocidade dele, então vai ser false se ele estiver no chão
+
+Shaders:
+Tom meio azulado. Bastante saturação nas texturas 
+E efeitos e luz Lens flare e luz de mormaço meio roxo
+
+Reflexos:
+Cube Map 
+Imagens estáticas ou dinâmicas, que vai ser o inverno do que você está vendo, exatamente como está, e meio borrado
+
+11.05.2025
+Testar se quando um objeto está subindo pra cima, se um objeto em cima dele sobe junto
+
+Testar se enquanto um objeto está caindo, se ele pode receber uma força contrária a gravidade e empurrar pra cima
+
+Testar a mesma coisa só que mais específico, .... Quando o objeto nunca caiu no chão, só está no ar. Se eu posso manter ele no ar aplicando força pra cima

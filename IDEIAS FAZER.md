@@ -700,6 +700,6 @@ Imagens estáticas ou dinâmicas, que vai ser o inverno do que você está vendo
 11.05.2025
 Testar se quando um objeto está subindo pra cima, se um objeto em cima dele sobe junto
 
-Testar se enquanto um objeto está caindo, se ele pode receber uma força contrária a gravidade e empurrar pra cima
+(OK FUNCIONA) Testar se enquanto um objeto está caindo, se ele pode receber uma força contrária a gravidade e empurrar pra cima
 
-Testar a mesma coisa só que mais específico, .... Quando o objeto nunca caiu no chão, só está no ar. Se eu posso manter ele no ar aplicando força pra cima
+(OK FUNCIONA) Testar a mesma coisa só que mais específico, .... Quando o objeto nunca caiu no chão, só está no ar. Se eu posso manter ele no ar aplicando força pra cima

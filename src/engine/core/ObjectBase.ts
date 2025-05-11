@@ -927,7 +927,6 @@ export default class ObjectBase extends Base{
                     */
 
                     // Zera a velocidade do objeto pois ele já caiu
-                    // BUG: ISSO ESTÀ IMPEDINDO OS OBJETOS DE SUBIREM AO RECEBEREM UMA VELOCIDADE EXTERNA ex: Engine.get('CuboRef').somarVelocity({y:10})
                     if( this.isReceiving_Y_Velocity == false )
                     {
                         this.getVelocity().y = 0;

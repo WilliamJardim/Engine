@@ -703,3 +703,31 @@ Testar se quando um objeto está subindo pra cima, se um objeto em cima dele s
 (OK FUNCIONA) Testar se enquanto um objeto está caindo, se ele pode receber uma força contrária a gravidade e empurrar pra cima
 
 (OK FUNCIONA) Testar a mesma coisa só que mais específico, .... Quando o objeto nunca caiu no chão, só está no ar. Se eu posso manter ele no ar aplicando força pra cima
+
+# Novas ideias 13/05/2025
+Ideia: adicionar sistema de preender objetos em outros.
+Onde o objeto preso não vai ter física. Mais vai acompanhar cegamente a posição e rotação do objeto a qual ele está preso
+
+Ideia: usar massa na lógica do impacto
+
+Ideia: adicionar que objetos podem ter uma propriedade chamada "kikassidade", onde quanto maior, mais ele vai quicar ao cair no chão
+Também posso adicionar materiais com diferentes propriedades
+Pra isso também vou criar a física de quicar no chão , para bolas
+
+Ideia: física de pendurar objetos em corda
+
+Ideia: lógica de pendurar objetos
+Quando um objeto estiver pendurado, basicamente, ele vai poder se mover normalmente.
+A única restrição que vai haver é de um círculo 360 em volta do ponto de origem. E essa círculo pode ser maior dependendo do tamanho da corda.
+Basicamente, o objeto só pode se mover no máximo até cada limite dessa esfera de colisão 360. Se passar disso, ele trava.
+E a corda vai também exercer uma força puxando o objeto.
+Tipo se ele estiver pra direita, a corda vai estar puxando pra esquerda levemente e com variações aleatórias nos eixos X Y Z pra gerar uma sensação extra.
+Assim ele pode ficar balançando de um lado pro outro, livremente, porém restrito a essa esfera
+
+Ideia: explosão com gradiente de força 
+A explosão vai ter um ponto central. Nele a força vai ser total.
+Durante uma explosão, todos os objetos da cena serão afetados(empurrados pra longe), na direção contrária do ponto de origem(não é uma atração mais sim uma repulsão)
+Os objetos mais próximos da origem vai ter muito afetados.
+E os objetos mais longe vão ser menos afetados.
+De acordo com a proximidade da origem, e também, de acordo com a potência da explosão.
+De modo que um raio de explosão(esse gradiente de força) vai poder variar de acordo com alguns parâmetros e também de acordo com a potência da explosão

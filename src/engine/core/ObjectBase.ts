@@ -941,7 +941,7 @@ export default class ObjectBase extends Base{
                         //Se é um objeto que pode quicar como uma bola
                         if( this.objProps.kick_rate != undefined ){
                             
-                            this.getVelocity().y = ((this.getVelocity().y/2) * -1) + this.objProps.kick_rate + (Math.random() * 8);
+                            this.getVelocity().y = ((this.getVelocity().y/2) * -1) + this.objProps.kick_rate + (Math.random() * 5) + (Math.random() * this.objProps.kick_rate/2);
                             
 
                         //Se é um objeto normal, o Y zera

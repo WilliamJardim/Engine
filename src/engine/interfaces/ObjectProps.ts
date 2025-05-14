@@ -36,7 +36,8 @@ export default interface ObjectProps{
     proximityConfig?:ProximityBounds|number,
     invisible?: boolean,
     opacity?: number,
-    events?: ObjectEvents[]
+    events?: ObjectEvents[],
+    kick_rate?: number,
 
     onCreate?:Function|null;
 

@@ -938,7 +938,16 @@ export default class ObjectBase extends Base{
                     // Zera a velocidade do objeto pois ele já caiu
                     if( this.isReceiving_Y_Velocity == false )
                     {
-                        this.getVelocity().y = 0;
+                        //Se é um objeto que pode quicar como uma bola
+                        if( this.objProps.kick_rate != undefined ){
+                            
+                            this.getVelocity().y = ((this.getVelocity().y/2) * -1) + this.objProps.kick_rate + (Math.random() * 8);
+                            
+
+                        //Se é um objeto normal, o Y zera
+                        }else{
+                            this.getVelocity().y = 0;
+                        }
                     }
 
 

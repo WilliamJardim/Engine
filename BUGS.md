@@ -59,3 +59,12 @@ Depois eu comentei uma linha de código
                 }*/
 </code>
 
+# 14/05/2025
+As vezes um objeto ao quicar no chão com o "kick_rate" ativo, ele faz o chão se mover
+
+As vezes um objeto ao quicar no chão com o "kick_rate" quica tão pouquinho que nem dá pra ver
+isso provavelmente tem haver com o vento
+porém ajustar o valor de "kick_rate" dos objetos melhora
+
+Os objetos que quicam nunca param de quicar
+

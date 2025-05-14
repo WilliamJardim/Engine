@@ -731,3 +731,13 @@ Os objetos mais próximos da origem vai ter muito afetados.
 E os objetos mais longe vão ser menos afetados.
 De acordo com a proximidade da origem, e também, de acordo com a potência da explosão.
 De modo que um raio de explosão(esse gradiente de força) vai poder variar de acordo com alguns parâmetros e também de acordo com a potência da explosão
+
+# 14/05/2025
+Ideia: Fisica de objeto ser recocheteado para traz:
+Se um objeto se chocar com uma parede, ele vai ser jogado para traz, de acordo com o a força que ele tem
+ele perde parte da força e com o resto ele volta pra traz
+
+Ideia: Se um objeto que quica ele bater numa parede, ele pode reagir de forma muito mais exagerada, voltando mais pra traz, 
+isso criaria um efeito de uma bola que fica quicando no chão e tambem nas paredes
+
+

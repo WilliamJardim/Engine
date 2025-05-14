@@ -68,3 +68,4 @@ porém ajustar o valor de "kick_rate" dos objetos melhora
 
 Os objetos que quicam nunca param de quicar
 
+Os objetos quicam minusculamente quando a engine está em camera lenta

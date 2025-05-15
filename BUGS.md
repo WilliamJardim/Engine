@@ -78,3 +78,4 @@ ACONTECE PRINCIPALMENTE QUANDO O CUBO ESTÀ VINDO COM BAIXAS VELOCIDADES
 provavelmente é por causa de alguma lógica de correção
 
 Se um cubo com fisica colide com uma parede sem fisica(ou com outro objeto com fisica, tanto faz), ele meio que "gruda", e ele não volta pra traz, simulando um recocheteamento
+mais isso eu ainda não programei

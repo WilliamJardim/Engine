@@ -66,6 +66,6 @@ As vezes um objeto ao quicar no chão com o "kick_rate" quica tão pouquinho que
 isso provavelmente tem haver com o vento
 porém ajustar o valor de "kick_rate" dos objetos melhora
 
-Os objetos que quicam nunca param de quicar
+(RESOLVIDO) Os objetos que quicam nunca param de quicar
 
 Os objetos quicam minusculamente quando a engine está em camera lenta

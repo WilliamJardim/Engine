@@ -69,3 +69,12 @@ porém ajustar o valor de "kick_rate" dos objetos melhora
 (RESOLVIDO) Os objetos que quicam nunca param de quicar
 
 Os objetos quicam minusculamente quando a engine está em camera lenta
+
+# 15/05/2025
+(RESOLVIDO) Se um cubo com fisica colide com uma parede sem fisica, ainda assim, essa parede se move
+
+As vezes Se um cubo com fisica colide com uma parede sem fisica, ele some, meio que é jogado pra baixo no void
+ACONTECE PRINCIPALMENTE QUANDO O CUBO ESTÀ VINDO COM BAIXAS VELOCIDADES
+provavelmente é por causa de alguma lógica de correção
+
+Se um cubo com fisica colide com uma parede sem fisica(ou com outro objeto com fisica, tanto faz), ele meio que "gruda", e ele não volta pra traz, simulando um recocheteamento

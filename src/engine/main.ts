@@ -115,8 +115,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                             //console.log(propioObjeto.getVelocity().x)
                             
                             if( f <= 10 ){
-                                //propioObjeto.somarVelocity({ x: 1.5 } as ObjectVelocity);
-                                //f++;
+                                propioObjeto.somarVelocity({ x: 20.5 } as ObjectVelocity);
+                                f++;
                             }
                         }
                         
@@ -137,9 +137,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         {
             type: 'Cube',
             material: createMaterialByImage('/textures/1piso.png'), //The material,
-            name: 'MyCube3',
+            name: 'Parede',
             isNPC: false,
-            havePhysics: true,
+            havePhysics: false,
             kick_rate: 2,
             invisible: false,
             opacity: 1,
@@ -150,8 +150,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 "AnotherCubo",
             ],
             position: {
-                x: 10,
-                y: 10,
+                x: 40,
+                y: -40,
                 z: -0.5
             },
             rotation: {
@@ -161,8 +161,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             },
             scale: {
                 x: 1,
-                y: 1,
-                z: 1
+                y: 20,
+                z: 50
             },
             weight: 40,
             events: [

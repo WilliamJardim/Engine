@@ -533,7 +533,7 @@ export default class Scene extends Base{
                                 objetoB.getVelocity().x -= percaX_objetoB;
 
                                 // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
                                 {
                                     objetoA.getVelocity().x += percaX_objetoB;
                                 }
@@ -542,7 +542,7 @@ export default class Scene extends Base{
                                 objetoB.getVelocity().x -= percaX_objetoB;
 
                                 // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
                                 {
                                     objetoA.getVelocity().x += percaX_objetoB;
                                 }
@@ -559,7 +559,7 @@ export default class Scene extends Base{
                                 objetoB.getVelocity().z -= percaZ_objetoB;
 
                                 // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
                                 {
                                     objetoA.getVelocity().z += percaZ_objetoB;
                                 }
@@ -568,7 +568,7 @@ export default class Scene extends Base{
                                 objetoB.getVelocity().z -= percaZ_objetoB;
 
                                 // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
                                 {
                                     objetoA.getVelocity().z += percaZ_objetoB;
                                 }

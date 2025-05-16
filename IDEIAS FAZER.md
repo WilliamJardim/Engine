@@ -740,4 +740,7 @@ ele perde parte da força e com o resto ele volta pra traz
 Ideia: Se um objeto que quica ele bater numa parede, ele pode reagir de forma muito mais exagerada, voltando mais pra traz, 
 isso criaria um efeito de uma bola que fica quicando no chão e tambem nas paredes
 
+# 15/05/2025
+Na logica de recochetear quando bater numa parede, adicionar que isso vai depender do "kick_rate" e tambem do peso do objeto(ou o impacto dele)
+
 

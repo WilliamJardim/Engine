@@ -414,13 +414,13 @@ export default class Scene extends Base{
     */
     public updateGeneral( firstRender:boolean, renderizadorPronto:boolean, frameDelta:number, frameNumber: number )
     {
-        this.updateCollisionReactions();
+        this.updateCollisionReactions(firstRender, renderizadorPronto, frameDelta, frameNumber);
     }
 
     /**
     * Update object collision reaction 
     */
-    public updateCollisionReactions()
+    public updateCollisionReactions(firstRender:boolean, renderizadorPronto:boolean, frameDelta:number, frameNumber: number)
     {
         const objetosCena: ObjectBase[] = this.objects;
 
@@ -475,36 +475,42 @@ export default class Scene extends Base{
                             const objetoA_isMovingForward  : boolean = movementA.forward  ? true : false;
                             const objetoA_isMovingBackward : boolean = movementA.backward ? true : false;
 
-                            if( objetoA_isMovingForward ){
-                                objetoA.getVelocity().x -= percaX_objetoA;
+                            // Se for um outro objeto que tambem tem fisica
+                            if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                            {
+                                if( objetoA_isMovingForward ){
+                                    objetoA.getVelocity().x -= percaX_objetoA;
 
-                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
-                                {
-                                    objetoB.getVelocity().x += percaX_objetoA;
-                                }
+                                    // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                    if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                    {
+                                        objetoB.getVelocity().x += percaX_objetoA;
+                                    }
 
-                            }else if( objetoA_isMovingBackward ){
-                                objetoA.getVelocity().x += percaX_objetoA;
+                                }else if( objetoA_isMovingBackward ){
+                                    objetoA.getVelocity().x += percaX_objetoA;
 
-                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
-                                {
-                                    objetoB.getVelocity().x -= percaX_objetoA;
+                                    // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                    if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                    {
+                                        objetoB.getVelocity().x -= percaX_objetoA;
+                                    }
                                 }
                             }
 
                             // Se for uma parede ou um objeto que não pode se mover
-                            if( objetoA.objProps.havePhysics == false && objetoA.objProps.collide == true )
+                            if( objetoB.objProps.havePhysics == false && objetoB.objProps.collide == true )
                             {
                                 /**
                                 * Nesse caso, ao bater no objeto sem fisica ou parede, 
-                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie, e nao corra o risco de grudar 
+                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie de forma realista
+                                *
+                                * Pra um objeto colisor que não tem fisica, quem bateu vai perder velocidade de um jeito diferente:
                                 */
-                                const porcentoDevolucaoPerda = 90;
-                                const devolucaoEnergia       = ((porcentoDevolucaoPerda/100 * percaX_objetoA) );
-                                const velocidadeReposta      = (objetoA.getVelocity().x + devolucaoEnergia);
-                                const velocidadeXInvertida   = velocidadeReposta * -1;
+                                const porcentoPerdaBatida    = 30;
+                                const percaEnergiaBatida     = ((porcentoPerdaBatida/100 * objetoA.getVelocity().x) );
+                                const velocidadeAposBatida   = (objetoA.getVelocity().x - percaEnergiaBatida);
+                                const velocidadeXInvertida   = velocidadeAposBatida * -1;
 
                                 // inverte a velocidade para fazer o objeto ir para traz
                                 objetoA.setVelocityX( velocidadeXInvertida );
@@ -517,36 +523,42 @@ export default class Scene extends Base{
                             const objetoA_isMovingRight  : boolean = movementA.right  ? true : false;
                             const objetoA_isMovingLeft   : boolean = movementA.left   ? true : false;
 
-                            if( objetoA_isMovingRight ){
-                                objetoA.getVelocity().z -= percaZ_objetoA;
+                            // Se for um outro objeto que tambem tem fisica
+                            if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                            {
+                                if( objetoA_isMovingRight ){
+                                    objetoA.getVelocity().z -= percaZ_objetoA;
 
-                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
-                                {
-                                    objetoB.getVelocity().z += percaZ_objetoA;
-                                }
+                                    // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                    if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                    {
+                                        objetoB.getVelocity().z += percaZ_objetoA;
+                                    }
 
-                            }else if( objetoA_isMovingLeft ){
-                                objetoA.getVelocity().z += percaZ_objetoA;
+                                }else if( objetoA_isMovingLeft ){
+                                    objetoA.getVelocity().z += percaZ_objetoA;
 
-                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
-                                {
-                                    objetoB.getVelocity().z -= percaZ_objetoA;
+                                    // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                    if( objetoB.objProps.havePhysics == true && objetoB.objProps.collide == true )
+                                    {
+                                        objetoB.getVelocity().z -= percaZ_objetoA;
+                                    }
                                 }
                             }
 
                             // Se for uma parede ou um objeto que não pode se mover
-                            if( objetoA.objProps.havePhysics == false && objetoA.objProps.collide == true )
+                            if( objetoB.objProps.havePhysics == false && objetoB.objProps.collide == true )
                             {
                                 /**
                                 * Nesse caso, ao bater no objeto sem fisica ou parede, 
-                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie, e nao corra o risco de grudar 
+                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie de forma realista
+                                *
+                                * Pra um objeto colisor que não tem fisica, quem bateu vai perder velocidade de um jeito diferente:
                                 */
-                                const porcentoDevolucaoPerda = 90;
-                                const devolucaoEnergia       = (porcentoDevolucaoPerda/100 * percaZ_objetoA);
-                                const velocidadeReposta      = (objetoA.getVelocity().z + devolucaoEnergia);
-                                const velocidadeZInvertida   = velocidadeReposta * -1;
+                                const porcentoPerdaBatida    = 30;
+                                const percaEnergiaBatida     = ((porcentoPerdaBatida/100 * objetoA.getVelocity().z) );
+                                const velocidadeAposBatida   = (objetoA.getVelocity().x - percaEnergiaBatida);
+                                const velocidadeZInvertida   = velocidadeAposBatida * -1;
 
                                 // inverte a velocidade para fazer o objeto ir para traz
                                 objetoA.setVelocityZ( velocidadeZInvertida );
@@ -561,22 +573,26 @@ export default class Scene extends Base{
                             const objetoB_isMovingForward  : boolean = movementB.forward  ? true : false;
                             const objetoB_isMovingBackward : boolean = movementB.backward ? true : false;
 
-                            if( objetoB_isMovingForward ){
-                                objetoB.getVelocity().x -= percaX_objetoB;
+                            // Se for um outro objeto que tambem tem fisica
+                            if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
+                            {
+                                if( objetoB_isMovingForward ){
+                                    objetoB.getVelocity().x -= percaX_objetoB;
 
-                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
-                                {
-                                    objetoA.getVelocity().x += percaX_objetoB;
-                                }
+                                    // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                    if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
+                                    {
+                                        objetoA.getVelocity().x += percaX_objetoB;
+                                    }
 
-                            }else if( objetoB_isMovingBackward ){
-                                objetoB.getVelocity().x -= percaX_objetoB;
+                                }else if( objetoB_isMovingBackward ){
+                                    objetoB.getVelocity().x -= percaX_objetoB;
 
-                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
-                                {
-                                    objetoA.getVelocity().x += percaX_objetoB;
+                                    // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                    if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
+                                    {
+                                        objetoA.getVelocity().x += percaX_objetoB;
+                                    }
                                 }
                             }
 
@@ -585,12 +601,14 @@ export default class Scene extends Base{
                             {
                                 /**
                                 * Nesse caso, ao bater no objeto sem fisica ou parede, 
-                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie, e nao corra o risco de grudar 
+                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie de forma realista
+                                *
+                                * Pra um objeto colisor que não tem fisica, quem bateu vai perder velocidade de um jeito diferente:
                                 */
-                                const porcentoDevolucaoPerda = 90;
-                                const devolucaoEnergia       = (porcentoDevolucaoPerda/100 * percaX_objetoB);
-                                const velocidadeReposta      = (objetoB.getVelocity().x + devolucaoEnergia);
-                                const velocidadeXInvertida   = velocidadeReposta * -1;
+                                const porcentoPerdaBatida    = 30;
+                                const percaEnergiaBatida     = ((porcentoPerdaBatida/100 * objetoB.getVelocity().x) );
+                                const velocidadeAposBatida   = (objetoB.getVelocity().x - percaEnergiaBatida);
+                                const velocidadeXInvertida   = velocidadeAposBatida * -1;
 
                                 // inverte a velocidade para fazer o objeto ir para traz
                                 objetoB.setVelocityX( velocidadeXInvertida );
@@ -603,22 +621,26 @@ export default class Scene extends Base{
                             const objetoB_isMovingRight  : boolean = movementB.right  ? true : false;
                             const objetoB_isMovingLeft   : boolean = movementB.left   ? true : false;
 
-                            if( objetoB_isMovingRight ){
-                                objetoB.getVelocity().z -= percaZ_objetoB;
+                            // Se for um outro objeto que tambem tem fisica
+                            if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
+                            {
+                                if( objetoB_isMovingRight ){
+                                    objetoB.getVelocity().z -= percaZ_objetoB;
 
-                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
-                                {
-                                    objetoA.getVelocity().z += percaZ_objetoB;
-                                }
+                                    // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                    if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
+                                    {
+                                        objetoA.getVelocity().z += percaZ_objetoB;
+                                    }
 
-                            }else if( objetoB_isMovingLeft ){
-                                objetoB.getVelocity().z -= percaZ_objetoB;
+                                }else if( objetoB_isMovingLeft ){
+                                    objetoB.getVelocity().z -= percaZ_objetoB;
 
-                                // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
-                                if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
-                                {
-                                    objetoA.getVelocity().z += percaZ_objetoB;
+                                    // Transfere essa velocidade que ele perdeu para o colisor( se ele tiver fisica )
+                                    if( objetoA.objProps.havePhysics == true && objetoA.objProps.collide == true )
+                                    {
+                                        objetoA.getVelocity().z += percaZ_objetoB;
+                                    }
                                 }
                             }
 
@@ -627,12 +649,14 @@ export default class Scene extends Base{
                             {
                                 /**
                                 * Nesse caso, ao bater no objeto sem fisica ou parede, 
-                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie, e nao corra o risco de grudar 
+                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie de forma realista
+                                *
+                                * Pra um objeto colisor que não tem fisica, quem bateu vai perder velocidade de um jeito diferente:
                                 */
-                                const porcentoDevolucaoPerda = 90;
-                                const devolucaoEnergia       = (porcentoDevolucaoPerda/100 * percaZ_objetoB);
-                                const velocidadeReposta      = (objetoB.getVelocity().z + devolucaoEnergia);
-                                const velocidadeZInvertida   = velocidadeReposta * -1;
+                                const porcentoPerdaBatida    = 30;
+                                const percaEnergiaBatida     = ((porcentoPerdaBatida/100 * objetoB.getVelocity().z) );
+                                const velocidadeAposBatida   = (objetoB.getVelocity().x - percaEnergiaBatida);
+                                const velocidadeZInvertida   = velocidadeAposBatida * -1;
 
                                 // inverte a velocidade para fazer o objeto ir para traz
                                 objetoB.setVelocityZ( velocidadeZInvertida );

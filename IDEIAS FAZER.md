@@ -743,4 +743,23 @@ isso criaria um efeito de uma bola que fica quicando no chão e tambem nas pared
 # 15/05/2025
 Na logica de recochetear quando bater numa parede, adicionar que isso vai depender do "kick_rate" e tambem do peso do objeto(ou o impacto dele)
 
+# 16/05/2025
+Adicionar aceleração assim:
+<code>
+  objeto.getAceleracao().x += ALGUMA COISA OU IGUAL A CONSTANTE 
 
+  [... E NAS LOGICAS DE GANHAR VELOCIDADAE]
+
+  objeto.getVelocity().x += objeto.getAceleracao().x;
+  objeto.getPosition().x += objeto.getVelocity().x;
+</code>
+
+O resto de perder velocidade, transferir velocidade, desacelerar, tudo continua como está
+a gravidade tambem vai continuar como está.
+
+Porém, no eixo Y tambem vai ter aceleração, para movimentos
+
+  [... ASSIM NAS LOGICAS DE GANHAR VELOCIDADAE]
+
+  objeto.getVelocity().y += objeto.getAceleracao().y;
+  objeto.getPosition().y += objeto.getVelocity().y;

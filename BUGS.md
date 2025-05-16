@@ -84,4 +84,20 @@ A função de recochetear que eu criei, ela não funciona com valores mais baixo
 pois o cubo fica grudado na parede com valores menores que 90, como 80 por exemplo.
 Então não consigo fazer ele voltar com uma força menor do que a que ele foi,
 e acho que isso seria interessante, mais é uma limitação por enquanto.
+CAUSA: Isso acontece por que no instante em que ele inverte a velocidade, ele no proximo frame já perde velocidade denovo, enquanto ele estiver colidindo com o objeto. 
+SENDO QUE ELE DEVERIA SÒ TIRAR UMA VEZ NESSE CASO
 
+    * IDEIA PRA CORRIGIR: Levar em conta a direção atual do objeto no momento da colisão(direção da ultima colisão do objeto)
+    Se ela mudou, ou seja, ele está indo para outra direção, ele já não perde velocidade mais
+
+    Pra ser mais preciso, eu posso armazenar as informações do frame anterior(ou seja, direção da ultima colisão do objeto NO FRAME ANTERIOR)
+
+    No caso, a partir do momento que ele colidir,
+    se ele esta vindo em X+, a direção X+ vai ser false, e X- vai ser true.
+    E vice versa
+    O mesmo vale pra Z+ e Z-
+
+# 16/05/2025
+Quando o cubo colide com a parede, ele não rebate apenas para a direção oposta, ele vai tambem pra diagonal....
+isso é um BUG, na verdade eu até entendo: pois quando ele entra em colisão, ele fica colidindo por alguns milisegundos, e isso faz com que outros eixos de rebote sejam acionados, como o Z
+As vezes precisa ficar dando RELOAD na pagina pra acontecer, nem sempre 100% das vezes ocorre

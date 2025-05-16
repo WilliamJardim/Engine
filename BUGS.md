@@ -79,3 +79,9 @@ provavelmente é por causa de alguma lógica de correção
 
 Se um cubo com fisica colide com uma parede sem fisica(ou com outro objeto com fisica, tanto faz), ele meio que "gruda", e ele não volta pra traz, simulando um recocheteamento
 mais isso eu ainda não programei
+
+A função de recochetear que eu criei, ela não funciona com valores mais baixos de "porcentoDevolucaoPerda"
+pois o cubo fica grudado na parede com valores menores que 90, como 80 por exemplo.
+Então não consigo fazer ele voltar com uma força menor do que a que ele foi,
+e acho que isso seria interessante, mais é uma limitação por enquanto.
+

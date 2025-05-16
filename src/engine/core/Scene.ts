@@ -493,6 +493,22 @@ export default class Scene extends Base{
                                     objetoB.getVelocity().x -= percaX_objetoA;
                                 }
                             }
+
+                            // Se for uma parede ou um objeto que não pode se mover
+                            if( objetoA.objProps.havePhysics == false && objetoA.objProps.collide == true )
+                            {
+                                /**
+                                * Nesse caso, ao bater no objeto sem fisica ou parede, 
+                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie, e nao corra o risco de grudar 
+                                */
+                                const porcentoDevolucaoPerda = 90;
+                                const devolucaoEnergia       = ((porcentoDevolucaoPerda/100 * percaX_objetoA) );
+                                const velocidadeReposta      = (objetoA.getVelocity().x + devolucaoEnergia);
+                                const velocidadeXInvertida   = velocidadeReposta * -1;
+
+                                // inverte a velocidade para fazer o objeto ir para traz
+                                objetoA.setVelocityX( velocidadeXInvertida );
+                            }
                         }
                         //No eixo Z
                         if( velocidadeZ_objetoA != 0 )
@@ -518,6 +534,22 @@ export default class Scene extends Base{
                                 {
                                     objetoB.getVelocity().z -= percaZ_objetoA;
                                 }
+                            }
+
+                            // Se for uma parede ou um objeto que não pode se mover
+                            if( objetoA.objProps.havePhysics == false && objetoA.objProps.collide == true )
+                            {
+                                /**
+                                * Nesse caso, ao bater no objeto sem fisica ou parede, 
+                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie, e nao corra o risco de grudar 
+                                */
+                                const porcentoDevolucaoPerda = 90;
+                                const devolucaoEnergia       = (porcentoDevolucaoPerda/100 * percaZ_objetoA);
+                                const velocidadeReposta      = (objetoA.getVelocity().z + devolucaoEnergia);
+                                const velocidadeZInvertida   = velocidadeReposta * -1;
+
+                                // inverte a velocidade para fazer o objeto ir para traz
+                                objetoA.setVelocityZ( velocidadeZInvertida );
                             }
                         }
 
@@ -547,6 +579,22 @@ export default class Scene extends Base{
                                     objetoA.getVelocity().x += percaX_objetoB;
                                 }
                             }
+
+                            // Se for uma parede ou um objeto que não pode se mover
+                            if( objetoA.objProps.havePhysics == false && objetoA.objProps.collide == true )
+                            {
+                                /**
+                                * Nesse caso, ao bater no objeto sem fisica ou parede, 
+                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie, e nao corra o risco de grudar 
+                                */
+                                const porcentoDevolucaoPerda = 90;
+                                const devolucaoEnergia       = (porcentoDevolucaoPerda/100 * percaX_objetoB);
+                                const velocidadeReposta      = (objetoB.getVelocity().x + devolucaoEnergia);
+                                const velocidadeXInvertida   = velocidadeReposta * -1;
+
+                                // inverte a velocidade para fazer o objeto ir para traz
+                                objetoB.setVelocityX( velocidadeXInvertida );
+                            }
                         }
                         //No eixo Z
                         if( velocidadeZ_objetoB != 0  )
@@ -572,6 +620,22 @@ export default class Scene extends Base{
                                 {
                                     objetoA.getVelocity().z += percaZ_objetoB;
                                 }
+                            }
+
+                            // Se for uma parede ou um objeto que não pode se mover
+                            if( objetoA.objProps.havePhysics == false && objetoA.objProps.collide == true )
+                            {
+                                /**
+                                * Nesse caso, ao bater no objeto sem fisica ou parede, 
+                                * o jogo devolve pra ele a energia que ele perdeu só que reduzida, para que ele recocheteie, e nao corra o risco de grudar 
+                                */
+                                const porcentoDevolucaoPerda = 90;
+                                const devolucaoEnergia       = (porcentoDevolucaoPerda/100 * percaZ_objetoB);
+                                const velocidadeReposta      = (objetoB.getVelocity().z + devolucaoEnergia);
+                                const velocidadeZInvertida   = velocidadeReposta * -1;
+
+                                // inverte a velocidade para fazer o objeto ir para traz
+                                objetoB.setVelocityZ( velocidadeZInvertida );
                             }
                         }
                     }

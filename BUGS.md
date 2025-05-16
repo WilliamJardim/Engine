@@ -73,14 +73,14 @@ Os objetos quicam minusculamente quando a engine está em camera lenta
 # 15/05/2025
 (RESOLVIDO) Se um cubo com fisica colide com uma parede sem fisica, ainda assim, essa parede se move
 
-As vezes Se um cubo com fisica colide com uma parede sem fisica, ele some, meio que é jogado pra baixo no void
+(ANALISANDO) As vezes Se um cubo com fisica colide com uma parede sem fisica, ele some, meio que é jogado pra baixo no void
 ACONTECE PRINCIPALMENTE QUANDO O CUBO ESTÀ VINDO COM BAIXAS VELOCIDADES
 provavelmente é por causa de alguma lógica de correção
 
-Se um cubo com fisica colide com uma parede sem fisica(ou com outro objeto com fisica, tanto faz), ele meio que "gruda", e ele não volta pra traz, simulando um recocheteamento
+(ANALISANDO) Se um cubo com fisica colide com uma parede sem fisica(ou com outro objeto com fisica, tanto faz), ele meio que "gruda", e ele não volta pra traz, simulando um recocheteamento
 mais isso eu ainda não programei
 
-A função de recochetear que eu criei, ela não funciona com valores mais baixos de "porcentoDevolucaoPerda"
+(ANALISANDO) A função de recochetear que eu criei, ela não funciona com valores mais baixos de "porcentoDevolucaoPerda"
 pois o cubo fica grudado na parede com valores menores que 90, como 80 por exemplo.
 Então não consigo fazer ele voltar com uma força menor do que a que ele foi,
 e acho que isso seria interessante, mais é uma limitação por enquanto.
@@ -98,6 +98,6 @@ SENDO QUE ELE DEVERIA SÒ TIRAR UMA VEZ NESSE CASO
     O mesmo vale pra Z+ e Z-
 
 # 16/05/2025
-Quando o cubo colide com a parede, ele não rebate apenas para a direção oposta, ele vai tambem pra diagonal....
+(ANALISANDO) Quando o cubo colide com a parede, ele não rebate apenas para a direção oposta, ele vai tambem pra diagonal....
 isso é um BUG, na verdade eu até entendo: pois quando ele entra em colisão, ele fica colidindo por alguns milisegundos, e isso faz com que outros eixos de rebote sejam acionados, como o Z
 As vezes precisa ficar dando RELOAD na pagina pra acontecer, nem sempre 100% das vezes ocorre

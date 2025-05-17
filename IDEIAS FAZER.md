@@ -768,3 +768,22 @@ Porém, no eixo Y tambem vai ter aceleração, para movimentos
 Usar deltaFrame na velocidade e na aceleração tambem, junto com a intensificação
 tudo usar deltaFrame(posição, velocidade, aceleração) independente de usar fisica ou não 
 
+# 17/05/2025 - MELHORIA NA ACELERAÇÂO
+IDEIA: Aceleração dinamica e realista:
+
+no ObjectBase, Criar um vetor "força", que vai ter X Y e Z;
+Ele vai ser manipulado diretamente pela logica de jogo.
+
+Já o vetor "aceleração(acceleration)", ele vai ser calculado dinamicamente pela propia engine e não vai ser manipulado pelas regras de jogo. Vai ser calculado assim: "aceleração = "força total" / massa
+
+Ai o resto continua o mesmo.
+
+
+OUTRA IDEIA: Na logica de desaceleração gradual da velocidade, deixar mais realista para que essa desaceleração seja proporcional a velocidade.
+
+# NOVA IDEIA CORDA
+Ideia: criar lógica de dois objetos com física poderem ser amarrados por meio de uma corda.
+E aí, quando um se move, o outro é puxado junto se a corda estiver esticada.
+E a corda só estica quendo um dos objetos faz ela se esticar, se movendo, e, atingido o limite que a corda pode chegar
+Na prática não precisa renderizar nenhuma corda. Apenas criar a lógica de uma corda imaginaria, exercendo a física da corda sobre os objetos
+Parecido com minha outra ideia de física de corda

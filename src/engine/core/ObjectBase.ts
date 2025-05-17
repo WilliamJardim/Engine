@@ -28,6 +28,7 @@ import CollisionsData from '../interfaces/CollisionsData';
 import ObjectRotation from '../interfaces/ObjectRotation';
 import Wind from '../interfaces/Wind';
 import MeshRepresentation from "../interfaces/MeshRepresentation";
+import ObjectAcceleration from "../interfaces/ObjectAcceleration";
 
 export default class ObjectBase extends Base{
     
@@ -110,7 +111,8 @@ export default class ObjectBase extends Base{
         this.physicsState = this.movimentState.physics || {
 
             //Define a velocidade inicial do objeto
-            velocity: { x: 0, y: 0, z: 0 } as ObjectVelocity
+            velocity     : { x: 0, y: 0, z: 0 } as ObjectVelocity,
+            acceleration : { x: 0, y: 0, z: 0 } as ObjectAcceleration
 
         };
 
@@ -398,6 +400,57 @@ export default class ObjectBase extends Base{
 
     public getVelocity(): ObjectVelocity{
         return this.physicsState.velocity;
+    }
+
+    public getAcceleration(): ObjectAcceleration{
+        return this.physicsState.acceleration;
+    }
+
+    public somarAcceleration( velocidade:ObjectAcceleration ): void{
+
+        if( velocidade.x ){ this.getAcceleration().x += velocidade.x };
+
+        if( velocidade.y ){ this.getAcceleration().y += velocidade.y };
+
+        if( velocidade.z ){ this.getAcceleration().z += velocidade.z };
+    }
+
+    public somarAccelerationX( acceleration:number ): void{
+        this.getAcceleration().x += acceleration;
+    }
+
+    public somarAccelerationY( acceleration:number ): void{
+        this.getAcceleration().y += acceleration;
+    }
+
+    public somarAccelerationZ( acceleration:number ): void{
+        this.getAcceleration().z += acceleration;
+    }
+
+    public subtrairAccelerationX( acceleration:number ): void{
+        this.getAcceleration().x -= acceleration;
+    }
+
+    public subtrairAccelerationY( acceleration:number ): void{
+        this.getAcceleration().y -= acceleration;
+    }
+
+    public subtrairAccelerationZ( acceleration:number ): void{
+        this.getAcceleration().z -= acceleration;
+    }
+
+    public somarAccelerationEixo(eixo:string, valor:number): void{
+        (this.getVelocity() as ObjectVelocity)[eixo] += valor;
+    }
+
+    public subtrairAccelerationEixo(eixo:string, valor:number): void{
+        (this.getAcceleration() as ObjectAcceleration)[eixo] -= valor;
+    }
+
+    public setAcceleration( acceleration:ObjectAcceleration ): void{
+        if( acceleration.x ){ this.getAcceleration().x = acceleration.x };
+        if( acceleration.y ){ this.getAcceleration().y = acceleration.y };
+        if( acceleration.z ){ this.getAcceleration().z = acceleration.z };
     }
 
     /**
@@ -1170,6 +1223,7 @@ export default class ObjectBase extends Base{
 
         const objeto           : ObjectBase     = this;
         const velocidadeObjeto : ObjectVelocity = objeto.getVelocity();
+        const aceleracaoObjeto : ObjectAcceleration = objeto.getAcceleration();
         const scene            : Scene|null     = objeto.scene;
         const gravity          : number         = ((scene||{}).gravity || 0);
         const atrito           : number         = (((scene||{}).atrito || 0));
@@ -1212,6 +1266,21 @@ export default class ObjectBase extends Base{
             objeto.somarPosicaoZ( (movimentState.steps || 1) * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
             objeto.movimentSinalyzer.right = true;
         }
+
+        /**
+        * Fisica da aceleração do objeto que afeta a velocidade do objeto 
+        */
+        const aceleracaoX = aceleracaoObjeto.x;
+        const aceleracaoY = aceleracaoObjeto.y;
+        const aceleracaoZ = aceleracaoObjeto.z;
+        //Engine.get('CuboRef').setAcceleration({y:10})
+
+        /**
+        * Aplica aceleração nos seus eixos
+        */
+        objeto.somarVelocityX( aceleracaoX );
+        objeto.somarVelocityY( aceleracaoY, false );
+        objeto.somarVelocityZ( aceleracaoZ );
 
         /**
         * Fisica de movimento de acordo com a velocidade com desaceleração gradual da velocidade.

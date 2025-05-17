@@ -763,3 +763,8 @@ Porém, no eixo Y tambem vai ter aceleração, para movimentos
 
   objeto.getVelocity().y += objeto.getAceleracao().y;
   objeto.getPosition().y += objeto.getVelocity().y;
+
+# 16/05/2025
+Usar deltaFrame na velocidade e na aceleração tambem, junto com a intensificação
+tudo usar deltaFrame(posição, velocidade, aceleração) independente de usar fisica ou não 
+

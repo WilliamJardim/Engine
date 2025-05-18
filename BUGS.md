@@ -101,3 +101,9 @@ SENDO QUE ELE DEVERIA SÒ TIRAR UMA VEZ NESSE CASO
 (ANALISANDO) Quando o cubo colide com a parede, ele não rebate apenas para a direção oposta, ele vai tambem pra diagonal....
 isso é um BUG, na verdade eu até entendo: pois quando ele entra em colisão, ele fica colidindo por alguns milisegundos, e isso faz com que outros eixos de rebote sejam acionados, como o Z
 As vezes precisa ficar dando RELOAD na pagina pra acontecer, nem sempre 100% das vezes ocorre
+
+# 17/05/2025
+Quando um cubo cai em cima de outro cubo, ele afunda no chão, 
+e dependendo da escala desse outro objeto, ele até some e cai no void
+
+ 

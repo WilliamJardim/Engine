@@ -90,7 +90,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 "AnotherCubo",
             ],
             position: {
-                x: 0,
+                x: 10,
                 y: 10,
                 z: -0.5
             },
@@ -206,7 +206,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             invisible: false,
             opacity: 1,
             collide: true,
-            scaleReduce: 4.4,
+            scaleReduce: 2.4,
             ignoreCollisions: [
                 "OtherCube",
                 "AnotherCubo",

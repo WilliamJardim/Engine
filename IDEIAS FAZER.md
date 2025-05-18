@@ -806,3 +806,7 @@ Precisa calcular o "momento linear total" antes e depois da transferencia/colis�
 # (FAZER) 17/05/2025 - USAR A MASSA DOS OBJETOS PRA CALCULAR A FORÇA DO ATRITO E ARRASTO
 usar a massa dos objetos para calcular o atrito(quando o objeto está no chão), e o arrasto(quando o objeto está no ar),
 mesmo que a aceleração ou força seja zero, e eu só esteja desacelerando a propia velocidade
+
+# (FAZER) 18/05/2025 - ZERAR O VETOR DE FORÇA NO FINAL DE CADA FRAME
+Para impedir movimentos infinitos com força, no fim de cada frame, zerar o vetor de força dos objetos automaticamente,
+assim a força vai ser algo momentaneo

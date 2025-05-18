@@ -1749,6 +1749,21 @@ export default class ObjectBase extends Base{
         }
     }
 
+    /**
+    * Reseta algumas coisas após cada frame terminar
+    */
+    public reset_loop_afterframe(): void{
+
+        /**
+        * Zera o vetor de força deste ObjectBase 
+        * Isso pra evitar que a força seja infinita, e para fazer com que a força seja algo momentaneo e não se acumule de forma indevida
+        */
+        this.physicsState.force.x = 0;
+        this.physicsState.force.y = 0;
+        this.physicsState.force.z = 0;
+
+    }
+
     public updateObject( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void{
         if( renderizadorPronto == true )
         {
@@ -1782,6 +1797,11 @@ export default class ObjectBase extends Base{
             * Atualiza os "attachments" ou "objeto anexados/grudados" ao objeto atual
             */
             this.updateAttachments( frameDelta );
+
+            /**
+            * Reseta algumas coisas depois do frame atual terminar
+            */
+            this.reset_loop_afterframe();
         }
     }
 

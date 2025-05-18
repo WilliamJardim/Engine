@@ -781,9 +781,14 @@ Ai o resto continua o mesmo.
 
 OUTRA IDEIA: Na logica de desaceleração gradual da velocidade, deixar mais realista para que essa desaceleração seja proporcional a velocidade.
 
-# NOVA IDEIA CORDA
+# 17/05/2025 - Melhorar reação da colisão do método updateCollisionReactions PRA USAR A MASSA TAMBEM DOS OBJETOS
+Usar a massa dos objetos na reação das colisões, ou seja, na transferencia de velocidade e na perca de velocidade dos objetos
+Aplicar o princípio da conservação da quantidade de movimento
+
+# 17/05/2025 - NOVA IDEIA CORDA
 Ideia: criar lógica de dois objetos com física poderem ser amarrados por meio de uma corda.
 E aí, quando um se move, o outro é puxado junto se a corda estiver esticada.
 E a corda só estica quendo um dos objetos faz ela se esticar, se movendo, e, atingido o limite que a corda pode chegar
 Na prática não precisa renderizar nenhuma corda. Apenas criar a lógica de uma corda imaginaria, exercendo a física da corda sobre os objetos
 Parecido com minha outra ideia de física de corda
+

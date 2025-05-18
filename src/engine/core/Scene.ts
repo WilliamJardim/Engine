@@ -76,9 +76,9 @@ export default class Scene extends Base{
                             y: -0.1, 
                             z: 0.3},
 
-            deslocationTrend: { x: 0.18, 
+            deslocationTrend: { x: 0.08, 
                                 y: 0.001, 
-                                z: 0.15},
+                                z: 0.05},
 
             intensity   : { x: 0, 
                             y: 0, 

@@ -29,6 +29,7 @@ import ObjectRotation from '../interfaces/ObjectRotation';
 import Wind from '../interfaces/Wind';
 import MeshRepresentation from "../interfaces/MeshRepresentation";
 import ObjectAcceleration from "../interfaces/ObjectAcceleration";
+import ObjectForce from "../interfaces/ObjectForce";
 
 export default class ObjectBase extends Base{
     
@@ -112,7 +113,8 @@ export default class ObjectBase extends Base{
 
             //Define a velocidade inicial do objeto
             velocity     : { x: 0, y: 0, z: 0 } as ObjectVelocity,
-            acceleration : { x: 0, y: 0, z: 0 } as ObjectAcceleration
+            acceleration : { x: 0, y: 0, z: 0 } as ObjectAcceleration,
+            force        : { x: 0, y: 0, z: 0 } as ObjectForce
 
         };
 
@@ -263,6 +265,14 @@ export default class ObjectBase extends Base{
         return this.objProps;
     }
 
+    public getMass(): number{
+        return this.objProps.mass;
+    }
+
+    public getWeight(): number{
+        return this.objProps.weight || 0;
+    }
+
     public getMesh(): MeshRepresentation{
         return this.mesh;
     }
@@ -398,8 +408,55 @@ export default class ObjectBase extends Base{
         if( scale.z ){ this.getScale().z += scale.z };
     }
 
-    public getVelocity(): ObjectVelocity{
-        return this.physicsState.velocity;
+    public getForce(): ObjectForce{
+        return this.physicsState.force;
+    }
+
+    public somarForce( forca:ObjectForce ): void{
+
+        if( forca.x ){ this.getForce().x += forca.x };
+
+        if( forca.y ){ this.getForce().y += forca.y };
+
+        if( forca.z ){ this.getForce().z += forca.z };
+    }
+
+    public somarForceX( forca:number ): void{
+        this.getForce().x += forca;
+    }
+
+    public somarForceY( forca:number ): void{
+        this.getForce().y += forca;
+    }
+
+    public somarForceZ( forca:number ): void{
+        this.getForce().z += forca;
+    }
+
+    public subtrairForceX( forca:number ): void{
+        this.getForce().x -= forca;
+    }
+
+    public subtrairForceY( forca:number ): void{
+        this.getForce().y -= forca;
+    }
+
+    public subtrairForceZ( forca:number ): void{
+        this.getForce().z -= forca;
+    }
+
+    public somarForceEixo(eixo:string, valor:number): void{
+        (this.getVelocity() as ObjectForce)[eixo] += valor;
+    }
+
+    public subtrairForceEixo(eixo:string, valor:number): void{
+        (this.getForce() as ObjectForce)[eixo] -= valor;
+    }
+
+    public setForce( forca:ObjectForce ): void{
+        if( forca.x ){ this.getForce().x = forca.x };
+        if( forca.y ){ this.getForce().y = forca.y };
+        if( forca.z ){ this.getForce().z = forca.z };
     }
 
     public getAcceleration(): ObjectAcceleration{
@@ -451,6 +508,10 @@ export default class ObjectBase extends Base{
         if( acceleration.x ){ this.getAcceleration().x = acceleration.x };
         if( acceleration.y ){ this.getAcceleration().y = acceleration.y };
         if( acceleration.z ){ this.getAcceleration().z = acceleration.z };
+    }
+
+    public getVelocity(): ObjectVelocity{
+        return this.physicsState.velocity;
     }
 
     /**
@@ -617,49 +678,6 @@ export default class ObjectBase extends Base{
     public getVolume(): number {
         const escala = this.getScale();
         return escala.x * escala.y * escala.z;
-    }
-
-    /**
-    * Calcula a massa do objeto 
-    * @returns {number}
-    */
-    public getMassa(): number {
-        const peso = this.objProps.weight || 0;
-        return peso / (this.scene!.gravity || 0.5); 
-    }
-
-    /**
-    * Calcula a massa total do objeto 
-    * @returns {number}
-    */
-    public getMassaTotal(): number {
-        const densidade = this.objProps.density || 1;
-        const volume    = this.getVolume();
-        const peso      = this.objProps.weight || 0;
-        
-        const massaPorDensidade = densidade * volume;
-        const massaPorPeso = peso / (this.scene!.gravity || 9.8);
-    
-        return massaPorDensidade + massaPorPeso;
-    }
-
-    /**
-    * Retorna o peso do objeto levando em conta a area dele, algo que vou usar na fisica
-    * @returns {number} 
-    */
-    public getAreaPeso(): number{
-        return (this.objProps.weight||0) + (0.3 * (this.objProps.weight||0) * this.getVolume());
-    }
-
-    /**
-    * Calcula a força/impacto
-    * Isso não calcula apenas o impacto mais tambem leva em conta o peso intensificado pelo volume do objeto
-    */
-    public getImpacto(): number{
-        const velocidadeObjeto = this.getVelocity();
-        const velocidadeTotal  = Math.sqrt(velocidadeObjeto.x**2 + velocidadeObjeto.y**2 + velocidadeObjeto.z**2);
-
-        return this.getAreaPeso() * velocidadeTotal;
     }
 
     /**
@@ -1224,6 +1242,8 @@ export default class ObjectBase extends Base{
         const objeto           : ObjectBase     = this;
         const velocidadeObjeto : ObjectVelocity = objeto.getVelocity();
         const aceleracaoObjeto : ObjectAcceleration = objeto.getAcceleration();
+        const forcaObjeto      : ObjectForce    = objeto.getForce();
+        const massaObjeto      : number         = objeto.getMass();
         const scene            : Scene|null     = objeto.scene;
         const gravity          : number         = ((scene||{}).gravity || 0);
         const atrito           : number         = (((scene||{}).atrito || 0));
@@ -1270,17 +1290,25 @@ export default class ObjectBase extends Base{
         /**
         * Fisica da aceleração do objeto que afeta a velocidade do objeto 
         */
-        const aceleracaoX = aceleracaoObjeto.x;
-        const aceleracaoY = aceleracaoObjeto.y;
-        const aceleracaoZ = aceleracaoObjeto.z;
-        //Engine.get('CuboRef').setAcceleration({y:10})
+
+        /**
+        * Calcula a aceleração do objeto 
+        */
+        aceleracaoObjeto.x = forcaObjeto.x / massaObjeto;
+        aceleracaoObjeto.y = forcaObjeto.y / massaObjeto;
+        aceleracaoObjeto.z = forcaObjeto.z / massaObjeto;
+
+        /**
+        * Calcula o peso do objeto 
+        */
+        objeto.objProps.weight = massaObjeto * gravity;
 
         /**
         * Aplica aceleração nos seus eixos
         */
-        objeto.somarVelocityX( aceleracaoX );
-        objeto.somarVelocityY( aceleracaoY, false );
-        objeto.somarVelocityZ( aceleracaoZ );
+        objeto.somarVelocityX( aceleracaoObjeto.x );
+        objeto.somarVelocityY( aceleracaoObjeto.y, false );
+        objeto.somarVelocityZ( aceleracaoObjeto.z );
 
         /**
         * Fisica de movimento de acordo com a velocidade com desaceleração gradual da velocidade.
@@ -1428,7 +1456,7 @@ export default class ObjectBase extends Base{
              const objetoAbaixoDele = objeto.objectBelow;
              
              const coeficiente     = 0.5; // pode ser dinâmico
-             const massa           = esteObjeto.getMassaTotal();
+             const massa           = esteObjeto.getMass();
              const normal          = massa * Math.abs(gravity);
              const atritoCalculado = coeficiente * normal;
 

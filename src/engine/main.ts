@@ -37,6 +37,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         //The attributes
         {
             type: 'Cube',
+            mass: 5,
             material: createMaterialByImage('/textures/grama.jpg'), //The material,
             name: 'Chao',
             classes: ['ground'],
@@ -45,7 +46,6 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             invisible: false,
             opacity: 1,
             collide: true,
-            weight: 40,
             traverse: false,
             position: {
                 x: 0,
@@ -75,6 +75,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         //The attributes
         {
             type: 'Cube',
+            mass: 5,
             material: createMaterialByImage('/textures/1piso.png'), //The material,
             name: 'MyCube',
             isNPC: false,
@@ -103,7 +104,6 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 y: 1,
                 z: 1
             },
-            weight: 40,
             events: [
                 {
                     //Cubo ficar rodando
@@ -136,6 +136,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         //The attributes
         {
             type: 'Cube',
+            mass: 5,
             material: createMaterialByImage('/textures/1piso.png'), //The material,
             name: 'Parede',
             isNPC: false,
@@ -164,7 +165,6 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 y: 20,
                 z: 50
             },
-            weight: 40,
             events: [
                 {
                     //Cubo ficar rodando
@@ -189,7 +189,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     );
 
     // Adiciona o cubo na cena
-    scene.add(cubo3);
+    //scene.add(cubo3);
     globalContext.set('CuboRef3', cubo3);
 
     // Cria um cubo simples para testar
@@ -197,6 +197,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         //The attributes
         {
             type: 'Cube',
+            mass: 5,
             material: createMaterialByImage('/textures/1piso.png'), //The material,
             name: 'MyCubeN',
             isNPC: false,
@@ -205,7 +206,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             invisible: false,
             opacity: 1,
             collide: true,
-            scaleReduce: 1.4,
+            scaleReduce: 4.4,
             ignoreCollisions: [
                 "OtherCube",
                 "AnotherCubo",
@@ -213,7 +214,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             position: {
                 x: 0,
                 y: -35,
-                z: 10.5
+                z: -0.5
             },
             rotation: {
                 x: 0,
@@ -225,7 +226,6 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 y: 1,
                 z: 1
             },
-            weight: 40,
             events: [
                 {
                     //Cubo ficar rodando
@@ -248,6 +248,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         //The attributes
         {
             type: 'Cube',
+            mass: 5,
             material: createMaterialByImage('/textures/1piso.png'), //The material,
             name: 'MyCube2',
             isNPC: false,

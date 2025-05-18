@@ -768,7 +768,7 @@ Porém, no eixo Y tambem vai ter aceleração, para movimentos
 Usar deltaFrame na velocidade e na aceleração tambem, junto com a intensificação
 tudo usar deltaFrame(posição, velocidade, aceleração) independente de usar fisica ou não 
 
-# 17/05/2025 - MELHORIA NA ACELERAÇÂO
+# (CRIADO) 17/05/2025 - MELHORIA NA ACELERAÇÂO
 IDEIA: Aceleração dinamica e realista:
 
 no ObjectBase, Criar um vetor "força", que vai ter X Y e Z;
@@ -781,9 +781,6 @@ Ai o resto continua o mesmo.
 
 OUTRA IDEIA: Na logica de desaceleração gradual da velocidade, deixar mais realista para que essa desaceleração seja proporcional a velocidade.
 
-# 17/05/2025 - Melhorar reação da colisão do método updateCollisionReactions PRA USAR A MASSA TAMBEM DOS OBJETOS
-Usar a massa dos objetos na reação das colisões, ou seja, na transferencia de velocidade e na perca de velocidade dos objetos
-Aplicar o princípio da conservação da quantidade de movimento
 
 # 17/05/2025 - NOVA IDEIA CORDA
 Ideia: criar lógica de dois objetos com física poderem ser amarrados por meio de uma corda.
@@ -792,3 +789,20 @@ E a corda só estica quendo um dos objetos faz ela se esticar, se movendo, e, at
 Na prática não precisa renderizar nenhuma corda. Apenas criar a lógica de uma corda imaginaria, exercendo a física da corda sobre os objetos
 Parecido com minha outra ideia de física de corda
 
+
+# (FAZER) 17/05/2025 - Melhorar reação da colisão do método updateCollisionReactions PRA USAR A MASSA TAMBEM DOS OBJETOS
+Usar a massa dos objetos na reação das colisões, ou seja, na transferencia de velocidade e na perca de velocidade dos objetos
+Aplicar o princípio da conservação da quantidade de movimento
+
+Calcular o "Momento linear" = MASSA * VELOCIDADE, 
+isso é, o quanto de movimento tem
+
+É o momento linear que você usa na transferencia de velocidade e na perca de velocidade dos objetos
+Nisso, o que vai se conservar é o "momento linear total"
+
+Precisa calcular o "momento linear total" antes e depois da transferencia/colisão, e ajustar velocidades conforme as massas dos objetos.
+
+
+# (FAZER) 17/05/2025 - USAR A MASSA DOS OBJETOS PRA CALCULAR A FORÇA DO ATRITO E ARRASTO
+usar a massa dos objetos para calcular o atrito(quando o objeto está no chão), e o arrasto(quando o objeto está no ar),
+mesmo que a aceleração ou força seja zero, e eu só esteja desacelerando a propia velocidade

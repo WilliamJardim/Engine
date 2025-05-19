@@ -30,6 +30,7 @@ import Wind from '../interfaces/Wind';
 import MeshRepresentation from "../interfaces/MeshRepresentation";
 import ObjectAcceleration from "../interfaces/ObjectAcceleration";
 import ObjectForce from "../interfaces/ObjectForce";
+import Position3D from "../interfaces/Position3D";
 
 export default class ObjectBase extends Base{
     
@@ -617,6 +618,22 @@ export default class ObjectBase extends Base{
         }
 
         (this.getVelocity() as ObjectVelocity)[eixo] = velocidade;
+    }
+
+    /**
+    * Calcula o momento linear do objeto
+    */
+    public getMomentoLinear(): Position3D{
+        const massa     = this.objProps.mass || 0;
+        const momento_x = massa * this.getVelocity().x;
+        const momento_y = massa * this.getVelocity().y;
+        const momento_z = massa * this.getVelocity().z;
+
+        return {
+            x: momento_x,
+            y: momento_y,
+            z: momento_z
+        } as Position3D;
     }
 
     public getRotation(): ObjectRotation{

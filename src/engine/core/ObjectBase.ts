@@ -636,6 +636,14 @@ export default class ObjectBase extends Base{
         } as Position3D;
     }
 
+    /**
+    * Calcula a massa invertida
+    */
+    public getMassaInvertida(): number{
+        const massa     = this.objProps.mass || 0;
+        return 1 / massa;
+    }
+
     public getRotation(): ObjectRotation{
         return this.getMesh().rotation;
     }

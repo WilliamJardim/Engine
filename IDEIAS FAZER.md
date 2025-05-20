@@ -810,3 +810,55 @@ mesmo que a aceleração ou força seja zero, e eu só esteja desacelerando a pr
 # (FEITO) 18/05/2025 - ZERAR O VETOR DE FORÇA NO FINAL DE CADA FRAME
 Para impedir movimentos infinitos com força, no fim de cada frame, zerar o vetor de força dos objetos automaticamente,
 assim a força vai ser algo momentaneo
+
+# FORCAS PERMANTENTES 20/05/2025
+Também Adicionar lógica de força permanente
+Um Array de "forças permanentes", que a Engine vai ficar aplicando sem parar..  e eu posso colocar na definição do objeto "forçasPermanentes", e um método somarForcaPermanente"
+
+# ACUMULAÇÂO DE FORÇAS 20/05/2025
+Outra ideia sobre acumulação de forças:
+
+Isso significa que em um determinado frame, várias forças podem ser aplicadas ao mesmo tempo sobre um objeto(explosão, molas, atrito, etc...)
+
+E então, só depois a Engine calcula a aceleração assim
+
+Acel = forçaTotal / massa
+
+Por enquanto, a Minha Engine de física eu não programei dessa jeito.
+
+A gravidade eu só uso assim "velocidade += gravidade * DT", mais não tem acumulação nenhuma. Nem usa forças.
+
+Também, nas forças X Y Z, eu eu pego a força do vetor de força, cálculo a aceleração, e aplico somando na velocidade do objeto nos eixos X Y Z. Mais não acúmulo.
+
+O vetor de forças eu zero no fim de cada frame como já mencionei.
+
+Se um dia eu quisesse adicionar isso, eu poderia criar um caminho de IF alternativo, tipo "usarForcasComum" ou "acumularForcas", como booleana, e com isso, determinar se um objeto vai ter ou não acumulação de força ou se vai usar a lógica normal sem acumular nada.
+
+# Ideia: força de rotação 20/05/2025
+Criar força de rotação, que vai seguir a mesma ideia aceleração, etc..  só que ao invés de alterar posição e velocidade, ela vai alterar rotação, torque, etc...
+
+Ideia: em colisões, na eu aplico em ambos(força de movimento e força de rotação) em qualquer colisão, mais vai ter casos que a força da rotação vai ser maior que a da movimentação
+
+Se a colisão ocorreu mais pro centro do objeto a força de movimento vai ser maior.
+
+Se a colisão ocorreu mais nas bordas(mais longe do centro), a força de rotação vai ser maior.
+
+Quando mais longe do centro, mais rotação.
+
+E quando mais próximo do centro, mais movimentação.
+
+Dessa forma ambas forças serão calculadas e aplicadas nas colisões
+
+Lógicas do tipo "quanto mais alto for o impacto, maior vai ser o giro"
+
+## Atualizar força rotação
+E nessa ideia: eu posso seguir o mesmo cálculo da força linear 
+
+Eu posso ter uma função AdicionarForceRot
+
+E criar uma lógica de updateRotacao, pra atualizar o toque do objeto. E lá usar também aceleração de rotação, velocidade de rotação, e força de rotação, e usar exatamente o mesmo cálculo da força linear só que no contexto de rotação.
+
+Ou seja "acelRotacao = ForcaRotacao / massa", Atualizar velocidade, e depois rotação.
+
+
+

@@ -31,6 +31,7 @@ import MeshRepresentation from "../interfaces/MeshRepresentation";
 import ObjectAcceleration from "../interfaces/ObjectAcceleration";
 import ObjectForce from "../interfaces/ObjectForce";
 import Position3D from "../interfaces/Position3D";
+import RotationState from "../interfaces/RotationState";
 
 export default class ObjectBase extends Base{
     
@@ -41,7 +42,8 @@ export default class ObjectBase extends Base{
     public objProps:ObjectProps;
     public objEvents:ObjectEventLayer;
     public movimentState:MovementState;
-    public movimentSinalyzer:MovementState; //Indica se o objeto está se movendo para essas direções, quer por força ou de forma direta
+    public movimentSinalyzer:MovementState; // Indica se o objeto está se movendo para essas direções, quer por força ou de forma direta
+    public rotationSinalyzer:RotationState; // Indica a direção de rotação do objeto
     public physicsState:PhysicsState;
     public scene:Scene|null;
     public isFalling:boolean;
@@ -110,12 +112,26 @@ export default class ObjectBase extends Base{
             left: false
         };
 
+        this.rotationSinalyzer =  {
+            forward: false,
+            backward: false,
+            right: false,
+            left: false,
+            up: false,
+            down: false
+        };
+
         this.physicsState = this.movimentState.physics || {
 
-            //Define a velocidade inicial do objeto
+            // Define a velocidade inicial do objeto
             velocity     : { x: 0, y: 0, z: 0 } as ObjectVelocity,
             acceleration : { x: 0, y: 0, z: 0 } as ObjectAcceleration,
-            force        : { x: 0, y: 0, z: 0 } as ObjectForce
+            force        : { x: 0, y: 0, z: 0 } as ObjectForce,
+
+            // Define a velocidade de rotação
+            rotationVelocity     : { x: 0, y: 0, z: 0 } as ObjectVelocity,
+            rotationAcceleration : { x: 0, y: 0, z: 0 } as ObjectAcceleration,
+            rotationForce        : { x: 0, y: 0, z: 0 } as ObjectForce
 
         };
 
@@ -690,6 +706,63 @@ export default class ObjectBase extends Base{
     }
 
     /**
+    * Obtem a força de rotação 
+    */
+    public getRotationForce(): ObjectForce{
+        return this.physicsState.rotationForce;
+    }
+
+    /**
+    * Obtem a aceleração de rotação 
+    */
+    public getRotationAcceleration(): ObjectForce{
+        return this.physicsState.rotationAcceleration;
+    }
+
+    /**
+    * Obtem a aceleração de rotação 
+    */
+    public getRotationVelocity(): ObjectForce{
+        return this.physicsState.rotationVelocity;
+    }
+
+    public somarRotationVelocityX( velocidadeRotacao:number ){
+        this.getRotationVelocity().x += velocidadeRotacao;
+    }
+
+    public somarRotationVelocityY( velocidadeRotacao:number ){
+        this.getRotationVelocity().y += velocidadeRotacao;
+    }
+
+    public somarRotationVelocityZ( velocidadeRotacao:number ){
+        this.getRotationVelocity().z += velocidadeRotacao;
+    }
+
+    public somarRotationForceX( velocidadeRotacao:number ){
+        this.getRotationForce().x += velocidadeRotacao;
+    }
+
+    public somarRotationForceY( velocidadeRotacao:number ){
+        this.getRotationForce().y += velocidadeRotacao;
+    }
+
+    public somarRotationForceZ( velocidadeRotacao:number ){
+        this.getRotationForce().z += velocidadeRotacao;
+    }
+
+    public setRotationVelocityX( velocidadeRotacaoX:number ){
+        this.getRotationVelocity().x += velocidadeRotacaoX;
+    }
+
+    public setRotationVelocityY( velocidadeRotacaoY:number ){
+        this.getRotationVelocity().y += velocidadeRotacaoY;
+    }
+
+    public setRotationVelocityZ( velocidadeRotacaoZ:number ){
+        this.getRotationVelocity().z += velocidadeRotacaoZ;
+    }
+
+    /**
     * Deleta o objeto da cena 
     */
     public destroy(): void{
@@ -1255,6 +1328,175 @@ export default class ObjectBase extends Base{
     }
 
     /**
+    * Atualiza a rotação do objeto, e do objeto em relação aos outros objetos na cena
+    */
+    public updateRotation( frameDelta:number ): void{
+
+        // Ignora se a cena ou objetos nao existirem
+        if( !this.scene || !this.scene.objects ){
+            return;
+        }
+
+        const objeto           : ObjectBase     = this;
+        const massaObjeto      : number         = objeto.getMass();
+        const scene            : Scene|null     = objeto.scene;
+        const gravity          : number         = ((scene||{}).gravity || 0);
+        const atrito           : number         = (((scene||{}).atrito || 0));
+        const arrastoAr        : number         = (((scene||{}).arrastoAr || 0));
+        const frameDeltaIntensification: number = (((scene||{}).frameDeltaIntensification || 1));
+        const objectPhysicsUpdateRate:number    = (((scene||{}).objectPhysicsUpdateRate || 10));
+        const objectPhysicsDesaceleracaoUpdateRate:number = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
+        const movimentState:MovementState       = objeto.movimentState;
+
+        const objetosCena : ObjectBase[]  =  Array<ObjectBase>(0).concat( this.scene!.objects )
+                                                                 .concat( this.scene!.additionalObjects );
+
+        const forcaVelocidadeObjeto      = objeto.getRotationForce();
+        const aceleracaoRotacaoObjeto    = objeto.getRotationAcceleration();
+        
+        /**
+        * Calcula a aceleração da velocidade do objeto 
+        */
+        aceleracaoRotacaoObjeto.x = forcaVelocidadeObjeto.x / massaObjeto;
+        aceleracaoRotacaoObjeto.y = forcaVelocidadeObjeto.y / massaObjeto;
+        aceleracaoRotacaoObjeto.z = forcaVelocidadeObjeto.z / massaObjeto;
+
+        /**
+        * Aplica aceleração da velocidade nos seus eixos
+        */
+        objeto.somarRotationVelocityX( aceleracaoRotacaoObjeto.x * frameDelta );
+        objeto.somarRotationVelocityY( aceleracaoRotacaoObjeto.y * frameDelta);
+        objeto.somarRotationVelocityZ( aceleracaoRotacaoObjeto.z * frameDelta );
+
+        /**
+        * Atualiza a rotação do objeto
+        */
+        objeto.somarRotationX( objeto.getRotationVelocity().x * frameDelta );
+        objeto.somarRotationY( objeto.getRotationVelocity().y * frameDelta );
+        objeto.somarRotationZ( objeto.getRotationVelocity().z * frameDelta );
+
+        /**
+        * Aplica uma desaceleração na velocidade de rotação atual 
+        */
+        const velocidadeRotacao   = objeto.getRotationVelocity();
+        const sinalX              = Math.sign(velocidadeRotacao.x);
+        const sinalY              = Math.sign(velocidadeRotacao.y);
+        const sinalZ              = Math.sign(velocidadeRotacao.z);
+
+        if( velocidadeRotacao.x != 0 )
+        {   
+            // Vai desacelerando
+            let novaVelocidadeRotacaoX = (velocidadeRotacao.x - 0.4 * sinalX * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+
+            // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a rodar para traz depois de a força acabar)
+            if(Math.sign(novaVelocidadeRotacaoX) !== sinalX){
+                novaVelocidadeRotacaoX = 0;
+            }
+
+            if( velocidadeRotacao.x > 0 && velocidadeRotacao.x < 0.001 ){
+                velocidadeRotacao.x = 0.001;
+            }
+
+            if( velocidadeRotacao.x < 0 && velocidadeRotacao.x < -0.001 ){
+                velocidadeRotacao.x = -0.001;
+            }
+
+            if( velocidadeRotacao.x > 0 && velocidadeRotacao.x > 99 ){
+                velocidadeRotacao.x = 99;
+            }
+
+            //No ar, ele vai ter arrasto do ar
+            if( objeto.isFalling == true ){
+                objeto.setRotationVelocityX( novaVelocidadeRotacaoX * arrastoAr );
+
+            //No chao, ele vai ter atrito
+            }else{
+                objeto.setRotationVelocityX( novaVelocidadeRotacaoX * atrito );
+            }
+
+            // Indica qual direção o objeto está rodando
+            if( sinalX == 1 ){
+                objeto.rotationSinalyzer.forward = true;
+            }else{
+                objeto.rotationSinalyzer.backward = true;
+            }
+        }   
+
+        if( velocidadeRotacao.y != 0 )
+        {   
+            let novaVelocidadeRotacaoY = ( velocidadeRotacao.y - 0.4 * sinalY );
+
+            // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
+            if(Math.sign(novaVelocidadeRotacaoY) !== sinalY){
+                novaVelocidadeRotacaoY = 0;
+            }
+
+            if( velocidadeRotacao.y > 0 && velocidadeRotacao.y < 0.001 ){
+                velocidadeRotacao.y = 0.001;
+            }
+
+            if( velocidadeRotacao.y < 0 && velocidadeRotacao.y < -0.001 ){
+                velocidadeRotacao.y = -0.001;
+            }
+
+            if( velocidadeRotacao.y > 0 && velocidadeRotacao.y > 99 ){
+                velocidadeRotacao.y = 99;
+            }
+
+            objeto.setRotationVelocityY( novaVelocidadeRotacaoY * arrastoAr );
+
+            // Indica qual direção o objeto está se movendo
+            if( sinalY == 1 ){
+                objeto.rotationSinalyzer.up = true;
+            }else{
+                objeto.rotationSinalyzer.down = true;
+            }
+
+        }
+        
+        //Engine.get('CuboRef').somarRotationForceX(10)
+        if( velocidadeRotacao.z != 0 )
+        {   
+            let novaVelocidadeRotacaoZ = (velocidadeRotacao.z - 0.4 * sinalZ * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+
+            // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
+            if(Math.sign(novaVelocidadeRotacaoZ) !== sinalZ){
+                novaVelocidadeRotacaoZ = 0;
+            }
+
+            if( velocidadeRotacao.z > 0 && velocidadeRotacao.z < 0.001 ){
+                velocidadeRotacao.z = 0.001;
+            }
+
+            if( velocidadeRotacao.z < 0 && velocidadeRotacao.z < -0.001 ){
+                velocidadeRotacao.z = -0.001;
+            }
+
+            if( velocidadeRotacao.z > 0 && velocidadeRotacao.z > 99 ){
+                velocidadeRotacao.z = 99;
+            }
+
+            //No ar, ele vai ter arrasto do ar
+            if( objeto.isFalling == true ){
+                objeto.setRotationVelocityZ( novaVelocidadeRotacaoZ * arrastoAr );
+
+            //No chao, ele vai ter atrito
+            }else{
+                objeto.setRotationVelocityZ( novaVelocidadeRotacaoZ * atrito );
+            }
+
+            // Indica qual direção o objeto está se movendo
+            if( sinalZ == 1 ){
+                objeto.rotationSinalyzer.right = true;
+            }else{
+                objeto.rotationSinalyzer.left = true;
+            }
+        }  
+
+        //Engine.get('CuboRef').somarRotationForceX(400)
+    }
+
+    /**
     * Atualiza a movimentação do objeto, e do objeto em relação aos outros objetos na cena, como por exemplo objetos que podem carregar ele
     */
     public updateMovement( frameDelta:number ): void{
@@ -1787,6 +2029,14 @@ export default class ObjectBase extends Base{
         this.physicsState.force.y = 0;
         this.physicsState.force.z = 0;
 
+        /**
+        * Zera o vetor de força de rotação deste ObjectBase 
+        * Isso pra evitar que a força de rotação seja infinita, e para fazer com que a força de rotação seja algo momentaneo e não se acumule de forma indevida
+        */
+        this.physicsState.rotationForce.x = 0;
+        this.physicsState.rotationForce.y = 0;
+        this.physicsState.rotationForce.z = 0;
+
     }
 
     public updateObject( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void{
@@ -1811,6 +2061,11 @@ export default class ObjectBase extends Base{
             * Atualiza os movimentos do objeto 
             */
             this.updateMovement( frameDelta );
+
+            /**
+            * Atualiza a rotação do objeto 
+            */
+            this.updateRotation( frameDelta );
             
 
             /**

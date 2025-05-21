@@ -80,7 +80,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             name: 'MyCube',
             isNPC: false,
             havePhysics: true,
-            kick_rate: 2,
+            kick_rate: 5,
             invisible: false,
             opacity: 1,
             collide: true,
@@ -109,7 +109,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
                         //propioObjeto.somarPosicaoX(0.005);
-                        console.log(propioObjeto.getRotationVelocity())
+                        console.log(propioObjeto.getVelocity())
 
                         if( propioObjeto.objectBelow != null ){
                             //console.log(propioObjeto.getVelocity().x)
@@ -141,7 +141,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             name: 'Parede',
             isNPC: false,
             havePhysics: false,
-            kick_rate: 2,
+            kick_rate: 5,
             invisible: false,
             opacity: 1,
             collide: true,
@@ -202,7 +202,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             name: 'MyCubeN',
             isNPC: false,
             havePhysics: true,
-            kick_rate: 2,
+            kick_rate: 5,
             invisible: false,
             opacity: 1,
             collide: true,

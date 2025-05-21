@@ -429,11 +429,16 @@ export default class ObjectBase extends Base{
         return this.physicsState.force;
     }
 
-    public somarForce( forca:ObjectForce ): void{
+    public somarForce( forca:ObjectForce, isExternal:boolean = true ): void{
 
         if( forca.x ){ this.getForce().x += forca.x };
 
-        if( forca.y ){ this.getForce().y += forca.y };
+        if( forca.y ){ 
+            // Diz pra Engine que o objeto recebeu uma velocidade externa
+            this.isReceiving_Y_Velocity = isExternal;
+
+            this.getForce().y += forca.y 
+        };
 
         if( forca.z ){ this.getForce().z += forca.z };
     }
@@ -1007,7 +1012,7 @@ export default class ObjectBase extends Base{
                                                                    .concat( this.scene!.additionalObjects );
         
         const scene            : Scene|null     = esteObjeto.scene;
-        const gravity          : number         = ((scene||{}).gravity || -45);
+        const gravity          : Position3D     = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
         const frameDeltaIntensification: number = (((scene||{}).frameDeltaIntensification || 1));
         const objectPhysicsUpdateRate:number    = (((scene||{}).objectPhysicsUpdateRate || 10));
 
@@ -1262,7 +1267,7 @@ export default class ObjectBase extends Base{
                     /**
                     * Faz o object decrementar a posição Y com a gravidade
                     */
-                    this.getVelocity().y -= Math.abs( this.scene.gravity );
+                    this.getVelocity().y -= this.scene.gravity.y;
                     //this.isReceiving_Y_Velocity = false; //Aqui tambem é algo interno da Engine
 
                     /**
@@ -1296,13 +1301,13 @@ export default class ObjectBase extends Base{
                         const randomZ = Math.random() * 0.001;
 
                         this.somarRotation({
-                            x: randomX + ((wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ) * Math.abs(gravity) * 4.8 * frameDelta * frameDeltaIntensification,
-                            y: randomY + ((wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ) * Math.abs(gravity) * 4.8 * frameDelta * frameDeltaIntensification,
-                            z: randomZ + ((wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) ) * Math.abs(gravity) * 4.8 * frameDelta * frameDeltaIntensification
+                            x: randomX + ((wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ) * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification,
+                            y: randomY + ((wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ) * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification,
+                            z: randomZ + ((wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) ) * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification
                         });
 
                         //O vento tambem empurra um pouco na queda 
-                        this.somarVelocity({
+                        this.somarForce({
                             x: randomX + ( ((wind.deslocationTrend || {}).x || 0) + (wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 0) ),
                             y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 0) ),
                             z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 0) )
@@ -1321,7 +1326,17 @@ export default class ObjectBase extends Base{
 
             }
 
-            
+            // Se existe gravidade em outras direções
+            if( this.scene.gravity.x != 0 )
+            {
+                this.getVelocity().x -= this.scene.gravity.x;
+            }
+
+            // Se existe gravidade em outras direções
+            if( this.scene.gravity.z != 0 )
+            {
+                this.getVelocity().z -= this.scene.gravity.z;
+            }
 
         }
 
@@ -1340,7 +1355,7 @@ export default class ObjectBase extends Base{
         const objeto           : ObjectBase     = this;
         const massaObjeto      : number         = objeto.getMass();
         const scene            : Scene|null     = objeto.scene;
-        const gravity          : number         = ((scene||{}).gravity || 0);
+        const gravity          : Position3D     = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
         const atrito           : number         = (((scene||{}).atrito || 0));
         const arrastoAr        : number         = (((scene||{}).arrastoAr || 0));
         const frameDeltaIntensification: number = (((scene||{}).frameDeltaIntensification || 1));
@@ -1512,7 +1527,7 @@ export default class ObjectBase extends Base{
         const forcaObjeto      : ObjectForce    = objeto.getForce();
         const massaObjeto      : number         = objeto.getMass();
         const scene            : Scene|null     = objeto.scene;
-        const gravity          : number         = ((scene||{}).gravity || 0);
+        const gravity          : Position3D     = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
         const atrito           : number         = (((scene||{}).atrito || 0));
         const arrastoAr        : number         = (((scene||{}).arrastoAr || 0));
         const frameDeltaIntensification: number = (((scene||{}).frameDeltaIntensification || 1));
@@ -1568,7 +1583,7 @@ export default class ObjectBase extends Base{
         /**
         * Calcula o peso do objeto 
         */
-        objeto.objProps.weight = massaObjeto * gravity;
+        objeto.objProps.weight = massaObjeto * gravity.y;
 
         /**
         * Aplica aceleração nos seus eixos
@@ -1724,7 +1739,7 @@ export default class ObjectBase extends Base{
              
              const coeficiente     = 0.5; // pode ser dinâmico
              const massa           = esteObjeto.getMass();
-             const normal          = massa * Math.abs(gravity);
+             const normal          = massa * Math.abs(gravity.y);
              const atritoCalculado = coeficiente * normal;
 
              const deltaVelocidadeX = objetoAbaixoDele.getVelocity().x - esteObjeto.getVelocity().x;

@@ -860,5 +860,80 @@ E criar uma lógica de updateRotacao, pra atualizar o toque do objeto. E lá usa
 
 Ou seja "acelRotacao = ForcaRotacao / massa", Atualizar velocidade, e depois rotação.
 
+# 21/05/2025
+usar delta time na lógica de aceleração e velocidade da movimentação
+Na física de resposta a colisão, 
+Somar força ao invés de velocidade
+E pra somar isso, calcular a força, com base na velocidade
+
+calcular força para tranferir força ao invez de velocidade:
+    se ja sei a velocidade e massa e delta time, .... calcular a força(ou seja, converter velocidade em força),
+    Pra poder usar no somarForce
+    Isso vai criar uma resposta mais realista que leva em conta a massa
+    A lógica do AddForce já tá certa. Oq falta é só tranferir de forma realista
+
+# IDEIA GRAVIDADE:
+Também,Adicionar que a gravidade não vai ser um número, mais sim um vetor, pra caso eu queira simular gravidade pra outras direção
+
+Nesse caso. A gravidade vai ser um vetor, e cada eixo X Y Z dela vai ficar fazendo uma aceleração na velocidade dos objetos também
+
+Também deixar o sistema de colisões mais automático e menos especial.
+
+Talvez fazendo uma lógica de resposta a colisão mais realista e automática ao meu estilo. Mais que elimine a necessidade de tratar quando um objeto caiu especificamente no chão. Ou seja, a própria lógica de colisão pode cuidar disso
+
+
+# IDEIA: CONVERSÂO DE VELOCIDADE DE QUEDA EM FORÇAS X Z
+Ideia: conversão de velocidade de queda em força em outros eixos X e Z
+
+Quando um objeto cair no chão. Pegar a velocidade Y dele, e calcular uma força a ser aplicada nos eixos X e Z, dependendo, pra poder dizer que quando um objeto cai ele pode acabar se movendo para as direções X e Z 
+
+Isso seria uma força a mais, além da influência do vento.
+
+E ao quicar, automaticamente o objeto iria poder de deslocar para X e Z
+
+.. o mesmo pode valer pra Y. Se existe uma velocidade em X e Z, e o objeto bater numa parede. Ele também pode calcular uma força em Y e aplicar pra fazer o objeto subir um pouquinho pra cima. Como uma reação extra além da reação de colisão padrão
+
+
+# Ideia pra melhorar o vento: 
+a física do vento ao invés de somar velocidade ela vai somar forças. Pra ser mais realista
+
+
+# Ideia sobre fisica de rotação
+Ideia: o torque pode também gerar uma força de movimento para X Y Z. Dependendo da direção da força de rotação.
+
+Por exemplo, um peão, se você rodar ele pra direita com muita força, ele vai acabar se movendo pra direita e um pouco pra baixo também, em um movimento que tende a ser circular nesse padrão. Ou seja, ele iria um pouco pra direita e pra baixo, e depois iria acabar subindo denovo, depois indo pra aquela direção inicial(em relação a posição atual), até que o giro pare.
+
+O mesmo também pode valer pra força de movimento. Ela também pode gerar um pouco de força de rotação dependendo
+
+
+# Ideia: tendência de rotação e tendência de queda.*
+
+Nos objetos criar uma matriz que permite eu definir pesos individuais para cada parte da malha do objeto. 
+
+Isso vai permitir que eu aplique uma rotação mais intensa pra certa direção quendo eu aplicar uma força de rotação no Objeto.
+
+E também permitir que eu aplique uma força mais intensa pra algumas direções enquanto o objeto estiver recebendo força de movimento
+
+Talvez isso possa até substituir a propriedade massa.
+Mais pra não precisar substituir eu posso fazer assim:
+
+Todo objeto vai ter a propriedade "massMatrix"
+
+Ideia: se a massa for um número, então, a massMatrix inteira vai ter o mesmo peso pra todas as direções possíveis.
+
+Mais se eu passar um "massMatrix", eu posso definir os valores.
+
+E a Engine sempre vai usar o massMatrix pra aplicar física de forças, ou outras físicas que lidam com velocidade e massa
+
+Pra facilitar o padrão poderia ser que todo objeto vai usar massa como número, e logo o massMatrix vai ser o mesmo valor.
+
+Mais ter métodos e propriedades que permitam eu somar um peso maior a uma das direções e posições dessa matriz
+
+OUTRA IDEIA PRA ISSO: Talvez o massMatrix vai ser tudo zero, e só vai ter valor em pontos especificos que quero que tenha mais enfase, ai isso vai pesar mais além da fisica padrão
+
+
+# IDEIA FORÇAS PERMANTENS:
+Adicionar forças permanentes
+Tanto de rotação quanto de movimento
 
 

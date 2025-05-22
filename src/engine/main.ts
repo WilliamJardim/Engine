@@ -109,7 +109,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                     //Cubo ficar rodando
                     loop: function( propioObjeto:ObjectBase ){
                         //propioObjeto.somarPosicaoX(0.005);
-                        console.log(propioObjeto.getRotationVelocity())
+                        console.log(propioObjeto.velocitySinalyzer)
 
                         if( propioObjeto.objectBelow != null ){
                             //console.log(propioObjeto.getVelocity().x)

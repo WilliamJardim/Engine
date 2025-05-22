@@ -32,6 +32,8 @@ import InputListener from "../input/InputListener.ts";
 import SceneConfig from "../interfaces/SceneConfig.ts";
 import Camera from "./Camera.ts";
 import Position3D from "../interfaces/Position3D.ts";
+import VelocityStatus from "../interfaces/VelocityStatus.ts";
+import ObjectVelocity from "../interfaces/ObjectVelocity.ts";
 
 export default class Scene extends Base{
 
@@ -683,8 +685,10 @@ export default class Scene extends Base{
 
         for( let i = 0 ; i < updatableObjects.length ; i++ )
         {
-            const currentObject = updatableObjects[ i ];
-            const currentObjectIndex = i;
+            const currentObject     : ObjectBase                = updatableObjects[ i ];
+            const velocityBeforeUpdate : ObjectVelocity         = {... currentObject.getVelocity()}; // Faz uma copia sem referencia
+            const velocitySinalyzerBeforeUpdate: VelocityStatus = {... currentObject.velocitySinalyzer}; // Faz uma copia sem referencia
+            const currentObjectIndex : number = i;
 
             /**
             * Atualiza uma tabela com os nomes dos objetos
@@ -709,6 +713,11 @@ export default class Scene extends Base{
                 * Update the object 
                 */
                 currentObject.updateObject( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
+                /**
+                * Atualiza o status da velocidade(em cada eixo, se está aumentando, diminuindo, etc...) 
+                */
+                currentObject.updateVelocitySinalyzer( velocityBeforeUpdate, velocitySinalyzerBeforeUpdate, firstRender, renderizadorPronto, frameDelta, frameNumber );
 
             }catch(e){
                 console.log(e)

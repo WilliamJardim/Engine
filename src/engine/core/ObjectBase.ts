@@ -32,6 +32,7 @@ import ObjectAcceleration from "../interfaces/ObjectAcceleration";
 import ObjectForce from "../interfaces/ObjectForce";
 import Position3D from "../interfaces/Position3D";
 import RotationState from "../interfaces/RotationState";
+import VelocityStatus from "../interfaces/VelocityStatus";
 
 export default class ObjectBase extends Base{
     
@@ -44,6 +45,7 @@ export default class ObjectBase extends Base{
     public movimentState:MovementState;
     public movimentSinalyzer:MovementState; // Indica se o objeto está se movendo para essas direções, quer por força ou de forma direta
     public rotationSinalyzer:RotationState; // Indica a direção de rotação do objeto
+    public velocitySinalyzer:VelocityStatus; // Indica o status da velocidade do objeto para cada eixo
     public physicsState:PhysicsState;
     public scene:Scene|null;
     public isFalling:boolean;
@@ -121,6 +123,12 @@ export default class ObjectBase extends Base{
             down: false
         };
 
+        this.velocitySinalyzer = {
+            x: 'uncalculed',
+            y: 'uncalculed',
+            z: 'uncalculed'
+        }
+
         this.physicsState = this.movimentState.physics || {
 
             // Define a velocidade inicial do objeto
@@ -187,6 +195,66 @@ export default class ObjectBase extends Base{
             left: false
         };
 
+    }
+
+    /**
+    * Atualiza o status da velocidade(em cada eixo, se está aumentando, diminuindo, etc...) 
+    * Isso é um pouco mais complexo por que leva em conta o frame anterior, da forma como eu fiz
+    * A cena chama essa função após CADA ATUALIZAÇÂO DO OBJETO ATUAL, porém, contendo os dados do frame anterior
+    * assim eu consigo saber o que mudou
+    */
+    public updateVelocitySinalyzer( velocityBeforeUpdate: ObjectVelocity,
+                                    velocitySinalyzerBeforeUpdate: VelocityStatus, 
+                                    firstRender:boolean, 
+                                    renderizadorPronto:boolean, 
+                                    frameDelta:number, 
+                                    frameNumber:number 
+    ): void{
+
+        const velocitySinalyzerAtual: VelocityStatus = this.velocitySinalyzer;
+        const velocityAtual         : ObjectVelocity = this.getVelocity();
+
+        // Se o valor do eixo X no frame atual for maior que no frame anterior, então está aumentando
+        if( velocityAtual.x > velocityBeforeUpdate.x ){
+            velocitySinalyzerAtual.x = 'increasing';
+
+        // Se o valor do eixo X no frame atual for menor que no frame anterior, então está diminuindo
+        }else if( velocityAtual.x < velocityBeforeUpdate.x ){
+            velocitySinalyzerAtual.x = 'decreasing';
+
+        // Se o valor do eixo X no frame atual for igual ao do frame anterior, então está a mesma coisa
+        }else if( velocityAtual.x == velocityBeforeUpdate.x ){
+            velocitySinalyzerAtual.x = 'constant'; // Se manteve o mesmo
+        }
+
+
+        // Se o valor do eixo Y no frame atual for maior que no frame anterior, então está aumentando
+        if( velocityAtual.y > velocityBeforeUpdate.y ){
+            velocitySinalyzerAtual.y = 'increasing';
+
+        // Se o valor do eixo X no frame atual for menor que no frame anterior, então está diminuindo
+        }else if( velocityAtual.y < velocityBeforeUpdate.y ){
+            velocitySinalyzerAtual.y = 'decreasing';
+
+        // Se o valor do eixo X no frame atual for igual ao do frame anterior, então está a mesma coisa
+        }else if( velocityAtual.y == velocityBeforeUpdate.y ){
+            velocitySinalyzerAtual.y = 'constant'; // Se manteve o mesmo
+        }
+
+
+        // Se o valor do eixo Z no frame atual for maior que no frame anterior, então está aumentando
+        if( velocityAtual.z > velocityBeforeUpdate.z ){
+            velocitySinalyzerAtual.z = 'increasing';
+
+        // Se o valor do eixo Z no frame atual for menor que no frame anterior, então está diminuindo
+        }else if( velocityAtual.z < velocityBeforeUpdate.z ){
+            velocitySinalyzerAtual.z = 'decreasing';
+
+        // Se o valor do eixo Z no frame atual for igual ao do frame anterior, então está a mesma coisa
+        }else if( velocityAtual.z == velocityBeforeUpdate.z ){
+            velocitySinalyzerAtual.z = 'constant'; // Se manteve o mesmo
+        }
+        
     }
 
     /**

@@ -743,6 +743,18 @@ export default class ObjectBase extends Base{
         this.getRotationVelocity().z += velocidadeRotacao;
     }
 
+    public subtrairRotationVelocityX( velocidadeRotacao:number ){
+        this.getRotationVelocity().x -= velocidadeRotacao;
+    }
+
+    public subtrairRotationVelocityY( velocidadeRotacao:number ){
+        this.getRotationVelocity().y -= velocidadeRotacao;
+    }
+
+    public subtrairRotationVelocityZ( velocidadeRotacao:number ){
+        this.getRotationVelocity().z -= velocidadeRotacao;
+    }
+
     public somarRotationForceX( velocidadeRotacao:number ){
         this.getRotationForce().x += velocidadeRotacao;
     }
@@ -1379,9 +1391,9 @@ export default class ObjectBase extends Base{
         /**
         * Aplica aceleração da velocidade nos seus eixos
         */
-        objeto.somarRotationVelocityX( aceleracaoRotacaoObjeto.x * frameDelta );
-        objeto.somarRotationVelocityY( aceleracaoRotacaoObjeto.y * frameDelta);
-        objeto.somarRotationVelocityZ( aceleracaoRotacaoObjeto.z * frameDelta );
+        objeto.somarRotationVelocityX( aceleracaoRotacaoObjeto.x );
+        objeto.somarRotationVelocityY( aceleracaoRotacaoObjeto.y );
+        objeto.somarRotationVelocityZ( aceleracaoRotacaoObjeto.z );
 
         /**
         * Atualiza a rotação do objeto
@@ -1398,115 +1410,90 @@ export default class ObjectBase extends Base{
         const sinalY              = Math.sign(velocidadeRotacao.y);
         const sinalZ              = Math.sign(velocidadeRotacao.z);
 
+        //Engine.get('CuboRef').somarRotationForceX(1500)
+
+        /**
+        * Para a rotação gradualmente 
+        */
         if( velocidadeRotacao.x != 0 )
-        {   
-            // Vai desacelerando
-            let novaVelocidadeRotacaoX = (velocidadeRotacao.x - 0.4 * sinalX * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
-
-            // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a rodar para traz depois de a força acabar)
-            if(Math.sign(novaVelocidadeRotacaoX) !== sinalX){
-                novaVelocidadeRotacaoX = 0;
-            }
-
-            if( velocidadeRotacao.x > 0 && velocidadeRotacao.x < 0.001 ){
-                velocidadeRotacao.x = 0.001;
-            }
-
-            if( velocidadeRotacao.x < 0 && velocidadeRotacao.x < -0.001 ){
-                velocidadeRotacao.x = -0.001;
-            }
-
-            if( velocidadeRotacao.x > 0 && velocidadeRotacao.x > 99 ){
-                velocidadeRotacao.x = 99;
-            }
-
-            //No ar, ele vai ter arrasto do ar
-            if( objeto.isFalling == true ){
-                objeto.setRotationVelocityX( novaVelocidadeRotacaoX * arrastoAr );
-
-            //No chao, ele vai ter atrito
-            }else{
-                objeto.setRotationVelocityX( novaVelocidadeRotacaoX * atrito );
-            }
-
-            // Indica qual direção o objeto está rodando
+        {
+            /*
+            let novaVelocidadeRotacaoX = 0;
             if( sinalX == 1 ){
-                objeto.rotationSinalyzer.forward = true;
+                novaVelocidadeRotacaoX = objeto.getRotationVelocity().x - (objeto.getMass() * gravity.y * frameDelta);
             }else{
-                objeto.rotationSinalyzer.backward = true;
+                novaVelocidadeRotacaoX = objeto.getRotationVelocity().x + (objeto.getMass() * gravity.y * frameDelta);
             }
-        }   
+            
+            const sinalNovaVelocidadeX   = Math.sign( novaVelocidadeRotacaoX );
+
+            // Se o sinal não mudou, vai subtraindo
+            if( sinalNovaVelocidadeX == sinalX )
+            {
+                objeto.getRotationVelocity().x = novaVelocidadeRotacaoX;
+            }
+            */
+            
+            if( sinalX == 1 ){
+                objeto.subtrairRotationVelocityX( gravity.y );
+            }else{
+                objeto.somarRotationVelocityX( gravity.y );
+            }
+            
+        }
 
         if( velocidadeRotacao.y != 0 )
-        {   
-            let novaVelocidadeRotacaoY = ( velocidadeRotacao.y - 0.4 * sinalY );
-
-            // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
-            if(Math.sign(novaVelocidadeRotacaoY) !== sinalY){
-                novaVelocidadeRotacaoY = 0;
-            }
-
-            if( velocidadeRotacao.y > 0 && velocidadeRotacao.y < 0.001 ){
-                velocidadeRotacao.y = 0.001;
-            }
-
-            if( velocidadeRotacao.y < 0 && velocidadeRotacao.y < -0.001 ){
-                velocidadeRotacao.y = -0.001;
-            }
-
-            if( velocidadeRotacao.y > 0 && velocidadeRotacao.y > 99 ){
-                velocidadeRotacao.y = 99;
-            }
-
-            objeto.setRotationVelocityY( novaVelocidadeRotacaoY * arrastoAr );
-
-            // Indica qual direção o objeto está se movendo
+        {
+            /*
+            let novaVelocidadeRotacaoY = 0;
             if( sinalY == 1 ){
-                objeto.rotationSinalyzer.up = true;
+                novaVelocidadeRotacaoY = objeto.getRotationVelocity().y - (objeto.getMass() * gravity.y * frameDelta);
             }else{
-                objeto.rotationSinalyzer.down = true;
+                novaVelocidadeRotacaoY = objeto.getRotationVelocity().y + (objeto.getMass() * gravity.y * frameDelta);
             }
+            
+            const sinalNovaVelocidadeY   = Math.sign( novaVelocidadeRotacaoY );
 
+            // Se o sinal não mudou, vai subtraindo
+            if( sinalNovaVelocidadeY == sinalY )
+            {
+                objeto.getRotationVelocity().y = novaVelocidadeRotacaoY;
+            }
+            */
+            
+            if( sinalY == 1 ){
+                objeto.subtrairRotationVelocityY( gravity.y );
+            }else{
+                objeto.somarRotationVelocityY( gravity.y  );
+            }
+            
         }
-        
-        //Engine.get('CuboRef').somarRotationForceX(10)
+
         if( velocidadeRotacao.z != 0 )
-        {   
-            let novaVelocidadeRotacaoZ = (velocidadeRotacao.z - 0.4 * sinalZ * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
-
-            // Se o sinal da velocidade é diferente do sinal anterior (pra impedir de começar a andar para traz depois de a força acabar)
-            if(Math.sign(novaVelocidadeRotacaoZ) !== sinalZ){
-                novaVelocidadeRotacaoZ = 0;
-            }
-
-            if( velocidadeRotacao.z > 0 && velocidadeRotacao.z < 0.001 ){
-                velocidadeRotacao.z = 0.001;
-            }
-
-            if( velocidadeRotacao.z < 0 && velocidadeRotacao.z < -0.001 ){
-                velocidadeRotacao.z = -0.001;
-            }
-
-            if( velocidadeRotacao.z > 0 && velocidadeRotacao.z > 99 ){
-                velocidadeRotacao.z = 99;
-            }
-
-            //No ar, ele vai ter arrasto do ar
-            if( objeto.isFalling == true ){
-                objeto.setRotationVelocityZ( novaVelocidadeRotacaoZ * arrastoAr );
-
-            //No chao, ele vai ter atrito
+        {
+            /*
+            let novaVelocidadeRotacaoZ = 0;
+            if( sinalY == 1 ){
+                novaVelocidadeRotacaoZ = objeto.getRotationVelocity().z - (objeto.getMass() * gravity.y * frameDelta);
             }else{
-                objeto.setRotationVelocityZ( novaVelocidadeRotacaoZ * atrito );
+                novaVelocidadeRotacaoZ = objeto.getRotationVelocity().z + (objeto.getMass() * gravity.y * frameDelta);
             }
-
-            // Indica qual direção o objeto está se movendo
+            
+            const sinalNovaVelocidadeZ   = Math.sign( novaVelocidadeRotacaoZ );
+            
+            // Se o sinal não mudou, vai subtraindo
+            if( sinalNovaVelocidadeZ == sinalZ )
+            {
+                objeto.getRotationVelocity().z = sinalNovaVelocidadeZ;
+            }
+            */
+            
             if( sinalZ == 1 ){
-                objeto.rotationSinalyzer.right = true;
+                objeto.subtrairRotationVelocityZ( gravity.y );
             }else{
-                objeto.rotationSinalyzer.left = true;
+                objeto.somarRotationVelocityZ( gravity.y );
             }
-        }  
+        }
 
         //Engine.get('CuboRef').somarRotationForceX(400)
     }

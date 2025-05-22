@@ -937,3 +937,22 @@ Adicionar forças permanentes
 Tanto de rotação quanto de movimento
 
 
+# IDEIA: limitar rotação 22/05/2025
+Se a rotação em algum eixo atingir certo valor, definir para outro valor.
+Pra assim limitar por isso exemplo dentro de 0-360 o valor da rotação
+
+# IDEIA: adicionar um status de velocidade que a Engine controla 22/05/2025
+que pra cada eixo, X Y Z, vai dizer se o valor está aumentando, diminuindo, ou estabilizado.
+
+Pra isso cada eixo vai ser um Interface 
+
+{
+  aumentando: bool,
+  diminuindo: bool,
+  estagnado: bool,
+  status: "aumentando"
+}
+
+Eu posso fazer assim ou por String só.
+
+Aí a cada frame ele vai monitorar a velocidade dos objetos

@@ -2135,7 +2135,7 @@ export default class ObjectBase extends Base{
             /**
             * Atualiza a rotação do objeto 
             */
-            //this.updateRotation( frameDelta );
+            this.updateRotation( frameDelta );
             
 
             /**

@@ -106,4 +106,5 @@ As vezes precisa ficar dando RELOAD na pagina pra acontecer, nem sempre 100% das
 Quando um cubo cai em cima de outro cubo, ele afunda no chão, 
 e dependendo da escala desse outro objeto, ele até some e cai no void
 
- 
+# 22/05/2025
+QUANDO EU DEFINO ARRASTO E ATRITO, O CUBO COMEÇA A TELEPORTAR E A FISICA FICA ZUADA

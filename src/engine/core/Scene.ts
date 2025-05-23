@@ -79,9 +79,9 @@ export default class Scene extends Base{
                             y: -0.1, 
                             z: 0.3},
 
-            deslocationTrend: { x: 5.08, 
-                                y: 1.001, 
-                                z: 1.05},
+            deslocationTrend: { x: 0.08, 
+                                y: 0.01, 
+                                z: 0.05},
 
             intensity   : { x: 0, 
                             y: 0, 
@@ -89,8 +89,8 @@ export default class Scene extends Base{
         };
 
         this.gravity = {x: 0, y: 0.8, z: 0};     // Gravidade que puxa para baixo
-        this.atrito  = 0.7;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
-        this.arrastoAr = 0.8;    // Arrast do ar(afeta objetos com aceleração que estiverem no ar)
+        this.atrito  = 1;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
+        this.arrastoAr = 1;    // Arrast do ar(afeta objetos com aceleração que estiverem no ar)
 
         this.sceneConfig   = sceneConfig;
         this.inputListener = sceneConfig.inputListener;

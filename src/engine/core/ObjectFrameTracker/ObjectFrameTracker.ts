@@ -80,6 +80,56 @@ export default class ObjectFrameTracker{
     }
 
     /**
+    * Retorna os frames passados do objeto 
+    */
+    public getFrames(): ObjectFrameData[]
+    {
+        return this.frameData;
+    }
+
+    /**
+    * Retorna os frames passados do objeto, POR ORDEM DE afterUpdate 
+    */
+    public getFramesAfterEachUpdate(): ObjectFrameData[]
+    {
+        const framesEncontrados: ObjectFrameData[] = [];
+
+        // Para cada registro de frame deste objeto
+        for( let i = 0 ; i < this.frameData.length ; i++ )
+        {
+            const dadosFrame: ObjectFrameData = this.getFrameByIndex( i );
+
+            if( dadosFrame.order == 'afterUpdate' )
+            {
+                framesEncontrados.push( dadosFrame );
+            }
+        }
+
+        return framesEncontrados;
+    }
+
+    /**
+    * Retorna os frames passados do objeto, POR ORDEM DE beforeUpdate 
+    */
+    public getFramesBeforeEachUpdate(): ObjectFrameData[]
+    {
+        const framesEncontrados: ObjectFrameData[] = [];
+
+        // Para cada registro de frame deste objeto
+        for( let i = 0 ; i < this.frameData.length ; i++ )
+        {
+            const dadosFrame: ObjectFrameData = this.getFrameByIndex( i );
+
+            if( dadosFrame.order == 'beforeUpdate' )
+            {
+                framesEncontrados.push( dadosFrame );
+            }
+        }
+
+        return framesEncontrados;
+    }
+
+    /**
     * Consulta os frames passados do objeto 
     */
     public queryFrames(

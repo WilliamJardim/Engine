@@ -1161,15 +1161,6 @@ export default class ObjectBase extends Base{
                         }
                     }
                     
-                    /*
-                    //Diz que o objeto parou de cair
-                    this.isFalling = false;
-                    this.groundY = this.getPosition().y; // A posição da ultima colisão
-                    this.objectBelow = objetoAtualCena;
-                    this.lastObjectBelow = objetoAtualCena;
-                    */
-                    
-
                     if( this.getPosition().y            != undefined && 
                         this.getScale().y               != undefined && 
                         objetoAtualCena.getPosition().y != undefined &&
@@ -1504,23 +1495,6 @@ export default class ObjectBase extends Base{
         */
         if( velocidadeRotacao.x != 0 )
         {
-            /*
-            let novaVelocidadeRotacaoX = 0;
-            if( sinalX == 1 ){
-                novaVelocidadeRotacaoX = objeto.getRotationVelocity().x - (objeto.getMass() * gravity.y * frameDelta);
-            }else{
-                novaVelocidadeRotacaoX = objeto.getRotationVelocity().x + (objeto.getMass() * gravity.y * frameDelta);
-            }
-            
-            const sinalNovaVelocidadeX   = Math.sign( novaVelocidadeRotacaoX );
-
-            // Se o sinal não mudou, vai subtraindo
-            if( sinalNovaVelocidadeX == sinalX )
-            {
-                objeto.getRotationVelocity().x = novaVelocidadeRotacaoX;
-            }
-            */
-            
             if( sinalX == 1 ){
                 objeto.subtrairRotationVelocityX( gravity.y );
             }else{
@@ -1531,50 +1505,15 @@ export default class ObjectBase extends Base{
 
         if( velocidadeRotacao.y != 0 )
         {
-            /*
-            let novaVelocidadeRotacaoY = 0;
-            if( sinalY == 1 ){
-                novaVelocidadeRotacaoY = objeto.getRotationVelocity().y - (objeto.getMass() * gravity.y * frameDelta);
-            }else{
-                novaVelocidadeRotacaoY = objeto.getRotationVelocity().y + (objeto.getMass() * gravity.y * frameDelta);
-            }
-            
-            const sinalNovaVelocidadeY   = Math.sign( novaVelocidadeRotacaoY );
-
-            // Se o sinal não mudou, vai subtraindo
-            if( sinalNovaVelocidadeY == sinalY )
-            {
-                objeto.getRotationVelocity().y = novaVelocidadeRotacaoY;
-            }
-            */
-            
             if( sinalY == 1 ){
                 objeto.subtrairRotationVelocityY( gravity.y );
             }else{
                 objeto.somarRotationVelocityY( gravity.y  );
             }
-            
         }
 
         if( velocidadeRotacao.z != 0 )
         {
-            /*
-            let novaVelocidadeRotacaoZ = 0;
-            if( sinalY == 1 ){
-                novaVelocidadeRotacaoZ = objeto.getRotationVelocity().z - (objeto.getMass() * gravity.y * frameDelta);
-            }else{
-                novaVelocidadeRotacaoZ = objeto.getRotationVelocity().z + (objeto.getMass() * gravity.y * frameDelta);
-            }
-            
-            const sinalNovaVelocidadeZ   = Math.sign( novaVelocidadeRotacaoZ );
-            
-            // Se o sinal não mudou, vai subtraindo
-            if( sinalNovaVelocidadeZ == sinalZ )
-            {
-                objeto.getRotationVelocity().z = sinalNovaVelocidadeZ;
-            }
-            */
-            
             if( sinalZ == 1 ){
                 objeto.subtrairRotationVelocityZ( gravity.y );
             }else{

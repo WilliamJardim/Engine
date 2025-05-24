@@ -956,3 +956,22 @@ Pra isso cada eixo vai ser um Interface
 Eu posso fazer assim ou por String só.
 
 Aí a cada frame ele vai monitorar a velocidade dos objetos
+
+# Ideia: Adicionar também o o positionSynalizer 23/05/2025
+Ideia: Adicionar também o o positionSynalizer que faz exatamente o que o do velocitySinalizer faz. Ou seja, o da posição ele vai monitorar se a posição do objeto está subindo, descendo ou se manteve
+
+Criar isso também pro rotation. 
+
+Porém pro rotation como já fiz o sinalizador de rotação simples eu posso incluir isso como um novo atributo dele
+
+# Ideia: 23/05/2025
+Ideia: pra melhorar a precisão do analisador de velocidade. Talvez implementar que ele não vai comparar o frame anterior. Mais sim 5 frames anteriores. Pra dar um delay maior antes de cada verificação de sentido de velocidade. Isso pode reduzir oscilações
+
+# IDEIA RASTREADOR DE FRAMES 23/05/2025
+Ideia: criar um rastreador de frames. Que vai salvar as informações de todos os objetos da cena.
+Como posição, velocidade, escala, rotação, aceleração, força, e outras.... Ordenado por milissegundos ou por frame, em JSON.
+
+Isso pode ser usado pra monitamentos como o da velocidade e outros.
+
+E pode ser opcional também podendo ser desativado
+

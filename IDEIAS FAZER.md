@@ -975,3 +975,15 @@ Isso pode ser usado pra monitamentos como o da velocidade e outros.
 
 E pode ser opcional também podendo ser desativado
 
+# IDEIA RASTREADOR DE STATUS VELOCIDADE APRIMORADO 24/05/2025
+Problema: no velocitySinalizer, ele é exatamente preciso mais não funciona quando no eixo existe forças sendo aplicadas constantemente, como no caso da gravidade. Por causa disso o jogo não enxerga que uma aplicação de forças contrária a gravidade foi um incremento por exemplo.
+
+Ideia pra corrigir:
+Criar um outro atributo alternativo que vai calcular a tendência do eixo da velocidade.
+
+Ou seja
+
+Se o eixos Y da velocidade tende/está mais crescendo, ou diminuindo, ou constante.
+
+Pra isso posso fazer verificações profundas no histórico de frames do objeto, junto com limiares, e outras técnicas
+

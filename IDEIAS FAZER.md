@@ -987,3 +987,16 @@ Se o eixos Y da velocidade tende/está mais crescendo, ou diminuindo, ou constan
 
 Pra isso posso fazer verificações profundas no histórico de frames do objeto, junto com limiares, e outras técnicas
 
+# IDEIA calcular varias caracteristicas do objeto 24/05/2025
+Por exemplo, calcular diferença(do frame atual MENOS o frame anterior) de:
+    - posição
+    - velocidade
+    - escala
+
+    EX: diffPosicao = posicaoAnterior - posicaoAtual
+
+Refatorar o estilo dos nomes
+por exemplo, ser mais claro e direto
+
+ao invez de chamar velocitySinalyzer, chamar velocityInstantanyAxysDirection, para se refererir ao status de cada eixo, instantaneo ou seja, em relação ao frame anterior.
+

@@ -731,7 +731,7 @@ export default class Scene extends Base{
                 }
 
                 /**
-                * Atualiza o status da velocidade(em cada eixo, se está aumentando, diminuindo, etc...) 
+                * Atualiza o status instantaneo da velocidade(em cada eixo, se está aumentando, diminuindo, etc...) referente ao frame anterior
                 */
                 currentObject.updateVelocitySinalyzer( velocityBeforeUpdate, velocitySinalyzerBeforeUpdate, firstRender, renderizadorPronto, frameDelta, frameNumber );
 

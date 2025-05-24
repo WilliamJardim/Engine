@@ -709,10 +709,26 @@ export default class Scene extends Base{
                 */
                 currentObject.scene = this;
 
+                if( this.sceneConfig.enable_advanced_frame_tracking )
+                {
+                    /**
+                    * Salva o status atual deste objeto ANTES DA ATUALIZACAO frame no historico do objeto 
+                    */
+                    currentObject.frameHistory.logObject( "beforeUpdate", firstRender, renderizadorPronto, frameDelta, frameNumber );
+                }
+
                 /**
                 * Update the object 
                 */
                 currentObject.updateObject( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
+                if( this.sceneConfig.enable_advanced_frame_tracking )
+                {
+                    /**
+                    * Salva o status atual deste objeto APOS A ATUALIZACAO este frame no historico do objeto 
+                    */
+                    currentObject.frameHistory.logObject( "afterUpdate", firstRender, renderizadorPronto, frameDelta, frameNumber );
+                }
 
                 /**
                 * Atualiza o status da velocidade(em cada eixo, se está aumentando, diminuindo, etc...) 

@@ -53,7 +53,8 @@ export default class SceneRenderer{
 
         // Cria a cena da Engine
         this.engineScene = new Scene({
-            inputListener: this.inputListener
+            inputListener: this.inputListener,
+            enable_advanced_frame_tracking: true
             
         }as SceneConfig);
 

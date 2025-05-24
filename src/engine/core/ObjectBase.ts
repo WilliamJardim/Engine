@@ -33,6 +33,7 @@ import ObjectForce from "../interfaces/ObjectForce";
 import Position3D from "../interfaces/Position3D";
 import RotationState from "../interfaces/RotationState";
 import VelocityStatus from "../interfaces/VelocityStatus";
+import ObjectFrameTracker from "./ObjectFrameTracker/ObjectFrameTracker";
 
 export default class ObjectBase extends Base{
     
@@ -42,6 +43,7 @@ export default class ObjectBase extends Base{
     public mesh:any;
     public objProps:ObjectProps;
     public objEvents:ObjectEventLayer;
+    public frameHistory:ObjectFrameTracker;
     public movimentState:MovementState;
     public movimentSinalyzer:MovementState; // Indica se o objeto está se movendo para essas direções, quer por força ou de forma direta
     public rotationSinalyzer:RotationState; // Indica a direção de rotação do objeto
@@ -98,6 +100,18 @@ export default class ObjectBase extends Base{
             objectClasses: [],
             objects: []
         };
+
+        /**
+        * Vai guardar todas as informações relevantes do objeto dentro do array frameData, após cada frame 
+        * Pra poderem ser consultadas posteriormente
+        * o SCENE vai chamar ele
+        */
+        this.frameHistory = new ObjectFrameTracker( this );
+
+        // Se nao for usar monitoramento de frames
+        if( this.objProps.enable_advanced_frame_tracking == false ){
+            this.frameHistory.disable();
+        }
 
         this.movimentState = {
             forward: false,
@@ -181,6 +195,11 @@ export default class ObjectBase extends Base{
         {
             this.onCreate.bind(this)()
         }
+    }
+
+    public debug()
+    {
+        debugger;
     }
 
     /**

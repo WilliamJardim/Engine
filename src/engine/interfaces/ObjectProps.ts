@@ -40,6 +40,8 @@ export default interface ObjectProps{
     events?: ObjectEvents[],
     kick_rate?: number,
 
+    enable_advanced_frame_tracking?: boolean, //Se ativado, vai capturar os dados do objeto a cada frame. Por padrão é ativado
+
     onCreate?:Function|null;
 
     /**

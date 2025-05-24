@@ -7,9 +7,19 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import ObjectPosition from "../../interfaces/ObjectPosition";
+import ObjectScale from "../../interfaces/ObjectScale";
+import ObjectVelocity from "../../interfaces/ObjectVelocity";
+
+export type FrameDataOrder = 'beforeUpdate' | 'afterUpdate';
+
 export default interface ObjectFrameData{
+    order     : FrameDataOrder, //After or Before the object update
     frameDelta: number,
     frameNumber: number,
-    firstRender: number,
-    renderizadorPronto: number
+    firstRender: boolean,
+    renderizadorPronto: boolean,
+    velocity: ObjectVelocity,
+    position: ObjectPosition,
+    scale: ObjectScale
 }

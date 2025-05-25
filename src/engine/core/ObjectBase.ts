@@ -458,11 +458,31 @@ export default class ObjectBase extends Base{
     }
 
     public somarEixo(eixo:string, valor:number): void{
-        (this.getPosition() as ObjectPosition)[eixo] += valor;
+        switch( eixo ){
+            case 'x':
+                this.somarPosicaoX( valor );
+                break;
+            case 'y':
+                this.somarPosicaoY( valor );
+                break;
+            case 'z':
+                this.somarPosicaoZ( valor );
+                break;
+        }
     }
 
     public subtrairEixo(eixo:string, valor:number): void{
-        (this.getPosition() as ObjectPosition)[eixo] -= valor;
+        switch( eixo ){
+            case 'x':
+                this.subtrairPosicaoX( valor );
+                break;
+            case 'y':
+                this.subtrairPosicaoY( valor );
+                break;
+            case 'z':
+                this.subtrairPosicaoZ( valor );
+                break;
+        }
     }
 
     /**
@@ -563,11 +583,31 @@ export default class ObjectBase extends Base{
     }
 
     public somarForceEixo(eixo:string, valor:number): void{
-        (this.getVelocity() as ObjectForce)[eixo] += valor;
+        switch( eixo ){
+            case 'x':
+                this.somarForceX( valor );
+                break;
+            case 'y':
+                this.somarForceY( valor );
+                break;
+            case 'z':
+                this.somarForceZ( valor );
+                break;
+        }
     }
 
     public subtrairForceEixo(eixo:string, valor:number): void{
-        (this.getForce() as ObjectForce)[eixo] -= valor;
+        switch( eixo ){
+            case 'x':
+                this.subtrairForceX( valor );
+                break;
+            case 'y':
+                this.subtrairForceY( valor );
+                break;
+            case 'z':
+                this.subtrairForceZ( valor );
+                break;
+        }
     }
 
     public setForce( forca:ObjectForce ): void{
@@ -614,11 +654,31 @@ export default class ObjectBase extends Base{
     }
 
     public somarAccelerationEixo(eixo:string, valor:number): void{
-        (this.getVelocity() as ObjectVelocity)[eixo] += valor;
+        switch( eixo ){
+            case 'x':
+                this.somarAccelerationX( valor );
+                break;
+            case 'y':
+                this.somarAccelerationY( valor );
+                break;
+            case 'z':
+                this.somarAccelerationZ( valor );
+                break;
+        }
     }
 
     public subtrairAccelerationEixo(eixo:string, valor:number): void{
-        (this.getAcceleration() as ObjectAcceleration)[eixo] -= valor;
+        switch( eixo ){
+            case 'x':
+                this.subtrairAccelerationX( valor );
+                break;
+            case 'y':
+                this.subtrairAccelerationY( valor );
+                break;
+            case 'z':
+                this.subtrairAccelerationZ( valor );
+                break;
+        }
     }
 
     public setAcceleration( acceleration:ObjectAcceleration ): void{
@@ -679,23 +739,39 @@ export default class ObjectBase extends Base{
     }
 
     public somarVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void{
-        if( eixo == 'y' )
-        {
-            // Diz pra Engine que o objeto recebeu uma velocidade externa
-            this.isReceiving_Y_Velocity = isExternal;
-        }
+        switch( eixo ){
+            case 'x':
+                this.somarVelocityX( valor );
+                break;
+            case 'y':
+                // Diz pra Engine que o objeto recebeu uma velocidade externa
+                this.isReceiving_Y_Velocity = isExternal;
 
-        (this.getVelocity() as ObjectVelocity)[eixo] += valor;
+                this.somarVelocityY( valor );
+                break;
+
+            case 'z':
+                this.somarVelocityZ( valor );
+                break;
+        }
     }
 
     public subtrairVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void{
-        if( eixo == 'y' )
-        {
-            // Diz pra Engine que o objeto recebeu uma velocidade externa
-            this.isReceiving_Y_Velocity = isExternal;
-        }
+        switch( eixo ){
+            case 'x':
+                this.subtrairVelocityX( valor );
+                break;
+            case 'y':
+                // Diz pra Engine que o objeto recebeu uma velocidade externa
+                this.isReceiving_Y_Velocity = isExternal;
 
-        (this.getVelocity() as ObjectVelocity)[eixo] -= valor;
+                this.subtrairVelocityY( valor );
+                break;
+
+            case 'z':
+                this.subtrairVelocityZ( valor );
+                break;
+        }
     }
 
     public setVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void{
@@ -727,13 +803,21 @@ export default class ObjectBase extends Base{
     }
 
     public setVelocityEixo( eixo:string, velocidade:number, isExternal:boolean = true ): void{
-        if( eixo == 'y' )
-        {
-            // Diz pra Engine que o objeto recebeu uma velocidade externa
-            this.isReceiving_Y_Velocity = isExternal;
-        }
+        switch( eixo ){
+            case 'x':
+                this.setVelocityX( velocidade );
+                break;
+            case 'y':
+                // Diz pra Engine que o objeto recebeu uma velocidade externa
+                this.isReceiving_Y_Velocity = isExternal;
 
-        (this.getVelocity() as ObjectVelocity)[eixo] = velocidade;
+                this.setVelocityY( velocidade );
+                break;
+
+            case 'z':
+                this.setVelocityZ( velocidade );
+                break;
+        }
     }
 
     /**

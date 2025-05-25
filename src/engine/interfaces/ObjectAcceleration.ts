@@ -8,9 +8,6 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 export default interface ObjectAcceleration{
-    //Aceita acessar indicies
-    [key: string]: any;
-    
     x: number,
     y: number,
     z: number

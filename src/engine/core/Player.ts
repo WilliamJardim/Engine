@@ -81,7 +81,7 @@ export default class Player extends ObjectBase{
             */
             if( this.scene != undefined && this.playerCamera == null )
             {
-                this.playerCamera = new Camera();
+                this.playerCamera = new Camera( this.objProps );
                 this.playerCamera.setAsMain();
                 this.scene.cameras.push( this.playerCamera );
             }

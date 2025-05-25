@@ -1000,7 +1000,7 @@ por exemplo, ser mais claro e direto
 
 ao invez de chamar velocitySinalyzer, chamar velocityInstantanyAxysDirection, para se refererir ao status de cada eixo, instantaneo ou seja, em relação ao frame anterior.
 
-# IDEIA: Simplificar a parte dos Attrachments
+# (JA FIZ) IDEIA: Simplificar a parte dos Attrachments
 Remover a complicação do Name e Id serem usados pra fazer atrachments,
 tentar usar isso de forma mais simples
 

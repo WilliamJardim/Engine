@@ -24,13 +24,13 @@ export default interface ObjectProps{
     havePhysics: boolean,
     position: ObjectPosition,
     rotation: ObjectRotation,
-    scale: ObjectScale|number,
-    scaleReduce: ObjectScale|number,
+    scale: ObjectScale,
+    scaleReduce: ObjectScale,
     collide: boolean,
     collisionEvents: boolean, //Se vai receber eventos de colisão mesmo que ele não colida fisicamente
     traverse: boolean, //Se o objeto pode simplismente passar atravez de outros objetos(ignora a fisica)
     ignoreCollisions: Array<string>,
-    proximityConfig:ProximityBounds|number,
+    proximityConfig:ProximityBounds,
     invisible: boolean,
     opacity: number,
     events: ObjectEvents[],
@@ -59,5 +59,5 @@ export default interface ObjectProps{
             ...
         ]
     */
-    attachments?: Array<string|ObjectAttachment>,
+    attachments: Array<ObjectAttachment>,
 }

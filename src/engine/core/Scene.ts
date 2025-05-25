@@ -696,11 +696,11 @@ export default class Scene extends Base{
             */
             if( currentObject && currentObject.objProps )
             {
-                if( currentObject.objProps.name != undefined ){
+                if( currentObject.objProps.name != "" ){
                     context.objectTableByName[ currentObject.objProps.name ] = currentObject;
                 }
-                if( currentObject.objProps.id != undefined ){
-                    context.objectTableById[ currentObject.objProps.id ] = currentObject;
+                if( currentObject.id != "" ){
+                    context.objectTableById[ currentObject.id ] = currentObject;
                 }
             }
 
@@ -761,11 +761,11 @@ export default class Scene extends Base{
             */
             if( currentCamera && currentCamera.objProps && currentCamera.getStatus() == true )
             {
-                if( currentCamera.objProps.name != undefined ){
+                if( currentCamera.objProps.name != "" ){
                     context.objectTableByName[ currentCamera.objProps.name ] = currentCamera;
                 }
-                if( currentCamera.objProps.id != undefined ){
-                    context.objectTableById[ currentCamera.objProps.id ] = currentCamera;
+                if( currentCamera.id != "" ){
+                    context.objectTableById[ currentCamera.id ] = currentCamera;
                 }
             }
 

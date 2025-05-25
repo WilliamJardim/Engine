@@ -189,17 +189,9 @@ export default class ObjectBase extends Base{
         }
         // Se tem redução de escala
         if( this.objProps.scaleReduce ){
-            if( typeof this.objProps.scaleReduce == 'object' ){
-                this.somarEscalaX( this.objProps.scaleReduce.x || 0 );
-                this.somarEscalaY( this.objProps.scaleReduce.y || 0 );
-                this.somarEscalaZ( this.objProps.scaleReduce.z || 0 );
-
-            //Se o scaleReduce for um numero, todos os eixos sofrem igual
-            }else if(typeof this.objProps.scaleReduce == 'number'){
-                this.somarEscalaX( this.objProps.scaleReduce || 0 );
-                this.somarEscalaY( this.objProps.scaleReduce || 0 );
-                this.somarEscalaZ( this.objProps.scaleReduce || 0 );
-            }
+            this.somarEscalaX( this.objProps.scaleReduce.x || 0 );
+            this.somarEscalaY( this.objProps.scaleReduce.y || 0 );
+            this.somarEscalaZ( this.objProps.scaleReduce.z || 0 );
         }
 
         // Dispara o evento ao criar o objeto
@@ -323,14 +315,7 @@ export default class ObjectBase extends Base{
         }
 
         // Cria o anexo no outro objeto para linkar esteObjeto com ele
-        outroObjeto.objProps.attachments.push({
-            name:esteObjeto.name, 
-            id:esteObjeto.id, 
-
-            //Junto com o resto do attachementConfig
-            ... attachementConfig
-
-        } as ObjectAttachment);
+        outroObjeto.objProps.attachments.push(attachementConfig);
     }
 
     /**
@@ -347,14 +332,7 @@ export default class ObjectBase extends Base{
         }
 
         // Cria o anexo no outro objeto para linkar esteObjeto com ele
-        esteObjeto.objProps.attachments.push({
-            name:objetoAnexar.name, 
-            id:objetoAnexar.id, 
-
-            //Junto com o resto do attachementConfig
-            ... attachementConfig
-
-        } as ObjectAttachment);
+        esteObjeto.objProps.attachments.push(attachementConfig);
     }
 
     /**
@@ -1123,7 +1101,7 @@ export default class ObjectBase extends Base{
                     }
 
                     //Se houve uma proximidade
-                    if( isProximity( esteObjeto, objetoAtualCena, ( esteObjeto.objProps.proximityConfig || 100) ) === true ){
+                    if( isProximity( esteObjeto, objetoAtualCena, esteObjeto.objProps.proximityConfig ) === true ){
                         // Registra as colisões detectadas
                         if(objetoAtualCena.name){
                             esteObjeto.infoProximity.objectNames.push( objetoAtualCena.name );
@@ -1914,111 +1892,69 @@ export default class ObjectBase extends Base{
             */
             for( let anexo of objeto.objProps.attachments )
             {   
-                let idObjetoAnexar:string = '';
-                let tipoAnexo:string = '';
-
-                //Se o anexo for uma string
-                if( typeof anexo == 'string' ){
-                    tipoAnexo = 'string';
-                    idObjetoAnexar = anexo;
-
-                //Se o anexo for um objeto ObjectAttachment
-                }else if( typeof anexo == 'object' ){
-                    tipoAnexo = 'object';
-
-                    if( anexo.id ){
-                        idObjetoAnexar = anexo.id;
-                    }
-                    if( anexo.name ){
-                        idObjetoAnexar = anexo.name;
+                const nomeObjetoAnexar : string     = anexo.name;
+                const objetoAnexar     : ObjectBase = cena.getObjectByName( nomeObjetoAnexar );
+                           
+                // Se ele NÂO DEVE COLIDIR COM O OBOJETO DONO DO ANEXO
+                if( anexo.attacherCollision == false )
+                {
+                    if( objeto.objProps.ignoreCollisions.includes(objetoAnexar.id) == false ){ 
+                        objeto.objProps.ignoreCollisions.push( objetoAnexar.id );
                     }
                 }
-                
-                const objetoAnexar : ObjectBase = cena.getObjectBySomething( idObjetoAnexar );
-                           
-                if( objetoAnexar != undefined && objetoAnexar != null ){
 
-                    //Se for um anexo simples, ele simplismente faz assim mesmo
-                    if( typeof anexo == 'string' ) {
-                        // Acompanha a posição do objeto
-                        objetoAnexar.setPosition( objeto.getPosition() as ObjectPosition );
-                    }
+                // Se tem um ajuste de posição EM RELAÇÂO AO OBJETO, aplica
+                if( anexo.position ){
+                    // Acompanha a posição do objeto
+                    objetoAnexar.setPosition( objeto.getPosition() as ObjectPosition );
 
-                    // Mais opções de anexo
-                    if( typeof anexo == 'object' )
-                    {
-                        // Se ele NÂO DEVE COLIDIR COM O OBOJETO DONO DO ANEXO
-                        if( anexo.attacherCollision != null && anexo.attacherCollision != undefined && anexo.attacherCollision == false )
-                        {
-                            if( objeto.objProps.ignoreCollisions != undefined )
-                            {
-                                if( objeto.objProps.ignoreCollisions.includes(objetoAnexar.id) == false ){ objeto.objProps.ignoreCollisions.push( objetoAnexar.id ) };
-                            }
-                        }
+                    // Alem disso, permite fazer um ajuste de posição
+                    objetoAnexar.somarX( anexo.position.x || 0 );
+                    objetoAnexar.somarY( anexo.position.y || 0 );
+                    objetoAnexar.somarZ( anexo.position.z || 0 );
+                }
 
-                        // Se tem um ajuste de posição EM RELAÇÂO AO OBJETO, aplica
-                        if( anexo.position ){
-                            // Acompanha a posição do objeto
-                            objetoAnexar.setPosition( objeto.getPosition() as ObjectPosition );
+                //Se vai copiar a memsa escala do objeto
+                if( anexo.sameScale == true ){
+                    objetoAnexar.setScale( objeto.getScale() as ObjectScale );
+                }
 
-                            // Alem disso, permite fazer um ajuste de posição
-                            objetoAnexar.somarX( anexo.position.x || 0 );
-                            objetoAnexar.somarY( anexo.position.y || 0 );
-                            objetoAnexar.somarZ( anexo.position.z || 0 );
-                        }
+                // Se tem uma escala especifica para ele
+                if( anexo.scale ){
+                    objetoAnexar.setScale( anexo.scale );
+                }
+                // Se tem redução de escala
+                if( anexo.scaleReduce ){
+                    objetoAnexar.somarEscalaX( anexo.scaleReduce.x || 0 );
+                    objetoAnexar.somarEscalaY( anexo.scaleReduce.y || 0 );
+                    objetoAnexar.somarEscalaZ( anexo.scaleReduce.z || 0 );
+                }
 
-                        //Se vai copiar a memsa escala do objeto
-                        if( anexo.sameScale == true ){
-                            objetoAnexar.setScale( objeto.getScale() as ObjectScale );
-                        }
+                //Se tem rotação
+                if( anexo.rotation ){
+                    objetoAnexar.setRotation( anexo.rotation );
+                }
+                //Se tem incremento de rotação nos eixos
+                if( anexo.rotationIncrement ){
+                    objetoAnexar.somarRotation( anexo.rotationIncrement );
+                }
 
-                        // Se tem uma escala especifica para ele
-                        if( anexo.scale ){
-                            objetoAnexar.setScale( anexo.scale );
-                        }
-                        // Se tem redução de escala
-                        if( anexo.scaleReduce ){
-                            if( typeof anexo.scaleReduce == 'object' ){
-                                objetoAnexar.somarEscalaX( anexo.scaleReduce.x || 0 );
-                                objetoAnexar.somarEscalaY( anexo.scaleReduce.y || 0 );
-                                objetoAnexar.somarEscalaZ( anexo.scaleReduce.z || 0 );
-
-                            //Se o scaleReduce for um numero, todos os eixos sofrem igual
-                            }else if(typeof anexo.scaleReduce == 'number'){
-                                objetoAnexar.somarEscalaX( anexo.scaleReduce || 0 );
-                                objetoAnexar.somarEscalaY( anexo.scaleReduce || 0 );
-                                objetoAnexar.somarEscalaZ( anexo.scaleReduce || 0 );
-                            }
-                        }
-
-                        //Se tem rotação
-                        if( anexo.rotation ){
-                            objetoAnexar.setRotation( anexo.rotation );
-                        }
-                        //Se tem incremento de rotação nos eixos
-                        if( anexo.rotationIncrement ){
-                            objetoAnexar.somarRotation( anexo.rotationIncrement );
-                        }
-
-                        //Se tem outras coisas
-                        if( anexo.traverse ){
-                            objetoAnexar.objProps.traverse = anexo.traverse;
-                        }
-                        if( anexo.collide ){
-                            objetoAnexar.objProps.collide = anexo.collide;
-                        }
-                        if( anexo.havePhysics ){
-                            objetoAnexar.objProps.havePhysics = anexo.havePhysics;
-                            objetoAnexar.physicsState.havePhysics = anexo.havePhysics;
-                        }
-                        if( anexo.collisionEvents ){
-                            objetoAnexar.objProps.collisionEvents = anexo.collisionEvents;
-                        }
-                        if( anexo.invisible ){
-                            objetoAnexar.objProps.invisible = anexo.invisible;
-                        }
-                    }
-
+                //Se tem outras coisas
+                if( anexo.traverse ){
+                    objetoAnexar.objProps.traverse = anexo.traverse;
+                }
+                if( anexo.collide ){
+                    objetoAnexar.objProps.collide = anexo.collide;
+                }
+                if( anexo.havePhysics ){
+                    objetoAnexar.objProps.havePhysics = anexo.havePhysics;
+                    objetoAnexar.physicsState.havePhysics = anexo.havePhysics;
+                }
+                if( anexo.collisionEvents ){
+                    objetoAnexar.objProps.collisionEvents = anexo.collisionEvents;
+                }
+                if( anexo.invisible ){
+                    objetoAnexar.objProps.invisible = anexo.invisible;
                 }
             }        
         }                                               
@@ -2116,7 +2052,7 @@ export default class ObjectBase extends Base{
                             (
                                 objetoAtualCena.id != objeto.id 
                             ) &&
-                            isProximity( objeto, objetoAtualCena, ( objeto.objProps.proximityConfig || 100) ) == true
+                            isProximity( objeto, objetoAtualCena, objeto.objProps.proximityConfig ) == true
                         ){
                             objeto.callEvent( eventosObjeto.whenProximity, {
                                 self     : objeto,

@@ -19,7 +19,7 @@ import ObjectScale from '../../interfaces/ObjectScale';
 * @param objB - Object 2 
 * @returns {boolean} - Se está colidindo ou não
 */
-export default function isCollision(objA:any, objB:any, limites: ProximityBounds|number = 0): boolean{
+export default function isCollision(objA:any, objB:any, limites: ProximityBounds): boolean{
  
     const getLimite = (eixo: 'x' | 'y' | 'z'): number => {
        //Se o limites for um numero, todos os eixos tem o mesmo valor

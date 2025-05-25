@@ -15,9 +15,7 @@ import ObjectScale from "./ObjectScale";
 * Interface usada para criar anexos de objetos 
 */
 export default interface ObjectAttachment{
-    //Pode ser feito tanto por nome quanto por id
-    name?: string;
-    id?: string;
+    name: string;
 
     // Personalizacao
     havePhysics: boolean; //Se o objeto em anexo vai ter fisica ou nao
@@ -31,6 +29,6 @@ export default interface ObjectAttachment{
     rotation: ObjectRotation;
     rotationIncrement: ObjectRotation;
     scale: ObjectScale|number; 
-    scaleReduce: ObjectScale|number; // Se vai ter redução de escala
+    scaleReduce: ObjectScale; // Se vai ter redução de escala
     sameScale: boolean;
 }

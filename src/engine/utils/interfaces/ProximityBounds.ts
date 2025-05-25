@@ -8,7 +8,7 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 export default interface ProximityBounds{
-    x:number|boolean,
-    y:number|boolean,
-    z:number|boolean
+    x:number,
+    y:number,
+    z:number
 }

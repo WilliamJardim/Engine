@@ -23,7 +23,7 @@ import getDistance from "./getDistance";
 export default function isProximity(
     objA: any,
     objB: any,
-    limites: ProximityBounds | number,
+    limites: ProximityBounds,
     consideraEscala: boolean = true,
     usaValorAbsoluto: boolean = true
 ): boolean {

@@ -61,13 +61,14 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 y: 1,
                 z: 500
             },
-            scaleReduce: 0,
+            scaleReduce: { x: 0, y: 0, z: 0 },
             collisionEvents: false,
             ignoreCollisions: [],
-            proximityConfig: 0,
+            proximityConfig: { x: 0, y: 0, z: 0 },
             events: [],
             kick_rate: 0,
-            enable_advanced_frame_tracking: true
+            enable_advanced_frame_tracking: true,
+            attachments: []
         }
     );
 
@@ -90,7 +91,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             invisible: false,
             opacity: 1,
             collide: true,
-            scaleReduce: 3.4,
+            scaleReduce: { x: 3.4, y: 3.4, z: 3.4 },
             ignoreCollisions: [
                 "OtherCube",
                 "AnotherCubo",
@@ -131,8 +132,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             ],
             collisionEvents: false,
             traverse: false,
-            proximityConfig: 0,
-            enable_advanced_frame_tracking: true
+            proximityConfig: { x: 0, y: 0, z: 0 },
+            enable_advanced_frame_tracking: true,
+            attachments: []
         }
     );
 
@@ -154,7 +156,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             invisible: false,
             opacity: 1,
             collide: true,
-            scaleReduce: 3.4,
+            scaleReduce: { x: 3.4, y: 3.4, z: 3.4 },
             ignoreCollisions: [
                 "OtherCube",
                 "AnotherCubo",
@@ -194,8 +196,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             ],
             collisionEvents: false,
             traverse: false,
-            proximityConfig: 0,
-            enable_advanced_frame_tracking: true
+            proximityConfig: { x: 0, y: 0, z: 0 },
+            enable_advanced_frame_tracking: true,
+            attachments: []
         }
     );
 
@@ -217,7 +220,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             invisible: false,
             opacity: 1,
             collide: true,
-            scaleReduce: 2.4,
+            scaleReduce: { x: 2.4, y: 2.4, z: 2.4 },
             ignoreCollisions: [
                 "OtherCube",
                 "AnotherCubo",
@@ -246,8 +249,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             ],
             collisionEvents: false,
             traverse: false,
-            proximityConfig: 0,
-            enable_advanced_frame_tracking: true
+            proximityConfig: { x: 0, y: 0, z: 0 },
+            enable_advanced_frame_tracking: true,
+            attachments: []
         }
     );
 
@@ -268,7 +272,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             invisible: false,
             opacity: 1,
             collide: false,
-            scaleReduce: 1.5,
+            scaleReduce: { x: 1.5, y: 1.5, z: 1.5 },
             ignoreCollisions: [
                 "OtherCube",
                 "AnotherCubo",
@@ -298,9 +302,10 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             ],
             collisionEvents: false,
             traverse: false,
-            proximityConfig: 0,
+            proximityConfig: { x: 0, y: 0, z: 0 },
             kick_rate: 0,
-            enable_advanced_frame_tracking: true
+            enable_advanced_frame_tracking: true,
+            attachments: []
         }
     );
 

@@ -12,7 +12,7 @@ import ObjectForce from "./ObjectForce";
 import ObjectVelocity from "./ObjectVelocity";
 
 export default interface PhysicsState{
-    havePhysics?: boolean,
+    havePhysics: boolean,
     
     force: ObjectForce,
     acceleration: ObjectAcceleration, 

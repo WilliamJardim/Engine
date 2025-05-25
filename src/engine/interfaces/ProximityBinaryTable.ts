@@ -8,7 +8,6 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 import ObjectBase from "../core/ObjectBase";
-import { BinaryMap } from "../types/BinaryMap";
 
 export default interface ProximityBinaryTable{
     byName    : Record<string, Record<string, boolean> >, // byName[nomeObjetoAlvo] =  outra sub-tabela de objetos colidindo com ele

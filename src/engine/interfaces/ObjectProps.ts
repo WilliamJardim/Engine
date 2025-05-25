@@ -16,30 +16,27 @@ import ProximityBounds from '../utils/interfaces/ProximityBounds';
 import ObjectAttachment from './ObjectAttachment';
 
 export default interface ObjectProps{
-    //Aceita acessar indicies
-    [key: string]: any;
-
-    material?: THREE.MeshStandardMaterial | null,
+    material: THREE.MeshStandardMaterial | null,
     mass: number; //A massa do objeto
     type: string, //Se é cubo, plano, esfera, ou modelo personalizado
     name:string,
-    classes?:string[],
-    isNPC?: boolean,
-    havePhysics?: boolean,
-    position?: ObjectPosition,
-    rotation?: ObjectRotation,
-    scale?: ObjectScale|number,
-    collide?: boolean,
-    collisionEvents?: boolean, //Se vai receber eventos de colisão mesmo que ele não colida fisicamente
-    traverse?: boolean, //Se o objeto pode simplismente passar atravez de outros objetos(ignora a fisica)
-    ignoreCollisions?: Array<string>,
-    proximityConfig?:ProximityBounds|number,
-    invisible?: boolean,
-    opacity?: number,
-    events?: ObjectEvents[],
-    kick_rate?: number,
+    classes:string[],
+    havePhysics: boolean,
+    position: ObjectPosition,
+    rotation: ObjectRotation,
+    scale: ObjectScale|number,
+    scaleReduce: ObjectScale|number,
+    collide: boolean,
+    collisionEvents: boolean, //Se vai receber eventos de colisão mesmo que ele não colida fisicamente
+    traverse: boolean, //Se o objeto pode simplismente passar atravez de outros objetos(ignora a fisica)
+    ignoreCollisions: Array<string>,
+    proximityConfig:ProximityBounds|number,
+    invisible: boolean,
+    opacity: number,
+    events: ObjectEvents[],
+    kick_rate: number,
 
-    enable_advanced_frame_tracking?: boolean, //Se ativado, vai capturar os dados do objeto a cada frame. Por padrão é ativado
+    enable_advanced_frame_tracking: boolean, //Se ativado, vai capturar os dados do objeto a cada frame. Por padrão é ativado
 
     onCreate?:Function|null;
 

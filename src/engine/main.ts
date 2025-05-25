@@ -41,7 +41,6 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             material: createMaterialByImage('/textures/grama.jpg'), //The material,
             name: 'Chao',
             classes: ['ground'],
-            isNPC: false,
             havePhysics: false,
             invisible: false,
             opacity: 1,
@@ -61,7 +60,14 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 x: 510,
                 y: 1,
                 z: 500
-            }
+            },
+            scaleReduce: 0,
+            collisionEvents: false,
+            ignoreCollisions: [],
+            proximityConfig: 0,
+            events: [],
+            kick_rate: 0,
+            enable_advanced_frame_tracking: true
         }
     );
 
@@ -77,8 +83,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             type: 'Cube',
             mass: 5,
             material: createMaterialByImage('/textures/1piso.png'), //The material,
+            classes: ['objeto'],
             name: 'MyCube',
-            isNPC: false,
             havePhysics: true,
             kick_rate: 5,
             invisible: false,
@@ -107,23 +113,26 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             events: [
                 {
                     //Cubo ficar rodando
-                    loop: function( propioObjeto:ObjectBase ){
+                    loop: function (propioObjeto: ObjectBase) {
                         //propioObjeto.somarPosicaoX(0.005);
-                        console.log(propioObjeto.velocitySinalyzer)
+                        console.log(propioObjeto.velocitySinalyzer);
 
-                        if( propioObjeto.objectBelow != null ){
+                        if (propioObjeto.objectBelow != null) {
                             //console.log(propioObjeto.getVelocity().x)
-                            
-                            if( f <= 1 ){
+                            if (f <= 1) {
                                 propioObjeto.somarVelocity({ x: 20.5 } as ObjectVelocity);
                                 f++;
                             }
                         }
-                        
-                        
+
+
                     }
                 }
-            ]
+            ],
+            collisionEvents: false,
+            traverse: false,
+            proximityConfig: 0,
+            enable_advanced_frame_tracking: true
         }
     );
 
@@ -138,8 +147,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             type: 'Cube',
             mass: 5,
             material: createMaterialByImage('/textures/1piso.png'), //The material,
+            classes: ['objeto'],
             name: 'Parede',
-            isNPC: false,
             havePhysics: false,
             kick_rate: 5,
             invisible: false,
@@ -168,23 +177,25 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             events: [
                 {
                     //Cubo ficar rodando
-                    loop: function( propioObjeto:ObjectBase ){
+                    loop: function (propioObjeto: ObjectBase) {
                         //propioObjeto.somarPosicaoX(0.005);
                         //console.log(propioObjeto.getVelocity())
-
-                        if( propioObjeto.objectBelow != null ){
+                        if (propioObjeto.objectBelow != null) {
                             //console.log(propioObjeto.getVelocity().x)
-                            
-                            if( f <= 10 ){
+                            if (f <= 10) {
                                 //propioObjeto.somarVelocity({ x: 1.5 } as ObjectVelocity);
                                 //f++;
                             }
                         }
-                        
-                        
+
+
                     }
                 }
-            ]
+            ],
+            collisionEvents: false,
+            traverse: false,
+            proximityConfig: 0,
+            enable_advanced_frame_tracking: true
         }
     );
 
@@ -199,8 +210,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             type: 'Cube',
             mass: 5,
             material: createMaterialByImage('/textures/1piso.png'), //The material,
+            classes: ['objeto'],
             name: 'MyCubeN',
-            isNPC: false,
             havePhysics: true,
             kick_rate: 5,
             invisible: false,
@@ -229,13 +240,14 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             events: [
                 {
                     //Cubo ficar rodando
-                    loop: function( propioObjeto:ObjectBase ){
-                        
-                        
-                    
+                    loop: function (propioObjeto: ObjectBase) {
                     }
                 }
-            ]
+            ],
+            collisionEvents: false,
+            traverse: false,
+            proximityConfig: 0,
+            enable_advanced_frame_tracking: true
         }
     );
 
@@ -250,8 +262,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             type: 'Cube',
             mass: 5,
             material: createMaterialByImage('/textures/1piso.png'), //The material,
+            classes: ['objeto'],
             name: 'MyCube2',
-            isNPC: false,
             havePhysics: false,
             invisible: false,
             opacity: 1,
@@ -261,7 +273,6 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 "OtherCube",
                 "AnotherCubo",
             ],
-            weight: 40,
             position: {
                 x: 0,
                 y: -140,
@@ -280,11 +291,16 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             events: [
                 {
                     //Cubo ficar rodando
-                    loop: function( propioObjeto:ObjectBase ){
+                    loop: function (propioObjeto: ObjectBase) {
                         //console.log(propioObjeto.getPosition(), propioObjeto.getVelocity())
                     }
                 }
-            ]
+            ],
+            collisionEvents: false,
+            traverse: false,
+            proximityConfig: 0,
+            kick_rate: 0,
+            enable_advanced_frame_tracking: true
         }
     );
 

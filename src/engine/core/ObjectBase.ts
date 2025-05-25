@@ -49,6 +49,7 @@ export default class ObjectBase extends Base{
     public rotationSinalyzer:RotationState; // Indica a direção de rotação do objeto
     public velocitySinalyzer:VelocityStatus; // Indica o status da velocidade do objeto para cada eixo
     public physicsState:PhysicsState;
+    public weight:number;
     public scene:Scene|null;
     public isFalling:boolean;
     public groundY:number; // A posição Y do chão atual em relação a este objeto
@@ -70,6 +71,7 @@ export default class ObjectBase extends Base{
         super()
     
         this.objProps  = objProps;
+        this.weight = 0;
 
         this.onCreate  = this.objProps.onCreate || null;
 
@@ -121,14 +123,21 @@ export default class ObjectBase extends Base{
             backward: false,
             right: false,
             left: false,
-            steps: 1
+            up: false,
+            down: false,
+            steps: 1,
+            isJumping: false
         };
 
         this.movimentSinalyzer =  {
             forward: false,
             backward: false,
             right: false,
-            left: false
+            left: false,
+            up: false,
+            down: false,
+            isJumping: false,
+            steps: 1 //Isso aqui nao faz muito sentido, entoa vou remover depois
         };
 
         this.rotationSinalyzer =  {
@@ -146,7 +155,9 @@ export default class ObjectBase extends Base{
             z: 'uncalculed'
         }
 
-        this.physicsState = this.movimentState.physics || {
+        this.physicsState = {
+
+            havePhysics: objProps.havePhysics,
 
             // Define a velocidade inicial do objeto
             velocity     : { x: 0, y: 0, z: 0 } as ObjectVelocity,
@@ -159,8 +170,6 @@ export default class ObjectBase extends Base{
             rotationForce        : { x: 0, y: 0, z: 0 } as ObjectForce
 
         };
-
-        this.physicsState.havePhysics = (this.objProps || {}).havePhysics || false;
 
         this.setMesh( mesh );
 
@@ -214,7 +223,11 @@ export default class ObjectBase extends Base{
             forward: false,
             backward: false,
             right: false,
-            left: false
+            left: false,
+            up: false,
+            down: false,
+            isJumping: false,
+            steps: 1
         };
 
     }
@@ -358,15 +371,7 @@ export default class ObjectBase extends Base{
         if( this.objProps.havePhysics != undefined ){
             this.physicsState.havePhysics = this.objProps.havePhysics;
         }
-    }
-
-    public addProp( propName:string, propValue:any ): void{
-        this.objProps[ propName ] = propValue;
-
-        if( propName == 'havePhysics' ){
-            this.physicsState.havePhysics = propValue;
-        }
-    }   
+    } 
 
     public getProps(): ObjectProps{
         return this.objProps;
@@ -377,7 +382,7 @@ export default class ObjectBase extends Base{
     }
 
     public getWeight(): number{
-        return this.objProps.weight || 0;
+        return this.weight || 0;
     }
 
     public getMesh(): MeshRepresentation{
@@ -1603,7 +1608,7 @@ export default class ObjectBase extends Base{
         /**
         * Calcula o peso do objeto 
         */
-        objeto.objProps.weight = massaObjeto * gravity.y;
+        objeto.weight = massaObjeto * gravity.y;
 
         /**
         * Aplica aceleração nos seus eixos

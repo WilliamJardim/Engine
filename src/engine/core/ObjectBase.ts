@@ -957,15 +957,13 @@ export default class ObjectBase extends Base{
     */
     public updateCollisionState( frameDelta:number ): void{
 
+        const cena        : Scene|null       = this.getScene();
         const esteObjeto  : ObjectBase       = this;
 
-        // Ignora se a cena ou objetos nao existirem
-        if( !this.scene || !this.scene.objects ){
-            return;
-        }
+        // Ignora se a cena nao existir
+        if( !cena ){ return; }
 
-        const objetosCena : ObjectBase[]     = Array<ObjectBase>(0).concat( this.scene!.objects )
-                                                                   .concat( this.scene!.additionalObjects );
+        const objetosCena : ObjectBase[] = cena.objects;
 
         // Zera as informações de colisão com outros objetos
         this.infoCollisions = {
@@ -1170,15 +1168,13 @@ export default class ObjectBase extends Base{
     */
     public updatePhysics( frameDelta:number ): void{
 
+        const cena        : Scene|null       = this.getScene();
         const esteObjeto  : ObjectBase       = this;
 
-        // Ignora se a cena ou objetos nao existirem
-        if( !this.scene || !this.scene.objects ){
-            return;
-        }
+        // Ignora se a cena se nao existir
+        if( !cena ){ return; }
 
-        const objetosCena : ObjectBase[]     = Array<ObjectBase>(0).concat( this.scene!.objects )
-                                                                   .concat( this.scene!.additionalObjects );
+        const objetosCena : ObjectBase[] = cena.objects;
         
         const scene            : Scene|null     = esteObjeto.scene;
         const gravity          : Position3D     = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
@@ -1518,8 +1514,10 @@ export default class ObjectBase extends Base{
     */
     public updateRotation( frameDelta:number ): void{
 
-        // Ignora se a cena ou objetos nao existirem
-        if( !this.scene || !this.scene.objects ){
+        const cena : Scene|null  = this.getScene();
+
+        // Ignora se a cena nao existir
+        if( !cena ){
             return;
         }
 
@@ -1534,8 +1532,7 @@ export default class ObjectBase extends Base{
         const objectPhysicsDesaceleracaoUpdateRate:number = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
         const movimentState:MovementState       = objeto.movimentState;
 
-        const objetosCena : ObjectBase[]  =  Array<ObjectBase>(0).concat( this.scene!.objects )
-                                                                 .concat( this.scene!.additionalObjects );
+        const objetosCena : ObjectBase[] = cena.objects;
 
         const forcaVelocidadeObjeto      = objeto.getRotationForce();
         const aceleracaoRotacaoObjeto    = objeto.getRotationAcceleration();
@@ -1629,8 +1626,7 @@ export default class ObjectBase extends Base{
         const objectPhysicsDesaceleracaoUpdateRate:number = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
         const movimentState:MovementState       = objeto.movimentState;
 
-        const objetosCena : ObjectBase[]  =  Array<ObjectBase>(0).concat( this.scene!.objects )
-                                                                 .concat( this.scene!.additionalObjects );
+        const objetosCena : ObjectBase[] =  this.scene.objects;
 
         /**
         * Salva posição atual do objeto ANTES DE QUALQUER MOVIMENTO OCORRER, como sendo a posição anterior dele,
@@ -1647,19 +1643,19 @@ export default class ObjectBase extends Base{
         * Realiza uma movimentação simples, para cada uma das direções possiveis, sem usar fisica.
         */
         if( movimentState.forward == true ){
-            objeto.somarPosicaoX( (movimentState.steps || 1) * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.somarPosicaoX( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
             objeto.movimentSinalyzer.forward = true;
         }
         if( movimentState.backward == true ){
-            objeto.subtrairPosicaoX( (movimentState.steps || 1) * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.subtrairPosicaoX( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
             objeto.movimentSinalyzer.backward = true;
         }
         if( movimentState.left == true ){
-            objeto.subtrairPosicaoZ( (movimentState.steps || 1)* frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.subtrairPosicaoZ( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
             objeto.movimentSinalyzer.left = true;
         }
         if( movimentState.right == true ){
-            objeto.somarPosicaoZ( (movimentState.steps || 1) * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
+            objeto.somarPosicaoZ( movimentState.steps * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
             objeto.movimentSinalyzer.right = true;
         }
 
@@ -1760,17 +1756,6 @@ export default class ObjectBase extends Base{
         }
         
         //globalContext.get('CuboRef').somarVelocity({x:5})
-        //globalContext.get('CuboRef').somarVelocity({x:1})
-        //globalContext.get('CuboRef').somarVelocity({z:-50})
-        //globalContext.get('CuboRef').somarVelocity({z:-30})
-        //globalContext.get('CaixaRef').somarVelocity({z:-50})
-        //globalContext.get('CuboRefN').somarVelocity({x:15})
-        //globalContext.get('CuboRefN').somarVelocity({x:95})
-        //globalContext.get('CuboRefN').somarVelocity({x:105})
-        //globalContext.get('CuboRefN').somarVelocity({x:45})
-        //globalContext.get('CuboRef').somarVelocity({x:-45})
-        //globalContext.get('CuboRefN').somarVelocity({z:-45})
-        //globalContext.get('CuboRefN').somarVelocity({z:45})
         if( velocidadeZ != 0 )
         {   
             objeto.somarPosicaoZ( velocidadeZ * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
@@ -1964,8 +1949,11 @@ export default class ObjectBase extends Base{
     * Atualiza os eventos internos do objeto 
     */
     public updateEvents( frameDelta:number ): void{
+        const cena    : Scene|null       = this.getScene();
         const objeto  : ObjectBase       = this;
         const eventos : ObjectEventLayer = objeto.objEvents;
+
+        if(!cena){ return; }
 
         //Se tem eventos
         if( eventos )
@@ -1973,8 +1961,7 @@ export default class ObjectBase extends Base{
             // Para cada bloco de evento
             for( let eventosObjeto of eventos.getEventos() )
             {
-                const objetosCena: ObjectBase[] = Array<ObjectBase>(0).concat( this.scene!.objects )
-                                                                      .concat( this.scene!.additionalObjects );
+                const objetosCena: ObjectBase[] = cena.objects;
 
                 // Se o objeto pode colidir e Se existe o evento whenCollide
                 if( (objeto.objProps.collide != false || objeto.objProps.collisionEvents == true) && 

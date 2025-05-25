@@ -176,8 +176,7 @@ export default class SceneRenderer{
 
         const engineScene = this.engineScene;
 
-        const engineSceneObjects = Array<ObjectBase>(0).concat( engineScene.objects )
-                                                       .concat( engineScene.additionalObjects );
+        const engineSceneObjects = engineScene.objects;
 
         /**
         * Para cada objeto da cena da minha engine 

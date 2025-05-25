@@ -52,7 +52,6 @@ export default class Scene extends Base{
     public arrastoAr:number = 1;
 
     public objects:ObjectBase[];
-    public additionalObjects:ObjectBase[];
 
     public cameras:Camera[];
     
@@ -99,9 +98,6 @@ export default class Scene extends Base{
         this.sceneCounter  = new FrameCounter( 1000, 1000 );
 
         this.objects = [];
-
-        //Here, we will put only object references(the instances), to be updated too, if they not are in the objects array.
-        this.additionalObjects = [];
 
         // Cameras
         this.cameras = [];
@@ -681,8 +677,7 @@ export default class Scene extends Base{
 
         const context = this;
 
-        const updatableObjects = Array<ObjectBase>(0).concat( this.objects )
-                                                     .concat( this.additionalObjects );
+        const updatableObjects = this.objects;
 
         for( let i = 0 ; i < updatableObjects.length ; i++ )
         {

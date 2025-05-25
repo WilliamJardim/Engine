@@ -1010,4 +1010,16 @@ Rever se isso existe no C++ de 2011
 # Parar de usar tipagem flexivel
 nas funcoes queryIfObjectIsCollisionOf e outros do ObjectBase do Scene
 
+# Ideia simplificação 25/05/2025
 
+Simplificar o sistema de eventos e outros detalhes colisão, pra não usar tantos IFs alinhados e nem tantos tratamentos || e ternários.
+
+Remover o uso de includes (), trocar por funções minhas ou métodos de verificação nativos e simples 
+
+Criar dois métodos diferentes pra getProximity e getCollisions,.... Um deles pesquisando por ID e o outro verificando a instância de um objeto.
+
+-------------
+Revisar callbacks e eventos externos, pra ver se posso deixar mais compatível com C++, 
+
+Usar classes abstratas para ser equivalente a virtuals.
+Indicar onde uso herança e polimorfismo.

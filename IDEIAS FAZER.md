@@ -1012,9 +1012,9 @@ nas funcoes queryIfObjectIsCollisionOf e outros do ObjectBase do Scene
 
 # Ideia simplificação 25/05/2025
 
-Simplificar o sistema de eventos e outros detalhes colisão, pra não usar tantos IFs alinhados e nem tantos tratamentos || e ternários.
+(JA FIZ) Simplificar o sistema de eventos e outros detalhes colisão, pra não usar tantos IFs alinhados e nem tantos tratamentos || e ternários.
 
-Remover o uso de includes (), trocar por funções minhas ou métodos de verificação nativos e simples 
+(JA FIZ) Remover o uso de includes (), trocar por funções minhas ou métodos de verificação nativos e simples 
 
 Criar dois métodos diferentes pra getProximity e getCollisions,.... Um deles pesquisando por ID e o outro verificando a instância de um objeto.
 

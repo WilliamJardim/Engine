@@ -34,6 +34,9 @@ import Position3D from "../interfaces/Position3D";
 import RotationState from "../interfaces/RotationState";
 import VelocityStatus from "../interfaces/VelocityStatus";
 import ObjectFrameTracker from "./ObjectFrameTracker/ObjectFrameTracker";
+import includeString from "../utils/array/includeString";
+import objectAHaveSomeClassesIgnoredByObjectB from "../utils/array/objectAHaveSomeClassesIgnoredByObjectB";
+import objectANOTHaveSomeClassesIgnoredByObjectB from "../utils/array/objectANOTHaveSomeClassesIgnoredByObjectB";
 
 export default class ObjectBase extends Base{
     
@@ -288,10 +291,7 @@ export default class ObjectBase extends Base{
     * Verifica se este objeto tem uma classe especifica 
     */
     public haveClass( className:string ): boolean{
-        if(this.objProps.classes){
-            return this.objProps.classes.includes(className);
-        }
-        return false;
+        return includeString(this.objProps.classes, className);
     }
 
     /**
@@ -1887,7 +1887,7 @@ export default class ObjectBase extends Base{
                 // Se ele NÂO DEVE COLIDIR COM O OBOJETO DONO DO ANEXO
                 if( anexo.attacherCollision == false )
                 {
-                    if( objeto.objProps.ignoreCollisions.includes(objetoAnexar.id) == false ){ 
+                    if( includeString(objeto.objProps.ignoreCollisions, objetoAnexar.id) == false ){ 
                         objeto.objProps.ignoreCollisions.push( objetoAnexar.id );
                     }
                 }
@@ -1971,34 +1971,25 @@ export default class ObjectBase extends Base{
                         //Se ESTE objeto COLIDIR com o objeto atual da cena 
                         if( 
                             // Se não for ele mesmo
-                            (
-                                objetoAtualCena.id != objeto.id 
-                            ) &&
+                            objetoAtualCena.id != objeto.id &&
+                            
                             //Se o objetoAtualCena tem colisão habilitada
-                            (
-                                (objetoAtualCena.objProps.collide != false || objetoAtualCena.objProps.collisionEvents == true)
-                            ) &&
+                            (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collisionEvents == true) &&
+                            
                             //Se o objeto atual NÂO tiver uma exceção para o objetoAtualCena
                             (
-                                (
-                                    //Se ele inclui o ID ou se não tem ignoreColisions nem entra
-                                    (objeto.objProps.ignoreCollisions?.includes( objetoAtualCena.id ) == false || !objeto.objProps.ignoreCollisions) &&
-                                    //Se ele tem nome o nome é uma excessao ou se ele não tem name, nem entra
-                                    (objetoAtualCena.name && objeto.objProps.ignoreCollisions?.includes( objetoAtualCena.name ) == false || !objetoAtualCena.name) &&
-                                    //Se ele tem classes na excessao ou se ele não tem classes nem entra
-                                    (objeto.objProps.classes?.some((classe:string)=>{ return objetoAtualCena.objProps.ignoreCollisions?.includes( classe ) == true }) == false || !objeto.objProps.classes)
-                                
-                                //Mais se não tiver o ignoreColissions ele não vai aplicar essa excessão
-                                ) || !objeto.objProps.ignoreCollisions
+                                //Se ele inclui o ID ou se não tem ignoreColisions nem entra
+                                includeString(objeto.objProps.ignoreCollisions, objetoAtualCena.id) == false &&
+                                //Se ele tem nome o nome é uma excessao ou se ele não tem name, nem entra
+                                includeString(objeto.objProps.ignoreCollisions, objetoAtualCena.name) == false &&
+                                // Se o ignoreCollisions do outro objeto(o objeto B) NÂO inclui alguma classe que o objeto A tenha
+                                objectANOTHaveSomeClassesIgnoredByObjectB( objeto, objetoAtualCena )
                             ) &&
                             //Se o objetoAtualCena NÂO tiver uma exceção para o objeto
-                            (
-                                (
-                                    (objetoAtualCena.objProps.ignoreCollisions?.includes( objeto.id ) == false || !objetoAtualCena.objProps.ignoreCollisions) &&
-                                    (objeto.name && objetoAtualCena.objProps.ignoreCollisions?.includes( objeto.name ) == false || !objeto.name) &&
-                                    (objetoAtualCena.objProps.classes && objetoAtualCena.objProps.classes.some((classe:string)=>{ return objetoAtualCena.objProps.ignoreCollisions?.includes( classe ) == true }) == false || !objetoAtualCena.objProps.classes)
-                                    //Mais se não tiver o ignoreColissions ele não vai aplicar essa excessão
-                                ) || !objetoAtualCena.objProps.ignoreCollisions
+                            (   
+                                includeString(objetoAtualCena.objProps.ignoreCollisions, objeto.id) == false && 
+                                includeString(objetoAtualCena.objProps.ignoreCollisions, objeto.name) == false &&
+                                objectANOTHaveSomeClassesIgnoredByObjectB( objetoAtualCena, objeto )
                             ) &&
                             /** Se houve uma colisão de fato **/
                             (
@@ -2024,9 +2015,7 @@ export default class ObjectBase extends Base{
                     for( let objetoAtualCena of objetosCena ){
                         if( 
                             // Se não for ele mesmo
-                            (
-                                objetoAtualCena.id != objeto.id 
-                            ) &&
+                            objetoAtualCena.id != objeto.id &&
                             isProximity( objeto, objetoAtualCena, objeto.objProps.proximityConfig ) == true
                         ){
                             objeto.callEvent( eventosObjeto.whenProximity, {

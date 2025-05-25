@@ -957,13 +957,13 @@ export default class ObjectBase extends Base{
     */
     public updateCollisionState( frameDelta:number ): void{
 
-        const cena        : Scene|null       = this.getScene();
+        const scene       : Scene|null       = this.getScene();
         const esteObjeto  : ObjectBase       = this;
 
         // Ignora se a cena nao existir
-        if( !cena ){ return; }
+        if( !scene ){ return; }
 
-        const objetosCena : ObjectBase[] = cena.objects;
+        const objetosCena : ObjectBase[] = scene.objects;
 
         // Zera as informações de colisão com outros objetos
         this.infoCollisions = {
@@ -1168,15 +1168,13 @@ export default class ObjectBase extends Base{
     */
     public updatePhysics( frameDelta:number ): void{
 
-        const cena        : Scene|null       = this.getScene();
         const esteObjeto  : ObjectBase       = this;
+        const scene       : Scene|null     = esteObjeto.scene;
 
         // Ignora se a cena se nao existir
-        if( !cena ){ return; }
+        if( !scene ){ return; }
 
-        const objetosCena : ObjectBase[] = cena.objects;
-        
-        const scene            : Scene|null     = esteObjeto.scene;
+        const objetosCena : ObjectBase[] = scene.objects;
         const gravity          : Position3D     = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
         const frameDeltaIntensification: number = (((scene||{}).frameDeltaIntensification || 1));
         const objectPhysicsUpdateRate:number    = (((scene||{}).objectPhysicsUpdateRate || 10));
@@ -1514,16 +1512,15 @@ export default class ObjectBase extends Base{
     */
     public updateRotation( frameDelta:number ): void{
 
-        const cena : Scene|null  = this.getScene();
+        const objeto : ObjectBase  = this;
+        const scene  : Scene|null  = objeto.getScene();
 
         // Ignora se a cena nao existir
-        if( !cena ){
+        if( !scene ){
             return;
         }
 
-        const objeto           : ObjectBase     = this;
         const massaObjeto      : number         = objeto.getMass();
-        const scene            : Scene|null     = objeto.scene;
         const gravity          : Position3D     = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
         const atrito           : number         = (((scene||{}).atrito || 0));
         const arrastoAr        : number         = (((scene||{}).arrastoAr || 0));
@@ -1532,7 +1529,7 @@ export default class ObjectBase extends Base{
         const objectPhysicsDesaceleracaoUpdateRate:number = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
         const movimentState:MovementState       = objeto.movimentState;
 
-        const objetosCena : ObjectBase[] = cena.objects;
+        const objetosCena : ObjectBase[] = scene.objects;
 
         const forcaVelocidadeObjeto      = objeto.getRotationForce();
         const aceleracaoRotacaoObjeto    = objeto.getRotationAcceleration();
@@ -1607,11 +1604,6 @@ export default class ObjectBase extends Base{
     */
     public updateMovement( frameDelta:number ): void{
 
-        // Ignora se a cena ou objetos nao existirem
-        if( !this.scene || !this.scene.objects ){
-            return;
-        }
-
         const objeto           : ObjectBase     = this;
         const velocidadeObjeto : ObjectVelocity = objeto.getVelocity();
         const aceleracaoObjeto : ObjectAcceleration = objeto.getAcceleration();
@@ -1626,7 +1618,12 @@ export default class ObjectBase extends Base{
         const objectPhysicsDesaceleracaoUpdateRate:number = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
         const movimentState:MovementState       = objeto.movimentState;
 
-        const objetosCena : ObjectBase[] =  this.scene.objects;
+        // Ignora se a cena nao existir
+        if( !scene ){
+            return;
+        }
+
+        const objetosCena : ObjectBase[] =  scene.objects;
 
         /**
         * Salva posição atual do objeto ANTES DE QUALQUER MOVIMENTO OCORRER, como sendo a posição anterior dele,
@@ -1873,9 +1870,9 @@ export default class ObjectBase extends Base{
     public updateAttachments( frameDelta:number ): void{
 
         const objeto  : ObjectBase = this;
-        const cena    : Scene|null = objeto.getScene();
+        const scene   : Scene|null = objeto.getScene();
 
-        if(!cena){ return; }
+        if(!scene){ return; }
 
         if( objeto.objProps.attachments )
         {                                                
@@ -1885,7 +1882,7 @@ export default class ObjectBase extends Base{
             for( let anexo of objeto.objProps.attachments )
             {   
                 const nomeObjetoAnexar : string     = anexo.name;
-                const objetoAnexar     : ObjectBase = cena.getObjectByName( nomeObjetoAnexar );
+                const objetoAnexar     : ObjectBase = scene.getObjectByName( nomeObjetoAnexar );
                            
                 // Se ele NÂO DEVE COLIDIR COM O OBOJETO DONO DO ANEXO
                 if( anexo.attacherCollision == false )
@@ -1949,11 +1946,11 @@ export default class ObjectBase extends Base{
     * Atualiza os eventos internos do objeto 
     */
     public updateEvents( frameDelta:number ): void{
-        const cena    : Scene|null       = this.getScene();
+        const scene   : Scene|null       = this.getScene();
         const objeto  : ObjectBase       = this;
         const eventos : ObjectEventLayer = objeto.objEvents;
 
-        if(!cena){ return; }
+        if(!scene){ return; }
 
         //Se tem eventos
         if( eventos )
@@ -1961,7 +1958,7 @@ export default class ObjectBase extends Base{
             // Para cada bloco de evento
             for( let eventosObjeto of eventos.getEventos() )
             {
-                const objetosCena: ObjectBase[] = cena.objects;
+                const objetosCena: ObjectBase[] = scene.objects;
 
                 // Se o objeto pode colidir e Se existe o evento whenCollide
                 if( (objeto.objProps.collide != false || objeto.objProps.collisionEvents == true) && 

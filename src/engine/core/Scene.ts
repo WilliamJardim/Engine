@@ -231,7 +231,7 @@ export default class Scene extends Base{
     * @param objB 
     * @returns {boolean}
     */
-    public queryIfObjectIsProximityOf( objA: ObjectBase|string, objB: ObjectBase|string, limites?:ProximityBounds|number|undefined ): boolean{
+    public queryIfObjectIsProximityOf( objA: ObjectBase|string, objB: ObjectBase|string, limites:ProximityBounds ): boolean{
 
         // Se vai usar o calculo da propia Engine mesmo, nos limites que ela ja calculou
         if( limites == undefined ){
@@ -288,7 +288,7 @@ export default class Scene extends Base{
     * @param objB 
     * @returns {boolean}
     */
-    public queryIfObjectIsCollisionOf( objA: ObjectBase|string, objB: ObjectBase|string, limites?:ProximityBounds|number|undefined ): boolean{
+    public queryIfObjectIsCollisionOf( objA: ObjectBase|string, objB: ObjectBase|string, limites:ProximityBounds ): boolean{
 
         // Se vai usar o calculo da propia Engine mesmo, nos limites que ela ja calculou
         if( limites == undefined ){
@@ -461,7 +461,7 @@ export default class Scene extends Base{
                 {
                    // Para cada objeto da cena, verifica se ele colidiu com o objeto atual, para aplicar a tranferencia e perca de velocidade 
                    //Se houve colisão com ele
-                   if( objetoA.isCollisionOf(objetoB, 0.001) == true && 
+                   if( objetoA.isCollisionOf(objetoB, {x: 0.001, y: 0.001, z: 0.001} ) == true && 
                        //Se nao for o objeto abaixo dele
                        (objetoA.objectBelow == null || objetoB.id != objetoA.objectBelow.id) &&
                        //Se nao for ele mesmo

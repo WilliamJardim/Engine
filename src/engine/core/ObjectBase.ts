@@ -1024,7 +1024,7 @@ export default class ObjectBase extends Base{
                 ){
     
                     //Se houve uma colisão(usando Bounding Box)
-                    if( isCollision( esteObjeto, objetoAtualCena, 0.5 ) === true ){
+                    if( isCollision( esteObjeto, objetoAtualCena, {x: 0.5, y: 0.5, z: 0.5} ) === true ){
                         // Registra as colisões detectadas
                         if(objetoAtualCena.name){
                             esteObjeto.infoCollisions.objectNames.push( objetoAtualCena.name );
@@ -1207,8 +1207,15 @@ export default class ObjectBase extends Base{
                 if( (objetoAtualCena.objProps.traverse != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
+                     
                      //no ar, o objeto tem um alcançe de colisão maior, pra evitar o bug dele não conseguir detectar o objeto para ele parar em cima ao cair
-                     isCollision( this, objetoAtualCena, (this.isFalling == true ? 0.8 : 0.5) ) === true 
+                     isCollision( this, 
+                                  objetoAtualCena, 
+                                  (
+                                    this.isFalling == true ? {x: 0.8, y: 0.8, z: 0.8} 
+                                                           : {x: 0.5, y: 0.5, z: 0.5}
+                                  ) 
+                     ) === true 
                 ){
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
@@ -2027,7 +2034,7 @@ export default class ObjectBase extends Base{
                             ) &&
                             /** Se houve uma colisão de fato **/
                             (
-                                isCollision( objeto, objetoAtualCena, 0.5 ) == true 
+                                isCollision( objeto, objetoAtualCena, {x: 0.5, y: 0.5, z: 0.5} ) == true 
                             )
                         ) {
                             objeto.callEvent( eventosObjeto.whenCollide, {
@@ -2154,7 +2161,7 @@ export default class ObjectBase extends Base{
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isCollisionOf( outroObjeto:ObjectBase|string, limites?:ProximityBounds|number|undefined ): boolean{
+    isCollisionOf( outroObjeto:ObjectBase|string, limites:ProximityBounds ): boolean{
         if(this.scene){
             return this.scene.queryIfObjectIsCollisionOf( this, outroObjeto, limites );
         }
@@ -2164,7 +2171,7 @@ export default class ObjectBase extends Base{
     /**
     * Traz todos os objetos que estão colidindo com ESTE OBJETO
     */
-    getCollisions( limites?:ProximityBounds|number|undefined ): ObjectBase[]{
+    getCollisions( limites:ProximityBounds ): ObjectBase[]{
         const esteObjeto : ObjectBase = this;
 
         //Se não tem limites personalizados
@@ -2189,7 +2196,7 @@ export default class ObjectBase extends Base{
     /**
     * Traz todos os objetos que estão proximos DESTE OBJETO
     */
-    getProximity( limites?:ProximityBounds|number|undefined ): ObjectBase[]{
+    getProximity( limites:ProximityBounds ): ObjectBase[]{
         const esteObjeto : ObjectBase = this;
 
         //Se não tem limites personalizados
@@ -2216,7 +2223,7 @@ export default class ObjectBase extends Base{
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isProximityOf( outroObjeto:ObjectBase|string, limites?:ProximityBounds|number|undefined ): boolean{
+    isProximityOf( outroObjeto:ObjectBase|string, limites:ProximityBounds ): boolean{
         if(this.scene){
             return this.scene.queryIfObjectIsProximityOf( this, outroObjeto, limites );
         }

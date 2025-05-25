@@ -25,4 +25,16 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    parser: "@typescript-eslint/parser",
+    plugins: ["@typescript-eslint"],
+    extends: ["plugin:@typescript-eslint/recommended"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/explicit-module-boundary-types": "error",
+      "@typescript-eslint/explicit-function-return-type": "error",
+      "@typescript-eslint/no-unused-vars": "error",
+      "no-console": "error"
+    }
+  }
 )

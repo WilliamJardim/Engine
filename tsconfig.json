@@ -3,5 +3,11 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+  "compilerOptions": {
+    "target": "ES5",
+    "lib": ["ES5"],
+    "strict": true,
+    "noImplicitAny": true
+  }
 }

@@ -1006,3 +1006,8 @@ tentar usar isso de forma mais simples
 
 # Revisar o sistema de eventos e callbacks dos objetos
 Rever se isso existe no C++ de 2011
+
+# Parar de usar tipagem flexivel
+nas funcoes queryIfObjectIsCollisionOf e outros do ObjectBase do Scene
+
+

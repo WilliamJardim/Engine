@@ -2130,60 +2130,90 @@ export default class ObjectBase extends Base{
     * @returns {boolean}
     */
     isCollisionOf( outroObjeto:ObjectBase|string, limites:ProximityBounds ): boolean{
-        if(this.scene){
-            return this.scene.queryIfObjectIsCollisionOf( this, outroObjeto, limites );
+        let objetosColidindo : ObjectBase[] = [];
+        let esteObjeto       : ObjectBase  = this;
+        let scene            : Scene|null  = esteObjeto.getScene();
+
+        if(scene)
+        {
+            return scene.queryIfObjectIsCollisionOf( this, outroObjeto, limites );
         }
+
         return false;
     }
 
     /**
     * Traz todos os objetos que estão colidindo com ESTE OBJETO
     */
-    getCollisions( limites:ProximityBounds ): ObjectBase[]{
-        const esteObjeto : ObjectBase = this;
+    getCollisions( limites:ProximityBounds = {x:0, y:0, z:0}, 
+                   recalculate:boolean = false  
+
+    ): ObjectBase[]
+    {
+        let objetosColidindo : ObjectBase[] = [];
+        let esteObjeto       : ObjectBase  = this;
+        let scene            : Scene|null  = esteObjeto.getScene();
 
         //Se não tem limites personalizados
-        if( limites == undefined ){
-            return this.infoCollisions.objects;
+        if( recalculate == false ){
+            objetosColidindo = [... this.infoCollisions.objects]; // Faz uma copia do array
 
         //Se tem limites de zona de colisão personalizado
         }else{
-            if(this.scene){
+            if(scene)
+            {
                 //Traz só os objetos que estão colidindo dentro da zona definida no "limites"
-                return this.scene.objects.filter(
-                    function( objetoAtual:ObjectBase ){ 
-                        return isCollision( esteObjeto, objetoAtual, limites ) == true && esteObjeto.id !== objetoAtual.id;
+                for( let i = 0 ; i < scene.objects.length ; i++ )
+                {
+                    const objetoAtual : ObjectBase = scene.objects[i];
+
+                    // Se está colidindo
+                    if( isCollision( esteObjeto, objetoAtual, limites ) == true && esteObjeto.id !== objetoAtual.id )
+                    {
+                        objetosColidindo.push( objetoAtual );
                     }
-                );
+                }
             }
         }
 
-        return [];
+        return objetosColidindo;
     }
 
     /**
     * Traz todos os objetos que estão proximos DESTE OBJETO
     */
-    getProximity( limites:ProximityBounds ): ObjectBase[]{
-        const esteObjeto : ObjectBase = this;
+    getProximity( limites:ProximityBounds = {x:0, y:0, z:0}, 
+                  recalculate:boolean = false 
+                  
+    ): ObjectBase[]
+    {
+        let objetosColidindo : ObjectBase[] = [];
+        let esteObjeto       : ObjectBase  = this;
+        let scene            : Scene|null  = esteObjeto.getScene();
 
         //Se não tem limites personalizados
-        if( limites == undefined ){
-            return this.infoProximity.objects;
+        if( recalculate == false ){
+            objetosColidindo = [...this.infoProximity.objects]; // Faz uma copia do Array
 
         //Se tem limites de zona de colisão personalizado
         }else{
-            if(this.scene){
-                //Traz só os objetos que estão colidindo dentro da zona definida no "limites"
-                return this.scene.objects.filter(
-                    function( objetoAtual:ObjectBase ){ 
-                        return isProximity( esteObjeto, objetoAtual, limites ) && esteObjeto.id !== objetoAtual.id;
+            if(scene)
+            {
+                //Traz só os objetos que estão proximos dentro da zona definida no "limites"
+                for( let i = 0 ; i < scene.objects.length ; i++ )
+                {
+                    const objetoAtual : ObjectBase = scene.objects[i];
+
+                    // Se está colidindo
+                    if( isProximity( esteObjeto, objetoAtual, limites ) && esteObjeto.id !== objetoAtual.id )
+                    {
+                        objetosColidindo.push( objetoAtual );
                     }
-                );
+                }
             }
         }
 
-        return [];
+        return objetosColidindo;
     }
 
     /**
@@ -2192,9 +2222,15 @@ export default class ObjectBase extends Base{
     * @returns {boolean}
     */
     isProximityOf( outroObjeto:ObjectBase|string, limites:ProximityBounds ): boolean{
-        if(this.scene){
-            return this.scene.queryIfObjectIsProximityOf( this, outroObjeto, limites );
+        let objetosColidindo : ObjectBase[] = [];
+        let esteObjeto       : ObjectBase  = this;
+        let scene            : Scene|null  = esteObjeto.getScene();
+
+        if(scene)
+        {
+            return scene.queryIfObjectIsProximityOf( this, outroObjeto, limites );
         }
+
         return false;
     }
 }

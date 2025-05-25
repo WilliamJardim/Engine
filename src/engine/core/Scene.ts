@@ -360,6 +360,9 @@ export default class Scene extends Base{
     * Remove um objeto da cena
     */
     public remove( objetoRemover:ObjectBase|ImaginaryObject ): void{
+        const scene            : Scene|null   = this;
+        const novosObjetosCena : ObjectBase[] = [];
+
         //Se tem o evento whenDestroy, executa ele
         if( objetoRemover.objEvents )
         {   
@@ -373,9 +376,18 @@ export default class Scene extends Base{
         }
 
         //Remove o objeto da cena
-        this.objects = this.objects.filter(function( obj:ObjectBase|ImaginaryObject ){
-            if( obj.id != objetoRemover.id ){ return obj };
-        });
+        for( let i = 0 ; i < scene.objects.length ; i++ )
+        {
+            const objetoAtual : ObjectBase = scene.objects[i];
+
+            // Se nao for o objeto que queremos remover, mantem
+            if( objetoAtual.id != objetoRemover.id )
+            { 
+                novosObjetosCena.push( objetoAtual );
+            }
+        }
+
+        this.objects = novosObjetosCena;
     }
 
     //Função que chama o loop "animate"

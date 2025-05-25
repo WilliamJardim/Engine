@@ -1017,6 +1017,15 @@ nas funcoes queryIfObjectIsCollisionOf e outros do ObjectBase do Scene
 (JA FIZ) Remover o uso de includes (), trocar por funções minhas ou métodos de verificação nativos e simples 
 
 Criar dois métodos diferentes pra getProximity e getCollisions,.... Um deles pesquisando por ID e o outro verificando a instância de um objeto.
+Pra isso na cena, vou precisar separar e simplificar os métodos 
+ - queryIfObjectIsProximityOf
+ - queryIfObjectIsCollisionOf
+
+Nos lugares onde usa ObjectBase|ImaginaryObject simplificar tambem, pra não ser flexivel, pois isso pode confundir
+ver como vou fazer pra deixar isso melhor, talvez até criar métodos separados tambem
+
+   - OUTRA POSSIVEL IDEIA: Todo objeto vai ter um Mesh padrão, mais esse Mesh pode estar invisvel e eu posso substituir
+
 
 -------------
 Revisar callbacks e eventos externos, pra ver se posso deixar mais compatível com C++, 

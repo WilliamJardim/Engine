@@ -21,9 +21,8 @@ export default interface ObjectProps{
 
     material?: THREE.MeshStandardMaterial | null,
     mass: number; //A massa do objeto
-    weight?:number; // O peso do objeto (calculado automaticamente)
     type: string, //Se é cubo, plano, esfera, ou modelo personalizado
-    name?:string,
+    name:string,
     classes?:string[],
     isNPC?: boolean,
     havePhysics?: boolean,

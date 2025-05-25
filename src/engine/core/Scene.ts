@@ -67,12 +67,11 @@ export default class Scene extends Base{
     /**
     * Configurações do vento para física
     */
-    public wind:Wind|null;
+    public wind:Wind;
+    public haveWind:boolean;
 
     constructor( sceneConfig:SceneConfig ){
         super();
-
-        this.wind = null;
     
         this.wind = {
             orientation : { x: 0.5, 
@@ -83,10 +82,12 @@ export default class Scene extends Base{
                                 y: 0.01, 
                                 z: 0.05},
 
-            intensity   : { x: 0, 
-                            y: 0, 
-                            z: 0 }
+            intensity   : { x: 1, 
+                            y: 1, 
+                            z: 1 }
         };
+
+        this.haveWind = sceneConfig.haveWind;
 
         this.gravity = {x: 0, y: 0.8, z: 0};     // Gravidade que puxa para baixo
         this.atrito  = 1;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
@@ -325,21 +326,21 @@ export default class Scene extends Base{
     /**
     * Traz um objeto pelo ID
     */
-    public getObjectByID( objectId:string ): ObjectBase|ImaginaryObject|null{
-        return this.objectTableById[ objectId ] || null;
+    public getObjectByID( objectId:string ): ObjectBase|ImaginaryObject{
+        return this.objectTableById[ objectId ];
     }
 
     /**
     * Traz um objeto pelo Nome
     */
-    public getObjectByName( objectId:string ): ObjectBase|ImaginaryObject|null{
-        return this.objectTableByName[ objectId ] || null;
+    public getObjectByName( objectId:string ): ObjectBase|ImaginaryObject{
+        return this.objectTableByName[ objectId ];
     }
 
     /**
     * Traz um objeto pelo Nome ou ID
     */
-    public getObjectBySomething( objectIdOrName:string ): ObjectBase|ImaginaryObject|null{
+    public getObjectBySomething( objectIdOrName:string ): ObjectBase|ImaginaryObject{
         return this.getObjectByID(objectIdOrName) || this.getObjectByName(objectIdOrName);
     }
 

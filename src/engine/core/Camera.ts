@@ -17,7 +17,7 @@ import Scene from "./Scene";
 */
 export default class Camera extends ObjectBase{
     public tipo:string = 'Camera';
-    public name:string|undefined;
+    public name:string;
     public objEvents:ObjectEventLayer;
     public id:string;
     public objProps:ObjectProps;
@@ -25,11 +25,11 @@ export default class Camera extends ObjectBase{
     public ativo:boolean = true;
     public mainCamera:boolean = false;
 
-    constructor(objProps?:ObjectProps){
+    constructor(objProps:ObjectProps){
         super( null, objProps );
         this.objProps    = objProps || {} as ObjectProps;
         this.id          = (this.objProps.name||'imaginario') + String(new Date().getTime());
-        this.name        = this.objProps.name || undefined;
+        this.name        = this.objProps.name;
         this.scene       = null;
         this.objEvents   = new ObjectEventLayer(this.objProps.events || []);
 

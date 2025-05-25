@@ -38,7 +38,7 @@ import ObjectFrameTracker from "./ObjectFrameTracker/ObjectFrameTracker";
 export default class ObjectBase extends Base{
     
     public tipo:string = 'ObjectBase';
-    public name?:string|undefined;
+    public name:string;
     public id:string;
     public mesh:any;
     public objProps:ObjectProps;
@@ -64,16 +64,18 @@ export default class ObjectBase extends Base{
     public lastPosition:ObjectPosition = {x: 0, y: 0, z: 0};
 
     constructor(mesh: any, 
-                objProps?:ObjectProps
+                objProps:ObjectProps
             
     ){
         super()
     
-        this.objProps  = objProps || ({} as ObjectProps);
+        this.objProps  = objProps;
 
         this.onCreate  = this.objProps.onCreate || null;
 
         this.groundY = 0;
+
+        // objectBelow é um ponteiro, ele pode ser nulo na criação, mais ele será vinculado dinamicamente pela propia logica da engine
         this.objectBelow = null;
         this.lastObjectBelow = null;
         this.isMovimentoTravadoPorColisao = false; //Se o objeto atual esta travado por que esta tentando se mover para uma direção em que ele está colidindo com outro objeto
@@ -81,10 +83,11 @@ export default class ObjectBase extends Base{
         this.isReceiving_Y_Velocity = false; //Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
 
         this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
-        this.name        = this.objProps.name || undefined;
+        this.name        = this.objProps.name;
 
         this.objEvents = new ObjectEventLayer(this.objProps.events || []);
 
+        // Scene é um ponteiro, ele pode ser nulo na criação, mais ele será vinculado dinamicamente na atualização dos objetos
         this.scene = null;
 
         this.infoCollisions = {
@@ -1169,7 +1172,11 @@ export default class ObjectBase extends Base{
                         //Impede que o objeto suba em cima de outro objeto
                         if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y! < objetoAtualCena.getPosition().y! ){
                             this.setPosition({
-                                y: objetoAtualCena.getPosition().y! - objetoAtualCena.getScale().y! - this.getScale().y!
+                                y: objetoAtualCena.getPosition().y! - objetoAtualCena.getScale().y! - this.getScale().y!,
+
+                                // O resto da posição mantém
+                                x: objetoAtualCena.getPosition().x,
+                                z: objetoAtualCena.getPosition().z
                             })
                         }
                     }
@@ -1208,7 +1215,7 @@ export default class ObjectBase extends Base{
                             //Se tem uma velocidade aceitavel para quicar
                             if( Math.abs(this.getVelocity().y) >= 6 )
                             {
-                                this.getVelocity().y = ((this.getVelocity().y/2) * -1) + this.objProps.kick_rate + (Math.random() * 5) + (Math.random() * this.objProps.kick_rate/2);
+                                this.getVelocity().y = ((this.getVelocity().y/1.7) * -1) + this.objProps.kick_rate + (Math.random() * 5) + (Math.random() * this.objProps.kick_rate/2);
                             
                             }else{
                                 //Se nao atendeu minha limitação, ele zera normalmente
@@ -1382,7 +1389,7 @@ export default class ObjectBase extends Base{
                 /**
                 * Aplica fisica de rotação na queda de acordo com o vento
                 */
-                if( this.scene.wind != null )
+                if( this.scene.sceneConfig.haveWind == true )
                 {
                     if( this.objProps.name != 'Player' ){
                         const wind:Wind = this.scene.wind;
@@ -1391,16 +1398,16 @@ export default class ObjectBase extends Base{
                         const randomZ = Math.random() * 0.001;
 
                         this.somarRotation({
-                            x: randomX + ((wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 1) ) * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification,
-                            y: randomY + ((wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 1) ) * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification,
-                            z: randomZ + ((wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 1) ) * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification
+                            x: (randomX + wind.orientation.x) * wind.intensity.x * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification,
+                            y: (randomY + wind.orientation.y) * wind.intensity.y * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification,
+                            z: (randomZ + wind.orientation.z) * wind.intensity.z * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification
                         });
 
                         //O vento tambem empurra um pouco na queda 
                         this.somarForce({
-                            x: randomX + ( ((wind.deslocationTrend || {}).x || 0) + (wind.orientation.x  || 0 ) * ((wind.intensity || {}).x || 0) ),
-                            y: randomY + ( ((wind.deslocationTrend || {}).y || 0) + (wind.orientation.y  || 0 ) * ((wind.intensity || {}).y || 0) ),
-                            z: randomZ + ( ((wind.deslocationTrend || {}).z || 0) + (wind.orientation.z  || 0 ) * ((wind.intensity || {}).z || 0) )
+                            x: (randomX + wind.deslocationTrend.x + wind.orientation.x) * wind.intensity.x,
+                            y: (randomY + wind.deslocationTrend.y + wind.orientation.y) * wind.intensity.y,
+                            z: (randomZ + wind.deslocationTrend.z + wind.orientation.z) * wind.intensity.z
                         
                         //(como velocidade interna da engine)
                         }, false);
@@ -1838,7 +1845,7 @@ export default class ObjectBase extends Base{
                     }
                 }
                 
-                const objetoAnexar : ObjectBase|null = cena.getObjectBySomething( idObjetoAnexar );
+                const objetoAnexar : ObjectBase = cena.getObjectBySomething( idObjetoAnexar );
                            
                 if( objetoAnexar != undefined && objetoAnexar != null ){
 

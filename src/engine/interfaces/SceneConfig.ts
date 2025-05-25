@@ -11,5 +11,6 @@ import InputListener from "../input/InputListener";
 
 export default interface SceneConfig{
     inputListener:InputListener;
+    haveWind:boolean;
     enable_advanced_frame_tracking: boolean, //Se ativado, vai capturar os dados do objeto a cada frame. Por padrão é ativado
 }

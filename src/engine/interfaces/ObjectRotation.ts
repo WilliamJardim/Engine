@@ -8,7 +8,7 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 export default interface ObjectPosition{
-    x?: number,
-    y?: number,
-    z?: number
+    x: number,
+    y: number,
+    z: number
 }

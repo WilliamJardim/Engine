@@ -54,6 +54,7 @@ export default class SceneRenderer{
         // Cria a cena da Engine
         this.engineScene = new Scene({
             inputListener: this.inputListener,
+            haveWind: true, // A cena vai ter vento
             enable_advanced_frame_tracking: true
             
         }as SceneConfig);

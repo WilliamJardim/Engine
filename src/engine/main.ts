@@ -68,7 +68,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             events: [],
             kick_rate: 0,
             enable_advanced_frame_tracking: true,
-            attachments: []
+            attachments: [
+                
+            ]
         }
     );
 
@@ -198,7 +200,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             traverse: false,
             proximityConfig: { x: 0, y: 0, z: 0 },
             enable_advanced_frame_tracking: true,
-            attachments: []
+            attachments: [
+                
+            ]
         }
     );
 
@@ -251,7 +255,25 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             traverse: false,
             proximityConfig: { x: 0, y: 0, z: 0 },
             enable_advanced_frame_tracking: true,
-            attachments: []
+            attachments: [
+                /*
+                {
+                    name: 'MyCube',
+                    havePhysics: true,
+                    collide: true,
+                    collisionEvents: false,
+                    attacherCollision: false,
+                    traverse: false,
+                    invisible: false,
+                    position: {x: 10, y: 0, z: 0},
+                    rotation: {x: 0, y: 0, z: 0},
+                    rotationIncrement: {x: 0, y: 0, z: 0},
+                    scale: {x: 0, y: 0, z: 0},
+                    scaleReduce: {x: 0, y: 0, z: 0},
+                    sameScale: true
+                }
+                */
+            ]
         }
     );
 

@@ -8,9 +8,6 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 export default interface InputKeyMap{
-    //Aceita acessar indicies
-    [key: string]: any;
-    
     W: boolean,
     A: boolean,
     S: boolean,

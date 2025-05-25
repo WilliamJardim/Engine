@@ -45,7 +45,11 @@ export default class SceneRenderer{
             forward: false,
             backward: false,
             left: false,
-            right: false
+            right: false,
+            up: false,
+            down: false,
+            steps: 1,
+            isJumping: false
         }
 
         this.cameraVelocity = new THREE.Vector3();

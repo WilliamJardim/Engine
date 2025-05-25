@@ -98,6 +98,36 @@ export default class InputListener{
     * Verifica se uma tecla está sendo precionada 
     */
     public isKey( keyName:string ): boolean{
-        return this.keyDetection[ keyName ] === true ? true : false;
+        //return this.keyDetection[ keyName ] === true ? true : false;
+        let isPrecionada:boolean = false;
+
+        switch( keyName ){
+            case 'W':
+                isPrecionada = this.keyDetection.W == true;
+                break;
+            case 'A':
+                isPrecionada = this.keyDetection.A == true;
+                break;
+            case 'S':
+                isPrecionada = this.keyDetection.S == true;
+                break;
+            case 'D':
+                isPrecionada = this.keyDetection.D == true;
+                break;
+            case 'ArrowUp':
+                isPrecionada = this.keyDetection.ArrowUp == true;
+                break;
+            case 'ArrowDown':
+                isPrecionada = this.keyDetection.ArrowDown == true;
+                break;
+            case 'ArrowLeft':
+                isPrecionada = this.keyDetection.ArrowLeft == true;
+                break;
+            case 'ArrowRight':
+                isPrecionada = this.keyDetection.ArrowRight == true;
+                break;
+        }
+
+        return isPrecionada;
     }
 }

@@ -52,6 +52,15 @@ export class VisualMesh
         
     }
 
+    /**
+    * Se implementa ela em cada objeto
+    * Cria os buffers que vão ser usados na renderização
+    */
+    createBuffers()
+    {
+        
+    }
+
     // Muda o valor do ponteiro "this.programUsado"
     setProgram( programUsar )
     {

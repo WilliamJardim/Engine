@@ -101,7 +101,9 @@ export class Renderer
         switch( propriedadesObjeto.tipo )
         {
             case 'Cubo':
-                this.objetos.push( new CuboMesh(contextoRenderizador, propriedadesObjeto) );
+                this.objetos.push( new CuboMesh( contextoRenderizador, 
+                                                 propriedadesObjeto ) 
+                                 );
                 break;
         }
     }   

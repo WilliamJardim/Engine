@@ -9,9 +9,41 @@
 */
 export class VisualMesh
 {
-    constructor( meshConfig )
+    constructor( renderer, meshConfig )
     {
+        this.renderer   = renderer;
+        this.meshConfig = meshConfig;
+
+        this.programUsado = null; // Vai ser um ponteiro, eu vou definir em cada tipo de Mesh
+
+        // Os shaders da renderização dele
+        this.vertexScript   = '';
+        
+        this.fragmentScript = ''; 
+
+        // Atributos visuais
         this.position = meshConfig.position;
         this.rotation = meshConfig.rotation;
+    }
+
+    // Muda o valor do ponteiro "this.programUsado"
+    setProgram( programUsar )
+    {
+        this.programUsado = programUsar;
+    }
+
+    getProgram()
+    {
+        return this.programUsado;
+    }
+
+    getVertex()
+    {
+        return this.vertexScript;
+    }
+
+    getFragment()
+    {
+        return this.fragmentScript;
     }
 }

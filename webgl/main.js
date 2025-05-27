@@ -7,18 +7,16 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { criarGL }    from './funcoesBase.js';
 import { criarCubo }  from './Mesh/criarCubo.js';
 import { VisualMesh } from './Mesh/VisualMesh.js';
+import { Renderer }   from './Renderer/Renderer.js';
 
-const canvas       = document.getElementById('glcanvas');
-const canvasWidth  = window.innerWidth;
-const canvasHeight = window.innerHeight;
+const canvas       = document.getElementById('glcanvas'); 
+const renderizador = new Renderer( canvas );
 
-const gl           = criarGL( canvas );  
-
-criarCubo( gl, canvasWidth, canvasHeight, 
-    new VisualMesh({
+criarCubo( 
+    renderizador, 
+    {
         position: {
             x: 1,
             y: 0,
@@ -29,5 +27,5 @@ criarCubo( gl, canvasWidth, canvasHeight,
             y: 18,
             z: 0
         }
-    }) 
+    }
 );

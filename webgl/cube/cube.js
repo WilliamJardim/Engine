@@ -1,9 +1,16 @@
-export default function criarCubo(canvas) 
-{
-  const gl = canvas.getContext('webgl');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+/**
+* AUTHOR: William Alves Jardim
+* LICENSE: Creative Commons BY-NC-ND 4.0 (https://creativecommons.org/licenses/by-nc-nd/4.0/)
+* 
+* Desenvolvido por William Alves Jardim como parte de um projeto pessoal.
+* Protegido por direitos autorais e licenciado sob Creative Commons BY-NC-ND 4.0.
+* 
+* Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
+*/
+import {createShader, createBuffer, createProgram} from './funcoesBase.js';
 
+export function criarCubo(gl, width, height) 
+{
   // Vertex shader
   const vertexScript = `
     attribute vec4 aPosicao;
@@ -26,46 +33,6 @@ export default function criarCubo(canvas)
       gl_FragColor = vColor;
     }
   `;
-
-  function createShader(gl, type, source) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error('An error occurred compiling the shaders:', gl.getShaderInfoLog(shader));
-      gl.deleteShader(shader);
-      return null;
-    }
-    return shader;
-  }
-
-  function createBuffer(data, target, usage = gl.STATIC_DRAW) {
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(target, buffer);
-    gl.bufferData(target, new (target === gl.ARRAY_BUFFER ? Float32Array : Uint16Array)(data), usage);
-    return buffer;
-  }
-
-  function createProgram(gl, vertexScript, fragmentScript) 
-  {
-    const vertexShader   = createShader(gl, gl.VERTEX_SHADER, vertexScript);
-    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentScript);
-
-    // Se nao tem os shaders, retorna null
-    if (!vertexShader || !fragmentShader) return null;
-
-    const program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error('Unable to initialize the shader program:', gl.getProgramInfoLog(program));
-      return;
-    }
-
-    return program;
-  }
 
   const program = createProgram(gl, vertexScript, fragmentScript);
   if (!program) return;
@@ -122,9 +89,9 @@ export default function criarCubo(canvas)
    20,21,22,   20,22,23,     // left
   ];
 
-  const positionBuffer = createBuffer(positions, gl.ARRAY_BUFFER);
-  const colorBuffer    = createBuffer(colors, gl.ARRAY_BUFFER);
-  const indexBuffer    = createBuffer(indices, gl.ELEMENT_ARRAY_BUFFER);
+  const positionBuffer = createBuffer(gl, positions, gl.ARRAY_BUFFER,       gl.STATIC_DRAW);
+  const colorBuffer    = createBuffer(gl, colors, gl.ARRAY_BUFFER,          gl.STATIC_DRAW);
+  const indexBuffer    = createBuffer(gl, indices, gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
 
   // Cria matriz identidade 4x4
   function CriarMatrix4x4() 
@@ -296,7 +263,7 @@ export default function criarCubo(canvas)
   }
 
   function drawScene() {
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.viewport(0, 0, width, height);
     gl.clearColor(0, 0, 0, 1);
     gl.clearDepth(1);
     gl.enable(gl.DEPTH_TEST);
@@ -304,7 +271,7 @@ export default function criarCubo(canvas)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     const anguloVisaoY  = 45 * Math.PI / 180;
-    const aspectoCamera = canvas.width / canvas.height;
+    const aspectoCamera = width / height;
     const pPerto        = 0.1;
     const pLonge        = 100;
 

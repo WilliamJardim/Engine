@@ -7,7 +7,7 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import {createShader, createBuffer, createProgram} from './funcoesBase.js';
+import {createShader, createBuffer, createProgram} from '../funcoesBase.js';
 
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
@@ -19,7 +19,7 @@ import {CriarMatrix4x4,
         DefinirRotacao, 
         DefinirX, 
         DefinirY, 
-        DefinirZ} from './math.js';
+        DefinirZ} from '../math.js';
 
 export function criarCubo(gl, width, height, visualMesh) 
 {

@@ -7,15 +7,15 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { criarGL }    from './cube/funcoesBase.js';
-import { criarCubo }  from './cube/cube.js';
-import { VisualMesh } from './cube/VisualMesh.js';
+import { criarGL }    from './funcoesBase.js';
+import { criarCubo }  from './Mesh/criarCubo.js';
+import { VisualMesh } from './Mesh/VisualMesh.js';
 
 const canvas       = document.getElementById('glcanvas');
 const canvasWidth  = window.innerWidth;
 const canvasHeight = window.innerHeight;
 
-const gl = criarGL( canvas );  
+const gl           = criarGL( canvas );  
 
 criarCubo( gl, canvasWidth, canvasHeight, 
     new VisualMesh({

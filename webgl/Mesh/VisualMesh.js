@@ -22,8 +22,34 @@ export class VisualMesh
         this.fragmentScript = ''; 
 
         // Atributos visuais
+        this.tipo     = meshConfig.tipo || 'Nenhum';
         this.position = meshConfig.position;
         this.rotation = meshConfig.rotation;
+    }
+
+    /**
+    * Obtem a instancia do renderizador
+    */
+    getRenderer()
+    {
+        return this.renderer;
+    }
+
+    /**
+    * Obtem os atributos desse objeto 
+    */
+    getAtributos()
+    {
+        return this.meshConfig;
+    }
+
+    /**
+    * Função que desenha o objeto 
+    * Se implementa ela em cada objeto
+    */
+    desenhar()
+    {
+        
     }
 
     // Muda o valor do ponteiro "this.programUsado"

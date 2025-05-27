@@ -24,6 +24,7 @@ import {CriarMatrix4x4,
 import { cuboShaders } from '../Shaders/cube.js';
 
 import { criarGL }    from '../funcoesBase.js';
+import { CuboMesh } from '../Mesh/CuboMesh.js';
 
 export class Renderer
 {
@@ -64,6 +65,13 @@ export class Renderer
                                        cuboShaders.fragmentScript)
                                        
         };
+
+        // Armazena os objetos visuais que serão desenhados
+        this.objetos = [];
+
+        // AQUI USEI BIND PRA NAO DAR ERRO NA HORA DE RODAR O LOOP COM O requestAnimationFrame
+        // SERIA NECESSARIO ADAPTAR NO C++
+        this.render = this.render.bind(this);
     }
 
     /*** PROGRAMS (para cada tipo de objeto) */
@@ -78,14 +86,56 @@ export class Renderer
         return this.matrixVisualizacao;
     }
 
+    getObjetos()
+    {
+        return this.objetos;
+    }
+
+    /**
+    * Cria um novo objeto na cena( adicionando ele na lista de renderização )
+    */
+    criarObjeto( propriedadesObjeto )
+    {
+        const contextoRenderizador = this;
+
+        switch( propriedadesObjeto.tipo )
+        {
+            case 'Cubo':
+                this.objetos.push( new CuboMesh(contextoRenderizador, propriedadesObjeto) );
+                break;
+        }
+    }   
+
+    /**
+    * Desenha os objetos na tela
+    * Converte a representação de Meshs para desenhos com WebGL
+    */
+    desenharObjetos()
+    {
+        const objetosVisuais = this.getObjetos();
+
+        for( let i = 0 ; i < objetosVisuais.length ; i++ )
+        {
+            const objetoAtual = objetosVisuais[i];
+            objetoAtual.desenhar();
+        }
+    }
+
+    // SERIA NECESSARIO ADAPTAR NO C++ POR CAUSA DE CONTEXTO DE BIND
     render(now) {
         requestAnimationFrame(this.render);
 
         now *= 0.001;
 
         // Códigos para a renderização aqui....
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
+        this.desenharObjetos();
     }
 
+    /**
+    * Inicia o loop de renderização 
+    */
     inicializar()
     {
         this.render();    

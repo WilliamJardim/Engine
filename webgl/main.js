@@ -14,18 +14,30 @@ import { Renderer }   from './Renderer/Renderer.js';
 const canvas       = document.getElementById('glcanvas'); 
 const renderizador = new Renderer( canvas );
 
-criarCubo( 
-    renderizador, 
-    {
-        position: {
-            x: 1,
-            y: 0,
-            z: -6
-        },
-        rotation: {
-            x: 0.5,
-            y: 18,
-            z: 0
-        }
+// Inicia o loop de renderização
+renderizador.inicializar();
+
+// Cria um cubo
+renderizador.criarObjeto({
+    tipo: 'Cubo',
+
+    /**
+    * Posição do objeto 
+    */
+    position: {
+        x: 1,
+        y: 0,
+        z: -6
+    },
+
+    /**
+    * Rotação do objeto 
+    */
+    rotation: {
+        x: 0.5,
+        y: 18,
+        z: 0
     }
-);
+});
+
+window.renderizador = renderizador;

@@ -8,6 +8,7 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 import { VisualMesh } from "../Mesh/VisualMesh.js";
+import { criarCubo } from "../utils/criarCubo.js";
 
 export class CuboMesh extends VisualMesh
 {
@@ -17,6 +18,20 @@ export class CuboMesh extends VisualMesh
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
+        this.tipo = 'Cubo';
         this.setProgram( renderer.getCubeProgram() );
+    }
+
+    /**
+    * @implements 
+    * Converte a representação desse Mesh para desenhos com WebGL
+    */
+    desenhar()
+    {
+        // Cria um cubo com WebGL
+        criarCubo( 
+            this.getRenderer(), 
+            this.getAtributos()
+        ); 
     }
 }

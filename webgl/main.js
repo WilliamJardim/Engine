@@ -7,7 +7,7 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { criarCubo }  from './Mesh/criarCubo.js';
+import { criarCubo }  from './utils/criarCubo.js';
 import { VisualMesh } from './Mesh/VisualMesh.js';
 import { Renderer }   from './Renderer/Renderer.js';
 

@@ -21,7 +21,7 @@ import {CriarMatrix4x4,
         DefinirY, 
         DefinirZ} from '../math.js';
 
-import { CuboMesh } from './CuboMesh.js';
+import { CuboMesh } from '../Mesh/CuboMesh.js';
 import { cuboShaders } from '../Shaders/cube.js';
 
 export function criarCubo(renderer, propriedadesMesh) 

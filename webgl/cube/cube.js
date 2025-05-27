@@ -9,7 +9,7 @@
 */
 import {createShader, createBuffer, createProgram} from './funcoesBase.js';
 
-export function criarCubo(gl, width, height) 
+export function criarCubo(gl, width, height, visualMesh) 
 {
   // Vertex shader
   const vertexScript = `
@@ -223,44 +223,52 @@ export function criarCubo(gl, width, height)
     return MultiplicarMatrix4x4(new Float32Array(16), matrixVisualizacao, matrixIdentidade);
   }
 
+  // Define a rotação XYZ
+  function DefinirRotacao(matrixVisualizacao, vetorRotacao)
+  {
+    let novaMatrix = [... matrixVisualizacao]; 
+    novaMatrix     = RotacionarX( matrixVisualizacao,  vetorRotacao[0] );
+    novaMatrix     = RotacionarY( matrixVisualizacao,  vetorRotacao[1] );
+    novaMatrix     = RotacionarZ( matrixVisualizacao,  vetorRotacao[2] );
+
+    return novaMatrix;
+  }
+
   // Define a posição no eixo X
   function DefinirX( matrixVisualizacao, vetorPosicaoAtual, novaPosicaoX ) 
   {
     // Mantem o que ja estava em Y e Z, só mudando o X
-    let novaPosicao = { x: novaPosicaoX, 
-                        y: vetorPosicaoAtual.y, 
-                        z: vetorPosicaoAtual.z };
+    const novoX = novaPosicaoX;
+    const novoY = vetorPosicaoAtual[1];
+    const novoZ = vetorPosicaoAtual[2];
 
-    DefinirTranslacao( matrixVisualizacao, novaPosicao );
+    DefinirTranslacao( matrixVisualizacao, [novoX, novoY, novoZ] );
   }
 
   // Define a posição no eixo Y
   function DefinirY( matrixVisualizacao, vetorPosicaoAtual, novaPosicaoY ) 
   {
     // Mantem o que ja estava em X e Z, só mudando o Y
-    let novaPosicao = { x: vetorPosicaoAtual.x, 
-                        y: novaPosicaoY, 
-                        z: vetorPosicaoAtual.z };
+    const novoX = vetorPosicaoAtual[0];
+    const novoY = novaPosicaoY;
+    const novoZ = vetorPosicaoAtual[2];
 
-    DefinirTranslacao( matrixVisualizacao, novaPosicao );
+    DefinirTranslacao( matrixVisualizacao, [novoX, novoY, novoZ] );
   }
 
   // Define a posição no eixo Z
   function DefinirZ( matrixVisualizacao, vetorPosicaoAtual, novaPosicaoZ ) 
   {
     // Mantem o que ja estava em Y e X, só mudando o Z
-    let novaPosicao = { x: vetorPosicaoAtual.x, 
-                        y: vetorPosicaoAtual.y, 
-                        z: novaPosicaoZ };
+    const novoX = vetorPosicaoAtual[0];
+    const novoY = vetorPosicaoAtual[1];
+    const novoZ = novaPosicaoZ;
 
-    DefinirTranslacao( matrixVisualizacao, novaPosicao );
+    DefinirTranslacao( matrixVisualizacao, [novoX, novoY, novoZ] );
   }
 
-  let rotation = {
-    x: 0,
-    y: 0,
-    z: 0
-  }
+  const rotation = visualMesh.rotation;
+  const position = visualMesh.position;
 
   function drawScene() {
     gl.viewport(0, 0, width, height);
@@ -280,7 +288,7 @@ export function criarCubo(gl, width, height)
 
     // Cria uma matrix para a representação visual do objeto 3d
     let modeloObjetoVisual = CriarMatrix4x4();
-    modeloObjetoVisual     = DefinirTranslacao(modeloObjetoVisual, [0, 0, -6]);
+    modeloObjetoVisual     = DefinirTranslacao(modeloObjetoVisual, [position.x, position.y, position.z]);
     modeloObjetoVisual     = RotacionarX(modeloObjetoVisual,  rotation.x);
     modeloObjetoVisual     = RotacionarY(modeloObjetoVisual,  rotation.y);
     modeloObjetoVisual     = RotacionarZ(modeloObjetoVisual,  rotation.z);
@@ -314,9 +322,6 @@ export function criarCubo(gl, width, height)
     requestAnimationFrame(render);
 
     now *= 0.001;
-
-    rotation.x -= 0.005;
-    rotation.z -= 0.005;
 
     drawScene();
   }

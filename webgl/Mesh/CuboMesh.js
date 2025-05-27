@@ -136,6 +136,8 @@ export class CuboMesh extends VisualMesh
     * @implementation
     * Se implementa ela em cada objeto
     * Cria os buffers que vão ser usados na renderização
+    * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
+    * lembrando que cada buffer é um ponteiro, então ele pode ser nulo
     */
     createBuffers()
     {
@@ -143,9 +145,22 @@ export class CuboMesh extends VisualMesh
         const gl                  = renderer.gl;
 
         // Cria os buffers, ou apenas obtem eles se eles ja existem na malha
-        this.bufferPosicao   = createBuffer(gl, this.getPositions(), gl.ARRAY_BUFFER,         gl.STATIC_DRAW);
-        this.bufferCor       = createBuffer(gl, this.getColors(),    gl.ARRAY_BUFFER,         gl.STATIC_DRAW);
-        this.bufferIndices   = createBuffer(gl, this.getIndices(),   gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
+        if( this.bufferPosicao == null )
+        {
+            this.bufferPosicao   = createBuffer(gl, this.getPositions(), gl.ARRAY_BUFFER,         gl.STATIC_DRAW);
+        }
+
+        if( this.bufferCor == null )
+        {
+            this.bufferCor       = createBuffer(gl, this.getColors(),    gl.ARRAY_BUFFER,         gl.STATIC_DRAW);
+        }
+
+        if( this.bufferIndices == null )
+        {
+            this.bufferIndices   = createBuffer(gl, this.getIndices(),   gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
+        }
+
+        //Se não é null é por que ja existe, então nao faz nada!
     }
 
     /**

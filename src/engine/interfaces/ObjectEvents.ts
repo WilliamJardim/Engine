@@ -12,5 +12,10 @@ export default interface ObjectEvents{
     whenProximity?:Function,
     whenDestroy?:Function,
     whenFall?:Function,
-    loop:Function
+    loop?:Function
 }
+
+/**
+* OBS: Todos são Function mais tambem são ponteiros, pois nem todas precisam existir,
+* algumas podem ser nulas, e serem ignoradas na logica dos eventos da Engine 
+*/

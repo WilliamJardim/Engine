@@ -118,12 +118,18 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                     //Cubo ficar rodando
                     loop: function (propioObjeto: ObjectBase) {
                         //propioObjeto.somarPosicaoX(0.005);
-                        console.log(propioObjeto.velocitySinalyzer);
+                        //console.log(propioObjeto.velocitySinalyzer);
+                        console.log( propioObjeto.getPosition() );
+
+                        if(propioObjeto.isFalling == false)
+                        {
+                            //debugger
+                        }
 
                         if (propioObjeto.objectBelow != null) {
                             //console.log(propioObjeto.getVelocity().x)
                             if (f <= 1) {
-                                propioObjeto.somarVelocity({ x: 20.5 } as ObjectVelocity);
+                                propioObjeto.somarVelocity({ x: 20.5, y: 0, z: 0 } as ObjectVelocity);
                                 f++;
                             }
                         }

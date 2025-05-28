@@ -316,11 +316,6 @@ export default class ObjectBase extends Base
     public joinAttachment( outroObjeto:ObjectBase, attachementConfig: ObjectAttachment ): void{
         const esteObjeto:ObjectBase = this;
 
-        //Se nao existe cria
-        if( !outroObjeto.objProps.attachments ){
-            outroObjeto.objProps.attachments = [];
-        }
-
         // Cria o anexo no outro objeto para linkar esteObjeto com ele
         outroObjeto.objProps.attachments.push(attachementConfig);
     }
@@ -332,11 +327,6 @@ export default class ObjectBase extends Base
     */
     public attach( objetoAnexar:ObjectBase, attachementConfig: ObjectAttachment ): void{
         const esteObjeto:ObjectBase = this;
-
-        //Se nao existe cria
-        if( !esteObjeto.objProps.attachments ){
-            esteObjeto.objProps.attachments = [];
-        }
 
         // Cria o anexo no outro objeto para linkar esteObjeto com ele
         esteObjeto.objProps.attachments.push(attachementConfig);
@@ -393,48 +383,49 @@ export default class ObjectBase extends Base
 
     public setPosition( position: ObjectPosition ): ObjectBase{
         const mesh: MeshRepresentation = this.getMesh();
-        mesh.position.x = position.x || mesh.position.x;
-        mesh.position.y = position.y || mesh.position.y;
-        mesh.position.z = position.z || mesh.position.z;
+
+        mesh.position.x = position.x;
+        mesh.position.y = position.y;
+        mesh.position.z = position.z;
 
         //Retorna ele mesmo modificado
         return this;
     }
 
     public somarX( x:number ): void{
-        this.getPosition().x! += x;
+        this.getPosition().x += x;
     }
     
     public somarY( y:number ): void{
-        this.getPosition().y! += y;
+        this.getPosition().y += y;
     }
 
     public somarZ( z:number ): void{
-        this.getPosition().z! += z;
+        this.getPosition().z += z;
     }
 
     public somarPosicaoX( x:number ): void{
-        this.getPosition().x! += x;
+        this.getPosition().x += x;
     }
     
     public somarPosicaoY( y:number ): void{
-        this.getPosition().y! += y;
+        this.getPosition().y += y;
     }
 
     public somarPosicaoZ( z:number ): void{
-        this.getPosition().z! += z;
+        this.getPosition().z += z;
     }
 
     public subtrairPosicaoX( x:number ): void{
-        this.getPosition().x! -= x;
+        this.getPosition().x -= x;
     }
     
     public subtrairPosicaoY( y:number ): void{
-        this.getPosition().y! -= y;
+        this.getPosition().y -= y;
     }
 
     public subtrairPosicaoZ( z:number ): void{
-        this.getPosition().z! -= z;
+        this.getPosition().z -= z;
     }
 
     public somarEixo(eixo:string, valor:number): void{
@@ -470,25 +461,17 @@ export default class ObjectBase extends Base
     * @param rotation 
     */
     public somarPosition( position:ObjectPosition ): void{
-        if( position.x ){ this.getPosition().x! += position.x };
-        if( position.y ){ this.getPosition().y! += position.y };
-        if( position.z ){ this.getPosition().z! += position.z };
+        this.getPosition().x += position.x;
+        this.getPosition().y += position.y;
+        this.getPosition().z += position.z;
     }
 
-    public setScale( scale: ObjectScale|number ): ObjectBase{
+    public setScale( scale: ObjectScale ): ObjectBase{
         const mesh: MeshRepresentation = this.getMesh();
 
-        if( typeof scale == 'object' ){
-            mesh.scale.x = scale.x || mesh.scale.x;
-            mesh.scale.y = scale.y || mesh.scale.y;
-            mesh.scale.z = scale.z || mesh.scale.z;
-
-        //Se a escala for um numero igual para todos os eixos
-        }else if( typeof scale == 'number' ){
-            mesh.scale.x = scale || mesh.scale.x;
-            mesh.scale.y = scale || mesh.scale.y;
-            mesh.scale.z = scale || mesh.scale.z;
-        }
+        mesh.scale.x = scale.x;
+        mesh.scale.y = scale.y;
+        mesh.scale.z = scale.z;
 
         //Retorna ele mesmo modificado
         return this;
@@ -515,9 +498,9 @@ export default class ObjectBase extends Base
     * @param rotation 
     */
     public somarEscala( scale:ObjectScale ): void{
-        if( scale.x ){ this.getScale().x += scale.x };
-        if( scale.y ){ this.getScale().y += scale.y };
-        if( scale.z ){ this.getScale().z += scale.z };
+        this.getScale().x += scale.x;
+        this.getScale().y += scale.y;
+        this.getScale().z += scale.z;
     }
 
     public getForce(): ObjectForce{
@@ -526,16 +509,15 @@ export default class ObjectBase extends Base
 
     public somarForce( forca:ObjectForce, isExternal:boolean = true ): void{
 
-        if( forca.x ){ this.getForce().x += forca.x };
+        // Em X
+        this.getForce().x += forca.x
 
-        if( forca.y ){ 
-            // Diz pra Engine que o objeto recebeu uma velocidade externa
-            this.isReceiving_Y_Velocity = isExternal;
+        // Em Y, Diz pra Engine que o objeto recebeu uma velocidade externa
+        this.isReceiving_Y_Velocity = isExternal;
+        this.getForce().y += forca.y 
 
-            this.getForce().y += forca.y 
-        };
-
-        if( forca.z ){ this.getForce().z += forca.z };
+        // Em Z
+        this.getForce().z += forca.z
     }
 
     public somarForceX( forca:number ): void{
@@ -591,9 +573,9 @@ export default class ObjectBase extends Base
     }
 
     public setForce( forca:ObjectForce ): void{
-        if( forca.x ){ this.getForce().x = forca.x };
-        if( forca.y ){ this.getForce().y = forca.y };
-        if( forca.z ){ this.getForce().z = forca.z };
+        this.getForce().x = forca.x;
+        this.getForce().y = forca.y;
+        this.getForce().z = forca.z;
     }
 
     public getAcceleration(): ObjectAcceleration{
@@ -601,12 +583,9 @@ export default class ObjectBase extends Base
     }
 
     public somarAcceleration( velocidade:ObjectAcceleration ): void{
-
-        if( velocidade.x ){ this.getAcceleration().x += velocidade.x };
-
-        if( velocidade.y ){ this.getAcceleration().y += velocidade.y };
-
-        if( velocidade.z ){ this.getAcceleration().z += velocidade.z };
+        this.getAcceleration().x += velocidade.x;
+        this.getAcceleration().y += velocidade.y;
+        this.getAcceleration().z += velocidade.z;
     }
 
     public somarAccelerationX( acceleration:number ): void{
@@ -662,9 +641,9 @@ export default class ObjectBase extends Base
     }
 
     public setAcceleration( acceleration:ObjectAcceleration ): void{
-        if( acceleration.x ){ this.getAcceleration().x = acceleration.x };
-        if( acceleration.y ){ this.getAcceleration().y = acceleration.y };
-        if( acceleration.z ){ this.getAcceleration().z = acceleration.z };
+        this.getAcceleration().x = acceleration.x;
+        this.getAcceleration().y = acceleration.y;
+        this.getAcceleration().z = acceleration.z;
     }
 
     public getVelocity(): ObjectVelocity{
@@ -677,15 +656,15 @@ export default class ObjectBase extends Base
     */
     public somarVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void{
 
-        if( velocidade.x ){ this.getVelocity().x += velocidade.x };
+        // Em X
+        this.getVelocity().x += velocidade.x;
 
-        if( velocidade.y ){ 
-            // Diz pra Engine que o objeto recebeu uma velocidade externa
-            this.isReceiving_Y_Velocity = isExternal;
-            this.getVelocity().y += velocidade.y 
-        };
+        // Em Y, Diz pra Engine que o objeto recebeu uma velocidade externa
+        this.isReceiving_Y_Velocity = isExternal;
+        this.getVelocity().y += velocidade.y 
 
-        if( velocidade.z ){ this.getVelocity().z += velocidade.z };
+        // Em Z
+        this.getVelocity().z += velocidade.z;
     }
 
     public somarVelocityX( velocidade:number ): void{
@@ -695,7 +674,6 @@ export default class ObjectBase extends Base
     public somarVelocityY( velocidade:number, isExternal:boolean = true ): void{
         // Diz pra Engine que o objeto recebeu uma velocidade externa
         this.isReceiving_Y_Velocity = isExternal;
-
         this.getVelocity().y += velocidade
     }
 
@@ -710,7 +688,6 @@ export default class ObjectBase extends Base
     public subtrairVelocityY( velocidade:number, isExternal:boolean = true ): void{
         // Diz pra Engine que o objeto recebeu uma velocidade externa
         this.isReceiving_Y_Velocity = isExternal;
-
         this.getVelocity().y -= velocidade
     }
 
@@ -726,7 +703,6 @@ export default class ObjectBase extends Base
             case 'y':
                 // Diz pra Engine que o objeto recebeu uma velocidade externa
                 this.isReceiving_Y_Velocity = isExternal;
-
                 this.somarVelocityY( valor );
                 break;
 
@@ -744,7 +720,6 @@ export default class ObjectBase extends Base
             case 'y':
                 // Diz pra Engine que o objeto recebeu uma velocidade externa
                 this.isReceiving_Y_Velocity = isExternal;
-
                 this.subtrairVelocityY( valor );
                 break;
 
@@ -755,16 +730,15 @@ export default class ObjectBase extends Base
     }
 
     public setVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void{
-        if( velocidade.x ){ this.getVelocity().x = velocidade.x };
-
-        if( velocidade.y ){ 
-            // Diz pra Engine que o objeto recebeu uma velocidade externa
-            this.isReceiving_Y_Velocity = isExternal;
-
-            this.getVelocity().y = velocidade.y 
-        };
-
-        if( velocidade.z ){ this.getVelocity().z = velocidade.z };
+        // Em X
+        this.getVelocity().x = velocidade.x;
+        
+        // Em Y, Diz pra Engine que o objeto recebeu uma velocidade externa
+        this.isReceiving_Y_Velocity = isExternal;
+        this.getVelocity().y = velocidade.y 
+        
+        // Em Z
+        this.getVelocity().z = velocidade.z;
     }
 
     public setVelocityX( velocidade:number ): void{
@@ -774,7 +748,6 @@ export default class ObjectBase extends Base
     public setVelocityY( velocidade:number, isExternal:boolean = true ): void{
         // Diz pra Engine que o objeto recebeu uma velocidade externa
         this.isReceiving_Y_Velocity = isExternal;
-
         this.getVelocity().y = velocidade;
     }
 
@@ -790,7 +763,6 @@ export default class ObjectBase extends Base
             case 'y':
                 // Diz pra Engine que o objeto recebeu uma velocidade externa
                 this.isReceiving_Y_Velocity = isExternal;
-
                 this.setVelocityY( velocidade );
                 break;
 
@@ -830,33 +802,25 @@ export default class ObjectBase extends Base
 
     public setRotation( rotation: ObjectRotation ): ObjectBase{
         const mesh: MeshRepresentation = this.getMesh();
-        mesh.rotation.x = rotation.x !== undefined ? rotation.x : mesh.rotation.x;
-        mesh.rotation.y = rotation.y !== undefined ? rotation.y : mesh.rotation.y;
-        mesh.rotation.z = rotation.z !== undefined ? rotation.z : mesh.rotation.z;
+
+        mesh.rotation.x = rotation.x;
+        mesh.rotation.y = rotation.y;
+        mesh.rotation.z = rotation.z;
 
         //Retorna ele mesmo modificado
         return this;
     }
 
     public somarRotationX( x:number ): void{
-        if( this.getRotation() != undefined && this.getRotation().x !== undefined )
-        {
-            this.getRotation().x! += x;
-        }
+        this.getRotation().x += x;
     }
     
     public somarRotationY( y:number ): void{
-        if( this.getRotation() != undefined && this.getRotation().y !== undefined )
-        {
-            this.getRotation().y! += y;
-        }
+        this.getRotation().y += y;
     }
 
     public somarRotationZ( z:number ): void{
-        if( this.getRotation() != undefined && this.getRotation().z !== undefined )
-        {
-            this.getRotation().z! += z;
-        }
+        this.getRotation().z += z;
     }
 
     /**
@@ -864,9 +828,9 @@ export default class ObjectBase extends Base
     * @param rotation 
     */
     public somarRotation( rotation:ObjectRotation ): void{
-        if( rotation.x ){ this.getRotation().x! += rotation.x };
-        if( rotation.y ){ this.getRotation().y! += rotation.y };
-        if( rotation.z ){ this.getRotation().z! += rotation.z };
+        this.getRotation().x += rotation.x;
+        this.getRotation().y += rotation.y;
+        this.getRotation().z += rotation.z;
     }
 
     /**
@@ -1218,11 +1182,11 @@ export default class ObjectBase extends Base
                     
                     if( this.getPosition().y != undefined && objetoAtualCena.getPosition().y != undefined )
                     {
-                        if( this.getPosition().y! > objetoAtualCena.getPosition().y! )
+                        if( this.getPosition().y > objetoAtualCena.getPosition().y )
                         {
                             //Diz que o objeto parou de cair
                             this.isFalling = false;
-                            this.groundY = this.getPosition().y!; // A posição da ultima colisão
+                            this.groundY = this.getPosition().y; // A posição da ultima colisão
                             this.objectBelow = objetoAtualCena;
                             this.lastObjectBelow = objetoAtualCena;
 
@@ -1240,9 +1204,9 @@ export default class ObjectBase extends Base
                         objetoAtualCena.getScale().y    != undefined 
                     ){
                         //Impede que o objeto suba em cima de outro objeto
-                        if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y! < objetoAtualCena.getPosition().y! ){
+                        if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y < objetoAtualCena.getPosition().y ){
                             this.setPosition({
-                                y: objetoAtualCena.getPosition().y! - objetoAtualCena.getScale().y! - this.getScale().y!,
+                                y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y,
 
                                 // O resto da posição mantém
                                 x: objetoAtualCena.getPosition().x,
@@ -1488,7 +1452,7 @@ export default class ObjectBase extends Base
             }else{
                 //Se ele já está no chão
                 if( this.objectBelow != null && this.objProps.name != 'Player' ){
-                    this.setRotation({x:0, y: 0, z: 0})
+                    this.setRotation({x:0, y: 0, z: 0});
                 }
 
             }
@@ -1860,8 +1824,8 @@ export default class ObjectBase extends Base
             const deltaPosicaoZ       = posicaoAtualDele.z! - (posicaoAnteriorDele.z || 0);
 
             // Acompanha o movimento do objeto que ele está em baixo 
-            esteObjeto.getPosition().x! += deltaPosicaoX;
-            esteObjeto.getPosition().z! += deltaPosicaoZ;
+            esteObjeto.getPosition().x += deltaPosicaoX;
+            esteObjeto.getPosition().z += deltaPosicaoZ;
         }
         
     }

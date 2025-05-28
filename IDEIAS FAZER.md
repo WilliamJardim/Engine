@@ -1030,6 +1030,9 @@ ver como vou fazer pra deixar isso melhor, talvez até criar métodos separados 
 -------------
 Revisar callbacks e eventos externos, pra ver se posso deixar mais compatível com C++, 
 
+Revisar a função updateCollisionState, pra poder simplificar ela tambem, tem muita coisa lá que não precisa
+por exemplo, não precisa verificar se existe objeto.nome, sempre vai existir.
+
 Usar classes abstratas para ser equivalente a virtuals.
 Indicar onde uso herança e polimorfismo.
 

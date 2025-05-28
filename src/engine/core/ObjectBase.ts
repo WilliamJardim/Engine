@@ -53,7 +53,7 @@ export default class ObjectBase extends Base{
     public velocitySinalyzer:VelocityStatus; // Indica o status da velocidade do objeto para cada eixo
     public physicsState:PhysicsState;
     public weight:number;
-    public scene:Scene|null;
+    public scene:Scene|null; // é um ponteiro com referencia: *&
     public isFalling:boolean;
     public groundY:number; // A posição Y do chão atual em relação a este objeto
     public objectBelow: ObjectBase|null; //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
@@ -62,7 +62,7 @@ export default class ObjectBase extends Base{
     public infoProximity:CollisionsData;
     public isMovimentoTravadoPorColisao:boolean;
     public isReceiving_Y_Velocity:boolean; // Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
-    public onCreate:Function|null;
+    public onCreate:Function|null; //è uma função e tambem um ponteiro
 
     /** OUTROS ATRIBUTOS **/
     public lastPosition:ObjectPosition = {x: 0, y: 0, z: 0};
@@ -92,7 +92,7 @@ export default class ObjectBase extends Base{
 
         this.objEvents = new ObjectEventLayer(this.objProps.events || []);
 
-        // Scene é um ponteiro, ele pode ser nulo na criação, mais ele será vinculado dinamicamente na atualização dos objetos
+        // this.scene é um ponteiro, ele pode ser nulo na criação, mais ele será atribuido dinamicamente para apontar pra cena, na fase de atualização dos objetos
         this.scene = null;
 
         this.infoCollisions = {

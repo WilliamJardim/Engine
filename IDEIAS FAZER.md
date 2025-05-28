@@ -1032,3 +1032,20 @@ Revisar callbacks e eventos externos, pra ver se posso deixar mais compatível c
 
 Usar classes abstratas para ser equivalente a virtuals.
 Indicar onde uso herança e polimorfismo.
+
+
+# Remover o ImaginaryObject 28/05/2025
+Remover o ImaginaryObject e manter apeans ObjectBase, ou adaptar tudo claramente para trabalhar com polimorfismo.
+Porém a engine só vai tentar chamar métodos virtuais(abstratos) que existam na classe ObjectBase
+
+
+# Simplificar a criação de objetos 28/05/2025
+ao invez de precisar criar o objeto como variavel e depois usar o scene.add
+Fazer diferente:
+
+usar o scene.createObject( parametros ),
+ele vai ja criar um ObjectBase, passando pra ele a cena, 
+
+Assim eu não preciso inicializar a propriedade scene como null pra só depois atribuir dentro de "objeto.scene = scene;"
+Eu iria criar um ObjectBase que ja vem com a referencia da cena, que o propio método  createObject ja teria passado, e o propio contrutor do ObjectBase já iria definir o "scene = scene", com o scene que foi passado pelo createObject.
+

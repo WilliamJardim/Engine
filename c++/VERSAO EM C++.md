@@ -2,7 +2,7 @@ Minha ideia de criar uma versão da minha Engine para C++
 
 # Plano
 ## NAO FUNCIONA
- - Atributos não podem ser nulos em nenhum momento
+ - Atributos não podem ser nulos em nenhum momento(exceto se forem ponteiros)
  - strings sem aspas duplas
 
 ## OKAY
@@ -29,3 +29,43 @@ Minha ideia de criar uma versão da minha Engine para C++
         - Pode criar setters: setIsso( valor )
 
     - Dentro da classe não precisa usar this nos métodos
+
+    ### VARIAVEIS NULAS:
+        - Pode usar ponteiros para representar objetos que podem ser nulos
+    
+    ### Arrays flexiveis:
+        - Pode usar ponteiros para usar polimorfismo,
+          Por exemplo, ter um array de um objeto base, e esse mesmo array armazenar outros objetos que herdam esse objeto base.
+
+    ### retornar arrays criados na hora
+        - da pra fazer igual no JavaScript, mais de um jeito diferente usando ponteiros e std::vector
+
+    ### callbacks dentro de objetos, tipos personalizados
+        - é possivel criar tipos personalizados, estruturas(equivalentes a interfaces), classes abstratas, classes, 
+        - é possivel que os atributos das classes ou tipos sejam ponteiros de funções
+        - metodos em classes abstratas podem ser implementados de forma personalizada para cada objeto que herda essa classe,
+        
+        - tambem é possivel fazer overrides facilmente
+
+    ### Interfaces
+        - Como ja mencionado, interfaces em C++ são structs. Existe!
+
+    ### tipos personalizados
+        - Pode usar structs ou Typedef
+
+    ## Objetos e ponteiros
+        - Objetos criados por valor (ex: Scene s;) sempre existem até o fim do escopo
+        - Objetos criados com `new` são ponteiros, precisam de `delete` para liberar memória
+        - Smart pointers (`std::unique_ptr`, `std::shared_ptr`) ajudam no gerenciamento automático
+
+    ## Arrays dinâmicos
+        - `int arr[10];` tamanho fixo, alocado no stack
+        - `std::vector<int> v;` tamanho dinâmico, pode usar `push_back`
+
+    ## Interfaces (Classes abstratas)
+        - Definidas com métodos virtuais puros:
+        ```cpp
+        struct ICallback {
+            virtual void execute() = 0;
+            virtual ~ICallback() {}
+        };

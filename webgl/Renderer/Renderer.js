@@ -41,8 +41,14 @@ export class Renderer
         this.gl.viewport(0, 0, this.width, this.height);
         this.gl.clearColor(0, 0, 0, 1);
         this.gl.clearDepth(1);
+        
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.depthFunc(this.gl.LEQUAL);
+
+        // Permite transparencia
+        this.gl.enable(this.gl.BLEND);
+        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
         // Calcula alguns parametros para a camera
@@ -119,7 +125,13 @@ export class Renderer
         for( let i = 0 ; i < objetosVisuais.length ; i++ )
         {
             const objetoAtual = objetosVisuais[i];
-            objetoAtual.desenhar();
+            const isInvisivel = objetoAtual.invisivel;
+
+            // Se não está invisivel, desenha o objeto
+            if( isInvisivel == false )
+            {
+                objetoAtual.desenhar();
+            }
         }
     }
 

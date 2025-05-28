@@ -19,6 +19,8 @@ renderizador.inicializar();
 // Cria um cubo
 renderizador.criarObjeto({
     tipo: 'Cubo',
+    invisivel: false,
+    transparencia: 0.5, // 100 opaco
 
     /**
     * Posição do objeto 

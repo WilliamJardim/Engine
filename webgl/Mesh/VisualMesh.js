@@ -22,9 +22,56 @@ export class VisualMesh
         this.fragmentScript = ''; 
 
         // Atributos visuais
-        this.tipo     = meshConfig.tipo || 'Nenhum';
-        this.position = meshConfig.position;
-        this.rotation = meshConfig.rotation;
+        this.tipo          = meshConfig.tipo || 'Nenhum';
+        this.position      = meshConfig.position;
+        this.rotation      = meshConfig.rotation;
+        this.invisivel     = meshConfig.invisivel; 
+        this.transparencia = meshConfig.transparencia;
+    }
+
+    isTransparente()
+    {
+        return this.transparencia < 1;
+    }
+
+    isOpaco()
+    {
+        return this.transparencia == 1;
+    }
+
+    getTransparencia()
+    {
+        return this.transparencia;
+    }
+
+    setTransparencia( nivelOpacidade )
+    {
+        this.transparencia = nivelOpacidade;
+    }
+
+    setInvisibilidade( novaInvisibilidade=false )
+    {
+        this.invisivel = novaInvisibilidade;
+    }
+
+    ocultar()
+    {
+        this.invisivel = true;
+    }
+
+    aparecer()
+    {
+        this.invisivel = false;
+    }
+
+    isInvisivel()
+    {
+        return this.invisivel == true;
+    }
+
+    isVisivel()
+    {
+        return this.invisivel == false;
     }
 
     /**

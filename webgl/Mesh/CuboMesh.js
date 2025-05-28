@@ -84,13 +84,16 @@ export class CuboMesh extends VisualMesh
     */
     getFaceColors()
     {
+        // A implantação em C++ seria diferente
+        const nivelTransparencia = this.getTransparencia();
+
         return [
-            [1, 0, 0, 1],    // red
-            [0, 1, 0, 1],    // green
-            [0, 0, 1, 1],    // blue
-            [1, 1, 0, 1],    // yellow
-            [1, 0, 1, 1],    // magenta
-            [0, 1, 1, 1],    // cyan
+            [1, 0, 0, nivelTransparencia],    // red
+            [0, 1, 0, nivelTransparencia],    // green
+            [0, 0, 1, nivelTransparencia],    // blue
+            [1, 1, 0, nivelTransparencia],    // yellow
+            [1, 0, 1, nivelTransparencia],    // magenta
+            [0, 1, 1, nivelTransparencia],    // cyan
         ];
     }
 
@@ -177,6 +180,7 @@ export class CuboMesh extends VisualMesh
         const programUsado        = this.getProgram();
         const informacoesPrograma = this.getInformacoesPrograma();
         const indices             = this.getIndices();
+        const isTransparente      = this.isTransparente();
         
         // Atributos visuais 
         const meshConfig = this.meshConfig;
@@ -194,6 +198,12 @@ export class CuboMesh extends VisualMesh
         modeloObjetoVisual     = RotacionarX(modeloObjetoVisual,  rotation.x);
         modeloObjetoVisual     = RotacionarY(modeloObjetoVisual,  rotation.y);
         modeloObjetoVisual     = RotacionarZ(modeloObjetoVisual,  rotation.z);
+
+        // Se for um objeto transparente
+        if( isTransparente )
+        {
+            gl.depthMask(false);
+        }
 
         // Atualiza os buffers do objeto 3d com os dados calculados
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
@@ -217,6 +227,12 @@ export class CuboMesh extends VisualMesh
 
         // Desenha o cubo
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+
+        // Se for um objeto transparente
+        if( isTransparente )
+        {
+            gl.depthMask(true);
+        }
 
         // FIM DESSA LOGICA
     }

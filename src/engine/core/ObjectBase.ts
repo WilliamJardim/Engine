@@ -38,8 +38,16 @@ import includeString from "../utils/array/includeString";
 import objectAHaveSomeClassesIgnoredByObjectB from "../utils/array/objectAHaveSomeClassesIgnoredByObjectB";
 import objectANOTHaveSomeClassesIgnoredByObjectB from "../utils/array/objectANOTHaveSomeClassesIgnoredByObjectB";
 
-export default class ObjectBase extends Base{
-    
+export default class ObjectBase extends Base
+{    
+    /** ATRIBUTOS QUE SÂO PONTEIROS OU REFERENCIAS EXTERNAS */
+    public scene:Scene|null;       // é um ponteiro com referencia: *&
+    public onCreate:Function|null; // è uma função e tambem um ponteiro *
+
+    public objectBelow: ObjectBase|null;     //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
+    public lastObjectBelow: ObjectBase|null; //O ultimo objeto cujo o objeto atual esteve em cima 
+
+    /** OUTROS ATRIBUTOS DO OBJETO */
     public tipo:string = 'ObjectBase';
     public name:string;
     public id:string;
@@ -53,16 +61,12 @@ export default class ObjectBase extends Base{
     public velocitySinalyzer:VelocityStatus; // Indica o status da velocidade do objeto para cada eixo
     public physicsState:PhysicsState;
     public weight:number;
-    public scene:Scene|null; // é um ponteiro com referencia: *&
     public isFalling:boolean;
     public groundY:number; // A posição Y do chão atual em relação a este objeto
-    public objectBelow: ObjectBase|null; //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
-    public lastObjectBelow: ObjectBase|null; //O ultimo objeto cujo o objeto atual esteve em cima 
     public infoCollisions:CollisionsData;
     public infoProximity:CollisionsData;
     public isMovimentoTravadoPorColisao:boolean;
     public isReceiving_Y_Velocity:boolean; // Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
-    public onCreate:Function|null; //è uma função e tambem um ponteiro
 
     /** OUTROS ATRIBUTOS **/
     public lastPosition:ObjectPosition = {x: 0, y: 0, z: 0};
@@ -179,29 +183,32 @@ export default class ObjectBase extends Base{
         this.isFalling = false;
 
         //Se tem posição
-        if( this.objProps.position ){
-            this.setPosition( this.objProps.position );
-        }
+        this.setPosition( this.objProps.position );
+
         //Se tem rotação
-        if( this.objProps.rotation ){
-            this.setRotation( this.objProps.rotation );
-        }
+        this.setRotation( this.objProps.rotation );
+
         //Se tem escala
-        if( this.objProps.scale ){
-            this.setScale( this.objProps.scale );
-        }
+        this.setScale( this.objProps.scale );
+
         // Se tem redução de escala
-        if( this.objProps.scaleReduce ){
-            this.somarEscalaX( this.objProps.scaleReduce.x || 0 );
-            this.somarEscalaY( this.objProps.scaleReduce.y || 0 );
-            this.somarEscalaZ( this.objProps.scaleReduce.z || 0 );
-        }
+        this.somarEscalaX( this.objProps.scaleReduce.x );
+        this.somarEscalaY( this.objProps.scaleReduce.y );
+        this.somarEscalaZ( this.objProps.scaleReduce.z );
 
         // Dispara o evento ao criar o objeto
         if( this.onCreate )
         {
             this.onCreate.bind(this)()
         }
+    }
+
+    /**
+    * Altera a cena a qual este objeto pertence 
+    */
+    public setScene( novaScene:Scene )
+    {
+        this.scene = novaScene;
     }
 
     public debug()

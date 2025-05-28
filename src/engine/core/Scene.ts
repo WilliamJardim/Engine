@@ -687,7 +687,8 @@ export default class Scene extends Base{
     public updateObjects( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void
     {
 
-        const context = this;
+        const context      = this;
+        const currentScene = context;
 
         const updatableObjects = this.objects;
 
@@ -715,7 +716,7 @@ export default class Scene extends Base{
                 /**
                 * Repass some important informations into the  "currentObject"
                 */
-                currentObject.scene = this;
+                currentObject.setScene( currentScene );
 
                 if( this.sceneConfig.enable_advanced_frame_tracking )
                 {

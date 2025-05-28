@@ -348,15 +348,10 @@ export default class ObjectBase extends Base
     public ClearAttachments(): void{
         const esteObjeto:ObjectBase = this;
         esteObjeto.objProps.attachments = [];
+
+        //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
+        // ou se for um std:array pode usar .fill(nullptr) direto
     }
-
-    public setProps( newObjProps:ObjectProps ): void{
-        this.objProps = newObjProps;
-
-        if( this.objProps.havePhysics != undefined ){
-            this.physicsState.havePhysics = this.objProps.havePhysics;
-        }
-    } 
 
     public getProps(): ObjectProps{
         return this.objProps;
@@ -367,7 +362,7 @@ export default class ObjectBase extends Base
     }
 
     public getWeight(): number{
-        return this.weight || 0;
+        return this.weight;
     }
 
     public getMesh(): MeshRepresentation{

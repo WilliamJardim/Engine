@@ -47,6 +47,15 @@ Minha ideia de criar uma versão da minha Engine para C++
         
         - tambem é possivel fazer overrides facilmente
 
+    ### LIMPAR UM ARRAY APAGANDO SEUS ELEMENTOS
+        - é possivel, usando o método clear(), se for um array do tipo std::vector
+        - se for um std:array dá pra usar .fill(nullptr)
+
+        Isso só funciona se o tipo de dado do Array for um ponteiro Ex: "std::vector<ObjectBase*>", cada elemento do array seria um ponteiro de ObjectBase
+
+    ### Adicionar elementos no Array
+       - Se for um std::vector, pode usar o push_back que é igual ao push do javascript
+
     ### Interfaces
         - Como ja mencionado, interfaces em C++ são structs. Existe!
 

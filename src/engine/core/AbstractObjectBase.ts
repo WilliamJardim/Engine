@@ -1,3 +1,12 @@
+/**
+* AUTHOR: William Alves Jardim
+* LICENSE: Creative Commons BY-NC-ND 4.0 (https://creativecommons.org/licenses/by-nc-nd/4.0/)
+* 
+* Desenvolvido por William Alves Jardim como parte de um projeto pessoal.
+* Protegido por direitos autorais e licenciado sob Creative Commons BY-NC-ND 4.0.
+* 
+* Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
+*/
 import CollisionsData from "../interfaces/CollisionsData";
 import MeshRepresentation from "../interfaces/MeshRepresentation";
 import MovementState from "../interfaces/MovementState";
@@ -20,14 +29,10 @@ import ObjectFrameTracker from "./ObjectFrameTracker/ObjectFrameTracker";
 import Scene from "./Scene";
 
 /**
-* AUTHOR: William Alves Jardim
-* LICENSE: Creative Commons BY-NC-ND 4.0 (https://creativecommons.org/licenses/by-nc-nd/4.0/)
-* 
-* Desenvolvido por William Alves Jardim como parte de um projeto pessoal.
-* Protegido por direitos autorais e licenciado sob Creative Commons BY-NC-ND 4.0.
-* 
-* Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
+* Lembrando que o objeto dessa classe é somente declarar os atributos e métodos da classe ObjectBase e seus derivados vão usar
+* Apenas nao ter erros de compilação. Todos os métodos são virtuais e devem ser implementados no ObjectBase e seus derivados.
 */
+
 export default abstract class AbstractObjectBase{
 
     public scene:any|null;         // é um ponteiro com referencia: Scene*

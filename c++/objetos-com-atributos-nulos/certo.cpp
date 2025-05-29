@@ -8,7 +8,11 @@
 #include <iostream>  // Inclui a biblioteca para entrada e saída
 #include <vector>
 using namespace std;
-class Scene; // <--- DECLARE OS SEUS TIPOS QUE VOCE VAI USAR PRA EVITAR ERROS
+
+// <--- DECLARE OS SEUS TIPOS QUE VOCE VAI USAR PRA EVITAR ERROS
+class Scene; 
+class Objeto;
+class Carro;
 
 class ObjetoBase{
     public: 
@@ -40,6 +44,72 @@ class ObjetoBase{
     virtual Scene* getCena()
     {
         return nullptr;
+    }
+};
+
+class Scene{
+    public: 
+       string nomeCena;
+       vector<ObjetoBase*> objetos;
+
+    Scene( string nomeCena ) 
+         :
+         nomeCena(nomeCena),
+         objetos({}) // Inicializa a lista de objetos como um vetor vazio
+    {
+            
+    }
+
+    /**
+    * Obtem o nome da cena
+    */
+    string getNomeCena()
+    {
+        return nomeCena;
+    }   
+
+    void renomearCena( string novoNomeCena )
+    {
+        nomeCena = novoNomeCena;
+    }
+
+    /**
+    * Adiciona um objeto na cena 
+    */
+    void adicionarObjeto( ObjetoBase* objeto )
+    {
+        objetos.push_back( objeto );
+    }
+
+    /**
+    * Uma função pra ilustrar o conceito de atualização de objetos na cena 
+    */
+    void atualizarObjetos()
+    {
+        for( size_t i = 0 ; i < objetos.size(); i++ )
+        {
+             ObjetoBase* obj = objetos[i];
+
+             // Define a cena dentro do OBJ usando o método que criei dentro dele
+             obj->setCena(this);
+        }
+    }
+
+    void listarObjetos()
+    {
+        std::cout << "\n LISTA OBJETOS NA CENA:";
+
+        for( size_t i = 0 ; i < objetos.size(); i++ )
+        {
+             ObjetoBase* obj    = objetos[i];
+             Scene* cenaObj     = obj->getCena();
+             //string nomeCenaObj = obj->getCena()->getNomeCena(); 
+             string nomeCenaObj = cenaObj ? cenaObj->getNomeCena() : "(Sem cena)";
+
+             std::cout << "\n" << obj->getNome() << " na cena " << nomeCenaObj;
+        }
+
+        std::cout << std::endl; 
     }
 };
 
@@ -109,6 +179,9 @@ class Carro : public ObjetoBase{
     void fazerAlgoEspecifico()
     {
         std:cout << "(RODANDO getNome no carro:)\n";
+
+        //SEI LA MUDAR O NOME DA CENA
+        referenciaCena->renomearCena("NOVO NOME");
     }
 
     /***
@@ -137,70 +210,11 @@ class Carro : public ObjetoBase{
     }
 };
 
-class Scene{
-    public: 
-       string nomeCena;
-       vector<ObjetoBase*> objetos;
-
-    Scene( string nomeCena ) 
-         :
-         nomeCena(nomeCena),
-         objetos({}) // Inicializa a lista de objetos como um vetor vazio
-    {
-            
-    }
-
-    /**
-    * Obtem o nome da cena
-    */
-    string getNomeCena()
-    {
-        return nomeCena;
-    }   
-
-    /**
-    * Adiciona um objeto na cena 
-    */
-    void adicionarObjeto( ObjetoBase* objeto )
-    {
-        objetos.push_back( objeto );
-    }
-
-    /**
-    * Uma função pra ilustrar o conceito de atualização de objetos na cena 
-    */
-    void atualizarObjetos()
-    {
-        for( size_t i = 0 ; i < objetos.size(); i++ )
-        {
-             ObjetoBase* obj = objetos[i];
-
-             // Define a cena dentro do OBJ usando o método que criei dentro dele
-             obj->setCena(this);
-        }
-    }
-
-    void listarObjetos()
-    {
-        std::cout << "\n LISTA OBJETOS NA CENA:";
-
-        for( size_t i = 0 ; i < objetos.size(); i++ )
-        {
-             ObjetoBase* obj    = objetos[i];
-             Scene* cenaObj     = obj->getCena();
-             //string nomeCenaObj = obj->getCena()->getNomeCena(); 
-             string nomeCenaObj = cenaObj ? cenaObj->getNomeCena() : "(Sem cena)";
-
-             std::cout << "\n" << obj->getNome() << " na cena " << nomeCenaObj;
-        }
-
-        std::cout << std::endl; 
-    }
-};
-
 int main() {
     // Criando a cena
     Scene* cena = new Scene("Cena 1");
+
+    std::cout << "NOME DA CENA NO COMEÇO PROGRAMA: " << cena->getNomeCena() << "\n";
 
     // Criando objetos diferentes
     Objeto* objeto1 = new Objeto("Objeto 1");
@@ -215,6 +229,8 @@ int main() {
 
     // Mostra os objetos que estao na cena
     cena->listarObjetos();  
+
+    std::cout << "NOME DA CENA NO FIM PROGRAMA: " << cena->getNomeCena() << "\n";
 
     return 0;  // Retorna 0 para indicar que o programa foi executado com sucesso
 }

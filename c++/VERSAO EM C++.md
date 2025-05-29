@@ -4,6 +4,8 @@ Minha ideia de criar uma versão da minha Engine para C++
 ## NAO FUNCIONA
  - Atributos não podem ser nulos em nenhum momento(exceto se forem ponteiros)
  - strings sem aspas duplas
+ 
+ - declarações fora de ordem: A ordem de declaração de classes e funções importa. As vezes é necessário declarar a estrutura e depois a lógica dos métodos.
 
 ## OKAY
     ### CLASSES

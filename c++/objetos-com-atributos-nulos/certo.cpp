@@ -17,10 +17,12 @@ class Carro;
 class ObjetoBase{
     public: 
        string nome;
+       Scene* referenciaCena;
 
     ObjetoBase( string nomeObjeto ) 
         // Incializando atributos da classe
-        : nome(nomeObjeto)
+        : nome(nomeObjeto),
+          referenciaCena(nullptr)
     {
         
     }

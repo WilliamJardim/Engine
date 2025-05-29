@@ -7,7 +7,6 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import Base from "./Base";
 import ObjectProps from '../interfaces/ObjectProps';
 import PhysicsState from '../interfaces/PhysicsState';
 import MovementState from '../interfaces/MovementState';
@@ -37,8 +36,9 @@ import ObjectFrameTracker from "./ObjectFrameTracker/ObjectFrameTracker";
 import includeString from "../utils/array/includeString";
 import objectAHaveSomeClassesIgnoredByObjectB from "../utils/array/objectAHaveSomeClassesIgnoredByObjectB";
 import objectANOTHaveSomeClassesIgnoredByObjectB from "../utils/array/objectANOTHaveSomeClassesIgnoredByObjectB";
+import AbstractObjectBase from "./AbstractObjectBase";
 
-export default class ObjectBase extends Base
+export default class ObjectBase extends AbstractObjectBase
 {    
     /** ATRIBUTOS QUE SÂO PONTEIROS OU REFERENCIAS EXTERNAS */
     public scene:Scene|null;       // é um ponteiro com referencia: *&
@@ -51,7 +51,7 @@ export default class ObjectBase extends Base
     public tipo:string = 'ObjectBase';
     public name:string;
     public id:string;
-    public mesh:any;
+    public mesh:MeshRepresentation;
     public objProps:ObjectProps;
     public objEvents:ObjectEventLayer;
     public frameHistory:ObjectFrameTracker;
@@ -71,11 +71,11 @@ export default class ObjectBase extends Base
     /** OUTROS ATRIBUTOS **/
     public lastPosition:ObjectPosition = {x: 0, y: 0, z: 0};
 
-    constructor(mesh: any, 
+    constructor(mesh: MeshRepresentation, 
                 objProps:ObjectProps
             
     ){
-        super()
+        super( objProps );
     
         this.objProps  = objProps;
         this.weight = 0;
@@ -93,6 +93,24 @@ export default class ObjectBase extends Base
 
         this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
         this.name        = this.objProps.name;
+
+        this.mesh = {
+            position: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            scale: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+        }
 
         this.objEvents = new ObjectEventLayer(this.objProps.events || []);
 

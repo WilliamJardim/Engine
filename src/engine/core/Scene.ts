@@ -7,7 +7,7 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import Base from "./Base";
+import Base from "./AbstractObjectBase.ts";
 import { EngineMain } from '../main'; // Importa a função EngineMain
 import { EngineLoop } from '../main'; // Importa a função EngineLoop
 import { EngineBeforeLoop } from '../main' //Importa a função EngineBeforeLoop
@@ -35,7 +35,7 @@ import Position3D from "../interfaces/Position3D.ts";
 import VelocityStatus from "../interfaces/VelocityStatus.ts";
 import ObjectVelocity from "../interfaces/ObjectVelocity.ts";
 
-export default class Scene extends Base{
+export default class Scene{
 
     public sceneConfig:SceneConfig;
     public inputListener:InputListener;
@@ -70,8 +70,6 @@ export default class Scene extends Base{
     public haveWind:boolean;
 
     constructor( sceneConfig:SceneConfig ){
-        super();
-    
         this.wind = {
             orientation : { x: 0.5, 
                             y: -0.1, 

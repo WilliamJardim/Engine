@@ -94,3 +94,34 @@ std::any,
 Structured Bindings (auto [x, y])
 
 Vale a pena estudar!
+
+
+## EXEMPLO MAIS ROBUSTO
+<code>
+#include <iostream>
+#include <unordered_map>
+#include <functional>
+#include <memory>
+#include <variant>
+#include <string>
+
+using Attribute = std::variant<int, double, std::string, std::function<void()>>;
+
+struct DynamicObject {
+    std::unordered_map<std::string, Attribute> fields;
+    
+    void add(const std::string& key, Attribute value) {
+        fields[key] = value;
+    }
+
+    void call(const std::string& key) const {
+        if (auto it = fields.find(key); it != fields.end()) {
+            if (auto func = std::get_if<std::function<void()>>(&it->second)) {
+                (*func)();
+            } else {
+                std::cout << key << " is not a function\n";
+            }
+        }
+    }
+};
+</code>

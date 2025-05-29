@@ -314,8 +314,6 @@ export default class ObjectBase extends Base
     * @param {ObjectAttachment} attachementConfig
     */
     public joinAttachment( outroObjeto:ObjectBase, attachementConfig: ObjectAttachment ): void{
-        const esteObjeto:ObjectBase = this;
-
         // Cria o anexo no outro objeto para linkar esteObjeto com ele
         outroObjeto.objProps.attachments.push(attachementConfig);
     }

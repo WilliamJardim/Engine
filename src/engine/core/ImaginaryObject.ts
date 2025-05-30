@@ -9,6 +9,7 @@
 */
 import ObjectEventLayer from "../interfaces/ObjectEventBlock";
 import ObjectProps from "../interfaces/ObjectProps";
+import { Ponteiro } from "../types/types-cpp-like";
 import ObjectBase from "./ObjectBase";
 import Scene from "./Scene";
 
@@ -23,7 +24,7 @@ export default class ImaginaryObject extends ObjectBase{
     public objEvents:ObjectEventLayer;
     public id:string;
     public objProps:ObjectProps;
-    public scene:Scene|null;
+    public scene:Ponteiro<Scene>;
     
     constructor(objProps:ObjectProps){
         super( null, objProps );

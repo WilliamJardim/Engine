@@ -10,6 +10,7 @@
 import ObjectEventLayer from "../interfaces/ObjectEventBlock";
 import ObjectPosition from "../interfaces/ObjectPosition";
 import ObjectProps from "../interfaces/ObjectProps";
+import { Ponteiro } from "../types/types-cpp-like";
 import createCube from "../utils/createCube";
 import Camera from "./Camera";
 import ObjectBase from "./ObjectBase";
@@ -24,7 +25,7 @@ export default class Player extends ObjectBase{
     public objEvents:ObjectEventLayer;
     public id:string;
     public objProps:ObjectProps;
-    public scene:Scene|null;
+    public scene:Ponteiro<Scene>;
     public initialSpawn:ObjectPosition;
     public playerCamera:Camera|null;
     public cameraHeight:number = 8;

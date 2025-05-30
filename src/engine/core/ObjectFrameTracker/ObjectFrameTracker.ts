@@ -10,6 +10,8 @@
 import ObjectPosition from "../../interfaces/ObjectPosition";
 import ObjectScale from "../../interfaces/ObjectScale";
 import ObjectVelocity from "../../interfaces/ObjectVelocity";
+import { Ponteiro } from "../../types/types-cpp-like";
+import AbstractObjectBase from "../AbstractObjectBase";
 import ObjectBase from "../ObjectBase";
 import Scene from "../Scene";
 import ObjectFrameData, { FrameDataOrder } from "./ObjectFrameData";
@@ -19,14 +21,14 @@ import ObjectFrameData, { FrameDataOrder } from "./ObjectFrameData";
 * Pra poderem ser consultadas posteriormente
 */
 export default class ObjectFrameTracker{
-    public frameData       : ObjectFrameData[];
-    public objetoVinculado : ObjectBase;
+    public frameData       : Array<ObjectFrameData>;
+    public objetoVinculado : Ponteiro<AbstractObjectBase>;
     public enabled         : boolean;
 
     /**
     * Constroi o rastreador de dados do objeto
     */
-    constructor( objeto:ObjectBase ){
+    constructor( objeto:Ponteiro<AbstractObjectBase> ){
         this.enabled = true;
         this.objetoVinculado = objeto;
         this.frameData = [];
@@ -51,23 +53,29 @@ export default class ObjectFrameTracker{
                       frameDelta  : number, 
                       frameNumber : number 
     ): void{   
-        const velocidade : ObjectVelocity = {... this.objetoVinculado.getVelocity()}; // faz uma copia sem referencia
-        const position   : ObjectPosition = {... this.objetoVinculado.getPosition()};
-        const scale      : ObjectScale    = {... this.objetoVinculado.getScale()};
+        const objeto : Ponteiro<AbstractObjectBase> = this.objetoVinculado;
 
-        // Se o monitor de frames está ativado
-        if( this.enabled )
+        // Se o ponteiro não for nulo
+        if( objeto != null )
         {
-            this.frameData.push({
-                order               : order,
-                frameDelta          : frameDelta,
-                frameNumber         : frameNumber,
-                firstRender         : firstRender,
-                renderizadorPronto  : renderizadorPronto,
-                velocity            : velocidade,
-                position            : position,
-                scale               : scale    
-            });
+            const velocidade : ObjectVelocity = {... objeto.getVelocity()}; // faz uma copia sem referencia
+            const position   : ObjectPosition = {... objeto.getPosition()};
+            const scale      : ObjectScale    = {... objeto.getScale()};
+
+            // Se o monitor de frames está ativado
+            if( this.enabled )
+            {
+                this.frameData.push({
+                    order               : order,
+                    frameDelta          : frameDelta,
+                    frameNumber         : frameNumber,
+                    firstRender         : firstRender,
+                    renderizadorPronto  : renderizadorPronto,
+                    velocity            : velocidade,
+                    position            : position,
+                    scale               : scale    
+                });
+            }
         }
     }
 
@@ -82,7 +90,7 @@ export default class ObjectFrameTracker{
     /**
     * Retorna os frames passados do objeto 
     */
-    public getFrames(): ObjectFrameData[]
+    public getFrames(): Array<ObjectFrameData>
     {
         return this.frameData;
     }
@@ -90,9 +98,9 @@ export default class ObjectFrameTracker{
     /**
     * Retorna os frames passados do objeto, POR ORDEM DE afterUpdate 
     */
-    public getFramesAfterEachUpdate(): ObjectFrameData[]
+    public getFramesAfterEachUpdate(): Array<ObjectFrameData>
     {
-        const framesEncontrados: ObjectFrameData[] = [];
+        const framesEncontrados: Array<ObjectFrameData> = [];
 
         // Para cada registro de frame deste objeto
         for( let i = 0 ; i < this.frameData.length ; i++ )

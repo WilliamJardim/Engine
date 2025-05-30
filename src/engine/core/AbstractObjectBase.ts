@@ -24,6 +24,7 @@ import PhysicsState from "../interfaces/PhysicsState";
 import Position3D from "../interfaces/Position3D";
 import RotationState from "../interfaces/RotationState";
 import VelocityStatus from "../interfaces/VelocityStatus";
+import { Ponteiro } from "../types/types-cpp-like";
 import ProximityBounds from "../utils/interfaces/ProximityBounds";
 import ObjectFrameTracker from "./ObjectFrameTracker/ObjectFrameTracker";
 import Scene from "./Scene";
@@ -43,11 +44,11 @@ import Scene from "./Scene";
 
 export default abstract class AbstractObjectBase{
 
-    public scene:any|null;         // é um ponteiro com referencia: Scene*
-    public onCreate:Function|null; // è uma função e tambem um ponteiro *
+    public scene:Ponteiro<Scene>;         // é um ponteiro com referencia: Scene*
+    public onCreate:Ponteiro<Function>; // è uma função e tambem um ponteiro *
 
-    public objectBelow: AbstractObjectBase|null;     //Um ponteiro AbstractObjectBase*,  O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
-    public lastObjectBelow: AbstractObjectBase|null; //Um ponteiro AbstractObjectBase*, O ultimo objeto cujo o objeto atual esteve em cima 
+    public objectBelow: Ponteiro<AbstractObjectBase>;     //Um ponteiro AbstractObjectBase*,  O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
+    public lastObjectBelow: Ponteiro<AbstractObjectBase>; //Um ponteiro AbstractObjectBase*, O ultimo objeto cujo o objeto atual esteve em cima 
 
     /** OUTROS ATRIBUTOS DO OBJETO */
     public tipo:string = 'AbstractObjectBase';
@@ -80,6 +81,7 @@ export default abstract class AbstractObjectBase{
         this.name = "";
         this.id = "";
 
+        this.scene = null;
         this.objectBelow = null;
         this.lastObjectBelow = null;
 
@@ -265,11 +267,11 @@ export default abstract class AbstractObjectBase{
         return undefined;
     }
 
-    public joinAttachment( outroObjeto:AbstractObjectBase, attachementConfig: ObjectAttachment ): void{
+    public joinAttachment( outroObjeto:Ponteiro<AbstractObjectBase>, attachementConfig: ObjectAttachment ): void{
         
     }
 
-    public attach( objetoAnexar:AbstractObjectBase, attachementConfig: ObjectAttachment ): void{
+    public attach( objetoAnexar:Ponteiro<AbstractObjectBase>, attachementConfig: ObjectAttachment ): void{
         
     }
 
@@ -362,7 +364,7 @@ export default abstract class AbstractObjectBase{
         
     }
 
-    public getScene(): Scene|null{
+    public getScene(): Ponteiro<Scene>{
        return null;
     }
 
@@ -382,8 +384,8 @@ export default abstract class AbstractObjectBase{
         }
     }
 
-    public setPosition( position: ObjectPosition ): AbstractObjectBase{
-       return this;
+    public setPosition( position: ObjectPosition ): void{
+       
     }
 
     public somarX( x:number ): void{
@@ -434,8 +436,8 @@ export default abstract class AbstractObjectBase{
        
     }
 
-    public setScale( scale: ObjectScale ): AbstractObjectBase{
-        return this;
+    public setScale( scale: ObjectScale ): void{
+        
     }
 
     public getScale(): ObjectScale{
@@ -648,8 +650,8 @@ export default abstract class AbstractObjectBase{
         }
     }
 
-    public setRotation( rotation: ObjectRotation ): AbstractObjectBase{
-       return this;
+    public setRotation( rotation: ObjectRotation ): void{
+      
     }
 
     public somarRotationX( x:number ): void{
@@ -797,14 +799,14 @@ export default abstract class AbstractObjectBase{
         
     }
     
-    isCollisionOf( outroObjeto:AbstractObjectBase|string, limites:ProximityBounds ): boolean{
+    isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean{
         return false;
     }
 
     getCollisions( limites:ProximityBounds = {x:0, y:0, z:0}, 
                     recalculate:boolean = false  
 
-    ): AbstractObjectBase[]
+    ): Array<Ponteiro<AbstractObjectBase>>
     {
         return [];
     }
@@ -812,12 +814,12 @@ export default abstract class AbstractObjectBase{
     getProximity( limites:ProximityBounds = {x:0, y:0, z:0}, 
                   recalculate:boolean = false 
                     
-    ): AbstractObjectBase[]
+    ): Array<Ponteiro<AbstractObjectBase>>
     {
         return [];
     }
 
-    isProximityOf( outroObjeto:AbstractObjectBase|string, limites:ProximityBounds ): boolean{
+    isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean{
         return false;
     }
 

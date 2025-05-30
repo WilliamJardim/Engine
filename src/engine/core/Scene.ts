@@ -34,6 +34,7 @@ import Camera from "./Camera.ts";
 import Position3D from "../interfaces/Position3D.ts";
 import VelocityStatus from "../interfaces/VelocityStatus.ts";
 import ObjectVelocity from "../interfaces/ObjectVelocity.ts";
+import AbstractObjectBase from "./AbstractObjectBase.ts";
 
 export default class Scene{
 
@@ -51,7 +52,7 @@ export default class Scene{
     public atrito:number = 1;
     public arrastoAr:number = 1;
 
-    public objects:ObjectBase[];
+    public objects:AbstractObjectBase[];
 
     public cameras:Camera[];
     
@@ -225,7 +226,7 @@ export default class Scene{
     * @param objB 
     * @returns {boolean}
     */
-    public queryIfObjectIsProximityOf( objA: ObjectBase|string, objB: ObjectBase|string, limites:ProximityBounds ): boolean{
+    public queryIfObjectIsProximityOf( objA: AbstractObjectBase|string, objB: AbstractObjectBase|string, limites:ProximityBounds ): boolean{
 
         // Se vai usar o calculo da propia Engine mesmo, nos limites que ela ja calculou
         if( limites == undefined ){
@@ -282,7 +283,7 @@ export default class Scene{
     * @param objB 
     * @returns {boolean}
     */
-    public queryIfObjectIsCollisionOf( objA: ObjectBase|string, objB: ObjectBase|string, limites:ProximityBounds ): boolean{
+    public queryIfObjectIsCollisionOf( objA: AbstractObjectBase|string, objB: AbstractObjectBase|string, limites:ProximityBounds ): boolean{
 
         // Se vai usar o calculo da propia Engine mesmo, nos limites que ela ja calculou
         if( limites == undefined ){
@@ -320,35 +321,35 @@ export default class Scene{
     /**
     * Traz um objeto pelo ID
     */
-    public getObjectByID( objectId:string ): ObjectBase|ImaginaryObject{
+    public getObjectByID( objectId:string ): AbstractObjectBase|ImaginaryObject{
         return this.objectTableById[ objectId ];
     }
 
     /**
     * Traz um objeto pelo Nome
     */
-    public getObjectByName( objectId:string ): ObjectBase|ImaginaryObject{
+    public getObjectByName( objectId:string ): AbstractObjectBase|ImaginaryObject{
         return this.objectTableByName[ objectId ];
     }
 
     /**
     * Traz um objeto pelo Nome ou ID
     */
-    public getObjectBySomething( objectIdOrName:string ): ObjectBase|ImaginaryObject{
+    public getObjectBySomething( objectIdOrName:string ): AbstractObjectBase|ImaginaryObject{
         return this.getObjectByID(objectIdOrName) || this.getObjectByName(objectIdOrName);
     }
 
     /**
     * Adiciona um objeto na cena
     */
-    public add( objeto:ObjectBase ): void{
+    public add( objeto:AbstractObjectBase ): void{
         this.objects.push( objeto );
     }
 
     /**
     * Adiciona um objeto na lista de atualizações da cena 
     */
-    public addToLogic( objeto:ObjectBase ): void{
+    public addToLogic( objeto:AbstractObjectBase ): void{
         if( this.objects ){
             this.objects.push( objeto );
         }
@@ -357,9 +358,9 @@ export default class Scene{
     /**
     * Remove um objeto da cena
     */
-    public remove( objetoRemover:ObjectBase|ImaginaryObject ): void{
-        const scene            : Scene|null   = this;
-        const novosObjetosCena : ObjectBase[] = [];
+    public remove( objetoRemover:AbstractObjectBase|ImaginaryObject ): void{
+        const scene            : Scene|null           = this;
+        const novosObjetosCena : AbstractObjectBase[] = [];
 
         //Se tem o evento whenDestroy, executa ele
         if( objetoRemover.objEvents )
@@ -376,7 +377,7 @@ export default class Scene{
         //Remove o objeto da cena
         for( let i = 0 ; i < scene.objects.length ; i++ )
         {
-            const objetoAtual : ObjectBase = scene.objects[i];
+            const objetoAtual : AbstractObjectBase = scene.objects[i];
 
             // Se nao for o objeto que queremos remover, mantem
             if( objetoAtual.id != objetoRemover.id )
@@ -432,7 +433,7 @@ export default class Scene{
     */
     public updateCollisionReactions(firstRender:boolean, renderizadorPronto:boolean, frameDelta:number, frameNumber: number)
     {
-        const objetosCena: ObjectBase[] = this.objects;
+        const objetosCena: AbstractObjectBase[] = this.objects;
 
         for (let i = 0; i < objetosCena.length; i++) 
         {
@@ -441,8 +442,8 @@ export default class Scene{
                 /**
                 * Parametros do objeto A 
                 */
-                const objetoA   : ObjectBase    = objetosCena[i];
-                const movementA : MovementState = objetoA.movimentSinalyzer;
+                const objetoA   : AbstractObjectBase   = objetosCena[i];
+                const movementA : MovementState        = objetoA.movimentSinalyzer;
 
                 const velocidadeX_objetoA = objetoA.getVelocity().x;
                 const velocidadeY_objetoA = objetoA.getVelocity().y;
@@ -451,8 +452,8 @@ export default class Scene{
                 /**
                 * Parametros do objeto B 
                 */
-                const objetoB   : ObjectBase    = objetosCena[j];
-                const movementB : MovementState = objetoB.movimentSinalyzer;
+                const objetoB   : AbstractObjectBase  = objetosCena[j];
+                const movementB : MovementState       = objetoB.movimentSinalyzer;
 
                 const velocidadeX_objetoB = objetoB.getVelocity().x;
                 const velocidadeY_objetoB = objetoB.getVelocity().y;
@@ -692,7 +693,7 @@ export default class Scene{
 
         for( let i = 0 ; i < updatableObjects.length ; i++ )
         {
-            const currentObject     : ObjectBase                = updatableObjects[ i ];
+            const currentObject        : AbstractObjectBase     = updatableObjects[ i ];
             const velocityBeforeUpdate : ObjectVelocity         = {... currentObject.getVelocity()}; // Faz uma copia sem referencia
             const velocitySinalyzerBeforeUpdate: VelocityStatus = {... currentObject.velocitySinalyzer}; // Faz uma copia sem referencia
             const currentObjectIndex : number = i;

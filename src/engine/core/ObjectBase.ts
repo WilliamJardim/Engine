@@ -38,14 +38,21 @@ import objectAHaveSomeClassesIgnoredByObjectB from "../utils/array/objectAHaveSo
 import objectANOTHaveSomeClassesIgnoredByObjectB from "../utils/array/objectANOTHaveSomeClassesIgnoredByObjectB";
 import AbstractObjectBase from "./AbstractObjectBase";
 
+/**
+* O ObjectBase aqui é uma classe implementada, que herda do AbstractObjectBase,
+* e no ObjectBase, ele tem todos os atributos que o AbstractObjectBase tem, e implementa todos os métodos, com exatamente os mesmos parametros e tipo de retornos
+* E na realidade, em C++, a ideia do polimorfismo iria prevalecer, seguindo a regra de que em qualquer lugar que eu precise aceitar qualquer objetos derivado da classe AbstractObjectBase, eu vou usar AbstractObjectBase*, ou seja, um ponteiro dessa classe
+* e isso automaticamente aceita tanto instancias de AbstractObjectBase, quanto de ObjectBase, ou outras derivadas de AbstractObjectBase
+*/ 
+
 export default class ObjectBase extends AbstractObjectBase
 {    
     /** ATRIBUTOS QUE SÂO PONTEIROS OU REFERENCIAS EXTERNAS */
-    public scene:Scene|null;       // é um ponteiro com referencia: *&
+    public scene:Scene|null;       // é um ponteiro com referencia: *
     public onCreate:Function|null; // è uma função e tambem um ponteiro *
 
-    public objectBelow: ObjectBase|null;     //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
-    public lastObjectBelow: ObjectBase|null; //O ultimo objeto cujo o objeto atual esteve em cima 
+    public objectBelow: AbstractObjectBase|null;     //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
+    public lastObjectBelow: AbstractObjectBase|null; //O ultimo objeto cujo o objeto atual esteve em cima 
 
     /** OUTROS ATRIBUTOS DO OBJETO */
     public tipo:string = 'ObjectBase';
@@ -328,10 +335,10 @@ export default class ObjectBase extends AbstractObjectBase
 
     /**
     * Faz o objeto atual se anexar com outro objeto
-    * @param {ObjectBase} outroObjeto
+    * @param {AbstractObjectBase*} outroObjeto
     * @param {ObjectAttachment} attachementConfig
     */
-    public joinAttachment( outroObjeto:ObjectBase, attachementConfig: ObjectAttachment ): void{
+    public joinAttachment( outroObjeto:AbstractObjectBase, attachementConfig: ObjectAttachment ): void{
         // Cria o anexo no outro objeto para linkar esteObjeto com ele
         outroObjeto.objProps.attachments.push(attachementConfig);
     }
@@ -341,8 +348,8 @@ export default class ObjectBase extends AbstractObjectBase
     * @param {ObjectBase} objetoAnexar
     * @param {ObjectAttachment} attachementConfig
     */
-    public attach( objetoAnexar:ObjectBase, attachementConfig: ObjectAttachment ): void{
-        const esteObjeto:ObjectBase = this;
+    public attach( objetoAnexar:AbstractObjectBase, attachementConfig: ObjectAttachment ): void{
+        const esteObjeto:AbstractObjectBase = this;
 
         // Cria o anexo no outro objeto para linkar esteObjeto com ele
         esteObjeto.objProps.attachments.push(attachementConfig);
@@ -352,7 +359,7 @@ export default class ObjectBase extends AbstractObjectBase
     * Limpa a lista de attachments do objeto atual. Similar ao DettachFromAll(), porém, isso limpa a lista do objeto pai, liberando todos os objetos subordinados/anexados a ele.
     */
     public ClearAttachments(): void{
-        const esteObjeto:ObjectBase = this;
+        const esteObjeto:AbstractObjectBase = this;
         esteObjeto.objProps.attachments = [];
 
         //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
@@ -397,7 +404,7 @@ export default class ObjectBase extends AbstractObjectBase
         return this.lastPosition;
     }
 
-    public setPosition( position: ObjectPosition ): ObjectBase{
+    public setPosition( position: ObjectPosition ): AbstractObjectBase{
         const mesh: MeshRepresentation = this.getMesh();
 
         mesh.position.x = position.x;
@@ -482,7 +489,7 @@ export default class ObjectBase extends AbstractObjectBase
         this.getPosition().z += position.z;
     }
 
-    public setScale( scale: ObjectScale ): ObjectBase{
+    public setScale( scale: ObjectScale ): AbstractObjectBase{
         const mesh: MeshRepresentation = this.getMesh();
 
         mesh.scale.x = scale.x;
@@ -816,7 +823,7 @@ export default class ObjectBase extends AbstractObjectBase
         return this.getMesh().rotation;
     }
 
-    public setRotation( rotation: ObjectRotation ): ObjectBase{
+    public setRotation( rotation: ObjectRotation ): AbstractObjectBase{
         const mesh: MeshRepresentation = this.getMesh();
 
         mesh.rotation.x = rotation.x;
@@ -939,13 +946,13 @@ export default class ObjectBase extends AbstractObjectBase
     */
     public updateCollisionState( frameDelta:number ): void{
 
-        const scene       : Scene|null       = this.getScene();
-        const esteObjeto  : ObjectBase       = this;
+        const scene       : Scene|null         = this.getScene();
+        const esteObjeto  : AbstractObjectBase = this;
 
         // Ignora se a cena nao existir
         if( !scene ){ return; }
 
-        const objetosCena : ObjectBase[] = scene.objects;
+        const objetosCena : AbstractObjectBase[] = scene.objects;
 
         // Zera as informações de colisão com outros objetos
         this.infoCollisions = {
@@ -1150,16 +1157,16 @@ export default class ObjectBase extends AbstractObjectBase
     */
     public updatePhysics( frameDelta:number ): void{
 
-        const esteObjeto  : ObjectBase       = this;
-        const scene       : Scene|null     = esteObjeto.scene;
+        const esteObjeto  : AbstractObjectBase  = this;
+        const scene       : Scene|null          = esteObjeto.scene;
 
         // Ignora se a cena se nao existir
         if( !scene ){ return; }
 
-        const objetosCena : ObjectBase[] = scene.objects;
-        const gravity          : Position3D     = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
-        const frameDeltaIntensification: number = (((scene||{}).frameDeltaIntensification || 1));
-        const objectPhysicsUpdateRate:number    = (((scene||{}).objectPhysicsUpdateRate || 10));
+        const objetosCena               : AbstractObjectBase[] = scene.objects;
+        const gravity                   : Position3D           = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
+        const frameDeltaIntensification : number               = (((scene||{}).frameDeltaIntensification || 1));
+        const objectPhysicsUpdateRate   : number               = (((scene||{}).objectPhysicsUpdateRate || 10));
 
         this.isFalling = true;
 
@@ -1494,24 +1501,24 @@ export default class ObjectBase extends AbstractObjectBase
     */
     public updateRotation( frameDelta:number ): void{
 
-        const objeto : ObjectBase  = this;
-        const scene  : Scene|null  = objeto.getScene();
+        const objeto : AbstractObjectBase  = this;
+        const scene  : Scene|null          = objeto.getScene();
 
         // Ignora se a cena nao existir
         if( !scene ){
             return;
         }
 
-        const massaObjeto      : number         = objeto.getMass();
-        const gravity          : Position3D     = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
-        const atrito           : number         = (((scene||{}).atrito || 0));
-        const arrastoAr        : number         = (((scene||{}).arrastoAr || 0));
-        const frameDeltaIntensification: number = (((scene||{}).frameDeltaIntensification || 1));
-        const objectPhysicsUpdateRate:number    = (((scene||{}).objectPhysicsUpdateRate || 10));
+        const massaObjeto      : number          = objeto.getMass();
+        const gravity          : Position3D      = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
+        const atrito           : number          = (((scene||{}).atrito || 0));
+        const arrastoAr        : number          = (((scene||{}).arrastoAr || 0));
+        const frameDeltaIntensification: number  = (((scene||{}).frameDeltaIntensification || 1));
+        const objectPhysicsUpdateRate:number     = (((scene||{}).objectPhysicsUpdateRate || 10));
         const objectPhysicsDesaceleracaoUpdateRate:number = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
-        const movimentState:MovementState       = objeto.movimentState;
+        const movimentState:MovementState        = objeto.movimentState;
 
-        const objetosCena : ObjectBase[] = scene.objects;
+        const objetosCena : AbstractObjectBase[] = scene.objects;
 
         const forcaVelocidadeObjeto      = objeto.getRotationForce();
         const aceleracaoRotacaoObjeto    = objeto.getRotationAcceleration();
@@ -1586,26 +1593,26 @@ export default class ObjectBase extends AbstractObjectBase
     */
     public updateMovement( frameDelta:number ): void{
 
-        const objeto           : ObjectBase     = this;
-        const velocidadeObjeto : ObjectVelocity = objeto.getVelocity();
-        const aceleracaoObjeto : ObjectAcceleration = objeto.getAcceleration();
-        const forcaObjeto      : ObjectForce    = objeto.getForce();
-        const massaObjeto      : number         = objeto.getMass();
-        const scene            : Scene|null     = objeto.scene;
-        const gravity          : Position3D     = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
-        const atrito           : number         = (((scene||{}).atrito || 0));
-        const arrastoAr        : number         = (((scene||{}).arrastoAr || 0));
-        const frameDeltaIntensification: number = (((scene||{}).frameDeltaIntensification || 1));
-        const objectPhysicsUpdateRate:number    = (((scene||{}).objectPhysicsUpdateRate || 10));
+        const objeto           : AbstractObjectBase    = this;
+        const velocidadeObjeto : ObjectVelocity        = objeto.getVelocity();
+        const aceleracaoObjeto : ObjectAcceleration    = objeto.getAcceleration();
+        const forcaObjeto      : ObjectForce           = objeto.getForce();
+        const massaObjeto      : number                = objeto.getMass();
+        const scene            : Scene|null            = objeto.scene;
+        const gravity          : Position3D            = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
+        const atrito           : number                = (((scene||{}).atrito || 0));
+        const arrastoAr        : number                = (((scene||{}).arrastoAr || 0));
+        const frameDeltaIntensification: number        = (((scene||{}).frameDeltaIntensification || 1));
+        const objectPhysicsUpdateRate:number           = (((scene||{}).objectPhysicsUpdateRate || 10));
         const objectPhysicsDesaceleracaoUpdateRate:number = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
-        const movimentState:MovementState       = objeto.movimentState;
+        const movimentState:MovementState                 = objeto.movimentState;
 
         // Ignora se a cena nao existir
         if( !scene ){
             return;
         }
 
-        const objetosCena : ObjectBase[] =  scene.objects;
+        const objetosCena : AbstractObjectBase[] =  scene.objects;
 
         /**
         * Salva posição atual do objeto ANTES DE QUALQUER MOVIMENTO OCORRER, como sendo a posição anterior dele,
@@ -1851,8 +1858,8 @@ export default class ObjectBase extends AbstractObjectBase
     */
     public updateAttachments( frameDelta:number ): void{
 
-        const objeto  : ObjectBase = this;
-        const scene   : Scene|null = objeto.getScene();
+        const objeto  : AbstractObjectBase = this;
+        const scene   : Scene|null         = objeto.getScene();
 
         if(!scene){ return; }
 
@@ -1863,8 +1870,8 @@ export default class ObjectBase extends AbstractObjectBase
             */
             for( let anexo of objeto.objProps.attachments )
             {   
-                const nomeObjetoAnexar : string     = anexo.name;
-                const objetoAnexar     : ObjectBase = scene.getObjectByName( nomeObjetoAnexar );
+                const nomeObjetoAnexar : string             = anexo.name;
+                const objetoAnexar     : AbstractObjectBase = scene.getObjectByName( nomeObjetoAnexar );
                            
                 // Se ele NÂO DEVE COLIDIR COM O OBOJETO DONO DO ANEXO
                 if( anexo.attacherCollision == false )
@@ -1928,9 +1935,9 @@ export default class ObjectBase extends AbstractObjectBase
     * Atualiza os eventos internos do objeto 
     */
     public updateEvents( frameDelta:number ): void{
-        const scene   : Scene|null       = this.getScene();
-        const objeto  : ObjectBase       = this;
-        const eventos : ObjectEventLayer = objeto.objEvents;
+        const scene   : Scene|null          = this.getScene();
+        const objeto  : AbstractObjectBase  = this;
+        const eventos : ObjectEventLayer    = objeto.objEvents;
 
         if(!scene){ return; }
 
@@ -1940,7 +1947,7 @@ export default class ObjectBase extends AbstractObjectBase
             // Para cada bloco de evento
             for( let eventosObjeto of eventos.getEventos() )
             {
-                const objetosCena: ObjectBase[] = scene.objects;
+                const objetosCena: AbstractObjectBase[] = scene.objects;
 
                 // Se o objeto pode colidir e Se existe o evento whenCollide
                 if( (objeto.objProps.collide != false || objeto.objProps.collisionEvents == true) && 
@@ -2100,10 +2107,11 @@ export default class ObjectBase extends AbstractObjectBase
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isCollisionOf( outroObjeto:ObjectBase|string, limites:ProximityBounds ): boolean{
-        let objetosColidindo : ObjectBase[] = [];
-        let esteObjeto       : ObjectBase  = this;
-        let scene            : Scene|null  = esteObjeto.getScene();
+    isCollisionOf( outroObjeto:AbstractObjectBase|string, limites:ProximityBounds ): boolean
+    {
+        let objetosColidindo : AbstractObjectBase[] = [];
+        let esteObjeto       : AbstractObjectBase   = this;
+        let scene            : Scene|null           = esteObjeto.getScene();
 
         if(scene)
         {
@@ -2119,11 +2127,11 @@ export default class ObjectBase extends AbstractObjectBase
     getCollisions( limites:ProximityBounds = {x:0, y:0, z:0}, 
                    recalculate:boolean = false  
 
-    ): ObjectBase[]
+    ): AbstractObjectBase[]
     {
-        let objetosColidindo : ObjectBase[] = [];
-        let esteObjeto       : ObjectBase  = this;
-        let scene            : Scene|null  = esteObjeto.getScene();
+        let objetosColidindo : AbstractObjectBase[] = [];
+        let esteObjeto       : AbstractObjectBase   = this;
+        let scene            : Scene|null           = esteObjeto.getScene();
 
         //Se não tem limites personalizados
         if( recalculate == false ){
@@ -2136,7 +2144,7 @@ export default class ObjectBase extends AbstractObjectBase
                 //Traz só os objetos que estão colidindo dentro da zona definida no "limites"
                 for( let i = 0 ; i < scene.objects.length ; i++ )
                 {
-                    const objetoAtual : ObjectBase = scene.objects[i];
+                    const objetoAtual : AbstractObjectBase = scene.objects[i];
 
                     // Se está colidindo
                     if( isCollision( esteObjeto, objetoAtual, limites ) == true && esteObjeto.id !== objetoAtual.id )
@@ -2156,11 +2164,11 @@ export default class ObjectBase extends AbstractObjectBase
     getProximity( limites:ProximityBounds = {x:0, y:0, z:0}, 
                   recalculate:boolean = false 
                   
-    ): ObjectBase[]
+    ): AbstractObjectBase[]
     {
-        let objetosColidindo : ObjectBase[] = [];
-        let esteObjeto       : ObjectBase  = this;
-        let scene            : Scene|null  = esteObjeto.getScene();
+        let objetosColidindo : AbstractObjectBase[] = [];
+        let esteObjeto       : AbstractObjectBase   = this;
+        let scene            : Scene|null           = esteObjeto.getScene();
 
         //Se não tem limites personalizados
         if( recalculate == false ){
@@ -2173,7 +2181,7 @@ export default class ObjectBase extends AbstractObjectBase
                 //Traz só os objetos que estão proximos dentro da zona definida no "limites"
                 for( let i = 0 ; i < scene.objects.length ; i++ )
                 {
-                    const objetoAtual : ObjectBase = scene.objects[i];
+                    const objetoAtual : AbstractObjectBase = scene.objects[i];
 
                     // Se está colidindo
                     if( isProximity( esteObjeto, objetoAtual, limites ) && esteObjeto.id !== objetoAtual.id )
@@ -2192,10 +2200,10 @@ export default class ObjectBase extends AbstractObjectBase
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isProximityOf( outroObjeto:ObjectBase|string, limites:ProximityBounds ): boolean{
-        let objetosColidindo : ObjectBase[] = [];
-        let esteObjeto       : ObjectBase  = this;
-        let scene            : Scene|null  = esteObjeto.getScene();
+    isProximityOf( outroObjeto:AbstractObjectBase|string, limites:ProximityBounds ): boolean{
+        let objetosColidindo : AbstractObjectBase[] = [];
+        let esteObjeto       : AbstractObjectBase   = this;
+        let scene            : Scene|null           = esteObjeto.getScene();
 
         if(scene)
         {

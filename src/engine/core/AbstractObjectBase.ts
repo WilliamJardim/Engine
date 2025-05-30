@@ -31,6 +31,14 @@ import Scene from "./Scene";
 /**
 * Lembrando que o objeto dessa classe é somente declarar os atributos e métodos da classe ObjectBase e seus derivados vão usar
 * Apenas nao ter erros de compilação. Todos os métodos são virtuais e devem ser implementados no ObjectBase e seus derivados.
+* 
+* Em varios lugares aqui nesse código, por exemplo no objectBelow, lastObjectBelow, parametros de funcoes como o objeto, outroObjeto, que estão com o  tipo AbstractObjectBase, na realidade são ponteiros da classe AbstractObjectBase,
+* Ou seja, que vão aceitar qualquer derivação que venha da AbstractObjectBase
+* 
+* O ObjectBase aqui nessa mesma pasta, em: "./ObjectBase.ts", ele é uma classe implementada, que herda do AbstractObjectBase,
+* e no ObjectBase, ele tem todos os atributos que o AbstractObjectBase tem, e implementa todos os métodos, com exatamente os mesmos parametros e tipo de retornos
+* E na realidade, em C++, a ideia do polimorfismo iria prevalecer, seguindo a regra de que em qualquer lugar que eu precise aceitar qualquer objetos derivado da classe AbstractObjectBase, eu vou usar AbstractObjectBase*, ou seja, um ponteiro dessa classe
+* e isso automaticamente aceita tanto instancias de AbstractObjectBase, quanto de ObjectBase, ou outras derivadas de AbstractObjectBase
 */
 
 export default abstract class AbstractObjectBase{
@@ -38,8 +46,8 @@ export default abstract class AbstractObjectBase{
     public scene:any|null;         // é um ponteiro com referencia: Scene*
     public onCreate:Function|null; // è uma função e tambem um ponteiro *
 
-    public objectBelow: any|null;     //Um ponteiro ObjectBase*,  O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
-    public lastObjectBelow: any|null; //Um ponteiro ObjectBase*, O ultimo objeto cujo o objeto atual esteve em cima 
+    public objectBelow: AbstractObjectBase|null;     //Um ponteiro AbstractObjectBase*,  O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
+    public lastObjectBelow: AbstractObjectBase|null; //Um ponteiro AbstractObjectBase*, O ultimo objeto cujo o objeto atual esteve em cima 
 
     /** OUTROS ATRIBUTOS DO OBJETO */
     public tipo:string = 'AbstractObjectBase';
@@ -71,6 +79,9 @@ export default abstract class AbstractObjectBase{
         this.tipo = "AbstractObjectBase";
         this.name = "";
         this.id = "";
+
+        this.objectBelow = null;
+        this.lastObjectBelow = null;
 
         this.mesh = {
             position: {
@@ -236,12 +247,6 @@ export default abstract class AbstractObjectBase{
 
     }
 
-    /**
-    * Atualiza o status da velocidade(em cada eixo, se está aumentando, diminuindo, etc...) 
-    * Isso é um pouco mais complexo por que leva em conta o frame anterior, da forma como eu fiz
-    * A cena chama essa função após CADA ATUALIZAÇÂO DO OBJETO ATUAL, porém, contendo os dados do frame anterior
-    * assim eu consigo saber o que mudou
-    */
     public updateVelocitySinalyzer( velocityBeforeUpdate: ObjectVelocity,
                                     velocitySinalyzerBeforeUpdate: VelocityStatus, 
                                     firstRender:boolean, 

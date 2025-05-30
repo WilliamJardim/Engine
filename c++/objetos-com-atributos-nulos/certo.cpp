@@ -177,6 +177,11 @@ class Carro : public ObjetoBase{
         
     }
 
+    void mostrarMensagemQualquer()
+    {
+        std:cout << "(RODANDO mostrarMensagemQualquer:)\n";
+    }
+
     // FUNCAO QUE ILUSTRA ALGO ESPECIFICO QUE SÒ O CARRO VAI FAZER
     void fazerAlgoEspecifico()
     {
@@ -184,6 +189,11 @@ class Carro : public ObjetoBase{
 
         //SEI LA MUDAR O NOME DA CENA
         referenciaCena->renomearCena("NOVO NOME");
+
+        // Outra coisa aleatoria
+        Carro* esteObjeto = this;
+
+        esteObjeto->mostrarMensagemQualquer();
     }
 
     /***

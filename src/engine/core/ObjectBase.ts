@@ -1005,10 +1005,19 @@ export default class ObjectBase extends AbstractObjectBase
                             // Registra as colisões detectadas
                             esteObjeto.infoCollisions.objectNames.push( objetoAtualCena.name );
 
-                            //Registra tambem na tabela mestre da cena
+                            /**
+                            * Registra tambem na tabela mestre da cena
+                            * Logica: Se a chave "esteObjeto.name" não existir, ou seja, se não existir entrada para o objeto atual no mapa esteObjeto.scene.collisionTable.byName
+                            * Então, ele vai criar um Array vazio, para permitr que seja inserido as entradas, que vão registrar a colisão 
+                            */
                             if( esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] == null ){
                                 esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] = [];
                             }
+                            /**
+                            * Registra tambem na tabela mestre da cena
+                            * Logica: Se a chave "esteObjeto.name" não existir, ou seja, se não existir entrada para o objeto atual no mapa esteObjeto.scene.collisionTable.byName
+                            * Então, ele vai criar um mapa vazio, para permitr que seja inserido as entradas, que vão registrar a colisão 
+                            */
                             if( esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] == null ){
                                 esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] = {};
                             }
@@ -1017,12 +1026,6 @@ export default class ObjectBase extends AbstractObjectBase
                             esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.name ] = true;
                             esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ] = true;
 
-                            //As classes tambem são inclusas se houver, para permitir facil acesso
-                            for( let classeIndex = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
-                            {
-                                const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
-                                esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.id ][ nomeClasse ] = true;
-                            }
 
                             // Por ID
                             esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
@@ -1039,32 +1042,28 @@ export default class ObjectBase extends AbstractObjectBase
                             esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.name ] = true;
                             esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id ] = true;
 
+
                             //As classes tambem são inclusas se houver, para permitir facil acesso
                             for( let classeIndex = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
                             {
-                                 const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
-                                 esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ nomeClasse ] = true;
-                            }
+                                const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
+                                esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.id ][ nomeClasse ] = true;
+                                esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ nomeClasse ] = true;
 
-                            // Por classes
-                            for( let classeIndex = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
-                            {
-                                 const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
-                                 
-                                 esteObjeto.infoCollisions.objectClasses.push( nomeClasse );
+                                esteObjeto.infoCollisions.objectClasses.push( nomeClasse );
 
-                                 //Registra tambem na tabela mestre da cena
-                                 if( esteObjeto.scene.collisionTable.byID[ nomeClasse ] == null ){
-                                     esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] = [];
-                                 }
-                                 if( esteObjeto.scene.collisionBinaryTable.byID[ nomeClasse ] == null ){
-                                     esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] = {};
-                                 }
+                                //Registra tambem na tabela mestre da cena
+                                if( esteObjeto.scene.collisionTable.byID[ nomeClasse ] == null ){
+                                    esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] = [];
+                                }
+                                if( esteObjeto.scene.collisionBinaryTable.byID[ nomeClasse ] == null ){
+                                    esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] = {};
+                                }
 
-                                 // por Nome da classe
-                                 esteObjeto.scene.collisionTable.byClasses[ nomeClasse ].push( objetoAtualCena );                          
-                                 esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = true;
-                                 esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.id ] = true;
+                                // por Nome da classe
+                                esteObjeto.scene.collisionTable.byClasses[ nomeClasse ].push( objetoAtualCena );                          
+                                esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = true;
+                                esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.id ] = true;
                             }
 
                             esteObjeto.infoCollisions.objects.push( objetoAtualCena );

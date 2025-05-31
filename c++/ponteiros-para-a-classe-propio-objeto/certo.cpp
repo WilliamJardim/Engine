@@ -103,12 +103,19 @@ class Scene{
     */
     void atualizarObjetos()
     {
+        // CRIEI UMA VARIAVEL QUALQUER SÒ PRA ILUSTRAR ATRIBUINDO O objectBelow dinamicamente
+        // ESSE CODIGO NAO TEM OBJETIVO DE SIMULAR O COMPORTAMENTO REAL DA MINHA ENGINE
+        // SO DE PROVAR HIPOTESES DE USO
+        ObjetoBase* objetoAnterior = nullptr;
+
         for( size_t i = 0 ; i < objetos.size(); i++ )
         {
              ObjetoBase* obj = objetos[i];
+             obj->objectBelow = objetoAnterior;
 
              // Define a cena dentro do OBJ usando o método que criei dentro dele
              obj->setCena(this);
+             objetoAnterior = obj;
         }
     }
 
@@ -120,10 +127,15 @@ class Scene{
         {
              ObjetoBase* obj    = objetos[i];
              Scene* cenaObj     = obj->getCena();
-             //string nomeCenaObj = obj->getCena()->getNomeCena(); 
              string nomeCenaObj = cenaObj ? cenaObj->getNomeCena() : "(Sem cena)";
 
-             std::cout << "\n" << obj->getNome() << " na cena " << nomeCenaObj;
+             // VERIFICANDO SE O PONTEIRO È NULO ANTES DE FAZER ALGUMA COISA ...
+             if( obj->objectBelow != nullptr ){
+                std::cout << "\n" << obj->getNome() << " na cena " << nomeCenaObj << " abaixo de " << obj->objectBelow->nome;
+             
+             }else{
+                std::cout << "\n" << obj->getNome() << " na cena " << nomeCenaObj << " abaixo de " << "NENHUM";
+             }
         }
 
         std::cout << std::endl; 

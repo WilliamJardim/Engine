@@ -1,3 +1,5 @@
+import { Ponteiro } from "../types/types-cpp-like";
+
 /**
 * AUTHOR: William Alves Jardim
 * LICENSE: Creative Commons BY-NC-ND 4.0 (https://creativecommons.org/licenses/by-nc-nd/4.0/)
@@ -8,11 +10,11 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 export default interface ObjectEvents{
-    whenCollide?:Function,
-    whenProximity?:Function,
-    whenDestroy?:Function,
-    whenFall?:Function,
-    loop?:Function
+    whenCollide?: Ponteiro<Function>,
+    whenProximity?: Ponteiro<Function>,
+    whenDestroy?: Ponteiro<Function>,
+    whenFall?: Ponteiro<Function>,
+    loop?: Ponteiro<Function>,
 }
 
 /**

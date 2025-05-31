@@ -11,14 +11,22 @@ import InputKeyMap from "../interfaces/InputKeyMap";
 import Position2D from "../interfaces/Position2D";
 
 export default class InputListener{
-    public mousePosition:Position2D;
-    public keyDetection:InputKeyMap;
+    public mousePosition : Position2D;
+    public keyDetection  : InputKeyMap;
 
     constructor(){
         const contexto = this;
 
-        this.keyDetection  = {}             as InputKeyMap;
-        this.mousePosition = { x: 0, y: 0 } as Position2D; 
+        this.keyDetection  = { W: false,
+                               A: false,
+                               S: false,
+                               D: false,
+                               ArrowUp: false,
+                               ArrowDown: false,
+                               ArrowLeft: false,
+                               ArrowRight: false };
+
+        this.mousePosition = { x: 0, y: 0 }; 
                     
         // Atualiza a posição do mouse
         function onMouseMove(event: MouseEvent) {

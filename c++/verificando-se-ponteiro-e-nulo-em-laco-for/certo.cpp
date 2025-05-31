@@ -103,19 +103,16 @@ class Scene{
     */
     void atualizarObjetos()
     {
-        // CRIEI UMA VARIAVEL QUALQUER SÒ PRA ILUSTRAR ATRIBUINDO O objectBelow dinamicamente
-        // ESSE CODIGO NAO TEM OBJETIVO DE SIMULAR O COMPORTAMENTO REAL DA MINHA ENGINE
-        // SO DE PROVAR HIPOTESES DE USO
-        ObjetoBase* objetoAnterior = nullptr;
-
         for( size_t i = 0 ; i < objetos.size(); i++ )
         {
              ObjetoBase* obj = objetos[i];
-             obj->objectBelow = objetoAnterior;
-
-             // Define a cena dentro do OBJ usando o método que criei dentro dele
-             obj->setCena(this);
-             objetoAnterior = obj;
+        
+             // Verifica se o ponteiro não é nulo ( esse IF não vai funcionar se o ponteiro apontar ao propio objeto )
+             if( obj != nullptr )
+             {
+                // Define a cena dentro do OBJ usando o método que criei dentro dele
+                obj->setCena(this);    
+             }
         }
     }
 
@@ -129,13 +126,7 @@ class Scene{
              Scene* cenaObj     = obj->getCena();
              string nomeCenaObj = cenaObj ? cenaObj->getNomeCena() : "(Sem cena)";
 
-             // VERIFICANDO SE O PONTEIRO È NULO ANTES DE FAZER ALGUMA COISA ...
-             if( obj->objectBelow != nullptr ){
-                std::cout << "\n" << obj->getNome() << " na cena " << nomeCenaObj << " abaixo de " << obj->objectBelow->nome;
-             
-             }else{
-                std::cout << "\n" << obj->getNome() << " na cena " << nomeCenaObj << " abaixo de " << "NENHUM";
-             }
+             std::cout << "\n" << obj->getNome() << " na cena " << nomeCenaObj << " abaixo de " << "NENHUM";
         }
 
         std::cout << std::endl; 
@@ -159,17 +150,7 @@ class Objeto : public ObjetoBase{
           referenciaCena(nullptr),
           objectBelow(nullptr)
     {
-        /**
-        * AQUI EU POSSO CHAMAR QUALQUER METODO DA CLASSE QUE EU HERDEI, POIS ELE HERDOU OS METODOS
-        * MESMO QUE O METODO NAO SEJA VIRTUAL
-        * OU SEJA, METODOS NÂO-VIRTUAIS QUE JA FORAM IMPLEMENTADOS NA CLASSE BASE PODEM SER CHAMADOS NORMALMENTE
-        */
-        metodoQualquer();
-
-        // PROVANDO QUE EU POSSO USAR PONTEIRO PRO THIS DO PROPIO OBJETO TAMBEM
-        ObjetoBase* propiaInstanciaObjeto = this;
-        // TAMBEM POSSO CHAMAR METODOS DELE COM ISSO
-        propiaInstanciaObjeto->mudarNome("OBJETIVO");
+    
     }
 
     void mudarNome( string novoValor ) override
@@ -228,20 +209,14 @@ class Carro : public ObjetoBase{
 
     void mostrarMensagemQualquer()
     {
-        std:cout << "(RODANDO mostrarMensagemQualquer:)\n";
+        std:cout << "\nTESTE MENSAGEM VIA PONTEIRO\n";
     }
 
     // FUNCAO QUE ILUSTRA ALGO ESPECIFICO QUE SÒ O CARRO VAI FAZER
     void fazerAlgoEspecifico()
     {
-        std:cout << "(RODANDO getNome no carro:)\n";
-
-        //SEI LA MUDAR O NOME DA CENA
-        referenciaCena->renomearCena("NOVO NOME");
-
         // Outra coisa aleatoria
         Carro* esteObjeto = this;
-
         esteObjeto->mostrarMensagemQualquer();
     }
 
@@ -275,8 +250,6 @@ int main() {
     // Criando a cena
     Scene* cena = new Scene("Cena 1");
 
-    std::cout << "NOME DA CENA NO COMEÇO PROGRAMA: " << cena->getNomeCena() << "\n";
-
     // Criando objetos diferentes
     Objeto* objeto1 = new Objeto("Objeto 1");
     Carro*  carro1  = new Carro("Carro 1", "Chao");
@@ -292,12 +265,6 @@ int main() {
 
     // Mostra os objetos que estao na cena
     cena->listarObjetos();  
-
-    objeto1->comprimentarObjetoAbaixo();
-
-    objeto1->metodoQualquer();
-
-    std::cout << "\nNOME DA CENA NO FIM PROGRAMA: " << cena->getNomeCena() << "\n";
 
     return 0;  // Retorna 0 para indicar que o programa foi executado com sucesso
 }

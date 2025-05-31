@@ -7,11 +7,12 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import ObjectBase from "../core/ObjectBase";
+import AbstractObjectBase from "../core/AbstractObjectBase";
+import { Ponteiro } from "../types/types-cpp-like";
 
 export default interface CollisionsData{
-    objectNames: string[];
-    objectIDs: string[];
-    objectClasses: string[];
-    objects: ObjectBase[];
+    objectNames: Array<string>;
+    objectIDs: Array<string>;
+    objectClasses: Array<string>;
+    objects: Array<Ponteiro<AbstractObjectBase>>;
 }

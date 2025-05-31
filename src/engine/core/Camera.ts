@@ -32,7 +32,7 @@ export default class Camera extends ObjectBase{
         this.id          = (this.objProps.name||'imaginario') + String(new Date().getTime());
         this.name        = this.objProps.name;
         this.scene       = null;
-        this.objEvents   = new ObjectEventLayer(this.objProps.events || []);
+        this.objEvents   = new ObjectEventLayer(this.objProps.events);
 
         // Uma camera não pode colidir nem receber colisão nem fisica
         this.objProps.havePhysics = false;

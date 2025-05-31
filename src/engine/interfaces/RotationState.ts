@@ -12,6 +12,6 @@ export default interface RotationState{
     backward: boolean, 
     left: boolean, 
     right: boolean,
-    up:boolean,
-    down:boolean
+    up: boolean,
+    down: boolean
 }

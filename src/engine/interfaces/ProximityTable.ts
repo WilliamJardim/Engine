@@ -7,10 +7,12 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import AbstractObjectBase from "../core/AbstractObjectBase";
 import ObjectBase from "../core/ObjectBase";
+import { Ponteiro } from "../types/types-cpp-like";
 
 export default interface CollisionTable{
-    byName    : Record<string, Array<ObjectBase>>, // byName[nomeObjetoAlvo] = lista de objetos colidindo com ele
-    byID      : Record<string, Array<ObjectBase>>, // byName[idObjetoAlvo] = lista de objetos colidindo com ele
-    byClasses : Record<string, Array<ObjectBase>>  // byClasses[classeObjetoAlvo] = lista de objetos colidindo com ele
+    byName    : Record<string, Array<Ponteiro<AbstractObjectBase>>>, // byName[nomeObjetoAlvo] = lista de objetos colidindo com ele
+    byID      : Record<string, Array<Ponteiro<AbstractObjectBase>>>, // byName[idObjetoAlvo] = lista de objetos colidindo com ele
+    byClasses : Record<string, Array<Ponteiro<AbstractObjectBase>>>  // byClasses[classeObjetoAlvo] = lista de objetos colidindo com ele
 }

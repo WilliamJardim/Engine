@@ -16,10 +16,10 @@
 import ObjectEvents from "./ObjectEvents";
 
 export default class ObjectEventLayer{
-    private eventsArray:ObjectEvents[];
+    private eventsArray: Array<ObjectEvents>;
 
-    constructor( eventsArray:ObjectEvents[] ){
-        this.eventsArray = eventsArray || [];
+    constructor( eventsArray: Array<ObjectEvents> ){
+        this.eventsArray = eventsArray;
     }
 
     public getEventos(){

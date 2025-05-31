@@ -14,13 +14,14 @@ import ObjectScale from "./ObjectScale";
 import ObjectEvents from './ObjectEvents';
 import ProximityBounds from '../utils/interfaces/ProximityBounds';
 import ObjectAttachment from './ObjectAttachment';
+import { Ponteiro } from '../types/types-cpp-like';
 
 export default interface ObjectProps{
     material: THREE.MeshStandardMaterial | null,
     mass: number; //A massa do objeto
     type: string, //Se é cubo, plano, esfera, ou modelo personalizado
     name:string,
-    classes:string[],
+    classes: Array<string>,
     havePhysics: boolean,
     position: ObjectPosition,
     rotation: ObjectRotation,
@@ -33,12 +34,12 @@ export default interface ObjectProps{
     proximityConfig:ProximityBounds,
     invisible: boolean,
     opacity: number,
-    events: ObjectEvents[],
+    events: Array<ObjectEvents>,
     kick_rate: number,
 
     enable_advanced_frame_tracking: boolean, //Se ativado, vai capturar os dados do objeto a cada frame. Por padrão é ativado
 
-    onCreate?:Function|null;
+    onCreate?: Ponteiro<Function>;
 
     /**
     * Define quais objetos da cena vão estar grudados/anexados a este objeto

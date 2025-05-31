@@ -121,7 +121,7 @@ export default class ObjectFrameTracker{
     */
     public getFramesBeforeEachUpdate(): ObjectFrameData[]
     {
-        const framesEncontrados: ObjectFrameData[] = [];
+        const framesEncontrados: Array<ObjectFrameData> = [];
 
         // Para cada registro de frame deste objeto
         for( let i = 0 ; i < this.frameData.length ; i++ )
@@ -150,7 +150,7 @@ export default class ObjectFrameTracker{
     ): ObjectFrameData[] {
 
         const temOrdem:boolean = (parametrosBuscaFrames.order != undefined) ? true : false;
-        const framesEncontrados: ObjectFrameData[] = [];
+        const framesEncontrados: Array<ObjectFrameData> = [];
 
         // Para cada registro de frame deste objeto
         for( let i = 0 ; i < this.frameData.length ; i++ )

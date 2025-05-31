@@ -18,9 +18,9 @@ export default function createCube( objProps:ObjectProps ): ObjectBase{
     const propsObjeto = {...objProps} as ObjectProps;
 
     const meshRepresentation:MeshRepresentation = {
-        position : objProps.position             || {} as ObjectPosition,
-        scale    : objProps.scale as ObjectScale || {} as ObjectScale,
-        rotation : objProps.rotation             || {} as ObjectRotation
+        position : objProps.position,
+        scale    : objProps.scale,
+        rotation : objProps.rotation
     }
 
     //Diz que é um cubo

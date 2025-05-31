@@ -120,7 +120,7 @@ export default class ObjectBase extends AbstractObjectBase
             }
         }
 
-        this.objEvents = new ObjectEventLayer(this.objProps.events || []);
+        this.objEvents = new ObjectEventLayer(this.objProps.events);
 
         // this.scene é um ponteiro, ele pode ser nulo na criação, mais ele será atribuido dinamicamente para apontar pra cena, na fase de atualização dos objetos
         this.scene = null;
@@ -810,7 +810,7 @@ export default class ObjectBase extends AbstractObjectBase
             x: momento_x,
             y: momento_y,
             z: momento_z
-        } as Position3D;
+        };
     }
 
     /**
@@ -945,8 +945,8 @@ export default class ObjectBase extends AbstractObjectBase
     */
     public updateCollisionState( frameDelta:number ): void{
 
-        const scene       : Ponteiro<Scene>    = this.getScene();
-        const esteObjeto  : AbstractObjectBase = this;
+        const scene       : Ponteiro<Scene>              = this.getScene();
+        const esteObjeto  : Ponteiro<AbstractObjectBase> = this;
 
         // Ignora se a cena nao existir
         if( !scene ){ return; }
@@ -1157,8 +1157,8 @@ export default class ObjectBase extends AbstractObjectBase
     */
     public updatePhysics( frameDelta:number ): void{
 
-        const esteObjeto  : AbstractObjectBase  = this;
-        const scene       : Ponteiro<Scene>     = esteObjeto.scene;
+        const esteObjeto  : Ponteiro<AbstractObjectBase>  = this;
+        const scene       : Ponteiro<Scene>               = esteObjeto.scene;
 
         // Ignora se a cena se nao existir
         if( !scene ){ return; }
@@ -1502,8 +1502,8 @@ export default class ObjectBase extends AbstractObjectBase
     */
     public updateRotation( frameDelta:number ): void{
 
-        const objeto : AbstractObjectBase  = this;
-        const scene  : Ponteiro<Scene>     = objeto.getScene();
+        const objeto : Ponteiro<AbstractObjectBase>  = this;
+        const scene  : Ponteiro<Scene>               = objeto.getScene();
 
         // Ignora se a cena nao existir
         if( !scene ){
@@ -1594,19 +1594,19 @@ export default class ObjectBase extends AbstractObjectBase
     */
     public updateMovement( frameDelta:number ): void{
 
-        const objeto           : AbstractObjectBase    = this;
-        const velocidadeObjeto : ObjectVelocity        = objeto.getVelocity();
-        const aceleracaoObjeto : ObjectAcceleration    = objeto.getAcceleration();
-        const forcaObjeto      : ObjectForce           = objeto.getForce();
-        const massaObjeto      : number                = objeto.getMass();
-        const scene            : Ponteiro<Scene>       = objeto.scene;
-        const gravity          : Position3D            = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
-        const atrito           : number                = (((scene||{}).atrito || 0));
-        const arrastoAr        : number                = (((scene||{}).arrastoAr || 0));
-        const frameDeltaIntensification: number        = (((scene||{}).frameDeltaIntensification || 1));
-        const objectPhysicsUpdateRate:number           = (((scene||{}).objectPhysicsUpdateRate || 10));
-        const objectPhysicsDesaceleracaoUpdateRate:number = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
-        const movimentState:MovementState                 = objeto.movimentState;
+        const objeto           : Ponteiro<AbstractObjectBase> = this;
+        const velocidadeObjeto : ObjectVelocity               = objeto.getVelocity();
+        const aceleracaoObjeto : ObjectAcceleration           = objeto.getAcceleration();
+        const forcaObjeto      : ObjectForce                  = objeto.getForce();
+        const massaObjeto      : number                       = objeto.getMass();
+        const scene            : Ponteiro<Scene>              = objeto.scene;
+        const gravity          : Position3D                   = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
+        const atrito           : number                       = (((scene||{}).atrito || 0));
+        const arrastoAr        : number                       = (((scene||{}).arrastoAr || 0));
+        const frameDeltaIntensification: number               = (((scene||{}).frameDeltaIntensification || 1));
+        const objectPhysicsUpdateRate:number                  = (((scene||{}).objectPhysicsUpdateRate || 10));
+        const objectPhysicsDesaceleracaoUpdateRate:number     = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
+        const movimentState:MovementState                     = objeto.movimentState;
 
         // Ignora se a cena nao existir
         if( !scene ){
@@ -1623,7 +1623,7 @@ export default class ObjectBase extends AbstractObjectBase
                                 x: Number( objeto.getPosition().x ),
                                 y: Number( objeto.getPosition().y ),
                                 z: Number( objeto.getPosition().z ),
-                              } as ObjectPosition;
+                              };
 
         /**
         * Movimento simples de objeto, SEM USAR FISICA 
@@ -1873,52 +1873,56 @@ export default class ObjectBase extends AbstractObjectBase
             {   
                 const nomeObjetoAnexar : string                       = anexo.name;
                 const objetoAnexar     : Ponteiro<AbstractObjectBase> = scene.getObjectByName( nomeObjetoAnexar );
-                           
-                // Se ele NÂO DEVE COLIDIR COM O OBOJETO DONO DO ANEXO
-                if( anexo.attacherCollision == false )
-                {
-                    if( includeString(objeto.objProps.ignoreCollisions, objetoAnexar.id) == false ){ 
-                        objeto.objProps.ignoreCollisions.push( objetoAnexar.id );
-                    }
-                }
-
-                // Se tem um ajuste de posição EM RELAÇÂO AO OBJETO, aplica
-                // Acompanha a posição do objeto
-                objetoAnexar.setPosition( objeto.getPosition() as ObjectPosition );
-
-                // Alem disso, permite fazer um ajuste de posição
-                objetoAnexar.somarX( anexo.position.x );
-                objetoAnexar.somarY( anexo.position.y );
-                objetoAnexar.somarZ( anexo.position.z );
-
-                //Se vai copiar a memsa escala do objeto
-                if( anexo.sameScale == true ){
-                    objetoAnexar.setScale( objeto.getScale() as ObjectScale );
-                }
-
-                // Se tem uma escala especifica para ele
-                objetoAnexar.setScale( anexo.scale );
-
-                // Se tem redução de escala
-                objetoAnexar.somarEscalaX( anexo.scaleReduce.x );
-                objetoAnexar.somarEscalaY( anexo.scaleReduce.y );
-                objetoAnexar.somarEscalaZ( anexo.scaleReduce.z );
-
-                //Se tem rotação
-                objetoAnexar.setRotation( anexo.rotation );
-
-                //Se tem incremento de rotação nos eixos
-                objetoAnexar.somarRotation( anexo.rotationIncrement );
-
-                //Se tem outras coisas
-                objetoAnexar.objProps.traverse = anexo.traverse;
-                objetoAnexar.objProps.collide = anexo.collide;
                 
-                objetoAnexar.objProps.havePhysics = anexo.havePhysics;
-                objetoAnexar.physicsState.havePhysics = anexo.havePhysics;
+                //Se o ponteiro não é nulo
+                if( objetoAnexar != null )
+                {
+                    // Se ele NÂO DEVE COLIDIR COM O OBOJETO DONO DO ANEXO
+                    if( anexo.attacherCollision == false )
+                    {
+                        if( includeString(objeto.objProps.ignoreCollisions, objetoAnexar.id) == false ){ 
+                            objeto.objProps.ignoreCollisions.push( objetoAnexar.id );
+                        }
+                    }
 
-                objetoAnexar.objProps.collisionEvents = anexo.collisionEvents;
-                objetoAnexar.objProps.invisible = anexo.invisible;
+                    // Se tem um ajuste de posição EM RELAÇÂO AO OBJETO, aplica
+                    // Acompanha a posição do objeto
+                    objetoAnexar.setPosition( objeto.getPosition() );
+
+                    // Alem disso, permite fazer um ajuste de posição
+                    objetoAnexar.somarX( anexo.position.x );
+                    objetoAnexar.somarY( anexo.position.y );
+                    objetoAnexar.somarZ( anexo.position.z );
+
+                    //Se vai copiar a memsa escala do objeto
+                    if( anexo.sameScale == true ){
+                        objetoAnexar.setScale( objeto.getScale() as ObjectScale );
+                    }
+
+                    // Se tem uma escala especifica para ele
+                    objetoAnexar.setScale( anexo.scale );
+
+                    // Se tem redução de escala
+                    objetoAnexar.somarEscalaX( anexo.scaleReduce.x );
+                    objetoAnexar.somarEscalaY( anexo.scaleReduce.y );
+                    objetoAnexar.somarEscalaZ( anexo.scaleReduce.z );
+
+                    //Se tem rotação
+                    objetoAnexar.setRotation( anexo.rotation );
+
+                    //Se tem incremento de rotação nos eixos
+                    objetoAnexar.somarRotation( anexo.rotationIncrement );
+
+                    //Se tem outras coisas
+                    objetoAnexar.objProps.traverse = anexo.traverse;
+                    objetoAnexar.objProps.collide = anexo.collide;
+                    
+                    objetoAnexar.objProps.havePhysics = anexo.havePhysics;
+                    objetoAnexar.physicsState.havePhysics = anexo.havePhysics;
+
+                    objetoAnexar.objProps.collisionEvents = anexo.collisionEvents;
+                    objetoAnexar.objProps.invisible = anexo.invisible;
+                }
             }        
         }                                               
 
@@ -1936,9 +1940,9 @@ export default class ObjectBase extends AbstractObjectBase
     * Atualiza os eventos internos do objeto 
     */
     public updateEvents( frameDelta:number ): void{
-        const scene   : Ponteiro<Scene>     = this.getScene();
-        const objeto  : AbstractObjectBase  = this;
-        const eventos : ObjectEventLayer    = objeto.objEvents;
+        const scene   : Ponteiro<Scene>               = this.getScene();
+        const objeto  : Ponteiro<AbstractObjectBase>  = this;
+        const eventos : ObjectEventLayer              = objeto.objEvents;
 
         if(!scene){ return; }
 
@@ -2113,8 +2117,8 @@ export default class ObjectBase extends AbstractObjectBase
     isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean
     {
         let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = [];
-        let esteObjeto       : AbstractObjectBase   = this;
-        let scene            : Ponteiro<Scene>      = esteObjeto.getScene();
+        let esteObjeto       : Ponteiro<AbstractObjectBase>        = this;
+        let scene            : Ponteiro<Scene>                     = esteObjeto.getScene();
 
         if(scene)
         {
@@ -2132,8 +2136,8 @@ export default class ObjectBase extends AbstractObjectBase
 
     ): Array<Ponteiro<AbstractObjectBase>>
     {
+        let esteObjeto       : Ponteiro<AbstractObjectBase>        = this;
         let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = [];
-        let esteObjeto       : AbstractObjectBase                  = this;
         let scene            : Ponteiro<Scene>                     = esteObjeto.getScene();
 
         //Se não tem limites personalizados
@@ -2149,10 +2153,14 @@ export default class ObjectBase extends AbstractObjectBase
                 {
                     const objetoAtual : Ponteiro<AbstractObjectBase> = scene.objects[i];
 
-                    // Se está colidindo
-                    if( isCollision( esteObjeto, objetoAtual, limites ) == true && esteObjeto.id !== objetoAtual.id )
+                    //Se o ponteiro não é nulo
+                    if( objetoAtual != null )
                     {
-                        objetosColidindo.push( objetoAtual );
+                        // Se está colidindo
+                        if( isCollision( esteObjeto, objetoAtual, limites ) == true && esteObjeto.id !== objetoAtual.id )
+                        {
+                            objetosColidindo.push( objetoAtual );
+                        }
                     }
                 }
             }
@@ -2169,8 +2177,8 @@ export default class ObjectBase extends AbstractObjectBase
                   
     ): Array<Ponteiro<AbstractObjectBase>>
     {
+        let esteObjeto       : Ponteiro<AbstractObjectBase>        = this;
         let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = [];
-        let esteObjeto       : AbstractObjectBase                  = this;
         let scene            : Ponteiro<Scene>                     = esteObjeto.getScene();
 
         //Se não tem limites personalizados
@@ -2186,10 +2194,14 @@ export default class ObjectBase extends AbstractObjectBase
                 {
                     const objetoAtual : Ponteiro<AbstractObjectBase> = scene.objects[i];
 
-                    // Se está colidindo
-                    if( isProximity( esteObjeto, objetoAtual, limites ) && esteObjeto.id !== objetoAtual.id )
+                    //Se o ponteiro nao é nulo
+                    if( objetoAtual != null )
                     {
-                        objetosColidindo.push( objetoAtual );
+                        // Se está colidindo
+                        if( isProximity( esteObjeto, objetoAtual, limites ) && esteObjeto.id !== objetoAtual.id )
+                        {
+                            objetosColidindo.push( objetoAtual );
+                        }
                     }
                 }
             }
@@ -2204,9 +2216,9 @@ export default class ObjectBase extends AbstractObjectBase
     * @returns {boolean}
     */
     isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean{
-        let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = [];
-        let esteObjeto       : AbstractObjectBase                  = this;
-        let scene            : Ponteiro<Scene>                     = this.getScene();
+        const esteObjeto       : Ponteiro<AbstractObjectBase>        = this;
+        const objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = [];
+        const scene            : Ponteiro<Scene>                     = this.getScene();
 
         if(scene)
         {

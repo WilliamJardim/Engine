@@ -54,7 +54,7 @@ export default class Scene{
 
     public objects:Array<Ponteiro<AbstractObjectBase>>;
 
-    public cameras:Camera[];
+    public cameras:Array<Ponteiro<Camera>>;
     
     public objectTableById:any;
     public objectTableByName:any;
@@ -162,7 +162,7 @@ export default class Scene{
         //this.collisionBinaryTable.byID[objectID] = {};
     }
 
-    public clearObjectCollisionFromTableByCLASSES( objectClasses: string|string[] ): void{
+    public clearObjectCollisionFromTableByCLASSES( objectClasses: string|Array<string> ): void{
         const contexto = this;
 
         if( typeof objectClasses == 'string' ){
@@ -203,7 +203,7 @@ export default class Scene{
         this.collisionBinaryTable.byName[objectID] = {};
     }
 
-    public clearObjectProximityFromTableByCLASSES( objectClasses: string|string[] ): void{
+    public clearObjectProximityFromTableByCLASSES( objectClasses: string|Array<string> ): void{
         const contexto = this;
 
         if( typeof objectClasses == 'string' ){
@@ -235,19 +235,22 @@ export default class Scene{
                 (typeof objA == 'object' && typeof objB == 'string') 
             
             ){
-                if( objA.name != undefined && 
-                    ( ( typeof objB == 'object' && objB.name != undefined ) || typeof objB == 'string' ) && 
-                    this.proximityBinaryTable.byName[ objA.name ] != undefined &&
-                    this.proximityBinaryTable.byName[ objA.name ][ typeof objB == 'object' ? objB.name! : objB ] != undefined 
-                ){
-                    return this.proximityBinaryTable.byName[ objA.name ][ typeof objB == 'object' ? objB.name! : objB ] == true;
-                    
-                }else if( objA.id != undefined && 
-                          ( ( typeof objB == 'object' && objB.id != undefined) || typeof objB == 'string' ) && 
-                          this.proximityBinaryTable.byID[ objA.id ] != undefined &&
-                          this.proximityBinaryTable.byID[ objA.id ][ typeof objB == 'object' ? objB.id : objB ] != undefined 
-                ){
-                    return this.proximityBinaryTable.byID[ objA.id ][ typeof objB == 'object' ? objB.id : objB ] == true;
+                if( objA != null && objB != null )
+                {
+                    if( objA.name != undefined && 
+                        ( ( typeof objB == 'object' && objB.name != undefined ) || typeof objB == 'string' ) && 
+                        this.proximityBinaryTable.byName[ objA.name ] != undefined &&
+                        this.proximityBinaryTable.byName[ objA.name ][ typeof objB == 'object' ? objB.name! : objB ] != undefined 
+                    ){
+                        return this.proximityBinaryTable.byName[ objA.name ][ typeof objB == 'object' ? objB.name! : objB ] == true;
+                        
+                    }else if( objA.id != undefined && 
+                            ( ( typeof objB == 'object' && objB.id != undefined) || typeof objB == 'string' ) && 
+                            this.proximityBinaryTable.byID[ objA.id ] != undefined &&
+                            this.proximityBinaryTable.byID[ objA.id ][ typeof objB == 'object' ? objB.id : objB ] != undefined 
+                    ){
+                        return this.proximityBinaryTable.byID[ objA.id ][ typeof objB == 'object' ? objB.id : objB ] == true;
+                    }
                 }
 
             //Senao, se for só o name ou o id dos objetos em string, Nesse caso, ele ja vai entender tanto se for o name quanto o id
@@ -288,7 +291,7 @@ export default class Scene{
         // Se vai usar o calculo da propia Engine mesmo, nos limites que ela ja calculou
         if( limites == undefined ){
             //Se eu passar dois objetos do tipo ObjectBase
-            if( typeof objA == 'object' && typeof objB == 'object' ){
+            if( typeof objA == 'object' && typeof objB == 'object' && objA != null && objB != null ){
                 if( objA.name != undefined && 
                     objB.name != undefined  && 
                     this.collisionBinaryTable.byName[ objA.name ] != undefined &&
@@ -321,35 +324,35 @@ export default class Scene{
     /**
     * Traz um objeto pelo ID
     */
-    public getObjectByID( objectId:string ): AbstractObjectBase|ImaginaryObject{
+    public getObjectByID( objectId:string ): Ponteiro<AbstractObjectBase>{
         return this.objectTableById[ objectId ];
     }
 
     /**
     * Traz um objeto pelo Nome
     */
-    public getObjectByName( objectId:string ): AbstractObjectBase|ImaginaryObject{
+    public getObjectByName( objectId:string ): Ponteiro<AbstractObjectBase>{
         return this.objectTableByName[ objectId ];
     }
 
     /**
     * Traz um objeto pelo Nome ou ID
     */
-    public getObjectBySomething( objectIdOrName:string ): AbstractObjectBase|ImaginaryObject{
+    public getObjectBySomething( objectIdOrName:string ): Ponteiro<AbstractObjectBase>{
         return this.getObjectByID(objectIdOrName) || this.getObjectByName(objectIdOrName);
     }
 
     /**
     * Adiciona um objeto na cena
     */
-    public add( objeto:AbstractObjectBase ): void{
+    public add( objeto:Ponteiro<AbstractObjectBase> ): void{
         this.objects.push( objeto );
     }
 
     /**
     * Adiciona um objeto na lista de atualizações da cena 
     */
-    public addToLogic( objeto:AbstractObjectBase ): void{
+    public addToLogic( objeto:Ponteiro<AbstractObjectBase> ): void{
         if( this.objects ){
             this.objects.push( objeto );
         }
@@ -358,12 +361,12 @@ export default class Scene{
     /**
     * Remove um objeto da cena
     */
-    public remove( objetoRemover:AbstractObjectBase|ImaginaryObject ): void{
-        const scene            : Ponteiro<Scene>      = this;
+    public remove( objetoRemover:Ponteiro<AbstractObjectBase> ): void{
+        const scene            : Ponteiro<Scene>                     = this;
         const novosObjetosCena : Array<Ponteiro<AbstractObjectBase>> = [];
 
         //Se tem o evento whenDestroy, executa ele
-        if( objetoRemover.objEvents )
+        if( objetoRemover != null && objetoRemover.objEvents )
         {   
             objetoRemover.objEvents
             .getEventos()
@@ -380,7 +383,7 @@ export default class Scene{
             const objetoAtual : Ponteiro<AbstractObjectBase> = scene.objects[i];
 
             // Se nao for o objeto que queremos remover, mantem
-            if( objetoAtual != null && 
+            if( objetoRemover != null && objetoAtual != null && 
                 objetoAtual.id != objetoRemover.id 
             ){ 
                 novosObjetosCena.push( objetoAtual );
@@ -773,33 +776,37 @@ export default class Scene{
         {
             const currentCamera = cameras[ i ];
             const currentCameraIndex = i;
-
-            /**
-            * Atualiza uma tabela com os nomes dos objetos
-            */
-            if( currentCamera && currentCamera.objProps && currentCamera.getStatus() == true )
+            
+            // Se o ponteiro não é nulo
+            if( currentCamera != null )
             {
-                if( currentCamera.objProps.name != "" ){
-                    context.objectTableByName[ currentCamera.objProps.name ] = currentCamera;
-                }
-                if( currentCamera.id != "" ){
-                    context.objectTableById[ currentCamera.id ] = currentCamera;
-                }
-            }
-
-            try{
                 /**
-                * Repass some important informations into the  "currentObject"
+                * Atualiza uma tabela com os nomes dos objetos
                 */
-                currentCamera.scene = this;
+                if( currentCamera && currentCamera.objProps && currentCamera.getStatus() == true )
+                {
+                    if( currentCamera.objProps.name != "" ){
+                        context.objectTableByName[ currentCamera.objProps.name ] = currentCamera;
+                    }
+                    if( currentCamera.id != "" ){
+                        context.objectTableById[ currentCamera.id ] = currentCamera;
+                    }
+                }
 
-                /**
-                * Update the object 
-                */
-                currentCamera.updateCamera( firstRender, renderizadorPronto, frameDelta, frameNumber );
+                try{
+                    /**
+                    * Repass some important informations into the  "currentObject"
+                    */
+                    currentCamera.scene = this;
 
-            }catch(e){
-                console.log('CAMERA ERRO', e);
+                    /**
+                    * Update the object 
+                    */
+                    currentCamera.updateCamera( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
+                }catch(e){
+                    console.log('CAMERA ERRO', e);
+                }
             }
         }
     }

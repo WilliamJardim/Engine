@@ -8,29 +8,35 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 
+import AbstractObjectBase from "../../core/AbstractObjectBase";
 import ObjectBase from "../../core/ObjectBase";
+import { Ponteiro } from "../../types/types-cpp-like";
 import includeString from "./includeString";
 
 //objeto.objProps.classes.some((classe:string)=>{ return objetoAtualCena.objProps.ignoreCollisions.includes( classe ) == true }) == false
 
 // para cada classe do objeto, verifica se o ignoreCollisions do outro objeto inclui a classe da iteração atual.
 // ou melhor dizendo: Queremos saber se o ignoreCollisions do outro objeto(o objeto B) inclui alguma classe que o objeto A tenha
-export default function objectAHaveSomeClassesIgnoredByObjectB( objeto: ObjectBase, outroObjeto: ObjectBase )
+export default function objectAHaveSomeClassesIgnoredByObjectB( objeto: Ponteiro<AbstractObjectBase>, outroObjeto: Ponteiro<AbstractObjectBase> )
 {
-    const classesObjetoA         : Array<string> = objeto.objProps.classes;
-    const ignoreColisionsObjetoB : Array<string> = outroObjeto.objProps.ignoreCollisions;
-
     let temAlguma = false;
 
-    for( let i = 0 ; i < classesObjetoA.length ; i++ )
+    // Se os ponteiros não forem nulos
+    if( objeto != null && outroObjeto != null )
     {
-        const classeAtualObjetoA : string = classesObjetoA[i];
+        const classesObjetoA         : Array<string> = objeto.objProps.classes;
+        const ignoreColisionsObjetoB : Array<string> = outroObjeto.objProps.ignoreCollisions;
 
-        // Se ela está inclusa no ignoreCollisions do outro objeto
-        if( includeString( ignoreColisionsObjetoB, classeAtualObjetoA ) )
+        for( let i = 0 ; i < classesObjetoA.length ; i++ )
         {
-            temAlguma = true;
-            break;
+            const classeAtualObjetoA : string = classesObjetoA[i];
+
+            // Se ela está inclusa no ignoreCollisions do outro objeto
+            if( includeString( ignoreColisionsObjetoB, classeAtualObjetoA ) )
+            {
+                temAlguma = true;
+                break;
+            }
         }
     }
 

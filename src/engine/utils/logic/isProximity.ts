@@ -7,7 +7,9 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import AbstractObjectBase from "../../core/AbstractObjectBase";
 import ObjectBase from "../../core/ObjectBase";
+import { Ponteiro } from "../../types/types-cpp-like";
 import DistanciaEixos from "../interfaces/DistanciaEixos";
 import ProximityBounds from "../interfaces/ProximityBounds";
 import getDistance from "./getDistance";
@@ -21,43 +23,50 @@ import getDistance from "./getDistance";
 * @returns {boolean} - Se está colidindo ou não
 */
 export default function isProximity(
-    objA: any,
-    objB: any,
+    objA: Ponteiro<AbstractObjectBase>,
+    objB: Ponteiro<AbstractObjectBase>,
     limites: ProximityBounds,
     consideraEscala: boolean = true,
     usaValorAbsoluto: boolean = true
 ): boolean {
-    const posA = objA.getPosition?.() ?? { x: 0, y: 0, z: 0 };
-    const posB = objB.getPosition?.() ?? { x: 0, y: 0, z: 0 };
 
-    const escalaA = objA.getScale?.() ?? { x: 0, y: 0, z: 0 };
-    const escalaB = objB.getScale?.() ?? { x: 0, y: 0, z: 0 };
+    //Se os ponteiros não forem nulos
+    if( objA != null && objB != null )
+    {
+        const posA = objA.getPosition?.() ?? { x: 0, y: 0, z: 0 };
+        const posB = objB.getPosition?.() ?? { x: 0, y: 0, z: 0 };
 
-    const getLimite = (eixo: 'x' | 'y' | 'z'): number => {
-        if (typeof limites === 'number'){
-            return limites;
-        }
+        const escalaA = objA.getScale?.() ?? { x: 0, y: 0, z: 0 };
+        const escalaB = objB.getScale?.() ?? { x: 0, y: 0, z: 0 };
 
-        const valor = limites[eixo];
-        return typeof valor === 'number' ? valor : 0;
-    };
+        const getLimite = (eixo: 'x' | 'y' | 'z'): number => {
+            if (typeof limites === 'number'){
+                return limites;
+            }
 
-    const inRange = (eixo: 'x' | 'y' | 'z'): boolean => {
-        const centroA = posA[eixo];
-        const centroB = posB[eixo];
+            const valor = limites[eixo];
+            return typeof valor === 'number' ? valor : 0;
+        };
 
-        const metadeEscalaA = escalaA[eixo] / 2;
-        const metadeEscalaB = escalaB[eixo] / 2;
-        const limiteExtra = getLimite(eixo);
+        const inRange = (eixo: 'x' | 'y' | 'z'): boolean => {
+            const centroA = posA[eixo];
+            const centroB = posB[eixo];
 
-        const minA = centroA - metadeEscalaA - limiteExtra;
-        const maxA = centroA + metadeEscalaA + limiteExtra;
+            const metadeEscalaA = escalaA[eixo] / 2;
+            const metadeEscalaB = escalaB[eixo] / 2;
+            const limiteExtra = getLimite(eixo);
 
-        const minB = centroB - metadeEscalaB;
-        const maxB = centroB + metadeEscalaB;
+            const minA = centroA - metadeEscalaA - limiteExtra;
+            const maxA = centroA + metadeEscalaA + limiteExtra;
 
-        return maxB >= minA && minB <= maxA;
-    };
+            const minB = centroB - metadeEscalaB;
+            const maxB = centroB + metadeEscalaB;
 
-    return inRange('x') && inRange('y') && inRange('z');
+            return maxB >= minA && minB <= maxA;
+        };
+
+        return inRange('x') && inRange('y') && inRange('z');
+    }
+
+    return false;
 }

@@ -28,11 +28,11 @@ export default class ImaginaryObject extends ObjectBase{
     
     constructor(objProps:ObjectProps){
         super( null, objProps );
-        this.objProps    = objProps || {} as ObjectProps;
+        this.objProps    = objProps || {};
         this.id          = (this.objProps.name||'imaginario') + String(new Date().getTime());
         this.name        = this.objProps.name;
         this.scene       = null;
-        this.objEvents   = new ObjectEventLayer(this.objProps.events || []);
+        this.objEvents   = new ObjectEventLayer(this.objProps.events);
 
         //Objetos imaginarios não tem fisica
         this.objProps.havePhysics = false;

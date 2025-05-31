@@ -119,14 +119,14 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                     loop: function (propioObjeto: ObjectBase) {
                         //propioObjeto.somarPosicaoX(0.005);
                         //console.log(propioObjeto.velocitySinalyzer);
-                        console.log( propioObjeto.getPosition() );
+                        console.log(propioObjeto.getPosition());
 
-                        if(propioObjeto.isFalling == false)
-                        {
+                        if (propioObjeto.isFalling == false) {
                             //debugger
                         }
 
                         if (propioObjeto.objectBelow != null) {
+                            propioObjeto.debug();
                             //console.log(propioObjeto.getVelocity().x)
                             if (f <= 1) {
                                 //propioObjeto.somarVelocity({ x: 20.5, y: 0, z: 0 } as ObjectVelocity);
@@ -135,7 +135,11 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                         }
 
 
-                    }
+                    },
+                    whenCollide: null,
+                    whenProximity: null,
+                    whenDestroy: null,
+                    whenFall: null
                 }
             ],
             collisionEvents: false,
@@ -199,7 +203,11 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                         }
 
 
-                    }
+                    },
+                    whenCollide: null,
+                    whenProximity: null,
+                    whenDestroy: null,
+                    whenFall: null
                 }
             ],
             collisionEvents: false,
@@ -254,7 +262,11 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                 {
                     //Cubo ficar rodando
                     loop: function (propioObjeto: ObjectBase) {
-                    }
+                    },
+                    whenCollide: null,
+                    whenProximity: null,
+                    whenDestroy: null,
+                    whenFall: null
                 }
             ],
             collisionEvents: false,
@@ -325,7 +337,11 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                     //Cubo ficar rodando
                     loop: function (propioObjeto: ObjectBase) {
                         //console.log(propioObjeto.getPosition(), propioObjeto.getVelocity())
-                    }
+                    },
+                    whenCollide: null,
+                    whenProximity: null,
+                    whenDestroy: null,
+                    whenFall: null
                 }
             ],
             collisionEvents: false,

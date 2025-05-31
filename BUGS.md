@@ -108,3 +108,13 @@ e dependendo da escala desse outro objeto, ele até some e cai no void
 
 # 22/05/2025
 QUANDO EU DEFINO ARRASTO E ATRITO, O CUBO COMEÇA A TELEPORTAR E A FISICA FICA ZUADA
+
+# 31/05/2025 - o proximityConfig afeta o infoCollisions do objeto(ou seja afeta a detecção de colisão)
+QUANDO EU ALTERO A PROPRIEDADE "proximityConfig: { x: 0, y: 0, z: 0 }," no Cubo, para proximityConfig: { x: 10, y: 10, z: 10 },
+o infoProximity do Cubo no debugger mostra os objetos que ele está proximo corretamente
+PORÈM O infoCollisions que deveria continuar bem preciso somente para colisões acaba mostrando o MyCubeN, e NAO DEVERIA
+o proximityConfig deveria afetar apenas o calculo das proximidades exibida no infoProximity
+
+# 31/05/2025 - o infoProximity não está calculando por id ( byID ),
+a lista dos objetos proximos não está calculando por id ( byID ),
+ele está sempre um Array vazio

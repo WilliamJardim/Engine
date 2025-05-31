@@ -1,13 +1,15 @@
 import * as THREE from 'three';
 import ObjectBase from "../core/ObjectBase";
 import Scene from "../core/Scene";
+import { Ponteiro } from '../types/types-cpp-like';
+import AbstractObjectBase from '../core/AbstractObjectBase';
 
 /**
 * Apaga um objeto da cena
 * @param {ObjectBase} objeto 
 * @param {Scene} scene 
 */
-export default function removeObject(objeto:ObjectBase, scene:Scene) {
+export default function removeObject(objeto:Ponteiro<AbstractObjectBase>, scene:Ponteiro<Scene>) {
     if (!objeto || !scene) return;
   
     // Função recursiva para remover materiais e geometrias

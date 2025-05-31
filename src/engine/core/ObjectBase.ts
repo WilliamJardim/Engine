@@ -193,14 +193,14 @@ export default class ObjectBase extends AbstractObjectBase
             havePhysics: objProps.havePhysics,
 
             // Define a velocidade inicial do objeto
-            velocity     : { x: 0, y: 0, z: 0 } as ObjectVelocity,
-            acceleration : { x: 0, y: 0, z: 0 } as ObjectAcceleration,
-            force        : { x: 0, y: 0, z: 0 } as ObjectForce,
+            velocity     : { x: 0, y: 0, z: 0 },
+            acceleration : { x: 0, y: 0, z: 0 },
+            force        : { x: 0, y: 0, z: 0 },
 
             // Define a velocidade de rotação
-            rotationVelocity     : { x: 0, y: 0, z: 0 } as ObjectVelocity,
-            rotationAcceleration : { x: 0, y: 0, z: 0 } as ObjectAcceleration,
-            rotationForce        : { x: 0, y: 0, z: 0 } as ObjectForce
+            rotationVelocity     : { x: 0, y: 0, z: 0 },
+            rotationAcceleration : { x: 0, y: 0, z: 0 },
+            rotationForce        : { x: 0, y: 0, z: 0 }
 
         };
 
@@ -330,7 +330,7 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Retorna todos os objetos anexados ao objeto atual
     */
-    public getAttachments(): Array<string|ObjectAttachment>|undefined{
+    public getAttachments(): Array<ObjectAttachment>{
         return this.objProps.attachments;
     }
 
@@ -801,7 +801,7 @@ export default class ObjectBase extends AbstractObjectBase
     * Calcula o momento linear do objeto
     */
     public getMomentoLinear(): Position3D{
-        const massa     = this.objProps.mass || 0;
+        const massa     = this.objProps.mass;
         const momento_x = massa * this.getVelocity().x;
         const momento_y = massa * this.getVelocity().y;
         const momento_z = massa * this.getVelocity().z;
@@ -817,7 +817,7 @@ export default class ObjectBase extends AbstractObjectBase
     * Calcula a massa invertida
     */
     public getMassaInvertida(): number{
-        const massa     = this.objProps.mass || 0;
+        const massa     = this.objProps.mass;
         return 1 / massa;
     }
 
@@ -928,7 +928,7 @@ export default class ObjectBase extends AbstractObjectBase
     * Deleta o objeto da cena 
     */
     public destroy(): void{
-        removeObject( this, this.scene! );
+        removeObject( this, this.scene );
     }
 
     /**
@@ -948,207 +948,191 @@ export default class ObjectBase extends AbstractObjectBase
         const scene       : Ponteiro<Scene>              = this.getScene();
         const esteObjeto  : Ponteiro<AbstractObjectBase> = this;
 
-        // Ignora se a cena nao existir
-        if( !scene ){ return; }
+        // Se o ponteiro não estiver nulo
+        if( scene != null && esteObjeto.scene != null )
+        {
 
-        const objetosCena : Array<Ponteiro<AbstractObjectBase>> = scene.objects;
+            const objetosCena : Array<Ponteiro<AbstractObjectBase>> = scene.objects;
 
-        // Zera as informações de colisão com outros objetos
-        this.infoCollisions = {
-            objectNames: [],
-            objectIDs: [],
-            objectClasses: [],
-            objects: []
-        };
+            // Zera as informações de colisão com outros objetos
+            this.infoCollisions = {
+                objectNames: [],
+                objectIDs: [],
+                objectClasses: [],
+                objects: []
+            };
 
-        // Zera as informações de proximidade com outros objetos
-        this.infoProximity = {
-            objectNames: [],
-            objectIDs: [],
-            objectClasses: [],
-            objects: []
-        };
+            // Zera as informações de proximidade com outros objetos
+            this.infoProximity = {
+                objectNames: [],
+                objectIDs: [],
+                objectClasses: [],
+                objects: []
+            };
 
-        //Se este objeto pode colidir
-        if( (this.objProps.traverse != true) &&
-            (this.objProps.collide == true || this.objProps.collide == undefined ) && 
-            this.scene != null && 
-            this.scene.gravity && 
-            this.physicsState.havePhysics == true 
-        ){
-    
-            // Limpa a tabela de colisões do objeto
-            if( esteObjeto.scene && esteObjeto.name ){
+            //Se este objeto pode colidir
+            if( (this.objProps.traverse != true) &&
+                (this.objProps.collide == true) && 
+                this.physicsState.havePhysics == true 
+            ){
+        
+                // Limpa a tabela de colisões do objeto
                 esteObjeto.scene.clearObjectCollisionFromTableByName( esteObjeto.name );
-            }
-            if( esteObjeto.scene && esteObjeto.id ){
                 esteObjeto.scene.clearObjectCollisionFromTableByName( esteObjeto.id );
-            }
-            if( esteObjeto.scene && esteObjeto.objProps.classes ){
                 esteObjeto.scene.clearObjectCollisionFromTableByCLASSES( esteObjeto.objProps.classes );
-            }
 
-            // Limpa a tabela de proximidade do objeto
-            if( esteObjeto.scene && esteObjeto.name ){
+                // Limpa a tabela de proximidade do objeto
                 esteObjeto.scene.clearObjectProximityFromTableByName( esteObjeto.name );
-            }
-            if( esteObjeto.scene && esteObjeto.id ){
                 esteObjeto.scene.clearObjectProximityFromTableByID( esteObjeto.id );
-            }
-            if( esteObjeto.scene && esteObjeto.objProps.classes ){
                 esteObjeto.scene.clearObjectProximityFromTableByCLASSES( esteObjeto.objProps.classes );
-            }
 
-            for( let objetoAtualCena of objetosCena )
-            {
-                /**
-                * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO
-                */
-                if( (objetoAtualCena != null) &&
-                    (objetoAtualCena.objProps.traverse != true) &&
-                    (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
-                     objetoAtualCena.id != esteObjeto.id 
-                ){
-    
-                    //Se houve uma colisão(usando Bounding Box)
-                    if( isCollision( esteObjeto, objetoAtualCena, {x: 0.5, y: 0.5, z: 0.5} ) === true ){
-                        // Registra as colisões detectadas
-                        if(objetoAtualCena.name){
+                for( let i = 0 ; i < objetosCena.length ; i++ )
+                {
+                    const objetoAtualCena : Ponteiro<AbstractObjectBase> = objetosCena[i];
+
+                    /**
+                    * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO
+                    */
+                    if( (objetoAtualCena != null) &&
+                        (objetoAtualCena.objProps.traverse != true) &&
+                        (objetoAtualCena.objProps.collide == true) && 
+                        objetoAtualCena.id != esteObjeto.id 
+                    ){
+        
+                        //Se houve uma colisão(usando Bounding Box)
+                        if( isCollision( esteObjeto, objetoAtualCena, {x: 0.5, y: 0.5, z: 0.5} ) === true ){
+                            // POR NOME
+                            // Registra as colisões detectadas
                             esteObjeto.infoCollisions.objectNames.push( objetoAtualCena.name );
 
                             //Registra tambem na tabela mestre da cena
-                            if( esteObjeto.scene && esteObjeto.name && !esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] ){
+                            if( esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] == null ){
                                 esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] = [];
                             }
-                            if( esteObjeto.scene && esteObjeto.name && !esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] ){
+                            if( esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] == null ){
                                 esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] = {};
                             }
-                            if( esteObjeto.scene && esteObjeto.name ){
-                                esteObjeto.scene.collisionTable.byName[ esteObjeto.name ].push( objetoAtualCena );
+                            // Por Nome
+                            esteObjeto.scene.collisionTable.byName[ esteObjeto.name ].push( objetoAtualCena );
+                            esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.name ] = true;
+                            esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ] = true;
 
-                                if( objetoAtualCena.name ){ esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.name ] = true; }
-                                if( objetoAtualCena.id   ){ esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ] = true;   }
-
-                                if( objetoAtualCena.objProps.classes ){
-                                    objetoAtualCena.objProps.classes.forEach(function(nomeClasse:string){
-                                        if( esteObjeto.scene ){
-                                            //As classes tambem são inclusas se houver, para permitir facil acesso
-                                            esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.id ][ nomeClasse ] = true;
-                                        }
-                                    }); 
-                                }
+                            //As classes tambem são inclusas se houver, para permitir facil acesso
+                            for( let classeIndex = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
+                            {
+                                const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
+                                esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.id ][ nomeClasse ] = true;
                             }
-                        }
-                        if(objetoAtualCena.id){
+
+                            // Por ID
                             esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
 
                             //Registra tambem na tabela mestre da cena
-                            if( esteObjeto.scene && esteObjeto.id && !esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] ){
+                            if( esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] == null ){
                                 esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] = [];
                             }
-                            if( esteObjeto.scene && esteObjeto.id && !esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ] ){
+                            if( esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ] == null ){
                                 esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ] = {};
                             }
-                            if( esteObjeto.scene && esteObjeto.id ){
-                                esteObjeto.scene.collisionTable.byID[ esteObjeto.id ].push( objetoAtualCena );
+                            
+                            esteObjeto.scene.collisionTable.byID[ esteObjeto.id ].push( objetoAtualCena );
+                            esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.name ] = true;
+                            esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id ] = true;
 
-                                if( objetoAtualCena.name ){ esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.name ] = true; };
-                                if( objetoAtualCena.id   ){ esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id ] = true;   };
-
-                                if( objetoAtualCena.objProps.classes ){
-                                    objetoAtualCena.objProps.classes.forEach(function(nomeClasse:string){
-                                        if( esteObjeto.scene ){
-                                            esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ nomeClasse ] = true;
-                                        }
-                                    }); 
-                                }
+                            //As classes tambem são inclusas se houver, para permitir facil acesso
+                            for( let classeIndex = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
+                            {
+                                 const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
+                                 esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ nomeClasse ] = true;
                             }
+
+                            // Por classes
+                            for( let classeIndex = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
+                            {
+                                 const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
+                                 
+                                 esteObjeto.infoCollisions.objectClasses.push( nomeClasse );
+
+                                 //Registra tambem na tabela mestre da cena
+                                 if( esteObjeto.scene.collisionTable.byID[ nomeClasse ] == null ){
+                                     esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] = [];
+                                 }
+                                 if( esteObjeto.scene.collisionBinaryTable.byID[ nomeClasse ] == null ){
+                                     esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] = {};
+                                 }
+
+                                 // por Nome da classe
+                                 esteObjeto.scene.collisionTable.byClasses[ nomeClasse ].push( objetoAtualCena );                          
+                                 esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = true;
+                                 esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.id ] = true;
+                            }
+
+                            esteObjeto.infoCollisions.objects.push( objetoAtualCena );
+
                         }
-                        if(objetoAtualCena.objProps.classes){
-                            objetoAtualCena.objProps.classes.forEach(function(nomeClasse:string){
-                                esteObjeto.infoCollisions.objectClasses.push( nomeClasse );
 
-                                //Registra tambem na tabela mestre da cena
-                                if( esteObjeto.scene && nomeClasse && !esteObjeto.scene.collisionTable.byID[ nomeClasse ] ){
-                                    esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] = [];
-                                }
-                                if( esteObjeto.scene && nomeClasse && !esteObjeto.scene.collisionBinaryTable.byID[ nomeClasse ] ){
-                                    esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] = {};
-                                }
-                                if( esteObjeto.scene && nomeClasse ){
-                                    esteObjeto.scene.collisionTable.byClasses[ nomeClasse ].push( objetoAtualCena );
-                                    
-                                    if( objetoAtualCena.name ){ esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = true; };
-                                    if( objetoAtualCena.id   ){ esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.id ] = true;   };
-                                }
-                            });
-                        }
-                        esteObjeto.infoCollisions.objects.push( objetoAtualCena );
-
-                    }
-
-                    //Se houve uma proximidade
-                    if( isProximity( esteObjeto, objetoAtualCena, esteObjeto.objProps.proximityConfig ) === true ){
-                        // Registra as colisões detectadas
-                        if(objetoAtualCena.name){
+                        //Se houve uma proximidade
+                        if( isProximity( esteObjeto, objetoAtualCena, esteObjeto.objProps.proximityConfig ) === true ){
+                            // Registra as colisões detectadas
                             esteObjeto.infoProximity.objectNames.push( objetoAtualCena.name );
 
                             //Registra tambem na tabela mestre da cena
-                            if( esteObjeto.scene && esteObjeto.name && !esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] ){
+                            if( esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] == null ){
                                 esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] = [];
                             }
-                            if( esteObjeto.scene && esteObjeto.name && !esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ] ){
+                            if( esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ] == null ){
                                 esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ] = {};
                             }
-                            if( esteObjeto.scene && esteObjeto.name ){
-                                esteObjeto.scene.proximityTable.byName[ esteObjeto.name ].push( objetoAtualCena );
+                            
+                            // Por nome
+                            esteObjeto.scene.proximityTable.byName[ esteObjeto.name ].push( objetoAtualCena );
+                            esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.name ] = true;
+                            esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ] = true;
 
-                                if( objetoAtualCena.name ){ esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.name ] = true; };
-                                if( objetoAtualCena.id   ){ esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ] = true;   };
-                            }
-                        }
-                        if(objetoAtualCena.infoProximity){
+                            // infoProximity
                             esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
 
                             //Registra tambem na tabela mestre da cena
-                            if( esteObjeto.scene && esteObjeto.id && !esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] ){
+                            if( esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] == null ){
                                 esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] = [];
                             }
-                            if( esteObjeto.scene && esteObjeto.id && !esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ] ){
+                            if( esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ] == null ){
                                 esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ] = {};
                             }
-                            if( esteObjeto.scene && esteObjeto.id ){
-                                esteObjeto.scene.proximityTable.byID[ esteObjeto.id ].push( objetoAtualCena );
 
-                                if( objetoAtualCena.name ){ esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.name ] = true; };
-                                if( objetoAtualCena.id   ){ esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id ] = true;   };
+                            // Por ID
+                            esteObjeto.scene.proximityTable.byID[ esteObjeto.id ].push( objetoAtualCena );
+                            esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.name ] = true;
+                            esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id ] = true; 
+                            
+                            // Por classes
+                            for( let classeIndex = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
+                            {
+                                 const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
+                                 
+                                 esteObjeto.infoProximity.objectClasses.push( nomeClasse );
+
+                                 //Registra tambem na tabela mestre da cena
+                                 if( esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] == null ){
+                                     esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] = [];
+                                 }
+                                 if( esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] == null ){
+                                     esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] = {};
+                                 }
+                                
+                                 // Por nome da classe
+                                 esteObjeto.scene.proximityTable.byClasses[ nomeClasse ].push( objetoAtualCena );
+                                 esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = true;
+                                 esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.id ] = true;
                             }
+                            
+                            esteObjeto.infoProximity.objects.push( objetoAtualCena );
+
                         }
-                        if(objetoAtualCena.objProps.classes){
-                            objetoAtualCena.objProps.classes.forEach(function(nomeClasse:string){
-                                esteObjeto.infoProximity.objectClasses.push( nomeClasse );
-
-                                //Registra tambem na tabela mestre da cena
-                                if( esteObjeto.scene && nomeClasse && !esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] ){
-                                    esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] = [];
-                                }
-                                if( esteObjeto.scene && nomeClasse && !esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] ){
-                                    esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] = {};
-                                }
-                                if( esteObjeto.scene && nomeClasse ){
-                                    esteObjeto.scene.proximityTable.byClasses[ nomeClasse ].push( objetoAtualCena );
-
-                                    if( objetoAtualCena.name ){ esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = true; };
-                                    if( objetoAtualCena.id   ){ esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.id ] = true;   };
-                                }
-                            });
-                        }
-                        esteObjeto.infoProximity.objects.push( objetoAtualCena );
-
                     }
                 }
-            }
-        }   
+            }   
+        }
 
     }
 
@@ -1189,7 +1173,7 @@ export default class ObjectBase extends AbstractObjectBase
                 */
                 if(  objetoAtualCena != null &&
                     (objetoAtualCena.objProps.traverse != true) &&
-                    (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
+                    (objetoAtualCena.objProps.collide == true ) && 
                      objetoAtualCena.id != this.id && 
                      
                      //no ar, o objeto tem um alcançe de colisão maior, pra evitar o bug dele não conseguir detectar o objeto para ele parar em cima ao cair
@@ -1204,40 +1188,32 @@ export default class ObjectBase extends AbstractObjectBase
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
                     
-                    if( this.getPosition().y != undefined && objetoAtualCena.getPosition().y != undefined )
+                    if( this.getPosition().y > objetoAtualCena.getPosition().y )
                     {
-                        if( this.getPosition().y > objetoAtualCena.getPosition().y )
-                        {
-                            //Diz que o objeto parou de cair
-                            this.isFalling = false;
-                            this.groundY = this.getPosition().y; // A posição da ultima colisão
-                            this.objectBelow = objetoAtualCena;
-                            this.lastObjectBelow = objetoAtualCena;
+                        //Diz que o objeto parou de cair
+                        this.isFalling = false;
+                        this.groundY = this.getPosition().y; // A posição da ultima colisão
+                        this.objectBelow = objetoAtualCena;
+                        this.lastObjectBelow = objetoAtualCena;
 
-                            if( this.getVelocity().y == 0 )
-                            {
-                                // Diz que o objeto parou de receber uma velocidade em Y
-                                this.isReceiving_Y_Velocity = false;
-                            }
+                        if( this.getVelocity().y == 0 )
+                        {
+                            // Diz que o objeto parou de receber uma velocidade em Y
+                            this.isReceiving_Y_Velocity = false;
                         }
                     }
                     
-                    if( this.getPosition().y            != undefined && 
-                        this.getScale().y               != undefined && 
-                        objetoAtualCena.getPosition().y != undefined &&
-                        objetoAtualCena.getScale().y    != undefined 
-                    ){
-                        //Impede que o objeto suba em cima de outro objeto
-                        if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y < objetoAtualCena.getPosition().y ){
-                            this.setPosition({
-                                y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y,
+                    //Impede que o objeto suba em cima de outro objeto
+                    if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y < objetoAtualCena.getPosition().y ){
+                        this.setPosition({
+                            y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y,
 
-                                // O resto da posição mantém
-                                x: objetoAtualCena.getPosition().x,
-                                z: objetoAtualCena.getPosition().z
-                            })
-                        }
+                            // O resto da posição mantém
+                            x: objetoAtualCena.getPosition().x,
+                            z: objetoAtualCena.getPosition().z
+                        })
                     }
+
                     //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
                     //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
                     /*
@@ -1506,7 +1482,7 @@ export default class ObjectBase extends AbstractObjectBase
         const scene  : Ponteiro<Scene>               = objeto.getScene();
 
         // Ignora se a cena nao existir
-        if( !scene ){
+        if( scene == null ){
             return;
         }
 
@@ -1896,7 +1872,7 @@ export default class ObjectBase extends AbstractObjectBase
 
                     //Se vai copiar a memsa escala do objeto
                     if( anexo.sameScale == true ){
-                        objetoAnexar.setScale( objeto.getScale() as ObjectScale );
+                        objetoAnexar.setScale( objeto.getScale() );
                     }
 
                     // Se tem uma escala especifica para ele
@@ -2004,7 +1980,7 @@ export default class ObjectBase extends AbstractObjectBase
                 }
 
                 //Se tem o evento whenProximity
-                if( eventosObjeto.whenProximity )
+                if( eventosObjeto.whenProximity != null )
                 {
                     // Para cada objeto na cena, verifica se colidiu com este objeto
                     for( let objetoAtualCena of objetosCena ){
@@ -2027,7 +2003,7 @@ export default class ObjectBase extends AbstractObjectBase
                 }
 
                 //Se tem o evento loop(um evento sem condições que sempre será executado se existir, pra permitir criar loops especificos para cada objeto)
-                if( eventosObjeto.loop )
+                if( eventosObjeto.loop != null )
                 {
                     eventosObjeto.loop.bind(objeto)(objeto);
                 }

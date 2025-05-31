@@ -136,6 +136,16 @@ export default class Scene{
         };
     }
 
+    public getObjects(): Array<Ponteiro<AbstractObjectBase>>
+    {
+        return this.objects;
+    }
+
+    public getGravity() : Position3D
+    {
+        return this.gravity;
+    }
+
     public clearCollisionTable(): void{
         // Tabela de objetos colidindo com outros objetos
         this.collisionTable = {

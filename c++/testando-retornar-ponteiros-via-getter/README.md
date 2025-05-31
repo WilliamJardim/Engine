@@ -1,0 +1,1 @@
+Aqui eu fiz a forma correta de se herdar classes e declarar novos atributos nelas

@@ -1144,12 +1144,12 @@ export default class ObjectBase extends AbstractObjectBase
         const scene       : Ponteiro<Scene>               = esteObjeto.scene;
 
         // Ignora se a cena se nao existir
-        if( !scene ){ return; }
+        if( scene == null ){ return; }
 
-        const objetosCena               : Array<Ponteiro<AbstractObjectBase>> = scene.objects;
-        const gravity                   : Position3D                          = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
-        const frameDeltaIntensification : number                              = (((scene||{}).frameDeltaIntensification || 1));
-        const objectPhysicsUpdateRate   : number                              = (((scene||{}).objectPhysicsUpdateRate || 10));
+        const objetosCena               : Array<Ponteiro<AbstractObjectBase>> = scene.getObjects();
+        const gravity                   : Position3D                          = scene.getGravity();
+        const frameDeltaIntensification : number                              = scene.frameDeltaIntensification;
+        const objectPhysicsUpdateRate   : number                              = scene.objectPhysicsUpdateRate;
 
         this.isFalling = true;
 

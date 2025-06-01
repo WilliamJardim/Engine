@@ -35,6 +35,7 @@ import Position3D from "../interfaces/Position3D.ts";
 import VelocityStatus from "../interfaces/VelocityStatus.ts";
 import ObjectVelocity from "../interfaces/ObjectVelocity.ts";
 import { Ponteiro } from "../types/types-cpp-like.ts";
+import Mapa from "../utils/dicionarios/Mapa.ts";
 
 export default class Scene{
 
@@ -107,32 +108,37 @@ export default class Scene{
         // Tabela que vai manter os objetos indexados por Nome
         this.objectTableByName = {};
 
+        /**
+        * OS CONSTRUTORES de this.collisionTable, this.collisionBinaryTable, e os demais abaixo:
+        * Eles seria diferentes em C++, precisaria adaptar
+        */
+
         // Tabela de objetos colidindo com outros objetos
         this.collisionTable = {
-            byName    : {},
-            byID      : {},
-            byClasses : {}
+            byName    : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>(),
+            byID      : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>(),
+            byClasses : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>()
         };
 
         // Tabela BINARIA de objetos colidindo com outros objetos
         this.collisionBinaryTable = {
-            byName    : {},
-            byID      : {},
-            byClasses : {}
+            byName    : new Mapa<string, Mapa<string, boolean>>(),
+            byID      : new Mapa<string, Mapa<string, boolean>>(),
+            byClasses : new Mapa<string, Mapa<string, boolean>>()
         };
 
         // Tabela de objetos proximos de outros objetos
         this.proximityTable = {
-            byName    : {},
-            byID      : {},
-            byClasses : {}
+            byName    : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>(),
+            byID      : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>(),
+            byClasses : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>()
         };
 
         // Tabela BINARIA de objetos colidindo com outros objetos
         this.proximityBinaryTable = {
-            byName    : {},
-            byID      : {},
-            byClasses : {}
+            byName    : new Mapa<string, Mapa<string, boolean>>(),
+            byID      : new Mapa<string, Mapa<string, boolean>>(),
+            byClasses : new Mapa<string, Mapa<string, boolean>>()
         };
     }
 
@@ -149,9 +155,9 @@ export default class Scene{
     public clearCollisionTable(): void{
         // Tabela de objetos colidindo com outros objetos
         this.collisionTable = {
-            byName    : {},
-            byID      : {},
-            byClasses : {}
+            byName    : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>(),
+            byID      : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>(),
+            byClasses : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>()
         };
 
         /*
@@ -190,9 +196,9 @@ export default class Scene{
     public clearProximityTable(): void{
         // Tabela de objetos proximos de outros objetos
         this.proximityTable = {
-            byName    : {},
-            byID      : {},
-            byClasses : {}
+            byName    : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>(),
+            byID      : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>(),
+            byClasses : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>()
         };
 
         /*

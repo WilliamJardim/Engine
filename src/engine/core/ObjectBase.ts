@@ -1072,6 +1072,7 @@ export default class ObjectBase extends AbstractObjectBase
 
                         //Se houve uma proximidade
                         if( isProximity( esteObjeto, objetoAtualCena, esteObjeto.objProps.proximityConfig ) === true ){
+        
                             // Registra as colisões detectadas
                             esteObjeto.infoProximity.objectNames.push( objetoAtualCena.name );
 

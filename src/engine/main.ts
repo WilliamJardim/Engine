@@ -144,7 +144,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             ],
             collisionEvents: false,
             traverse: false,
-            proximityConfig: { x: 0, y: 0, z: 0 },
+            proximityConfig: { x: 10, y: 10, z: 10 },
             enable_advanced_frame_tracking: true,
             attachments: []
         }

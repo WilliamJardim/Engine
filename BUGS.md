@@ -118,3 +118,5 @@ o proximityConfig deveria afetar apenas o calculo das proximidades exibida no in
 # 31/05/2025 - o infoProximity não está calculando por id ( byID ),
 a lista dos objetos proximos não está calculando por id ( byID ),
 ele está sempre um Array vazio
+
+# 31/05/2025 - o infoCollision e infoProximity mostra IDs duplicados as vezes, nao sei por que

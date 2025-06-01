@@ -1053,10 +1053,10 @@ export default class ObjectBase extends AbstractObjectBase
                                 esteObjeto.infoCollisions.objectClasses.push( nomeClasse );
 
                                 //Registra tambem na tabela mestre da cena
-                                if( esteObjeto.scene.collisionTable.byID[ nomeClasse ] == null ){
+                                if( esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] == null ){
                                     esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] = [];
                                 }
-                                if( esteObjeto.scene.collisionBinaryTable.byID[ nomeClasse ] == null ){
+                                if( esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] == null ){
                                     esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] = {};
                                 }
 

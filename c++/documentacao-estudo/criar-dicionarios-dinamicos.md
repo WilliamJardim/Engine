@@ -37,7 +37,7 @@ OBS: Se a função tem parametros, declare eles no dicionario: std::function<voi
 
 
 # CRIAR UM ARRAY DE DICIONARIOS
-Equivalente a um JSON
+Equivalente a um Array de JSON simples 
 
 <code>
 #include <unordered_map>
@@ -58,23 +58,71 @@ listaDinamica.push_back( novoDict );
 </code>
 
 
+## OU O CONTRAIO: DICIONARIO DE ARRAYS
+<code>
+#include <memory>
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+
+// Com o using std, não precisa ficar colocando std::ALGUMA_COISA toda hora
+using namespace std;
+
+int main() {
+    unordered_map<string, vector<string> > dicionario;
+
+    //dicionario["Teste"] = vector<string>({"1", "2", "3"});
+    dicionario["Teste"] = {"1", "2", "3"};
+
+    cout << dicionario["Teste"][1]; // Vai mostrar 2 na tela
+
+    return 0; 
+}
+</code>
+
+
 
 # DICIONARIOS DE DICIONARIOS
 Eu tambem posso ter dicionarios de dicionarios assim:
-
 <code>
-
 #include <memory>
 #include <iostream>
 #include <unordered_map>
 
 std::unordered_map<std::string, std::unordered_map<std::string, TIPO_DE_DADO> > dicionarioDeDicionarios;
-
 </code>
 
+## DICIONARIOS DE DICIONARIOS (EXTRA)
+Em DICIONARIOS DE DICIONARIOS, voce pode definir valores diretamente:
+exemplo:
+<code>
+#include <memory>
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+
+// Com o using std, não precisa ficar colocando std::ALGUMA_COISA toda hora
+using namespace std;
+
+int main() {
+    unordered_map<string, unordered_map<string, int> > dicionario;
+
+    dicionario["A"]["A"] = 10;
+    dicionario["A"]["B"] = 15;
+
+    cout << "\n" << dicionario["A"]["A"]; // Vai mostrar 10 na tela
+    cout << "\n" << dicionario["A"]["B"]; // Vai mostrar 15 na tela
+
+    return 0;  
+}
+</code>
+
+Aqui eu não precisei criar novos dicionarios ao atribuir. 
+**Eu ja tenho a estrutura, então, basta seguir o fluxo, basta atribuir normalmente**
 
 
 # VALORES QUE PODEM SER NULOS EM DICIONARIOS
+Para permitir valores nulo, basta usar ponteiros
 <code>
 #include <memory>
 #include <iostream>

@@ -10,9 +10,10 @@
 import AbstractObjectBase from "../core/AbstractObjectBase";
 import ObjectBase from "../core/ObjectBase";
 import { Ponteiro } from "../types/types-cpp-like";
+import Mapa from "../utils/dicionarios/Mapa";
 
 export default interface CollisionTable{
-    byName    : Record<string, Array<Ponteiro<AbstractObjectBase>>>, // byName[nomeObjetoAlvo] = lista de objetos colidindo com ele
-    byID      : Record<string, Array<Ponteiro<AbstractObjectBase>>>, // byName[idObjetoAlvo] = lista de objetos colidindo com ele
-    byClasses : Record<string, Array<Ponteiro<AbstractObjectBase>>>  // byClasses[classeObjetoAlvo] = lista de objetos colidindo com ele
+    byName    : Mapa<string, Array<Ponteiro<AbstractObjectBase>>>, // byName[nomeObjetoAlvo] = lista de objetos colidindo com ele
+    byID      : Mapa<string, Array<Ponteiro<AbstractObjectBase>>>, // byName[idObjetoAlvo] = lista de objetos colidindo com ele
+    byClasses : Mapa<string, Array<Ponteiro<AbstractObjectBase>>>  // byClasses[classeObjetoAlvo] = lista de objetos colidindo com ele
 }

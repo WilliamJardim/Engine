@@ -1010,7 +1010,7 @@ export default class ObjectBase extends AbstractObjectBase
                             * Logica: Se a chave "esteObjeto.name" não existir, ou seja, se não existir entrada para o objeto atual no mapa esteObjeto.scene.collisionTable.byName
                             * Então, ele vai criar um Array vazio, para permitr que seja inserido as entradas, que vão registrar a colisão 
                             */
-                            if( esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] == null ){
+                            if( esteObjeto.scene.collisionTable.byName.search( esteObjeto.name ) == esteObjeto.scene.collisionTable.byName.NotFounded() ){
                                 esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] = [];
                             }
                             /**
@@ -1018,7 +1018,7 @@ export default class ObjectBase extends AbstractObjectBase
                             * Logica: Se a chave "esteObjeto.name" não existir, ou seja, se não existir entrada para o objeto atual no mapa esteObjeto.scene.collisionTable.byName
                             * Então, ele vai criar um mapa vazio, para permitr que seja inserido as entradas, que vão registrar a colisão 
                             */
-                            if( esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] == null ){
+                            if( esteObjeto.scene.collisionBinaryTable.byName.search( esteObjeto.name ) == esteObjeto.scene.collisionBinaryTable.byName.NotFounded() ){
                                 esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] = {};
                             }
                             // Por Nome
@@ -1031,10 +1031,10 @@ export default class ObjectBase extends AbstractObjectBase
                             esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
 
                             //Registra tambem na tabela mestre da cena
-                            if( esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] == null ){
+                            if( esteObjeto.scene.collisionTable.byID.search( esteObjeto.id ) == esteObjeto.scene.collisionTable.byID.NotFounded() ){
                                 esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] = [];
                             }
-                            if( esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ] == null ){
+                            if( esteObjeto.scene.collisionBinaryTable.byID.search( esteObjeto.id ) == esteObjeto.scene.collisionBinaryTable.byID.NotFounded() ){
                                 esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ] = {};
                             }
                             
@@ -1053,10 +1053,10 @@ export default class ObjectBase extends AbstractObjectBase
                                 esteObjeto.infoCollisions.objectClasses.push( nomeClasse );
 
                                 //Registra tambem na tabela mestre da cena
-                                if( esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] == null ){
+                                if( esteObjeto.scene.collisionTable.byClasses.search( nomeClasse ) == esteObjeto.scene.collisionTable.byClasses.NotFounded() ){
                                     esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] = [];
                                 }
-                                if( esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] == null ){
+                                if( esteObjeto.scene.collisionBinaryTable.byClasses.search( nomeClasse ) == esteObjeto.scene.collisionBinaryTable.byClasses.NotFounded() ){
                                     esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] = {};
                                 }
 
@@ -1076,10 +1076,10 @@ export default class ObjectBase extends AbstractObjectBase
                             esteObjeto.infoProximity.objectNames.push( objetoAtualCena.name );
 
                             //Registra tambem na tabela mestre da cena
-                            if( esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] == null ){
+                            if( esteObjeto.scene.proximityTable.byName.search( esteObjeto.name ) == esteObjeto.scene.proximityTable.byName.NotFounded() ){
                                 esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] = [];
                             }
-                            if( esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ] == null ){
+                            if( esteObjeto.scene.proximityBinaryTable.byName.search( esteObjeto.name ) == esteObjeto.scene.proximityBinaryTable.byName.NotFounded() ){
                                 esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ] = {};
                             }
                             
@@ -1092,10 +1092,10 @@ export default class ObjectBase extends AbstractObjectBase
                             esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
 
                             //Registra tambem na tabela mestre da cena
-                            if( esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] == null ){
+                            if( esteObjeto.scene.proximityTable.byID.search( esteObjeto.id ) == esteObjeto.scene.proximityTable.byID.NotFounded() ){
                                 esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] = [];
                             }
-                            if( esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ] == null ){
+                            if( esteObjeto.scene.proximityBinaryTable.byID.search( esteObjeto.id ) == esteObjeto.scene.proximityBinaryTable.byID.NotFounded() ){
                                 esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ] = {};
                             }
 
@@ -1112,10 +1112,10 @@ export default class ObjectBase extends AbstractObjectBase
                                  esteObjeto.infoProximity.objectClasses.push( nomeClasse );
 
                                  //Registra tambem na tabela mestre da cena
-                                 if( esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] == null ){
+                                 if( esteObjeto.scene.proximityTable.byClasses.search( nomeClasse ) == esteObjeto.scene.proximityTable.byClasses.NotFounded() ){
                                      esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] = [];
                                  }
-                                 if( esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] == null ){
+                                 if( esteObjeto.scene.proximityBinaryTable.byClasses.search( nomeClasse ) == esteObjeto.scene.proximityBinaryTable.byClasses.NotFounded() ){
                                      esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] = {};
                                  }
                                 

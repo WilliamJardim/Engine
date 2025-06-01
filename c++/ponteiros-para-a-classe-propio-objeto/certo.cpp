@@ -237,7 +237,10 @@ class Carro : public ObjetoBase{
         std:cout << "(RODANDO getNome no carro:)\n";
 
         //SEI LA MUDAR O NOME DA CENA
-        referenciaCena->renomearCena("NOVO NOME");
+        if( referenciaCena != nullptr )
+        {
+            referenciaCena->renomearCena("NOVO NOME 2222");
+        }
 
         // Outra coisa aleatoria
         Carro* esteObjeto = this;

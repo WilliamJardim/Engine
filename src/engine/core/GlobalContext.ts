@@ -7,6 +7,8 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import Mapa from "../utils/dicionarios/Mapa";
+
 export default class GlobalContext {
     [key: string]: any; // Assinatura de índice para propriedades dinâmicas
 

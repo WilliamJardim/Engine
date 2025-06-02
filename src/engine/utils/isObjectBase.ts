@@ -7,8 +7,15 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import AbstractObjectBase from "../core/AbstractObjectBase";
 import ObjectBase from "../core/ObjectBase";
+import { Ponteiro } from "../types/types-cpp-like";
 
-export default function isObjectBase(objeto: any): objeto is ObjectBase {
-    return typeof objeto.getMesh === 'function';
+export default function isObjectBase(objeto: Ponteiro<AbstractObjectBase>): boolean {
+    if( objeto != null )
+    {
+        return typeof objeto.getMesh === 'function'; //Se existe a função getMesh, então é um ObjectBase
+    }
+
+    return false;
 }

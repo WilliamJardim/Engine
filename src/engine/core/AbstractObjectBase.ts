@@ -360,7 +360,7 @@ export default abstract class AbstractObjectBase{
         };
     }
 
-    public setMesh(newMesh:any): void{
+    public setMesh(newMesh:MeshRepresentation): void{
         
     }
 

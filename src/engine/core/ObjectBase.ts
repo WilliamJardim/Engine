@@ -390,7 +390,7 @@ export default class ObjectBase extends AbstractObjectBase
         return this.mesh;
     }
 
-    public setMesh(newMesh:any): void{
+    public setMesh(newMesh:MeshRepresentation): void{
         this.mesh = newMesh;
     }
 

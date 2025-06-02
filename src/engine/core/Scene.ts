@@ -57,8 +57,8 @@ export default class Scene{
 
     public cameras:Array<Ponteiro<Camera>>;
     
-    public objectTableById:any;
-    public objectTableByName:any;
+    public objectTableById   : Mapa<string, Ponteiro<AbstractObjectBase>>;
+    public objectTableByName : Mapa<string, Ponteiro<AbstractObjectBase>>;
 
     public collisionTable:CollisionTable;
     public collisionBinaryTable:CollisionBinaryTable;
@@ -104,9 +104,9 @@ export default class Scene{
             
 
         // Tabela que vai manter os objetos indexados por ID
-        this.objectTableById = {};
+        this.objectTableById   = new Mapa<string, Ponteiro<AbstractObjectBase>>();
         // Tabela que vai manter os objetos indexados por Nome
-        this.objectTableByName = {};
+        this.objectTableByName = new Mapa<string, Ponteiro<AbstractObjectBase>>();
 
         /**
         * OS CONSTRUTORES de this.collisionTable, this.collisionBinaryTable, e os demais abaixo:

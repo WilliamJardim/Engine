@@ -147,7 +147,7 @@ export default class ObjectFrameTracker{
             endFrame?   : number
         }
 
-    ): ObjectFrameData[] {
+    ): Array<ObjectFrameData> {
 
         const temOrdem:boolean = (parametrosBuscaFrames.order != undefined) ? true : false;
         const framesEncontrados: Array<ObjectFrameData> = new Array();

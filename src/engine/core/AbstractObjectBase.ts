@@ -162,37 +162,37 @@ export default abstract class AbstractObjectBase{
             attachments: new Array<ObjectAttachment>()
         };
         this.movimentState = {
-            forward: false,
-            backward: false,
-            right: false,
-            left: false,
-            up: false,
-            down: false,
-            steps: 1,
-            isJumping: false
+            forward   : false,
+            backward  : false,
+            right     : false,
+            left      : false,
+            up        : false,
+            down      : false,
+            steps     : 1,
+            isJumping : false
         };
         this.movimentSinalyzer =  {
-            forward: false,
-            backward: false,
-            right: false,
-            left: false,
-            up: false,
-            down: false,
-            isJumping: false,
-            steps: 1 //Isso aqui nao faz muito sentido, entoa vou remover depois
+            forward   : false,
+            backward  : false,
+            right     : false,
+            left      : false,
+            up        : false,
+            down      : false,
+            isJumping : false,
+            steps     : 1 //Isso aqui nao faz muito sentido, entoa vou remover depois
         };
         this.rotationSinalyzer =  {
-            forward: false,
-            backward: false,
-            right: false,
-            left: false,
-            up: false,
-            down: false
+            forward   : false,
+            backward  : false,
+            right     : false,
+            left      : false,
+            up        : false,
+            down      : false
         };
         this.velocitySinalyzer = {
-            x: 'uncalculed',
-            y: 'uncalculed',
-            z: 'uncalculed'
+            x  : 'uncalculed',
+            y  : 'uncalculed',
+            z  : 'uncalculed'
         }
         this.physicsState = {
             havePhysics: objProps.havePhysics,
@@ -239,12 +239,12 @@ export default abstract class AbstractObjectBase{
 
     }
 
-    public updateVelocitySinalyzer( velocityBeforeUpdate: ObjectVelocity,
-                                    velocitySinalyzerBeforeUpdate: VelocityStatus, 
-                                    firstRender:boolean, 
-                                    renderizadorPronto:boolean, 
-                                    frameDelta:number, 
-                                    frameNumber:number 
+    public updateVelocitySinalyzer( velocityBeforeUpdate           : ObjectVelocity,
+                                    velocitySinalyzerBeforeUpdate  : VelocityStatus, 
+                                    firstRender                    : boolean, 
+                                    renderizadorPronto             : boolean, 
+                                    frameDelta                     : number, 
+                                    frameNumber                    : number 
     ): void{
 
     }
@@ -253,8 +253,8 @@ export default abstract class AbstractObjectBase{
         return false;
     }
 
-    public getAttachments(): Array<string|ObjectAttachment>|undefined{
-        return undefined;
+    public getAttachments(): Array<ObjectAttachment>{
+        return [];
     }
 
     public joinAttachment( outroObjeto:Ponteiro<AbstractObjectBase>, attachementConfig: ObjectAttachment ): void{
@@ -271,54 +271,52 @@ export default abstract class AbstractObjectBase{
 
     public getProps(): ObjectProps{
        return {
-            material: null,
-            mass: 0,
-            type: "", 
-            name: "",
-            classes: [],
-            havePhysics: false,
+            material    : null,
+            mass        : 0,
+            type        : "", 
+            name        : "",
+            classes     : new Array<string>(),
+            havePhysics : false,
 
             position: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                
+                x: 0,
+                y: 0,
+                z: 0
+            },
             rotation: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-
+                x: 0,
+                y: 0,
+                z: 0
+            },
             scale: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                
+                x: 0,
+                y: 0,
+                z: 0
+            },
             scaleReduce: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
+                x: 0,
+                y: 0,
+                z: 0
+            },
 
-            collide: false,
-            collisionEvents: false,
-            traverse: false,
-            ignoreCollisions: [],
+            collide          : false,
+            collisionEvents  : false,
+            traverse         : false,
+            ignoreCollisions : new Array<string>(),
+
             proximityConfig: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
+                x: 0,
+                y: 0,
+                z: 0
+            },
 
-            invisible: false,
-            opacity: 0,
-            events: ([] as ObjectEvents[]),
-            kick_rate: 0,
+            invisible   : false,
+            opacity     : 0,
+            events      : new Array<ObjectEvents>(),
+            kick_rate   : 0,
             enable_advanced_frame_tracking: false,
-            onCreate: null,
-            attachments: ([] as ObjectAttachment[])
+            onCreate    : null,
+            attachments : new Array<ObjectAttachment>()
         };
     }
 

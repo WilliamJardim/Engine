@@ -15,10 +15,10 @@ export default class FrameCounter{
     public frameNumber : number;
 
     constructor( frameLimit:number = 60, norm:number = 16.666 ){
-        this.init = this.getTime();
-        this.lastTime = this.init;
-        this.frameLimit = frameLimit;
-        this.norm = norm;
+        this.init        = this.getTime();
+        this.lastTime    = this.init;
+        this.frameLimit  = frameLimit;
+        this.norm        = norm;
         this.frameNumber = 0;
     }
 

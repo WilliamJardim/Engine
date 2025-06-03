@@ -27,7 +27,7 @@ export default class Player extends ObjectBase{
     public objProps      : ObjectProps;
     public scene         : Ponteiro<Scene>;
     public initialSpawn  : ObjectPosition;
-    public playerCamera  : Camera|null;
+    public playerCamera  : Ponteiro<Camera>;
     public cameraHeight  : number = 8;
 
     constructor(objProps:ObjectProps){

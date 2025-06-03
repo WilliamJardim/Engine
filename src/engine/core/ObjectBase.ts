@@ -75,10 +75,8 @@ export default class ObjectBase extends AbstractObjectBase
     public infoCollisions     : CollisionsData;
     public infoProximity      : CollisionsData;
     public isMovimentoTravadoPorColisao : boolean;
-    public isReceiving_Y_Velocity : boolean; // Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
-
-    /** OUTROS ATRIBUTOS **/
-    public lastPosition : ObjectPosition = {x: 0, y: 0, z: 0};
+    public isReceiving_Y_Velocity       : boolean; // Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
+    public lastPosition                 : ObjectPosition;
 
     constructor(mesh     : MeshRepresentation, 
                 objProps : ObjectProps
@@ -86,19 +84,20 @@ export default class ObjectBase extends AbstractObjectBase
     ){
         super( objProps );
     
-        this.objProps  = objProps;
-        this.weight = 0;
-        this.onCreate  = this.objProps.onCreate || null;
-        this.groundY = 0;
+        this.objProps     = objProps;
+        this.lastPosition = {x: 0, y: 0, z: 0} as ObjectPosition;
+        this.weight       = 0;
+        this.onCreate     = this.objProps.onCreate;
+        this.groundY      = 0;
 
         // objectBelow é um ponteiro, ele pode ser nulo na criação, mais ele será vinculado dinamicamente pela propia logica da engine
-        this.objectBelow = null;
+        this.objectBelow     = null;
         this.lastObjectBelow = null;
         this.isMovimentoTravadoPorColisao = false; //Se o objeto atual esta travado por que esta tentando se mover para uma direção em que ele está colidindo com outro objeto
-        this.isReceiving_Y_Velocity = false; //Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
-        this.isFalling   = false;
-        this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
-        this.name        = this.objProps.name;
+        this.isReceiving_Y_Velocity       = false; //Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
+        this.isFalling  = false;
+        this.id         = (this.objProps.name||'objeto') + String(new Date().getTime());
+        this.name       = this.objProps.name;
 
         this.objEvents = new ObjectEventLayer(this.objProps.events);
 
@@ -159,50 +158,50 @@ export default class ObjectBase extends AbstractObjectBase
         };
     
         this.movimentState = {
-            forward: false,
-            backward: false,
-            right: false,
-            left: false,
-            up: false,
-            down: false,
-            steps: 1,
-            isJumping: false
+            forward   : false,
+            backward  : false,
+            right     : false,
+            left      : false,
+            up        : false,
+            down      : false,
+            steps     : 1,
+            isJumping : false
         };
         this.movimentSinalyzer =  {
-            forward: false,
-            backward: false,
-            right: false,
-            left: false,
-            up: false,
-            down: false,
-            isJumping: false,
-            steps: 1 //Isso aqui nao faz muito sentido, entoa vou remover depois
+            forward   : false,
+            backward  : false,
+            right     : false,
+            left      : false,
+            up        : false,
+            down      : false,
+            isJumping : false,
+            steps     : 1 //Isso aqui nao faz muito sentido, entoa vou remover depois
         };
         this.rotationSinalyzer =  {
-            forward: false,
-            backward: false,
-            right: false,
-            left: false,
-            up: false,
-            down: false
+            forward   : false,
+            backward  : false,
+            right     : false,
+            left      : false,
+            up        : false,
+            down      : false
         };
         this.velocitySinalyzer = {
-            x: 'uncalculed',
-            y: 'uncalculed',
-            z: 'uncalculed'
+            x : 'uncalculed',
+            y : 'uncalculed',
+            z : 'uncalculed'
         }
         this.physicsState = {
             havePhysics: objProps.havePhysics,
 
             // Define a velocidade inicial do objeto
-            velocity     : { x: 0, y: 0, z: 0 },
-            acceleration : { x: 0, y: 0, z: 0 },
-            force        : { x: 0, y: 0, z: 0 },
+            velocity             : { x: 0, y: 0, z: 0 } as ObjectVelocity,
+            acceleration         : { x: 0, y: 0, z: 0 } as ObjectAcceleration,
+            force                : { x: 0, y: 0, z: 0 } as ObjectForce,
 
             // Define a velocidade de rotação
-            rotationVelocity     : { x: 0, y: 0, z: 0 },
-            rotationAcceleration : { x: 0, y: 0, z: 0 },
-            rotationForce        : { x: 0, y: 0, z: 0 }
+            rotationVelocity     : { x: 0, y: 0, z: 0 } as ObjectVelocity,
+            rotationAcceleration : { x: 0, y: 0, z: 0 } as ObjectAcceleration,
+            rotationForce        : { x: 0, y: 0, z: 0 } as ObjectForce
         };
         /**
         * FIM DAS INICIALIZAÇÔES QUE NÂO PRECISAM EM C++ 
@@ -253,14 +252,14 @@ export default class ObjectBase extends AbstractObjectBase
     public pre_loop_reset(): void{
 
         this.movimentSinalyzer =  {
-            forward: false,
-            backward: false,
-            right: false,
-            left: false,
-            up: false,
-            down: false,
-            isJumping: false,
-            steps: 1
+            forward   : false,
+            backward  : false,
+            right     : false,
+            left      : false,
+            up        : false,
+            down      : false,
+            isJumping : false,
+            steps     : 1
         };
 
     }
@@ -271,16 +270,16 @@ export default class ObjectBase extends AbstractObjectBase
     * A cena chama essa função após CADA ATUALIZAÇÂO DO OBJETO ATUAL, porém, contendo os dados do frame anterior
     * assim eu consigo saber o que mudou
     */
-    public updateVelocitySinalyzer( velocityBeforeUpdate: ObjectVelocity,
-                                    velocitySinalyzerBeforeUpdate: VelocityStatus, 
-                                    firstRender:boolean, 
-                                    renderizadorPronto:boolean, 
-                                    frameDelta:number, 
-                                    frameNumber:number 
+    public updateVelocitySinalyzer( velocityBeforeUpdate          : ObjectVelocity,
+                                    velocitySinalyzerBeforeUpdate : VelocityStatus, 
+                                    firstRender                   : boolean, 
+                                    renderizadorPronto            : boolean, 
+                                    frameDelta                    : number, 
+                                    frameNumber                   : number 
     ): void{
 
-        const velocitySinalyzerAtual: VelocityStatus = this.velocitySinalyzer;
-        const velocityAtual         : ObjectVelocity = this.getVelocity();
+        const velocitySinalyzerAtual : VelocityStatus = this.velocitySinalyzer;
+        const velocityAtual          : ObjectVelocity = this.getVelocity();
 
         // Se o valor do eixo X no frame atual for maior que no frame anterior, então está aumentando
         if( velocityAtual.x > velocityBeforeUpdate.x ){
@@ -961,19 +960,21 @@ export default class ObjectBase extends AbstractObjectBase
 
             // Zera as informações de colisão com outros objetos
             this.infoCollisions = {
-                objectNames: [],
-                objectIDs: [],
-                objectClasses: [],
-                objects: []
+                objectNames    : [],
+                objectIDs      : [],
+                objectClasses  : [],
+                objects        : []
             };
-
             // Zera as informações de proximidade com outros objetos
             this.infoProximity = {
-                objectNames: [],
-                objectIDs: [],
-                objectClasses: [],
-                objects: []
+                objectNames    : [],
+                objectIDs      : [],
+                objectClasses  : [],
+                objects        : []
             };
+
+            //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
+            // ou se for um std:array pode usar .fill(nullptr) direto
 
             //Se este objeto pode colidir
             if( (this.objProps.traverse != true) &&

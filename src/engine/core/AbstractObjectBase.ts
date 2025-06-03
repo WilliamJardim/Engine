@@ -76,15 +76,30 @@ export default abstract class AbstractObjectBase{
 
     constructor(objProps:ObjectProps){
         
-        // Inicialização dos valores da classe
+        // Inicialização obrigatória dos valores da classe
         this.tipo = "AbstractObjectBase";
         this.name = "";
         this.id = "";
-
         this.scene = null;
         this.objectBelow = null;
         this.lastObjectBelow = null;
+        this.weight = 0;
+        this.isFalling = false;
+        this.groundY = 0;
+        this.isMovimentoTravadoPorColisao = false;
+        this.isReceiving_Y_Velocity = false;
+        this.onCreate = null;
 
+        /**
+        * Objetos talvez precisem ser incializados em C++ se eles não tiverem um construtor padrão que aceite apenas declaração com inicialização automatica 
+        */
+        this.objEvents    = new ObjectEventLayer( new Array<ObjectEvents>() );
+        this.frameHistory = new ObjectFrameTracker(this);
+
+        /**
+        * ESSA INICIALIZAÇÂO ABAIXO NÂO PRECISA SER FEITA EM C++
+        * Em C++ basta declarar as variaveis, e não precisa inicializar
+        */
         this.mesh = {
             position: {
                 x: 0,
@@ -102,62 +117,50 @@ export default abstract class AbstractObjectBase{
                 z: 0
             }
         }
-
         this.objProps = {
             material: null,
             mass: 0,
             type: "", 
             name: "",
-            classes: [],
+            classes: new Array<string>(),
             havePhysics: false,
-
             position: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                
+                x: 0,
+                y: 0,
+                z: 0
+            },
             rotation: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-
+                x: 0,
+                y: 0,
+                z: 0
+            },
             scale: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                
+                x: 0,
+                y: 0,
+                z: 0
+            }, 
             scaleReduce: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-
+                x: 0,
+                y: 0,
+                z: 0
+            },
             collide: false,
             collisionEvents: false,
             traverse: false,
-            ignoreCollisions: [],
+            ignoreCollisions: new Array<string>(),
             proximityConfig: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-
+                x: 0,
+                y: 0,
+                z: 0
+            },
             invisible: false,
             opacity: 0,
-            events: ([] as ObjectEvents[]),
+            events: new Array<ObjectEvents>(),
             kick_rate: 0,
             enable_advanced_frame_tracking: false,
             onCreate: null,
-            attachments: ([] as ObjectAttachment[])
+            attachments: new Array<ObjectAttachment>()
         };
-
-        this.objEvents = new ObjectEventLayer([]);
-
-        this.frameHistory = new ObjectFrameTracker(this);
-
         this.movimentState = {
             forward: false,
             backward: false,
@@ -168,7 +171,6 @@ export default abstract class AbstractObjectBase{
             steps: 1,
             isJumping: false
         };
-
         this.movimentSinalyzer =  {
             forward: false,
             backward: false,
@@ -179,7 +181,6 @@ export default abstract class AbstractObjectBase{
             isJumping: false,
             steps: 1 //Isso aqui nao faz muito sentido, entoa vou remover depois
         };
-
         this.rotationSinalyzer =  {
             forward: false,
             backward: false,
@@ -188,50 +189,39 @@ export default abstract class AbstractObjectBase{
             up: false,
             down: false
         };
-
         this.velocitySinalyzer = {
             x: 'uncalculed',
             y: 'uncalculed',
             z: 'uncalculed'
         }
-
         this.physicsState = {
-
             havePhysics: objProps.havePhysics,
 
             // Define a velocidade inicial do objeto
-            velocity     : { x: 0, y: 0, z: 0 } as ObjectVelocity,
-            acceleration : { x: 0, y: 0, z: 0 } as ObjectAcceleration,
-            force        : { x: 0, y: 0, z: 0 } as ObjectForce,
+            velocity             : { x: 0, y: 0, z: 0 } as ObjectVelocity,
+            acceleration         : { x: 0, y: 0, z: 0 } as ObjectAcceleration,
+            force                : { x: 0, y: 0, z: 0 } as ObjectForce,
 
             // Define a velocidade de rotação
             rotationVelocity     : { x: 0, y: 0, z: 0 } as ObjectVelocity,
             rotationAcceleration : { x: 0, y: 0, z: 0 } as ObjectAcceleration,
             rotationForce        : { x: 0, y: 0, z: 0 } as ObjectForce
-
         };
-
-        this.weight = 0;
-        this.isFalling = false;
-        this.groundY = 0;
-
         this.infoCollisions = {
-            objectNames: [],
-            objectIDs: [],
-            objectClasses: [],
-            objects: []
+            objectNames   : new Array<string>(),
+            objectIDs     : new Array<string>(),
+            objectClasses : new Array<string>(),
+            objects       : new Array<Ponteiro<AbstractObjectBase>>()
         };
-
         this.infoProximity = {
-            objectNames: [],
-            objectIDs: [],
-            objectClasses: [],
-            objects: []
+            objectNames   : new Array<string>(),
+            objectIDs     : new Array<string>(),
+            objectClasses : new Array<string>(),
+            objects       : new Array<Ponteiro<AbstractObjectBase>>()
         };
-
-        this.isMovimentoTravadoPorColisao = false;
-        this.isReceiving_Y_Velocity = false;
-        this.onCreate = null;
+        /**
+        * FIM DAS INICIALIZAÇÔES QUE NÂO PRECISAM EM C++ 
+        */
         
     }
 

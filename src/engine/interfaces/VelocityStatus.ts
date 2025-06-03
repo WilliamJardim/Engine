@@ -9,8 +9,9 @@
 */
 export type StatusVelocidadeEixo = 'uncalculed' | 'increasing' | 'decreasing' | 'constant';
 
-export default interface VelocityStatus{
-    x: StatusVelocidadeEixo,
-    y: StatusVelocidadeEixo,
-    z: StatusVelocidadeEixo
+export default interface VelocityStatus
+{
+    x : StatusVelocidadeEixo,
+    y : StatusVelocidadeEixo,
+    z : StatusVelocidadeEixo
 }

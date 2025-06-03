@@ -10,7 +10,8 @@
 import ObjectBase from "../core/ObjectBase";
 import Mapa from "../utils/dicionarios/Mapa";
 
-export default interface ProximityBinaryTable{
+export default interface ProximityBinaryTable
+{
     byName    : Mapa<string, Mapa<string, boolean> >, // byName[nomeObjetoAlvo] =  outra sub-tabela de objetos colidindo com ele
     byID      : Mapa<string, Mapa<string, boolean> >, // byName[idObjetoAlvo] =  outra sub-tabela  de objetos colidindo com ele
     byClasses : Mapa<string, Mapa<string, boolean> >  // byClasses[classeObjetoAlvo] =  outra sub-tabela  de objetos colidindo com ele

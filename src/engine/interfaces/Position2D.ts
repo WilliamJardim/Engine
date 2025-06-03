@@ -7,7 +7,8 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-export default interface Position2D{
-    x: number;
-    y: number;
+export default interface Position2D
+{
+    x : number;
+    y : number;
 }

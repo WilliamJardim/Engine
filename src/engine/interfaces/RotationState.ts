@@ -7,11 +7,12 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-export default interface RotationState{
-    forward: boolean, 
-    backward: boolean, 
-    left: boolean, 
-    right: boolean,
-    up: boolean,
-    down: boolean
+export default interface RotationState
+{
+    forward  : boolean, 
+    backward : boolean, 
+    left     : boolean, 
+    right    : boolean,
+    up       : boolean,
+    down     : boolean
 }

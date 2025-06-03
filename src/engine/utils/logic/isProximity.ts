@@ -28,6 +28,7 @@ export default function isProximity(
     limites: ProximityBounds,
     consideraEscala: boolean = true,
     usaValorAbsoluto: boolean = true
+    
 ): boolean {
 
     //Se os ponteiros não forem nulos

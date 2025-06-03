@@ -38,6 +38,7 @@ import objectAHaveSomeClassesIgnoredByObjectB from "../utils/array/objectAHaveSo
 import objectANOTHaveSomeClassesIgnoredByObjectB from "../utils/array/objectANOTHaveSomeClassesIgnoredByObjectB";
 import AbstractObjectBase from "./AbstractObjectBase";
 import { Ponteiro } from '../types/types-cpp-like';
+import Mapa from '../utils/dicionarios/Mapa';
 
 /**
 * O ObjectBase aqui é uma classe implementada, que herda do AbstractObjectBase,
@@ -49,59 +50,77 @@ import { Ponteiro } from '../types/types-cpp-like';
 export default class ObjectBase extends AbstractObjectBase
 {    
     /** ATRIBUTOS QUE SÂO PONTEIROS OU REFERENCIAS EXTERNAS */
-    public scene:Ponteiro<Scene>;        // é um ponteiro com referencia: *
-    public onCreate:Ponteiro<Function>;  // è uma função e tambem um ponteiro *
+    public scene             : Ponteiro<Scene>;        // é um ponteiro com referencia: *
+    public onCreate          : Ponteiro<Function>;  // è uma função e tambem um ponteiro *
 
-    public objectBelow: Ponteiro<AbstractObjectBase>;     //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
-    public lastObjectBelow: Ponteiro<AbstractObjectBase>; //O ultimo objeto cujo o objeto atual esteve em cima 
+    public objectBelow       : Ponteiro<AbstractObjectBase>;     //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
+    public lastObjectBelow   : Ponteiro<AbstractObjectBase>; //O ultimo objeto cujo o objeto atual esteve em cima 
 
     /** OUTROS ATRIBUTOS DO OBJETO */
-    public tipo:string = 'ObjectBase';
-    public name:string;
-    public id:string;
-    public mesh:MeshRepresentation;
-    public objProps:ObjectProps;
-    public objEvents:ObjectEventLayer;
-    public frameHistory:ObjectFrameTracker;
-    public movimentState:MovementState;
-    public movimentSinalyzer:MovementState; // Indica se o objeto está se movendo para essas direções, quer por força ou de forma direta
-    public rotationSinalyzer:RotationState; // Indica a direção de rotação do objeto
-    public velocitySinalyzer:VelocityStatus; // Indica o status da velocidade do objeto para cada eixo
-    public physicsState:PhysicsState;
-    public weight:number;
-    public isFalling:boolean;
-    public groundY:number; // A posição Y do chão atual em relação a este objeto
-    public infoCollisions:CollisionsData;
-    public infoProximity:CollisionsData;
-    public isMovimentoTravadoPorColisao:boolean;
-    public isReceiving_Y_Velocity:boolean; // Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
+    public tipo               : string = 'ObjectBase';
+    public name               : string;
+    public id                 : string;
+    public mesh               : MeshRepresentation;
+    public objProps           : ObjectProps;
+    public objEvents          : ObjectEventLayer;
+    public frameHistory       : ObjectFrameTracker;
+    public movimentState      : MovementState;
+    public movimentSinalyzer  : MovementState; // Indica se o objeto está se movendo para essas direções, quer por força ou de forma direta
+    public rotationSinalyzer  : RotationState; // Indica a direção de rotação do objeto
+    public velocitySinalyzer  : VelocityStatus; // Indica o status da velocidade do objeto para cada eixo
+    public physicsState       : PhysicsState;
+    public weight             : number;
+    public isFalling          : boolean;
+    public groundY            : number; // A posição Y do chão atual em relação a este objeto
+    public infoCollisions     : CollisionsData;
+    public infoProximity      : CollisionsData;
+    public isMovimentoTravadoPorColisao : boolean;
+    public isReceiving_Y_Velocity : boolean; // Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
 
     /** OUTROS ATRIBUTOS **/
-    public lastPosition:ObjectPosition = {x: 0, y: 0, z: 0};
+    public lastPosition : ObjectPosition = {x: 0, y: 0, z: 0};
 
-    constructor(mesh: MeshRepresentation, 
-                objProps:ObjectProps
+    constructor(mesh     : MeshRepresentation, 
+                objProps : ObjectProps
             
     ){
         super( objProps );
     
         this.objProps  = objProps;
         this.weight = 0;
-
         this.onCreate  = this.objProps.onCreate || null;
-
         this.groundY = 0;
 
         // objectBelow é um ponteiro, ele pode ser nulo na criação, mais ele será vinculado dinamicamente pela propia logica da engine
         this.objectBelow = null;
         this.lastObjectBelow = null;
         this.isMovimentoTravadoPorColisao = false; //Se o objeto atual esta travado por que esta tentando se mover para uma direção em que ele está colidindo com outro objeto
-
         this.isReceiving_Y_Velocity = false; //Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
-
+        this.isFalling   = false;
         this.id          = (this.objProps.name||'objeto') + String(new Date().getTime());
         this.name        = this.objProps.name;
 
+        this.objEvents = new ObjectEventLayer(this.objProps.events);
+
+        // this.scene é um ponteiro, ele pode ser nulo na criação, mais ele será atribuido dinamicamente para apontar pra cena, na fase de atualização dos objetos
+        this.scene = null;
+
+        /**
+        * Vai guardar todas as informações relevantes do objeto dentro do array frameData, após cada frame 
+        * Pra poderem ser consultadas posteriormente
+        * o SCENE vai chamar ele
+        */
+        this.frameHistory = new ObjectFrameTracker( this );
+
+        // Se nao for usar monitoramento de frames
+        if( this.objProps.enable_advanced_frame_tracking == false ){
+            this.frameHistory.disable();
+        }
+
+        /**
+        * ESSA INICIALIZAÇÂO ABAIXO NÂO PRECISA SER FEITA EM C++
+        * Em C++ basta declarar as variaveis, e não precisa inicializar
+        */
         this.mesh = {
             position: {
                 x: 0,
@@ -119,38 +138,26 @@ export default class ObjectBase extends AbstractObjectBase
                 z: 0
             }
         }
-
-        this.objEvents = new ObjectEventLayer(this.objProps.events);
-
-        // this.scene é um ponteiro, ele pode ser nulo na criação, mais ele será atribuido dinamicamente para apontar pra cena, na fase de atualização dos objetos
-        this.scene = null;
-
-        this.infoCollisions = {
-            objectNames: [],
-            objectIDs: [],
-            objectClasses: [],
-            objects: []
-        };
-
-        this.infoProximity = {
-            objectNames: [],
-            objectIDs: [],
-            objectClasses: [],
-            objects: []
-        };
-
         /**
-        * Vai guardar todas as informações relevantes do objeto dentro do array frameData, após cada frame 
-        * Pra poderem ser consultadas posteriormente
-        * o SCENE vai chamar ele
+        * ESSA INICIALIZAÇÂO ABAIXO NÂO PRECISA SER FEITA EM C++
+        * Em C++, como dito acima, basta declarar infoCollisions e infoProximity como publicos no inicio da classe e só
+        * Não precisaria dessa inicialização.
+        * Aqui eu fiz apenas pra manter uma convenção mais rigorosa 
+        * MAIS ESSA INICIALIZAÇÂO NÂO PRECISA SER FEITA EM C++
         */
-        this.frameHistory = new ObjectFrameTracker( this );
-
-        // Se nao for usar monitoramento de frames
-        if( this.objProps.enable_advanced_frame_tracking == false ){
-            this.frameHistory.disable();
-        }
-
+        this.infoCollisions = {
+            objectNames   : new Array<string>(),
+            objectIDs     : new Array<string>(),
+            objectClasses : new Array<string>(),
+            objects       : new Array<Ponteiro<AbstractObjectBase>>()
+        };
+        this.infoProximity = {
+            objectNames   : new Array<string>(),
+            objectIDs     : new Array<string>(),
+            objectClasses : new Array<string>(),
+            objects       : new Array<Ponteiro<AbstractObjectBase>>()
+        };
+    
         this.movimentState = {
             forward: false,
             backward: false,
@@ -161,7 +168,6 @@ export default class ObjectBase extends AbstractObjectBase
             steps: 1,
             isJumping: false
         };
-
         this.movimentSinalyzer =  {
             forward: false,
             backward: false,
@@ -172,7 +178,6 @@ export default class ObjectBase extends AbstractObjectBase
             isJumping: false,
             steps: 1 //Isso aqui nao faz muito sentido, entoa vou remover depois
         };
-
         this.rotationSinalyzer =  {
             forward: false,
             backward: false,
@@ -181,15 +186,12 @@ export default class ObjectBase extends AbstractObjectBase
             up: false,
             down: false
         };
-
         this.velocitySinalyzer = {
             x: 'uncalculed',
             y: 'uncalculed',
             z: 'uncalculed'
         }
-
         this.physicsState = {
-
             havePhysics: objProps.havePhysics,
 
             // Define a velocidade inicial do objeto
@@ -201,12 +203,15 @@ export default class ObjectBase extends AbstractObjectBase
             rotationVelocity     : { x: 0, y: 0, z: 0 },
             rotationAcceleration : { x: 0, y: 0, z: 0 },
             rotationForce        : { x: 0, y: 0, z: 0 }
-
         };
+        /**
+        * FIM DAS INICIALIZAÇÔES QUE NÂO PRECISAM EM C++ 
+        */
 
+        /**
+        * Final do construtor do ObjectBase
+        */
         this.setMesh( mesh );
-
-        this.isFalling = false;
 
         //Se tem posição
         this.setPosition( this.objProps.position );
@@ -1011,7 +1016,7 @@ export default class ObjectBase extends AbstractObjectBase
                             * Então, ele vai criar um Array vazio, para permitr que seja inserido as entradas, que vão registrar a colisão 
                             */
                             if( esteObjeto.scene.collisionTable.byName.search( esteObjeto.name ) == esteObjeto.scene.collisionTable.byName.NotFounded() ){
-                                esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] = [];
+                                esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] = new Array<Ponteiro<AbstractObjectBase>>();
                             }
                             /**
                             * Registra tambem na tabela mestre da cena
@@ -1019,7 +1024,7 @@ export default class ObjectBase extends AbstractObjectBase
                             * Então, ele vai criar um mapa vazio, para permitr que seja inserido as entradas, que vão registrar a colisão 
                             */
                             if( esteObjeto.scene.collisionBinaryTable.byName.search( esteObjeto.name ) == esteObjeto.scene.collisionBinaryTable.byName.NotFounded() ){
-                                esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] = {};
+                                esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] = new Mapa<string, boolean>();
                             }
                             // Por Nome
                             esteObjeto.scene.collisionTable.byName[ esteObjeto.name ].push( objetoAtualCena );
@@ -1032,10 +1037,10 @@ export default class ObjectBase extends AbstractObjectBase
 
                             //Registra tambem na tabela mestre da cena
                             if( esteObjeto.scene.collisionTable.byID.search( esteObjeto.id ) == esteObjeto.scene.collisionTable.byID.NotFounded() ){
-                                esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] = [];
+                                esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] = new Array<Ponteiro<AbstractObjectBase>>();
                             }
                             if( esteObjeto.scene.collisionBinaryTable.byID.search( esteObjeto.id ) == esteObjeto.scene.collisionBinaryTable.byID.NotFounded() ){
-                                esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ] = {};
+                                esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ] = new Mapa<string, boolean>();
                             }
                             
                             esteObjeto.scene.collisionTable.byID[ esteObjeto.id ].push( objetoAtualCena );
@@ -1054,10 +1059,10 @@ export default class ObjectBase extends AbstractObjectBase
 
                                 //Registra tambem na tabela mestre da cena
                                 if( esteObjeto.scene.collisionTable.byClasses.search( nomeClasse ) == esteObjeto.scene.collisionTable.byClasses.NotFounded() ){
-                                    esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] = [];
+                                    esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] = new Array<Ponteiro<AbstractObjectBase>>();
                                 }
                                 if( esteObjeto.scene.collisionBinaryTable.byClasses.search( nomeClasse ) == esteObjeto.scene.collisionBinaryTable.byClasses.NotFounded() ){
-                                    esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] = {};
+                                    esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] = new Mapa<string, boolean>();
                                 }
 
                                 // por Nome da classe
@@ -1078,10 +1083,10 @@ export default class ObjectBase extends AbstractObjectBase
 
                             //Registra tambem na tabela mestre da cena
                             if( esteObjeto.scene.proximityTable.byName.search( esteObjeto.name ) == esteObjeto.scene.proximityTable.byName.NotFounded() ){
-                                esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] = [];
+                                esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] = new Array<Ponteiro<AbstractObjectBase>>();
                             }
                             if( esteObjeto.scene.proximityBinaryTable.byName.search( esteObjeto.name ) == esteObjeto.scene.proximityBinaryTable.byName.NotFounded() ){
-                                esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ] = {};
+                                esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ] = new Mapa<string, boolean>();
                             }
                             
                             // Por nome
@@ -1094,10 +1099,10 @@ export default class ObjectBase extends AbstractObjectBase
 
                             //Registra tambem na tabela mestre da cena
                             if( esteObjeto.scene.proximityTable.byID.search( esteObjeto.id ) == esteObjeto.scene.proximityTable.byID.NotFounded() ){
-                                esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] = [];
+                                esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] = new Array<Ponteiro<AbstractObjectBase>>();
                             }
                             if( esteObjeto.scene.proximityBinaryTable.byID.search( esteObjeto.id ) == esteObjeto.scene.proximityBinaryTable.byID.NotFounded() ){
-                                esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ] = {};
+                                esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ] = new Mapa<string, boolean>();
                             }
 
                             // Por ID
@@ -1114,10 +1119,10 @@ export default class ObjectBase extends AbstractObjectBase
 
                                  //Registra tambem na tabela mestre da cena
                                  if( esteObjeto.scene.proximityTable.byClasses.search( nomeClasse ) == esteObjeto.scene.proximityTable.byClasses.NotFounded() ){
-                                     esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] = [];
+                                     esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] = new Array<Ponteiro<AbstractObjectBase>>();
                                  }
                                  if( esteObjeto.scene.proximityBinaryTable.byClasses.search( nomeClasse ) == esteObjeto.scene.proximityBinaryTable.byClasses.NotFounded() ){
-                                     esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] = {};
+                                     esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] = new Mapa<string, boolean>();
                                  }
                                 
                                  // Por nome da classe
@@ -1486,19 +1491,19 @@ export default class ObjectBase extends AbstractObjectBase
             return;
         }
 
-        const massaObjeto      : number          = objeto.getMass();
-        const gravity          : Position3D      = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
-        const atrito           : number          = (((scene||{}).atrito || 0));
-        const arrastoAr        : number          = (((scene||{}).arrastoAr || 0));
-        const frameDeltaIntensification: number  = (((scene||{}).frameDeltaIntensification || 1));
-        const objectPhysicsUpdateRate:number     = (((scene||{}).objectPhysicsUpdateRate || 10));
-        const objectPhysicsDesaceleracaoUpdateRate:number = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
-        const movimentState:MovementState        = objeto.movimentState;
+        const massaObjeto                          : number        = objeto.getMass();
+        const gravity                              : Position3D    = scene.gravity;
+        const atrito                               : number        = scene.atrito;
+        const arrastoAr                            : number        = scene.arrastoAr;
+        const frameDeltaIntensification            : number        = scene.frameDeltaIntensification;
+        const objectPhysicsUpdateRate              : number        = scene.objectPhysicsUpdateRate;
+        const objectPhysicsDesaceleracaoUpdateRate : number        = scene.objectPhysicsDesaceleracaoUpdateRate;
+        const movimentState                        : MovementState = objeto.movimentState;
 
-        const objetosCena : Array<Ponteiro<AbstractObjectBase>> = scene.objects;
+        const objetosCena             : Array<Ponteiro<AbstractObjectBase>> = scene.objects;
 
-        const forcaVelocidadeObjeto      = objeto.getRotationForce();
-        const aceleracaoRotacaoObjeto    = objeto.getRotationAcceleration();
+        const forcaVelocidadeObjeto   : ObjectForce          = objeto.getRotationForce();
+        const aceleracaoRotacaoObjeto : ObjectAcceleration   = objeto.getRotationAcceleration();
         
         /**
         * Calcula a aceleração da velocidade do objeto 
@@ -1571,25 +1576,25 @@ export default class ObjectBase extends AbstractObjectBase
     public updateMovement( frameDelta:number ): void{
 
         const objeto           : Ponteiro<AbstractObjectBase> = this;
-        const velocidadeObjeto : ObjectVelocity               = objeto.getVelocity();
-        const aceleracaoObjeto : ObjectAcceleration           = objeto.getAcceleration();
-        const forcaObjeto      : ObjectForce                  = objeto.getForce();
-        const massaObjeto      : number                       = objeto.getMass();
         const scene            : Ponteiro<Scene>              = objeto.scene;
-        const gravity          : Position3D                   = ((scene||{}).gravity || {x: 0, y: 0, z: 0});
-        const atrito           : number                       = (((scene||{}).atrito || 0));
-        const arrastoAr        : number                       = (((scene||{}).arrastoAr || 0));
-        const frameDeltaIntensification: number               = (((scene||{}).frameDeltaIntensification || 1));
-        const objectPhysicsUpdateRate:number                  = (((scene||{}).objectPhysicsUpdateRate || 10));
-        const objectPhysicsDesaceleracaoUpdateRate:number     = (((scene||{}).objectPhysicsDesaceleracaoUpdateRate || 2));
-        const movimentState:MovementState                     = objeto.movimentState;
 
         // Ignora se a cena nao existir
-        if( !scene ){
+        if( scene == null ){
             return;
         }
 
-        const objetosCena : Array<Ponteiro<AbstractObjectBase>>  =  scene.objects;
+        const velocidadeObjeto : ObjectVelocity                      = objeto.getVelocity();
+        const aceleracaoObjeto : ObjectAcceleration                  = objeto.getAcceleration();
+        const forcaObjeto      : ObjectForce                         = objeto.getForce();
+        const massaObjeto      : number                              = objeto.getMass();
+        const gravity          : Position3D                          = scene.gravity;
+        const atrito           : number                              = scene.atrito;
+        const arrastoAr        : number                              = scene.arrastoAr;
+        const frameDeltaIntensification            : number          = scene.frameDeltaIntensification;
+        const objectPhysicsUpdateRate              : number          = scene.objectPhysicsUpdateRate;
+        const objectPhysicsDesaceleracaoUpdateRate : number          = scene.objectPhysicsDesaceleracaoUpdateRate;
+        const movimentState    : MovementState                       = objeto.movimentState;
+        const objetosCena      : Array<Ponteiro<AbstractObjectBase>> =  scene.objects;
 
         /**
         * Salva posição atual do objeto ANTES DE QUALQUER MOVIMENTO OCORRER, como sendo a posição anterior dele,
@@ -2092,7 +2097,7 @@ export default class ObjectBase extends AbstractObjectBase
     */
     isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean
     {
-        let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = [];
+        let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = new Array();
         let esteObjeto       : Ponteiro<AbstractObjectBase>        = this;
         let scene            : Ponteiro<Scene>                     = esteObjeto.getScene();
 
@@ -2113,7 +2118,7 @@ export default class ObjectBase extends AbstractObjectBase
     ): Array<Ponteiro<AbstractObjectBase>>
     {
         let esteObjeto       : Ponteiro<AbstractObjectBase>        = this;
-        let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = [];
+        let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = new Array();
         let scene            : Ponteiro<Scene>                     = esteObjeto.getScene();
 
         //Se não tem limites personalizados
@@ -2154,7 +2159,7 @@ export default class ObjectBase extends AbstractObjectBase
     ): Array<Ponteiro<AbstractObjectBase>>
     {
         let esteObjeto       : Ponteiro<AbstractObjectBase>        = this;
-        let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = [];
+        let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = new Array();
         let scene            : Ponteiro<Scene>                     = esteObjeto.getScene();
 
         //Se não tem limites personalizados
@@ -2193,7 +2198,7 @@ export default class ObjectBase extends AbstractObjectBase
     */
     isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean{
         const esteObjeto       : Ponteiro<AbstractObjectBase>        = this;
-        const objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = [];
+        const objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = new Array();
         const scene            : Ponteiro<Scene>                     = this.getScene();
 
         if(scene)

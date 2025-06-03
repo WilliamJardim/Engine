@@ -16,30 +16,31 @@ import ProximityBounds from '../utils/interfaces/ProximityBounds';
 import ObjectAttachment from './ObjectAttachment';
 import { Ponteiro } from '../types/types-cpp-like';
 
-export default interface ObjectProps{
-    material: THREE.MeshStandardMaterial | null,
-    mass: number; //A massa do objeto
-    type: string, //Se é cubo, plano, esfera, ou modelo personalizado
-    name:string,
-    classes: Array<string>,
-    havePhysics: boolean,
-    position: ObjectPosition,
-    rotation: ObjectRotation,
-    scale: ObjectScale,
-    scaleReduce: ObjectScale,
-    collide: boolean,
-    collisionEvents: boolean, //Se vai receber eventos de colisão mesmo que ele não colida fisicamente
-    traverse: boolean, //Se o objeto pode simplismente passar atravez de outros objetos(ignora a fisica)
-    ignoreCollisions: Array<string>,
-    proximityConfig:ProximityBounds,
-    invisible: boolean,
-    opacity: number,
-    events: Array<ObjectEvents>,
-    kick_rate: number,
+export default interface ObjectProps
+{
+    material         : THREE.MeshStandardMaterial | null,
+    mass             : number; //A massa do objeto
+    type             : string, //Se é cubo, plano, esfera, ou modelo personalizado
+    name             : string,
+    classes          : Array<string>,
+    havePhysics      : boolean,
+    position         : ObjectPosition,
+    rotation         : ObjectRotation,
+    scale            : ObjectScale,
+    scaleReduce      : ObjectScale,
+    collide          : boolean,
+    collisionEvents  : boolean, //Se vai receber eventos de colisão mesmo que ele não colida fisicamente
+    traverse         : boolean, //Se o objeto pode simplismente passar atravez de outros objetos(ignora a fisica)
+    ignoreCollisions : Array<string>,
+    proximityConfig  : ProximityBounds,
+    invisible        : boolean,
+    opacity          : number,
+    events           : Array<ObjectEvents>,
+    kick_rate        : number,
 
-    enable_advanced_frame_tracking: boolean, //Se ativado, vai capturar os dados do objeto a cada frame. Por padrão é ativado
+    enable_advanced_frame_tracking : boolean, //Se ativado, vai capturar os dados do objeto a cada frame. Por padrão é ativado
 
-    onCreate?: Ponteiro<Function>;
+    onCreate         : Ponteiro<Function>;
 
     /**
     * Define quais objetos da cena vão estar grudados/anexados a este objeto
@@ -60,5 +61,5 @@ export default interface ObjectProps{
             ...
         ]
     */
-    attachments: Array<ObjectAttachment>,
+    attachments     : Array<ObjectAttachment>,
 }

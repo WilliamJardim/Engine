@@ -15,7 +15,8 @@
 */
 import ObjectEvents from "./ObjectEvents";
 
-export default class ObjectEventLayer{
+export default class ObjectEventLayer
+{
     private eventsArray: Array<ObjectEvents>;
 
     constructor( eventsArray: Array<ObjectEvents> ){

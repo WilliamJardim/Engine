@@ -10,29 +10,35 @@
 import ObjectEventLayer from "../interfaces/ObjectEventBlock";
 import ObjectProps from "../interfaces/ObjectProps";
 import { Ponteiro } from "../types/types-cpp-like";
+import AbstractObjectBase from "./AbstractObjectBase";
 import ObjectBase from "./ObjectBase";
 import Scene from "./Scene";
 
 /**
 * My Camera class
 */
-export default class Camera extends ObjectBase{
-    public tipo:string = 'Camera';
-    public name:string;
-    public objEvents:ObjectEventLayer;
-    public id:string;
-    public objProps:ObjectProps;
-    public scene:Ponteiro<Scene>;
-    public ativo:boolean = true;
-    public mainCamera:boolean = false;
+export default class Camera extends AbstractObjectBase{
+    public tipo        : string = 'Camera';
+    public name        : string;
+    public objEvents   : ObjectEventLayer;
+    public id          : string;
+    public objProps    : ObjectProps;
+    public scene       : Ponteiro<Scene>;
+    public ativo       : boolean = true;
+    public mainCamera  : boolean = false;
 
+    /**
+    * VERIFICAR SE EM C++ FUNCIONA HERANÇA COM CONSTRUTORES COM PARAMETROS DIFERENTES:
+    * por exemplo, aqui eu uso só objProps nos parametros, e no AbstractObjectBase tambem
+    * porém no ObjectBase, eu tenho mesh, e objProps
+    */
     constructor(objProps:ObjectProps){
-        super( null, objProps );
-        this.objProps    = objProps || {} as ObjectProps;
+        super( objProps );
+        this.objProps    = objProps;
         this.id          = (this.objProps.name||'imaginario') + String(new Date().getTime());
         this.name        = this.objProps.name;
         this.scene       = null;
-        this.objEvents   = new ObjectEventLayer(this.objProps.events);
+        this.objEvents   = new ObjectEventLayer( this.objProps.events );
 
         // Uma camera não pode colidir nem receber colisão nem fisica
         this.objProps.havePhysics = false;

@@ -39,31 +39,30 @@ import Mapa from "../utils/dicionarios/Mapa.ts";
 
 export default class Scene{
 
-    public sceneConfig:SceneConfig;
-    public inputListener:InputListener;
+    public sceneConfig    : SceneConfig;
+    public inputListener  : InputListener;
     
-    public sceneCounter:FrameCounter;
+    public sceneCounter   : FrameCounter;
     public normalSpeed = 1;
     public slowSpeed = 0.05;
-    public frameDeltaIntensification:number = this.normalSpeed;
-    public objectPhysicsUpdateRate:number = 1; //Permite intensificar os efeitos da fisica nos objetos
-    public objectPhysicsDesaceleracaoUpdateRate:number = 9.5; //Afeta a velocidade de desaceleracao de objetos
+    public frameDeltaIntensification            : number = this.normalSpeed;
+    public objectPhysicsUpdateRate              : number = 1; //Permite intensificar os efeitos da fisica nos objetos
+    public objectPhysicsDesaceleracaoUpdateRate : number = 9.5; //Afeta a velocidade de desaceleracao de objetos
 
-    public gravity:Position3D;
-    public atrito:number = 1;
-    public arrastoAr:number = 1;
+    public gravity               : Position3D;
+    public atrito                : number = 1;
+    public arrastoAr             : number = 1;
 
-    public objects:Array<Ponteiro<AbstractObjectBase>>;
-
-    public cameras:Array<Ponteiro<Camera>>;
+    public objects               : Array<Ponteiro<AbstractObjectBase>>;
+    public cameras               : Array<Ponteiro<Camera>>;
     
-    public objectTableById   : Mapa<string, Ponteiro<AbstractObjectBase>>;
-    public objectTableByName : Mapa<string, Ponteiro<AbstractObjectBase>>;
+    public objectTableById       : Mapa<string, Ponteiro<AbstractObjectBase>>;
+    public objectTableByName     : Mapa<string, Ponteiro<AbstractObjectBase>>;
 
-    public collisionTable:CollisionTable;
-    public collisionBinaryTable:CollisionBinaryTable;
-    public proximityTable:ProximityTable;
-    public proximityBinaryTable:ProximityBinaryTable;
+    public collisionTable        : CollisionTable;
+    public collisionBinaryTable  : CollisionBinaryTable;
+    public proximityTable        : ProximityTable;
+    public proximityBinaryTable  : ProximityBinaryTable;
 
     /**
     * Configurações do vento para física
@@ -72,6 +71,7 @@ export default class Scene{
     public haveWind:boolean;
 
     constructor( sceneConfig:SceneConfig ){
+
         this.wind = {
             orientation : { x: 0.5, 
                             y: -0.1, 
@@ -86,10 +86,10 @@ export default class Scene{
                             z: 1 }
         };
 
-        this.haveWind = sceneConfig.haveWind;
+        this.haveWind  = sceneConfig.haveWind;
 
-        this.gravity = {x: 0, y: 0.8, z: 0};     // Gravidade que puxa para baixo
-        this.atrito  = 1;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
+        this.gravity   = {x: 0, y: 0.8, z: 0};     // Gravidade que puxa para baixo
+        this.atrito    = 1;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
         this.arrastoAr = 1;    // Arrast do ar(afeta objetos com aceleração que estiverem no ar)
 
         this.sceneConfig   = sceneConfig;
@@ -97,21 +97,21 @@ export default class Scene{
  
         this.sceneCounter  = new FrameCounter( 1000, 1000 );
 
-        this.objects = [];
+        // Objetos
+        this.objects = new Array<Ponteiro<AbstractObjectBase>>();
 
         // Cameras
-        this.cameras = [];
+        this.cameras = new Array<Ponteiro<Camera>>();
             
+        /**
+        * ESSA INICIALIZAÇÂO ABAIXO NÂO PRECISA SER FEITA EM C++
+        * Em C++ basta declarar as variaveis, e não precisa inicializar
+        */
 
         // Tabela que vai manter os objetos indexados por ID
         this.objectTableById   = new Mapa<string, Ponteiro<AbstractObjectBase>>();
         // Tabela que vai manter os objetos indexados por Nome
         this.objectTableByName = new Mapa<string, Ponteiro<AbstractObjectBase>>();
-
-        /**
-        * OS CONSTRUTORES de this.collisionTable, this.collisionBinaryTable, e os demais abaixo:
-        * Eles seria diferentes em C++, precisaria adaptar
-        */
 
         // Tabela de objetos colidindo com outros objetos
         this.collisionTable = {
@@ -140,6 +140,9 @@ export default class Scene{
             byID      : new Mapa<string, Mapa<string, boolean>>(),
             byClasses : new Mapa<string, Mapa<string, boolean>>()
         };
+        /**
+        * FIM DAS INICIALIZAÇÔES QUE NÂO PRECISAM EM C++ 
+        */
     }
 
     public getObjects(): Array<Ponteiro<AbstractObjectBase>>
@@ -166,16 +169,25 @@ export default class Scene{
             byID      : {},
             byClasses : {}
         };*/
+
+        //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
+        // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
     public clearObjectCollisionFromTableByName( objectName: string ): void{
         this.collisionTable.byName[objectName] = [];
         //this.collisionBinaryTable.byName[objectName] = {};
+
+        //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
+        // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
     public clearObjectCollisionFromTableByID( objectID: string ): void{
         this.collisionTable.byID[objectID] = [];
         //this.collisionBinaryTable.byID[objectID] = {};
+
+        //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
+        // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
     public clearObjectCollisionFromTableByCLASSES( objectClasses: string|Array<string> ): void{
@@ -191,6 +203,9 @@ export default class Scene{
                 //contexto.collisionBinaryTable.byClasses[nomeClasse] = {};
             })
         }
+
+        //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
+        // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
     public clearProximityTable(): void{
@@ -207,16 +222,25 @@ export default class Scene{
             byID      : {},
             byClasses : {}
         };*/
+
+        //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
+        // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
     public clearObjectProximityFromTableByName( objectName: string ): void{
         this.proximityTable.byName[objectName] = [];
         this.collisionBinaryTable.byName[objectName] = {};
+
+        //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
+        // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
     public clearObjectProximityFromTableByID( objectID: string ): void{
         this.proximityTable.byID[objectID] = [];
         this.collisionBinaryTable.byName[objectID] = {};
+
+        //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
+        // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
     public clearObjectProximityFromTableByCLASSES( objectClasses: string|Array<string> ): void{
@@ -232,6 +256,9 @@ export default class Scene{
                 //contexto.collisionBinaryTable.byClasses[nomeClasse] = {};
             })
         }
+
+        //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
+        // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
     /**
@@ -379,7 +406,7 @@ export default class Scene{
     */
     public remove( objetoRemover:Ponteiro<AbstractObjectBase> ): void{
         const scene            : Ponteiro<Scene>                     = this;
-        const novosObjetosCena : Array<Ponteiro<AbstractObjectBase>> = [];
+        const novosObjetosCena : Array<Ponteiro<AbstractObjectBase>> = new Array();
 
         //Se tem o evento whenDestroy, executa ele
         if( objetoRemover != null && objetoRemover.objEvents )

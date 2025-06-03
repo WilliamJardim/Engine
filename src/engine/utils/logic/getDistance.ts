@@ -21,7 +21,11 @@ import DistanciaEixos from "../interfaces/DistanciaEixos";
 * @param usaValorAbsoluto - Se vai usar o Math.abs ou não
 * @returns {DistanciaEixos}
 */
-export default function getDistance( objA:Ponteiro<AbstractObjectBase>, objB:Ponteiro<AbstractObjectBase>, consideraEscala:boolean=true, usaValorAbsoluto:boolean=true ): DistanciaEixos {
+export default function getDistance( objA:Ponteiro<AbstractObjectBase>, 
+                                     objB:Ponteiro<AbstractObjectBase>, 
+                                     consideraEscala:boolean=true, 
+                                     usaValorAbsoluto:boolean=true 
+): DistanciaEixos {
 
     //Se os ponteiros não forem nulos
     if( objA != null && objB != null )

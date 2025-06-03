@@ -20,22 +20,22 @@ import Scene from "./Scene";
 * My Player class
 */
 export default class Player extends ObjectBase{
-    public tipo:string = 'Player';
-    public name:string;
-    public objEvents:ObjectEventLayer;
-    public id:string;
-    public objProps:ObjectProps;
-    public scene:Ponteiro<Scene>;
-    public initialSpawn:ObjectPosition;
-    public playerCamera:Camera|null;
-    public cameraHeight:number = 8;
+    public tipo          : string = 'Player';
+    public name          : string;
+    public objEvents     : ObjectEventLayer;
+    public id            : string;
+    public objProps      : ObjectProps;
+    public scene         : Ponteiro<Scene>;
+    public initialSpawn  : ObjectPosition;
+    public playerCamera  : Camera|null;
+    public cameraHeight  : number = 8;
 
     constructor(objProps:ObjectProps){
         const mesh = createCube(objProps);
 
         super( mesh.getMesh(), objProps );
 
-        this.objProps    = objProps || {} as ObjectProps;
+        this.objProps    = objProps;
         this.id          = (this.objProps.name||'imaginario') + String(new Date().getTime());
         this.name        = this.objProps.name;
         this.scene       = null;

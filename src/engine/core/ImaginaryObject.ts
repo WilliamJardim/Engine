@@ -19,12 +19,12 @@ import Scene from "./Scene";
 */
 export default class ImaginaryObject extends ObjectBase{
 
-    public tipo:string = 'ImaginaryObject';
-    public name:string;
-    public objEvents:ObjectEventLayer;
-    public id:string;
-    public objProps:ObjectProps;
-    public scene:Ponteiro<Scene>;
+    public tipo      : string = 'ImaginaryObject';
+    public name      : string;
+    public objEvents : ObjectEventLayer;
+    public id        : string;
+    public objProps  : ObjectProps;
+    public scene     : Ponteiro<Scene>;
     
     constructor(objProps:ObjectProps){
         super( null, objProps );

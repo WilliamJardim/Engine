@@ -21,7 +21,10 @@ import AbstractObjectBase from "../../core/AbstractObjectBase";
 * @param objB - Object 2 
 * @returns {boolean} - Se está colidindo ou não
 */
-export default function isCollision(objA:Ponteiro<AbstractObjectBase>, objB:Ponteiro<AbstractObjectBase>, limites: ProximityBounds): boolean{
+export default function isCollision(objA:Ponteiro<AbstractObjectBase>, 
+                                    objB:Ponteiro<AbstractObjectBase>, 
+                                    limites: ProximityBounds
+): boolean{
  
     //Se os ponteiros não forem nulos
     if( objA != null && objB != null )

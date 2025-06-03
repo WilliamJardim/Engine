@@ -7,13 +7,14 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-export default interface InputKeyMap{
-    W: boolean,
-    A: boolean,
-    S: boolean,
-    D: boolean,
-    ArrowUp: boolean,
-    ArrowDown: boolean,
-    ArrowLeft: boolean,
-    ArrowRight: boolean
+export default interface InputKeyMap
+{
+    W : boolean,
+    A : boolean,
+    S : boolean,
+    D : boolean,
+    ArrowUp    : boolean,
+    ArrowDown  : boolean,
+    ArrowLeft  : boolean,
+    ArrowRight : boolean
 }

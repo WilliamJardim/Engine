@@ -10,9 +10,10 @@
 import AbstractObjectBase from "../core/AbstractObjectBase";
 import { Ponteiro } from "../types/types-cpp-like";
 
-export default interface CollisionsData{
-    objectNames: Array<string>;
-    objectIDs: Array<string>;
-    objectClasses: Array<string>;
-    objects: Array<Ponteiro<AbstractObjectBase>>;
+export default interface CollisionsData
+{
+    objectNames   : Array<string>;
+    objectIDs     : Array<string>;
+    objectClasses : Array<string>;
+    objects       : Array<Ponteiro<AbstractObjectBase>>;
 }

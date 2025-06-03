@@ -29,9 +29,9 @@ export default class ObjectFrameTracker{
     * Constroi o rastreador de dados do objeto
     */
     constructor( objeto:Ponteiro<AbstractObjectBase> ){
-        this.enabled = true;
+        this.enabled         = true;
         this.objetoVinculado = objeto;
-        this.frameData = [];
+        this.frameData       = new Array<ObjectFrameData>();
     }
 
     public disable(): void
@@ -100,7 +100,7 @@ export default class ObjectFrameTracker{
     */
     public getFramesAfterEachUpdate(): Array<ObjectFrameData>
     {
-        const framesEncontrados: Array<ObjectFrameData> = [];
+        const framesEncontrados: Array<ObjectFrameData> = new Array();
 
         // Para cada registro de frame deste objeto
         for( let i = 0 ; i < this.frameData.length ; i++ )
@@ -121,7 +121,7 @@ export default class ObjectFrameTracker{
     */
     public getFramesBeforeEachUpdate(): ObjectFrameData[]
     {
-        const framesEncontrados: Array<ObjectFrameData> = [];
+        const framesEncontrados: Array<ObjectFrameData> = new Array();
 
         // Para cada registro de frame deste objeto
         for( let i = 0 ; i < this.frameData.length ; i++ )
@@ -150,7 +150,7 @@ export default class ObjectFrameTracker{
     ): ObjectFrameData[] {
 
         const temOrdem:boolean = (parametrosBuscaFrames.order != undefined) ? true : false;
-        const framesEncontrados: Array<ObjectFrameData> = [];
+        const framesEncontrados: Array<ObjectFrameData> = new Array();
 
         // Para cada registro de frame deste objeto
         for( let i = 0 ; i < this.frameData.length ; i++ )

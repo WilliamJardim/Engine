@@ -9,12 +9,13 @@ import { Ponteiro } from "../types/types-cpp-like";
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-export default interface ObjectEvents{
-    whenCollide: Ponteiro<Function>,
-    whenProximity: Ponteiro<Function>,
-    whenDestroy: Ponteiro<Function>,
-    whenFall: Ponteiro<Function>,
-    loop: Ponteiro<Function>,
+export default interface ObjectEvents
+{
+    whenCollide    : Ponteiro<Function>,
+    whenProximity  : Ponteiro<Function>,
+    whenDestroy    : Ponteiro<Function>,
+    whenFall       : Ponteiro<Function>,
+    loop           : Ponteiro<Function>,
 }
 
 /**

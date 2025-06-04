@@ -1052,3 +1052,47 @@ ele vai ja criar um ObjectBase, passando pra ele a cena,
 Assim eu não preciso inicializar a propriedade scene como null pra só depois atribuir dentro de "objeto.scene = scene;"
 Eu iria criar um ObjectBase que ja vem com a referencia da cena, que o propio método  createObject ja teria passado, e o propio contrutor do ObjectBase já iria definir o "scene = scene", com o scene que foi passado pelo createObject.
 
+
+
+# 04/06/2025 FISICA DE AMASSAR
+Física de amassar cubos ou esferas
+
+Ideia: quando eu chamar uma função chamada Stretch( eixo, quantia ), ele vai esticar o objeto no respectivo eixo, e compensar nos outros.
+
+Por exemplo, se for um cubo de metal, e ele for andando em X, e ele trombar com uma parede, ... Antes dessa colisão ele era um cubo perfeito. Porém, após a colisão, ele vai ser quase um plano. 
+Ou seja, o eixo X diminui, mais o eixo Y e Z aumenta pra compensar. Mais isso não de forma instantânea. Vai ser gradual, em tempo de jogo, pra ter sensação física.
+
+
+# 04/06/2025 SOM 3D
+Som 3D XYZ
+
+Criar meu próprio sistema de áudio. Ele vai mapear volumes dos sons por coordenadas. E vai permitir escolher o volume inicial, volume máximo, volume mínimo. E também , definir o ponto de origem do áudio, e o alcance.
+
+Com isso a Engine vai calcular automaticamente o volume do áudio de acordo com a distância que o jogador está dele( XYZ da origem). É como se o áudio tocasse dentro de uma bolha invisível, que só dá pra ouvir enquanto o jogador está dentro dela.
+
+Por exemplo, se o jogador está fora da área de alcance XYZ do som, ele não vai ouvir nada. Mais o áudio ainda estará tocando.
+
+Se o jogador chegar no início da área, ele vão ouvir bem baixinho.
+E a medida que ele vai se aproximando da origem do áudio, vai ficando cada vez mais alto, até chegar no volume máximo.
+
+O alcance definido no Objeto do Som vai servir pra XYZ. 
+
+Também com isso eu poderia clonar o som para expandir a área de alcance dele. Caso eu queira simular um ambiente de festa por exemplo, aí o som vai longe. E de fora da casa daria pra ouvir o som baixinho.
+Mais nesse caso eu teria que ter cuidado pra que todos os áudios estejam sincronizados pra não ter atrasos na reprodução de algum
+
+# 04/06/2025 ATIVAR/DESATIVAR PARTES DA FISICA
+Também posso ter um  Objeto que controla cada comportamento de física da cena.
+Por exemplo, posso ativar ou desativar colisões, empurrões, força, atrito, e várias outras coisas.
+Simplesmente atribuindo true ou false.
+
+Sistema de controle de volume GERAL, que pode deixar o som normal ou baixinho pra tudo
+
+
+# 04/06/2025 GERENCIADOR DE CENAS
+Também ter um gerenciador de cenas. Que pode carregar e trocar de cena a qualquer momento
+
+
+# 04/06/2025 INTERFACE GRAFICA
+Também interface simples com Open GL, com botões transparentes, textos... Troca de página, imagens.
+
+E o menu do jogo também pode ser uma cena, no fundo pode ser um Background

@@ -11,9 +11,14 @@ import ObjectPosition from "./ObjectPosition";
 
 export default interface LocalSoundProps
 {
-   audioPath: string         // The audio file path
-   position: ObjectPosition, // The position of the sound origin 
-   reachrate: 10,            // How far the sounds will go from the origin position
+   audioPath  : string,         // The audio file path
+   autoplay   : boolean,        // If the sound will start automatically
+   startDelay : number,         // How will await for play first time
+   begin      : number,         // The secounds that will start(in the audio position)
+   end        : number,         // The secounds that will end(in the audio position)
+   isLooping: boolean,          // If the sound will play forever
+   position: ObjectPosition,    // The position of the sound origin 
+   reachrate: 10,               // How far the sounds will go from the origin position
    initialVolume: 0.1,
    maxVolume: 1
 }   

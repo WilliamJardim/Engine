@@ -7,7 +7,7 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import AudioPlayer from "../audio/audioplayer";
+import AudioPlayer from "../audio/AudioPlayer";
 import LocalSoundProps from "../interfaces/LocalSoundProps";
 import ObjectPosition from "../interfaces/ObjectPosition";
 import { Ponteiro } from "../types/types-cpp-like";
@@ -24,6 +24,8 @@ export default class LocalSound
     public soundProps        : LocalSoundProps; 
     public audioPlayer       : AudioPlayer;
     public currentVolume     : number;
+    public isLooping         : boolean;
+    public createdTime       : number;
 
     constructor( soundProps: LocalSoundProps )
     {
@@ -31,6 +33,7 @@ export default class LocalSound
         this.player      = null; // The player is a Pointer
         this.soundProps  = {... soundProps};
         this.audioPlayer = new AudioPlayer(); 
+        this.createdTime = new Date().getTime();
 
         // Inicializa o AudioPlayer
         const audioPath : string  = soundProps.audioPath;
@@ -38,6 +41,22 @@ export default class LocalSound
         this.audioPlayer.initialize();
         this.audioPlayer.setSrc( audioPath );
         this.currentVolume = 0;
+
+        // Se o audio está em loop
+        this.isLooping = this.soundProps.isLooping;
+
+        // Se autoplay
+        if( this.soundProps.autoplay == true )
+        {
+            this.play();
+        }
+    }
+
+    // Toca o som apenas uma vez
+    play()
+    {   
+        this.audioPlayer.setExactCropTime( this.soundProps.begin,  this.soundProps.end );
+        this.audioPlayer.play();
     }
 
     // Determina quando o jogador está perto ou longe do som
@@ -89,6 +108,7 @@ export default class LocalSound
         }
     }
 
+    // Atualiza o som na cena do jogo
     updateSound(): void
     {
         // Calcula de quão longe o som vai ser ouvido
@@ -97,10 +117,47 @@ export default class LocalSound
         // Atualiza o volume
         this.audioPlayer.setVolume( this.currentVolume );
 
+        // Chama o callback de atualização do audioPlayer interno
+        this.audioPlayer.update();
+
+        // Se o som for ficar em loop sem parar e sem delay
+        if( this.isLooping == true )
+        {
+            if( this.audioPlayer.isTocando == false )
+            {
+                this.audioPlayer.play();
+            }
+        }
+
+        // Se o som tem delau pra repetir
+        /*
         if( this.audioPlayer.isTocando == false )
         {
-            this.audioPlayer.play();
+            if( this.audioPlayer.lastEndedTime != -1 )
+            {
+                const tempoAtual   = new Date().getTime();
+                const tempoComecar = this.audioPlayer.lastEndedTime + this.soundProps.startDelay;
+
+                if( tempoAtual >= tempoComecar )
+                {
+                    this.play();
+                }
+            }
         }
+        */
+
+        // Se o som NUNCA foi tocado ainda, espera o delay pra tocar pela primeira vez
+        if( this.audioPlayer.neverPlayed == true )
+        {
+            const tempoAtual   = new Date().getTime();
+            const tempoComecar = this.createdTime + this.soundProps.startDelay;
+
+            if( tempoAtual >= tempoComecar )
+            {
+                this.play();
+            }
+        }
+        
     }
 
 }

@@ -45,10 +45,14 @@ export default class LocalSound
         // Se o audio está em loop
         this.isLooping = this.soundProps.isLooping;
 
-        // Se autoplay
+        // Se tem autoplay
+        const context = this;
         if( this.soundProps.autoplay == true )
         {
-            this.play();
+            // Coloquei delay apenas por que no navegador precisa dar tempo da pessoa clicar em algum elemento da pagina
+            setTimeout(()=>{
+                context.play();
+            }, 1000)
         }
     }
 
@@ -147,7 +151,8 @@ export default class LocalSound
         */
 
         // Se o som NUNCA foi tocado ainda, espera o delay pra tocar pela primeira vez
-        if( this.audioPlayer.neverPlayed == true )
+        /*
+        if( this.soundProps.autoplay == true && this.audioPlayer.neverPlayed == true )
         {
             const tempoAtual   = new Date().getTime();
             const tempoComecar = this.createdTime + this.soundProps.startDelay;
@@ -157,6 +162,7 @@ export default class LocalSound
                 this.play();
             }
         }
+        */
         
     }
 

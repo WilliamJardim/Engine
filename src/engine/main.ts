@@ -19,12 +19,33 @@ import ProximityBounds from './utils/interfaces/ProximityBounds';
 import ObjectVelocity from './interfaces/ObjectVelocity';
 import Player from './core/Player';
 import ObjectProps from './interfaces/ObjectProps';
+import LocalSound from './core/LocalSound';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
 export const globalContext = new GlobalContext({});
 
 /** Função que vai ser executada quanto a Engine for iniciada */
 export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: number, frameNumber: number ): void{
+
+    const audioLocal = new LocalSound({
+        audioPath  : '../../audios/intro.mp3',         
+        autoplay   : true,       
+        startDelay : 0,        
+        begin      : 0,        
+        end        : -1,     
+        isLooping  : true,         
+        position: {
+            x: 0,
+            y: 0,
+            z: 0
+        },                          
+        reachrate: 10,              
+        initialVolume: 1,
+        maxVolume: 1
+    });
+
+    globalContext.set('audiolocal', audioLocal);
+    window.audiolocal = audioLocal;
 
     /**
     * Define algumas coisas uteis
@@ -68,9 +89,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             events: [],
             kick_rate: 0,
             enable_advanced_frame_tracking: true,
-            attachments: [
-                
-            ]
+            attachments: [],
+            onCreate: null
         }
     );
 
@@ -146,7 +166,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             traverse: false,
             proximityConfig: { x: 10, y: 10, z: 10 },
             enable_advanced_frame_tracking: true,
-            attachments: []
+            attachments: [],
+            onCreate: null
         }
     );
 
@@ -214,9 +235,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             traverse: false,
             proximityConfig: { x: 0, y: 0, z: 0 },
             enable_advanced_frame_tracking: true,
-            attachments: [
-                
-            ]
+            attachments: [],
+            onCreate: null
         }
     );
 
@@ -291,7 +311,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                     sameScale: true
                 }
                 */
-            ]
+            ],
+            onCreate: null
         }
     );
 
@@ -349,7 +370,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             proximityConfig: { x: 0, y: 0, z: 0 },
             kick_rate: 0,
             enable_advanced_frame_tracking: true,
-            attachments: []
+            attachments: [],
+            onCreate: null
         }
     );
 

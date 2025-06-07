@@ -19,6 +19,6 @@ export default interface LocalSoundProps
    isLooping: boolean,          // If the sound will play forever
    position: ObjectPosition,    // The position of the sound origin 
    reachrate: 10,               // How far the sounds will go from the origin position
-   initialVolume: 0.1,
-   maxVolume: 1
+   initialVolume: number,
+   maxVolume: number
 }   

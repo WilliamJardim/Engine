@@ -1,6 +1,6 @@
 c++/*.exe
 c++/*/*.exe
-audio
+audios
 # Logs
 logs
 *.log

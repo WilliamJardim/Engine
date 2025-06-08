@@ -40,12 +40,14 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             z: 0
         },                          
         reachrate: 10,              
-        initialVolume: 1,
+        initialVolume: -1,
         maxVolume: 1
     });
 
     globalContext.set('audiolocal', audioLocal);
     window.audiolocal = audioLocal;
+
+    scene.addSound( audioLocal );
 
     /**
     * Define algumas coisas uteis

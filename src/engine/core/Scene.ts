@@ -36,6 +36,7 @@ import VelocityStatus from "../interfaces/VelocityStatus.ts";
 import ObjectVelocity from "../interfaces/ObjectVelocity.ts";
 import { Ponteiro } from "../types/types-cpp-like.ts";
 import Mapa from "../utils/dicionarios/Mapa.ts";
+import LocalSound from "./LocalSound.ts";
 
 export default class Scene{
 
@@ -55,6 +56,7 @@ export default class Scene{
 
     public objects               : Array<Ponteiro<AbstractObjectBase>>;
     public cameras               : Array<Ponteiro<Camera>>;
+    public sounds                : Array<Ponteiro<LocalSound>>;
     
     public objectTableById       : Mapa<string, Ponteiro<AbstractObjectBase>>;
     public objectTableByName     : Mapa<string, Ponteiro<AbstractObjectBase>>;
@@ -102,6 +104,9 @@ export default class Scene{
 
         // Cameras
         this.cameras = new Array<Ponteiro<Camera>>();
+
+        // Sons locais
+        this.sounds  = new Array<Ponteiro<LocalSound>>();
             
         /**
         * ESSA INICIALIZAÇÂO ABAIXO NÂO PRECISA SER FEITA EM C++
@@ -386,6 +391,14 @@ export default class Scene{
     }
 
     /**
+    * Adiciona um som na cena
+    */
+    public addSound( som:Ponteiro<LocalSound> ): void
+    {
+        this.sounds.push( som );
+    }
+
+    /**
     * Adiciona um objeto na cena
     */
     public add( objeto:Ponteiro<AbstractObjectBase> ): void{
@@ -455,6 +468,8 @@ export default class Scene{
         context.updateGeneral( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
         context.updateObjects( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
+        context.updateSounds( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
         context.updateCameras( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
@@ -805,6 +820,31 @@ export default class Scene{
             }
         }
 
+    }
+
+    // Update all sounds in the scene
+    updateSounds( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void
+    {
+        const context = this;
+        const sounds  = this.sounds;
+
+        for( let i = 0 ; i < sounds.length ; i++ )
+        {
+            const currentSound = sounds[ i ];
+            const currentSoundIndex = i;
+
+            // Se o ponteiro não é nulo
+            if( currentSound != null )
+            {
+                 /**
+                 * Repass some important informations into the  "currentObject"
+                 */
+                 currentSound.scene = this;
+
+                 // Atualiza o som
+                 currentSound.updateSound();
+            }
+        }
     }
 
     /**

@@ -783,7 +783,8 @@ export default abstract class AbstractObjectBase{
 
     }
 
-    public updateObject( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void{
+    public updateObject( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void
+    {
         
     }
     

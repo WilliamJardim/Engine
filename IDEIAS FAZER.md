@@ -1091,6 +1091,9 @@ Sistema de controle de volume GERAL, que pode deixar o som normal ou baixinho p
 # 04/06/2025 GERENCIADOR DE CENAS
 Também ter um gerenciador de cenas. Que pode carregar e trocar de cena a qualquer momento
 
+# 08/06/2025 LOGICA DO PLAYER VAI ESTAR NA INSTANCIA DE JOGO, 
+Vou tirar a logica da Scene, e jogar pra uma instancia Game, que vou criar
+essa instancia vai ter as cenas, e vai ter o gerenciador de cenas
 
 # 04/06/2025 INTERFACE GRAFICA
 Também interface simples com Open GL, com botões transparentes, textos... Troca de página, imagens.

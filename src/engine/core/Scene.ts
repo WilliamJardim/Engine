@@ -55,6 +55,10 @@ export default class Scene{
     public arrastoAr             : number = 1;
 
     public objects               : Array<Ponteiro<AbstractObjectBase>>;
+
+    public players               : Array<Ponteiro<AbstractObjectBase>>;
+    public player                : Ponteiro<AbstractObjectBase>; // O jogador que ESTE cliente controla
+
     public cameras               : Array<Ponteiro<Camera>>;
     public sounds                : Array<Ponteiro<LocalSound>>;
     
@@ -101,6 +105,10 @@ export default class Scene{
 
         // Objetos
         this.objects = new Array<Ponteiro<AbstractObjectBase>>();
+
+        // Jogadores locais
+        this.players = new Array<Ponteiro<AbstractObjectBase>>();
+        this.player  = null;
 
         // Cameras
         this.cameras = new Array<Ponteiro<Camera>>();
@@ -469,6 +477,8 @@ export default class Scene{
 
         context.updateObjects( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
+        context.updatePlayers( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
         context.updateSounds( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
         context.updateCameras( firstRender, renderizadorPronto, frameDelta, frameNumber );
@@ -820,6 +830,36 @@ export default class Scene{
             }
         }
 
+    }
+
+    // Update all players in the scene, including the CLIENT PLAYER
+    updatePlayers( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void
+    {
+        const context   = this;
+        const players   = this.players;
+
+        // Para os players da lista
+        for( let i = 0 ; i < players.length ; i++ )
+        {
+            const currentPlayer = players[ i ];
+            const currentPlayerIndex = i;
+
+            // Se o ponteiro não é nulo
+            if( currentPlayer != null )
+            {
+                 /**
+                 * Repass some important informations into the  "currentObject"
+                 */
+                 currentPlayer.scene = this;
+
+                 // Atualiza o player
+                 currentPlayer.updateObject( firstRender, renderizadorPronto, frameDelta, frameNumber );
+            }
+        }
+
+        // Para o jogador controlado pelo cliente
+        const clientPlayer : Ponteiro<AbstractObjectBase> = this.player;
+        // LOGICA ESPECIFICA PARA O PLAYER DO CLIENTE
     }
 
     // Update all sounds in the scene

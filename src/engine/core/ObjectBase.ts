@@ -49,35 +49,11 @@ import Mapa from '../utils/dicionarios/Mapa';
 
 export default class ObjectBase extends AbstractObjectBase
 {    
-    /** ATRIBUTOS QUE SÂO PONTEIROS OU REFERENCIAS EXTERNAS */
-    public scene             : Ponteiro<Scene>;        // é um ponteiro com referencia: *
-    public onCreate          : Ponteiro<Function>;  // è uma função e tambem um ponteiro *
-
-    public objectBelow       : Ponteiro<AbstractObjectBase>;     //O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
-    public lastObjectBelow   : Ponteiro<AbstractObjectBase>; //O ultimo objeto cujo o objeto atual esteve em cima 
-
-    /** OUTROS ATRIBUTOS DO OBJETO */
-    public tipo               : string = 'ObjectBase';
-    public name               : string;
-    public id                 : string;
-    public mesh               : MeshRepresentation;
-    public objProps           : ObjectProps;
-    public objEvents          : ObjectEventLayer;
-    public frameHistory       : ObjectFrameTracker;
-    public movimentState      : MovementState;
-    public movimentSinalyzer  : MovementState; // Indica se o objeto está se movendo para essas direções, quer por força ou de forma direta
-    public rotationSinalyzer  : RotationState; // Indica a direção de rotação do objeto
-    public velocitySinalyzer  : VelocityStatus; // Indica o status da velocidade do objeto para cada eixo
-    public physicsState       : PhysicsState;
-    public weight             : number;
-    public isFalling          : boolean;
-    public groundY            : number; // A posição Y do chão atual em relação a este objeto
-    public infoCollisions     : CollisionsData;
-    public infoProximity      : CollisionsData;
-    public isMovimentoTravadoPorColisao : boolean;
-    public isReceiving_Y_Velocity       : boolean; // Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
-    public lastPosition                 : ObjectPosition;
-
+    /**
+    * Um ObjectBase possui todos os atributos declarados que o AbstractObjectBase possui
+    * Para que o polimorfismo funcione bem, NÂO SE DEVE REDECLARAR ATRIBUTOS QUE A CLASSE MAE JA TEM
+    */
+   
     constructor(mesh     : MeshRepresentation, 
                 objProps : ObjectProps
             
@@ -96,7 +72,7 @@ export default class ObjectBase extends AbstractObjectBase
         this.isMovimentoTravadoPorColisao = false; //Se o objeto atual esta travado por que esta tentando se mover para uma direção em que ele está colidindo com outro objeto
         this.isReceiving_Y_Velocity       = false; //Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
         this.isFalling  = false;
-        this.id         = (this.objProps.name||'objeto') + String(new Date().getTime());
+        this.id         = (this.objProps.name) + String(new Date().getTime());
         this.name       = this.objProps.name;
 
         this.objEvents = new ObjectEventLayer(this.objProps.events);

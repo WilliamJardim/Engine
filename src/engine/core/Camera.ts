@@ -17,13 +17,15 @@ import Scene from "./Scene";
 /**
 * My Camera class
 */
-export default class Camera extends AbstractObjectBase{
-    public tipo        : string = 'Camera';
-    public name        : string;
-    public objEvents   : ObjectEventLayer;
-    public id          : string;
-    public objProps    : ObjectProps;
-    public scene       : Ponteiro<Scene>;
+export default class Camera extends AbstractObjectBase
+{
+    /**
+    * Um ObjectBase possui todos os atributos declarados que o AbstractObjectBase possui
+    * Para que o polimorfismo funcione bem, NÂO SE DEVE REDECLARAR ATRIBUTOS QUE A CLASSE MAE JA TEM
+    * 
+    * Apenas criar os novos:
+    */
+
     public ativo       : boolean = true;
     public mainCamera  : boolean = false;
 
@@ -34,8 +36,9 @@ export default class Camera extends AbstractObjectBase{
     */
     constructor(objProps:ObjectProps){
         super( objProps );
+        this.tipo        = "Camera";
         this.objProps    = objProps;
-        this.id          = (this.objProps.name||'imaginario') + String(new Date().getTime());
+        this.id          = (this.objProps.name) + String(new Date().getTime());
         this.name        = this.objProps.name;
         this.scene       = null;
         this.objEvents   = new ObjectEventLayer( this.objProps.events );

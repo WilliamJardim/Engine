@@ -7,11 +7,13 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import MeshRepresentation from "../interfaces/MeshRepresentation";
 import ObjectEventLayer from "../interfaces/ObjectEventBlock";
 import ObjectPosition from "../interfaces/ObjectPosition";
 import ObjectProps from "../interfaces/ObjectProps";
 import { Ponteiro } from "../types/types-cpp-like";
 import createCube from "../utils/createCube";
+import AbstractObjectBase from "./AbstractObjectBase";
 import Camera from "./Camera";
 import ObjectBase from "./ObjectBase";
 import Scene from "./Scene";
@@ -19,27 +21,45 @@ import Scene from "./Scene";
 /**
 * My Player class
 */
-export default class Player extends ObjectBase{
-    public tipo          : string = 'Player';
-    public name          : string;
-    public objEvents     : ObjectEventLayer;
-    public id            : string;
-    public objProps      : ObjectProps;
-    public scene         : Ponteiro<Scene>;
+export default class Player extends AbstractObjectBase
+{
+    /**
+    * Um ObjectBase possui todos os atributos declarados que o AbstractObjectBase possui
+    * Para que o polimorfismo funcione bem, NÂO SE DEVE REDECLARAR ATRIBUTOS QUE A CLASSE MAE JA TEM
+    * 
+    * Só se declara os novos:
+    */
     public initialSpawn  : ObjectPosition;
     public playerCamera  : Ponteiro<Camera>;
     public cameraHeight  : number = 8;
 
     constructor(objProps:ObjectProps){
-        const mesh = createCube(objProps);
+        super( objProps );
 
-        super( mesh.getMesh(), objProps );
+        const mesh : MeshRepresentation = {
+            position : {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            rotation : {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            scale : {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+        };
+        this.mesh = mesh;
 
         this.objProps    = objProps;
-        this.id          = (this.objProps.name||'imaginario') + String(new Date().getTime());
+        this.id          = (this.objProps.name) + String(new Date().getTime());
         this.name        = this.objProps.name;
         this.scene       = null;
-        this.objEvents   = new ObjectEventLayer(this.objProps.events || []);
+        this.objEvents   = new ObjectEventLayer(this.objProps.events);
 
         this.initialSpawn = { x: 20, y: -42, z: 50 };
 

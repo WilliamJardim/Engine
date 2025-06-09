@@ -7,7 +7,8 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-export default class FrameCounter{
+export default class FrameCounter
+{
     public init        : number;
     public lastTime    : number; //Ultimo momento em milisegundos em que o calculateFrameDelta foi chamado
     public frameLimit  : number;

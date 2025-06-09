@@ -55,8 +55,6 @@ export default class LocalSound
                 context.play();
             }, 1000)
         }
-
-        
     }
 
     // Toca o som apenas uma vez

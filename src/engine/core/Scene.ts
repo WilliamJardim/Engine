@@ -56,8 +56,8 @@ export default class Scene{
 
     public objects               : Array<Ponteiro<AbstractObjectBase>>;
 
-    public players               : Array<Ponteiro<AbstractObjectBase>>;
-    public player                : Ponteiro<AbstractObjectBase>; // O jogador que ESTE cliente controla
+    public players               : Array<Ponteiro<AbstractObjectBase>>; // A lista completa de todos os jogadores
+    public player                : Ponteiro<AbstractObjectBase>;        // O jogador que ESTE cliente controla
 
     public cameras               : Array<Ponteiro<Camera>>;
     public sounds                : Array<Ponteiro<LocalSound>>;
@@ -156,6 +156,12 @@ export default class Scene{
         /**
         * FIM DAS INICIALIZAÇÔES QUE NÂO PRECISAM EM C++ 
         */
+    }
+
+    // Obtem o jogador 
+    public getPlayer(): Ponteiro<AbstractObjectBase>
+    {
+        return this.player;
     }
 
     public getObjects(): Array<Ponteiro<AbstractObjectBase>>
@@ -411,6 +417,22 @@ export default class Scene{
     */
     public add( objeto:Ponteiro<AbstractObjectBase> ): void{
         this.objects.push( objeto );
+    }
+
+    /**
+    * Adiciona um jogador na cena 
+    */
+    public addPlayer( player:Ponteiro<AbstractObjectBase> ): void
+    {
+        this.players.push( player );
+    }
+
+    /**
+    * Define um jogador como principal 
+    */
+    public setClientPlayer( player:Ponteiro<AbstractObjectBase> )
+    {
+        this.player = player;
     }
 
     /**
@@ -879,7 +901,8 @@ export default class Scene{
                  /**
                  * Repass some important informations into the  "currentObject"
                  */
-                 currentSound.scene = this;
+                 currentSound.scene  = this;
+                 currentSound.player = this.getPlayer(); // Define o player dentro do som
 
                  // Atualiza o som
                  currentSound.updateSound();

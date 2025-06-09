@@ -56,63 +56,11 @@ export default class LocalSound
             }, 1000)
         }
 
-        // SIMULA UM PLAYER FICTICIO
-        this.player = new ObjectBase({
-            position: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
-            scale: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
-            rotation: {
-                x: 0,
-                y: 0,
-                z: 0
-            }
-        }, {
-                type: 'Cube',
-                mass: 5,
-                material: null, //The material,
-                name: 'FF',
-                classes: ['ters'],
-                havePhysics: false,
-                invisible: false,
-                opacity: 1,
-                collide: true,
-                traverse: false,
-                position: {
-                    x: 5,
-                    y: 5,
-                    z: 5
-                },
-                rotation: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                scale: {
-                    x: 510,
-                    y: 1,
-                    z: 500
-                },
-                scaleReduce: { x: 0, y: 0, z: 0 },
-                collisionEvents: false,
-                ignoreCollisions: [],
-                proximityConfig: { x: 0, y: 0, z: 0 },
-                events: [],
-                kick_rate: 0,
-                enable_advanced_frame_tracking: true,
-                attachments: [],
-                onCreate: null
-            });
+        
     }
 
     // Toca o som apenas uma vez
-    play()
+    play(): void
     {   
         this.audioPlayer.setExactCropTime( this.soundProps.begin,  this.soundProps.end );
         this.audioPlayer.play();

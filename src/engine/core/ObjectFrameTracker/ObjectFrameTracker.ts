@@ -142,14 +142,14 @@ export default class ObjectFrameTracker{
     */
     public queryFrames(
         parametrosBuscaFrames: {
-            order?      : string,
-            startFrame? : number,
-            endFrame?   : number
+            order      : string,
+            startFrame : number,
+            endFrame   : number
         }
 
     ): Array<ObjectFrameData> {
 
-        const temOrdem:boolean = (parametrosBuscaFrames.order != undefined) ? true : false;
+        const temOrdem:boolean = (parametrosBuscaFrames.order != "nenhuma") ? true : false;
         const framesEncontrados: Array<ObjectFrameData> = new Array();
 
         // Para cada registro de frame deste objeto
@@ -158,7 +158,7 @@ export default class ObjectFrameTracker{
             const dadosFrame: ObjectFrameData = this.getFrameByIndex( i );
 
             // Se tem ordem
-            if( parametrosBuscaFrames.order != undefined && parametrosBuscaFrames.endFrame == undefined && parametrosBuscaFrames.startFrame == undefined ){
+            if( parametrosBuscaFrames.order != "nenhuma" && parametrosBuscaFrames.endFrame == -1 && parametrosBuscaFrames.startFrame == -1 ){
                 if( dadosFrame.order == parametrosBuscaFrames.order || parametrosBuscaFrames.order == 'all' ){
                     framesEncontrados.push( dadosFrame );
                 }
@@ -166,7 +166,7 @@ export default class ObjectFrameTracker{
             // SE NAO ACHOU POR ORDEM OU NAO USA ORDEM
             }else {
                 // Se está no range de frames
-                if( parametrosBuscaFrames.startFrame != undefined && parametrosBuscaFrames.endFrame != undefined )
+                if( parametrosBuscaFrames.startFrame != -1 && parametrosBuscaFrames.endFrame != -1 )
                 {
                     if( dadosFrame.frameNumber >= parametrosBuscaFrames.startFrame && dadosFrame.frameNumber < parametrosBuscaFrames.endFrame 
                         //Se tem ordem inclui, se nao ignora
@@ -176,7 +176,7 @@ export default class ObjectFrameTracker{
                     }
 
                 // se for um range amplo do inicio ao infinito
-                }else if( parametrosBuscaFrames.startFrame != undefined && parametrosBuscaFrames.endFrame == undefined ){
+                }else if( parametrosBuscaFrames.startFrame != -1 && parametrosBuscaFrames.endFrame == -1 ){
                     if( dadosFrame.frameNumber >= parametrosBuscaFrames.startFrame 
                         //Se tem ordem inclui, se nao ignora
                         && ( temOrdem == true && parametrosBuscaFrames.order != 'all' ? ( dadosFrame.order == parametrosBuscaFrames.order ) : true )
@@ -185,7 +185,7 @@ export default class ObjectFrameTracker{
                     }
 
                 // se for um range amplo TUDO até o frame de fim
-                }else if( parametrosBuscaFrames.startFrame == undefined && parametrosBuscaFrames.endFrame != undefined ){
+                }else if( parametrosBuscaFrames.startFrame == -1 && parametrosBuscaFrames.endFrame != -1 ){
                     if( dadosFrame.frameNumber < parametrosBuscaFrames.endFrame 
                         //Se tem ordem inclui, se nao ignora
                         && ( temOrdem == true && parametrosBuscaFrames.order != 'all' ? ( dadosFrame.order == parametrosBuscaFrames.order ) : true )

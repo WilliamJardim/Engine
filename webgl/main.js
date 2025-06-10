@@ -35,9 +35,9 @@ renderizador.criarObjeto({
     * Escala do objeto 
     */
     scale: {
-        x: 1,
+        x: 2,
         y: 1,
-        z: 2
+        z: 1
     },
 
     /**

@@ -12,7 +12,6 @@ import {createShader, createBuffer, createProgram} from '../funcoesBase.js';
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
         CriarMatrixPerspectiva, 
-        CriarMatrixOrtografica,
         DefinirTranslacao, 
         RotacionarX, 
         RotacionarY, 
@@ -59,17 +58,10 @@ export class Renderer
         this.pLonge        = 100;
 
         // Cria uma matrix que vai ser usada pra projetar o cubo no espaço 3d
-        /*
         this.matrixVisualizacao = CriarMatrixPerspectiva(this.anguloVisaoY, 
                                                          this.aspectoCamera, 
                                                          this.pPerto, 
                                                          this.pLonge);
-        */
-        this.matrixVisualizacao = CriarMatrixOrtografica(
-                                    -10, 10, // esquerda, direita
-                                    -10, 10, // baixo, cima
-                                    0.1, 100 // perto, longe
-                                 );
 
         // Armazena os programs( um para cada tipo de objeto )
         this.programs = {

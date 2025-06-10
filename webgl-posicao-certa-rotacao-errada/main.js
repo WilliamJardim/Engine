@@ -27,8 +27,8 @@ renderizador.criarObjeto({
     */
     position: {
         x: -5,
-        y: 2,
-        z: -18
+        y: -2,
+        z: -5
     },
 
     /**
@@ -60,8 +60,8 @@ renderizador.criarObjeto({
     */
     position: {
         x: -5,
-        y: -1,
-        z: -18
+        y: -5,
+        z: -5
     },
 
     /**
@@ -77,9 +77,9 @@ renderizador.criarObjeto({
     * Rotação do objeto 
     */
     rotation: {
-        x: 1.5,
+        x: 0.5,
         y: 18,
-        z: 5
+        z: 0
     }
 });
 
@@ -93,17 +93,17 @@ renderizador.criarObjeto({
     */
     position: {
         x: -5,
-        y: -3,
-        z: -18
+        y: -8,
+        z: -5
     },
 
     /**
     * Escala do objeto 
     */
     scale: {
-        x: 5,
+        x: 1,
         y: 1,
-        z: 5
+        z: 1
     },
 
     /**

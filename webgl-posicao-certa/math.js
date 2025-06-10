@@ -56,7 +56,7 @@ export function MultiplicarMatrix4x4(resultadoMultiplicacao, a, b)
 }
 
 /**
-* Cria matriz perspectiva(simula o olho humano, os objetos mais longes ficam menores)
+* Cria matriz perspectiva 
 * @param {Number} anguloVisaoY - Em radianos
 * @param {Number} aspectoCamera - Aspecto da camera
 * @param {Number} perto - Valor perto
@@ -76,28 +76,6 @@ export function CriarMatrixPerspectiva(anguloVisaoY, aspectoCamera, perto, longe
     matrixVisualizacao[15] = 0;
 
     return matrixVisualizacao;
-}
-
-/**
-* Cria matriz ortográfica(sem profundidade), dando um efeito isométrico
-*/
-export function CriarMatrixOrtografica(ladoEsquerdo, ladoDireito, baixo, cima, perto, longe) {
-    const diferencaCimaBaixo   = cima - baixo;
-    const diferencaLongePerto  = longe - perto;
-    const direitaMaisEsquerda  = ladoDireito + ladoEsquerdo;
-    const direitaMenosEsquerda = ladoDireito - ladoEsquerdo;
-    const cimaMaisBaixo        = cima + baixo;
-    const longeMaisPerto       = longe + perto;
-
-    return [
-        2 / (direitaMenosEsquerda), 0, 0, 0,
-        0, 2 / diferencaCimaBaixo,  0, 0,
-        0, 0, -2 / diferencaLongePerto, 0,
-        -(direitaMaisEsquerda) / (direitaMenosEsquerda),
-        -(cimaMaisBaixo)       / diferencaCimaBaixo,
-        -(longeMaisPerto)      / diferencaLongePerto,
-        1,
-    ];
 }
 
 // Faz uma translação na matriz 4x4

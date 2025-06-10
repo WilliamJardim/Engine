@@ -196,14 +196,11 @@ export class CuboMesh extends VisualMesh
 
         // Cria uma matrix para a representação visual do objeto 3d
         let modeloObjetoVisual = CriarMatrix4x4();
-        
-        modeloObjetoVisual     = DefinirTranslacao(modeloObjetoVisual, [position.x, position.y, position.z] );
-
+        modeloObjetoVisual     = DefinirEscala(modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
         modeloObjetoVisual     = RotacionarX(modeloObjetoVisual,  rotation.x);
         modeloObjetoVisual     = RotacionarY(modeloObjetoVisual,  rotation.y);
         modeloObjetoVisual     = RotacionarZ(modeloObjetoVisual,  rotation.z);
-
-        modeloObjetoVisual     = DefinirEscala(modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
+        modeloObjetoVisual     = DefinirTranslacao(modeloObjetoVisual, [position.x, position.y, position.z] );
 
         // Se for um objeto transparente
         if( isTransparente )

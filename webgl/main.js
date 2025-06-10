@@ -32,6 +32,15 @@ renderizador.criarObjeto({
     },
 
     /**
+    * Escala do objeto 
+    */
+    scale: {
+        x: 1,
+        y: 1,
+        z: 2
+    },
+
+    /**
     * Rotação do objeto 
     */
     rotation: {

@@ -93,6 +93,23 @@ export function DefinirTranslacao(matrixVisualizacao, vetorTranslacao)
     return MultiplicarMatrix4x4(new Float32Array(16), matrixVisualizacao, matrixIdentidade);
 }
 
+// Define a escala nos eixos X, Y e Z na matriz 4x4
+export function DefinirEscala(matrixVisualizacao, escalaDesejada) 
+{
+    const escalaX = escalaDesejada[0];
+    const escalaY = escalaDesejada[1];
+    const escalaZ = escalaDesejada[2];
+
+    const escalaMatrix = [
+        escalaX, 0,       0,       0,
+        0,       escalaY, 0,       0,
+        0,       0,       escalaZ, 0,
+        0,       0,       0,       1,
+    ];
+
+    return MultiplicarMatrix4x4(new Float32Array(16), matrixVisualizacao, escalaMatrix);
+}
+
 // Rotaciona no eixo X na matriz 4x4
 export function RotacionarX(matrixVisualizacao, rotacaoX) 
 {

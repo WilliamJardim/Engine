@@ -15,6 +15,7 @@ import {CriarMatrix4x4,
         MultiplicarMatrix4x4, 
         CriarMatrixPerspectiva, 
         DefinirTranslacao, 
+        DefinirEscala,
         RotacionarX, 
         RotacionarY, 
         RotacionarZ, 
@@ -186,6 +187,7 @@ export class CuboMesh extends VisualMesh
         const meshConfig = this.meshConfig;
         const position   = meshConfig.position;
         const rotation   = meshConfig.rotation;
+        const scale      = meshConfig.scale;
 
         /**
         * Cria os buffers que vão ser usados na renderização
@@ -194,7 +196,8 @@ export class CuboMesh extends VisualMesh
 
         // Cria uma matrix para a representação visual do objeto 3d
         let modeloObjetoVisual = CriarMatrix4x4();
-        modeloObjetoVisual     = DefinirTranslacao(modeloObjetoVisual, [position.x, position.y, position.z]);
+        modeloObjetoVisual     = DefinirTranslacao(modeloObjetoVisual, [position.x, position.y, position.z] );
+        modeloObjetoVisual     = DefinirEscala(modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
         modeloObjetoVisual     = RotacionarX(modeloObjetoVisual,  rotation.x);
         modeloObjetoVisual     = RotacionarY(modeloObjetoVisual,  rotation.y);
         modeloObjetoVisual     = RotacionarZ(modeloObjetoVisual,  rotation.z);

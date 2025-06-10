@@ -29,7 +29,7 @@ import { CuboMesh } from '../Mesh/CuboMesh.js';
 
 export class Renderer
 {
-    constructor( canvasRef ){
+    constructor( canvasRef, tipoPerspectiva="perspectiva" ){
         this.canvas = canvasRef;
 
         // Calcula o tamanho da tela
@@ -53,23 +53,26 @@ export class Renderer
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
         // Calcula alguns parametros para a camera
-        this.anguloVisaoY  = 45 * Math.PI / 180;
-        this.aspectoCamera = this.width / this.height;
-        this.pPerto        = 0.1;
-        this.pLonge        = 100;
+        this.tipoPerspectiva = tipoPerspectiva;
+        this.anguloVisaoY    = 75 * Math.PI / 180;
+        this.aspectoCamera   = this.width / this.height;
+        this.pPerto          = 0.1;
+        this.pLonge          = 100;
 
         // Cria uma matrix que vai ser usada pra projetar o cubo no espaço 3d
-        /*
-        this.matrixVisualizacao = CriarMatrixPerspectiva(this.anguloVisaoY, 
-                                                         this.aspectoCamera, 
-                                                         this.pPerto, 
-                                                         this.pLonge);
-        */
-        this.matrixVisualizacao = CriarMatrixOrtografica(
-                                    -10, 10, // esquerda, direita
-                                    -10, 10, // baixo, cima
-                                    0.1, 100 // perto, longe
-                                 );
+        if( this.tipoPerspectiva == "perspectiva" ) {
+            this.matrixVisualizacao = CriarMatrixPerspectiva(this.anguloVisaoY, 
+                                                            this.aspectoCamera, 
+                                                            this.pPerto, 
+                                                            this.pLonge);
+
+        }else if( this.tipoPerspectiva == "ortografica" ) {
+            this.matrixVisualizacao = CriarMatrixOrtografica(
+                                        -10, 10, // esquerda, direita
+                                        -10, 10, // baixo, cima
+                                        0.1, 100 // perto, longe
+                                    );
+        }
 
         // Armazena os programs( um para cada tipo de objeto )
         this.programs = {

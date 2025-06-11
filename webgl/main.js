@@ -11,7 +11,7 @@ import { VisualMesh } from './Mesh/VisualMesh.js';
 import { Renderer }   from './Renderer/Renderer.js';
 
 const canvas       = document.getElementById('glcanvas'); 
-const renderizador = new Renderer( canvas, "ortografica" );
+const renderizador = new Renderer( canvas, "perspectiva" );
 
 // Inicia o loop de renderização
 renderizador.inicializar();

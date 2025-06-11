@@ -13,6 +13,7 @@ import {CriarMatrix4x4,
         MultiplicarMatrix4x4, 
         CriarMatrixPerspectiva, 
         CriarMatrixOrtografica,
+        CriarMatrixPontoVista,
         DefinirTranslacao, 
         RotacionarX, 
         RotacionarY, 
@@ -54,25 +55,38 @@ export class Renderer
 
         // Calcula alguns parametros para a camera
         this.tipoPerspectiva = tipoPerspectiva;
-        this.anguloVisaoY    = 75 * Math.PI / 180;
-        this.aspectoCamera   = this.width / this.height;
-        this.pPerto          = 0.1;
-        this.pLonge          = 100;
-
+        
         // Cria uma matrix que vai ser usada pra projetar o cubo no espaço 3d
-        if( this.tipoPerspectiva == "perspectiva" ) {
-            this.matrixVisualizacao = CriarMatrixPerspectiva(this.anguloVisaoY, 
+        if( this.tipoPerspectiva == "perspectiva" ) 
+        {
+            this.anguloVisaoY    = 60 * Math.PI / 180;
+            this.aspectoCamera   = this.width / this.height;
+            this.pPerto          = 0.1;
+            this.pLonge          = 100;
+            
+            this.matrixCamera = CriarMatrixPerspectiva(this.anguloVisaoY, 
                                                             this.aspectoCamera, 
                                                             this.pPerto, 
                                                             this.pLonge);
 
-        }else if( this.tipoPerspectiva == "ortografica" ) {
-            this.matrixVisualizacao = CriarMatrixOrtografica(
+        }else if( this.tipoPerspectiva == "ortografica" ) 
+        {
+            this.matrixCamera = CriarMatrixOrtografica(
                                         -10, 10, // esquerda, direita
                                         -10, 10, // baixo, cima
                                         0.1, 100 // perto, longe
                                     );
         }
+
+        /**
+        * Define o ponto de vista da camera
+        */
+        this.posicaoCamera      = [0.5, -10.5, 10.8];
+        this.sentidoCamera      = [0, 0.1, 0];
+        this.miraCamera         = [-1, -5, -5];
+
+        this.matrixPontoVista   = CriarMatrixPontoVista( this.posicaoCamera, this.miraCamera, this.sentidoCamera );
+        this.matrixVisualizacao = MultiplicarMatrix4x4( new Float32Array(16), this.matrixCamera, this.matrixPontoVista );
 
         // Armazena os programs( um para cada tipo de objeto )
         this.programs = {

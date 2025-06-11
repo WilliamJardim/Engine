@@ -81,7 +81,8 @@ export function CriarMatrixPerspectiva(anguloVisaoY, aspectoCamera, perto, longe
 /**
 * Cria matriz ortográfica(sem profundidade), dando um efeito isométrico
 */
-export function CriarMatrixOrtografica(ladoEsquerdo, ladoDireito, baixo, cima, perto, longe) {
+export function CriarMatrixOrtografica(ladoEsquerdo, ladoDireito, baixo, cima, perto, longe) 
+{
     const diferencaCimaBaixo   = cima - baixo;
     const diferencaLongePerto  = longe - perto;
     const direitaMaisEsquerda  = ladoDireito + ladoEsquerdo;
@@ -93,10 +94,57 @@ export function CriarMatrixOrtografica(ladoEsquerdo, ladoDireito, baixo, cima, p
         2 / (direitaMenosEsquerda), 0, 0, 0,
         0, 2 / diferencaCimaBaixo,  0, 0,
         0, 0, -2 / diferencaLongePerto, 0,
+
         -(direitaMaisEsquerda) / (direitaMenosEsquerda),
         -(cimaMaisBaixo)       / diferencaCimaBaixo,
         -(longeMaisPerto)      / diferencaLongePerto,
-        1,
+        1
+        
+    ];
+}
+
+/**
+* Cria uma matrix que vai representar o ponto de vista da camera
+* Permitindo assim mover a camera para outro local na cena 
+*/
+export function CriarMatrixPontoVista(olhoJogador, focoCamera, sentidoCamera) 
+{
+    // eixoZ = normaliza(olhoJogador - focoCamera)
+    const diferencaFocoX   = olhoJogador[0] - focoCamera[0];
+    const diferencaFocoY   = olhoJogador[1] - focoCamera[1];
+    const diferencaFocoZ   = olhoJogador[2] - focoCamera[2];
+    const tamanhoZ         = Math.sqrt( diferencaFocoX * diferencaFocoX + diferencaFocoY * diferencaFocoY + diferencaFocoZ * diferencaFocoZ);
+
+    const eixoZ     = [ diferencaFocoX / tamanhoZ, 
+                        diferencaFocoY / tamanhoZ, 
+                        diferencaFocoZ / tamanhoZ ];
+
+    // eixoX = normalizar( ProdutoVetorial(sentidoCamera, eixoZ) )
+    const cruzamentoSentidoX  = sentidoCamera[1] * eixoZ[2] - sentidoCamera[2] * eixoZ[1];
+    const cruzamentoSentidoY  = sentidoCamera[2] * eixoZ[0] - sentidoCamera[0] * eixoZ[2];
+    const cruzamentoSentidoZ  = sentidoCamera[0] * eixoZ[1] - sentidoCamera[1] * eixoZ[0];
+    const comprimentoX        = Math.sqrt(cruzamentoSentidoX * cruzamentoSentidoX + cruzamentoSentidoY * cruzamentoSentidoY + cruzamentoSentidoZ * cruzamentoSentidoZ);
+
+    const eixoX     = [ cruzamentoSentidoX / comprimentoX, 
+                        cruzamentoSentidoY / comprimentoX, 
+                        cruzamentoSentidoZ / comprimentoX ];
+
+    // eixoY = Produto vetorial entre Z e X
+    const cruzamentoX    = eixoZ[1] * eixoX[2] - eixoZ[2] * eixoX[1];
+    const cruzamentoY    = eixoZ[2] * eixoX[0] - eixoZ[0] * eixoX[2];
+    const cruzamentoZ    = eixoZ[0] * eixoX[1] - eixoZ[1] * eixoX[0];
+    const eixoY          = [cruzamentoX, cruzamentoY, cruzamentoZ];
+
+    // Produto escalar para movimentação
+    const movimentoX = -(eixoX[0] * olhoJogador[0] + eixoX[1] * olhoJogador[1] + eixoX[2] * olhoJogador[2]);
+    const movimentoY = -(eixoY[0] * olhoJogador[0] + eixoY[1] * olhoJogador[1] + eixoY[2] * olhoJogador[2]);
+    const movimentoZ = -(eixoZ[0] * olhoJogador[0] + eixoZ[1] * olhoJogador[1] + eixoZ[2] * olhoJogador[2]);
+
+    return [
+        eixoX[0],    eixoY[0],    eixoZ[0],    0,
+        eixoX[1],    eixoY[1],    eixoZ[1],    0,
+        eixoX[2],    eixoY[2],    eixoZ[2],    0,
+        movimentoX,  movimentoY,  movimentoZ,  1
     ];
 }
 

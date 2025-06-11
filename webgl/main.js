@@ -118,7 +118,7 @@ renderizador.criarObjeto({
 
 window.renderizador = renderizador;
 
-const sensibilidade = 0.001;
+const sensibilidade = 0.01;
 const limiteX       = 10; 
 const limiteY       = 10; 
 const passos        = 0.5;
@@ -145,13 +145,13 @@ function onMouseMove(event)
     contexto.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     // Atualiza a camera
-    renderizador.miraCamera[0] += sensibilidade * contexto.mousePosition.x;
+    renderizador.miraCamera[2] -= sensibilidade * contexto.mousePosition.x;
     //if( renderizador.miraCamera[0] > limiteX * Math.sign(renderizador.miraCamera[0]) )
     //{
     //    renderizador.miraCamera[0] = limiteX * Math.sign(renderizador.miraCamera[0]);
     //}
 
-    renderizador.miraCamera[2] += sensibilidade * contexto.mousePosition.y;
+    //renderizador.miraCamera[1] += sensibilidade * contexto.mousePosition.y;
     //if( renderizador.miraCamera[2] > limiteY * Math.sign(renderizador.miraCamera[2]) )
     //{
     //    renderizador.miraCamera[2] = limiteY * Math.sign(renderizador.miraCamera[2]);

@@ -11,7 +11,7 @@ import { VisualMesh } from './Mesh/VisualMesh.js';
 import { Renderer }   from './Renderer/Renderer.js';
 
 const canvas       = document.getElementById('glcanvas'); 
-const renderizador = new Renderer( canvas, "ortografica" );
+const renderizador = new Renderer( canvas, "perspectiva" );
 
 // Inicia o loop de renderização
 renderizador.inicializar();
@@ -20,7 +20,7 @@ renderizador.inicializar();
 renderizador.criarObjeto({
     tipo: 'Cubo',
     invisivel: false,
-    transparencia: 0.5, // 100 opaco
+    transparencia: 100, // 100 opaco
 
     /**
     * Posição do objeto 
@@ -53,7 +53,7 @@ renderizador.criarObjeto({
 renderizador.criarObjeto({
     tipo: 'Cubo',
     invisivel: false,
-    transparencia: 0.5, // 100 opaco
+    transparencia: 100, // 100 opaco
 
     /**
     * Posição do objeto 
@@ -86,14 +86,14 @@ renderizador.criarObjeto({
 renderizador.criarObjeto({
     tipo: 'Cubo',
     invisivel: false,
-    transparencia: 0.5, // 100 opaco
+    transparencia: 100, // 100 opaco
 
     /**
     * Posição do objeto 
     */
     position: {
         x: -5,
-        y: -3,
+        y: -8,
         z: -18
     },
 
@@ -244,3 +244,10 @@ const onKeyUp = (event) => {
 
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup',   onKeyUp);
+
+function loopTeste(){
+    requestAnimationFrame(loopTeste)
+
+    renderizador.getObjetos()[2].rotation.y += 0.0009;
+}
+loopTeste();

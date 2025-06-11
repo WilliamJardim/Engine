@@ -105,9 +105,10 @@ export function CriarMatrixOrtografica(ladoEsquerdo, ladoDireito, baixo, cima, p
 
 /**
 * Cria uma matrix que vai representar o ponto de vista da camera
+* Nesse caso, uma que aponta para um objeto, fazendo a camera orbitar ao redor dele
 * Permitindo assim mover a camera para outro local na cena 
 */
-export function CriarMatrixPontoVista(olhoJogador, focoCamera, sentidoCamera) 
+export function CriarMatrixLookAt(olhoJogador, focoCamera, sentidoCamera) 
 {
     // eixoZ = normaliza(olhoJogador - focoCamera)
     const diferencaFocoX   = olhoJogador[0] - focoCamera[0];
@@ -147,6 +148,99 @@ export function CriarMatrixPontoVista(olhoJogador, focoCamera, sentidoCamera)
         movimentoX,  movimentoY,  movimentoZ,  1
     ];
 }
+
+/**
+* Cria uma matrix que vai representar o ponto de vista da camera
+* Nesse caso, uma livre, que não fica restrita a orbitar em volta de um objeto, mais que pode se definir manualmente a rotação XYZ
+* Permitindo assim mover a camera para outro local na cena 
+*/
+export function CriarMatrixFPSLivre(rotacaoAtual, posicaoAtual, sentidoAtual)
+{
+    const matrixRotacaoXYZ = CriarMatrixRotacaoCameraXYZ( rotacaoAtual.x, rotacaoAtual.y, rotacaoAtual.z );
+
+    const movimentoX = posicaoAtual.x; 
+    const movimentoY = posicaoAtual.y;
+    const movimentoZ = posicaoAtual.z;
+
+    const matrixMovimentacaoXYZ = new Float32Array([
+        1,            0,          0,           0,
+        0,            1,          0,           0,
+        0,            0,          1,           0,
+        -movimentoX, -movimentoY, -movimentoZ, 1
+    ]);
+
+    return MultiplicarMatrix4x4(new Float32Array(16), matrixRotacaoXYZ, matrixMovimentacaoXYZ);
+}   
+
+/**
+* Cria o ponto de vista desejado para a camera: FPS ou Orbital
+*/
+export function CriarMatrixPontoVista( tipo = "FPS", posicaoCamera, rotacaoCamera, sentidoCamera )
+{
+    if( tipo == "FPS" ){
+        return CriarMatrixFPSLivre(rotacaoCamera, posicaoCamera, sentidoCamera);
+
+    }else if( tipo == "Orbital" ){
+        // Nesse caso, a rotacaoCamera vai ser o foco da camera(para qual ponto ela sempre vai orbitar) 
+        return CriarMatrixLookAt(posicaoCamera, rotacaoCamera, sentidoCamera);
+    }
+
+    return null;
+}
+
+// Cria uma matriz de rotação de camera em X para girar ao redor do eixo X
+export function CriarMatrixRotacaoCameraX(angulo) 
+{
+    const cosseno = Math.cos(angulo);
+    const seno    = Math.sin(angulo);
+    
+    return new Float32Array([
+        1,  0,       0,       0,
+        0,  cosseno, -seno,   0,
+        0,  seno,    cosseno, 0,
+        0,  0,       0,       1
+    ]);
+}
+
+// Cria uma matriz de rotação de camera em Y para girar ao redor do eixo Y
+export function CriarMatrixRotacaoCameraY(angulo) 
+{
+    const cosseno = Math.cos(angulo);
+    const seno    = Math.sin(angulo);
+    
+    return new Float32Array([
+        cosseno, 0,  seno,     0,
+        0,       1,  0,        0,
+        -seno,   0,  cosseno,  0,
+        0,       0,  0,        1
+    ]);
+}
+
+// Cria uma matriz de rotação de camera em Z para girar ao redor do eixo Z
+export function CriarMatrixRotacaoCameraZ(angulo) 
+{
+    const cosseno = Math.cos(angulo);
+    const seno    = Math.sin(angulo);
+    
+    return new Float32Array([
+        cosseno, -seno,   0,  0,
+        seno,    cosseno, 0,  0,
+        0,       0,       1,  0,
+        0,       0,       0,  1
+    ]);
+}
+
+// Cria uma matriz de rotação de camera em XYZ
+export function CriarMatrixRotacaoCameraXYZ(rotacaoX, rotacaoY, rotacaoZ) 
+{
+    const matrixRotacaoX = CriarMatrixRotacaoCameraX(rotacaoX);
+    const matrixRotacaoY = CriarMatrixRotacaoCameraY(rotacaoY);
+    const matrixRotacaoZ = CriarMatrixRotacaoCameraZ(rotacaoZ);
+
+    return MultiplicarMatrix4x4(new Float32Array(16), MultiplicarMatrix4x4(new Float32Array(16), matrixRotacaoZ, matrixRotacaoY), matrixRotacaoX);
+}
+
+
 
 // Faz uma translação na matriz 4x4
 export function DefinirTranslacao(matrixVisualizacao, vetorTranslacao) 

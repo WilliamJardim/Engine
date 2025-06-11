@@ -85,8 +85,8 @@ export class Renderer
         this.sentidoCamera      = [0, 0.1, 0];
         this.miraCamera         = [-1, -5, -5];
 
-        this.matrixPontoVista   = CriarMatrixPontoVista( this.posicaoCamera, this.miraCamera, this.sentidoCamera );
-        this.matrixVisualizacao = MultiplicarMatrix4x4( new Float32Array(16), this.matrixCamera, this.matrixPontoVista );
+        // Atualiza a camera pela primeira vez
+        this.updateCamera();
 
         // Armazena os programs( um para cada tipo de objeto )
         this.programs = {
@@ -111,7 +111,15 @@ export class Renderer
         return this.programs.cubeProgram;
     }
 
-    /*** VISUALIZACAO */
+    // chamada sempre que vão haver mudanças de camera, como no loop de renderização dos objetos, etc.
+    updateCamera()
+    {
+        console.log(this.posicaoCamera)
+        this.matrixPontoVista   = CriarMatrixPontoVista( this.posicaoCamera, this.miraCamera, this.sentidoCamera );
+        this.matrixVisualizacao = MultiplicarMatrix4x4( new Float32Array(16), this.matrixCamera, this.matrixPontoVista );
+    }
+
+    /*** OBTEM VISUALIZACAO ATUALIZADA */
     getMatrixVisualizacao()
     {
         return this.matrixVisualizacao;
@@ -146,6 +154,9 @@ export class Renderer
     desenharObjetos()
     {
         const objetosVisuais = this.getObjetos();
+
+        // Atualiza a camera
+        this.updateCamera();
 
         for( let i = 0 ; i < objetosVisuais.length ; i++ )
         {

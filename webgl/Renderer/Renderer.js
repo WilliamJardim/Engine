@@ -114,7 +114,7 @@ export class Renderer
     // chamada sempre que vão haver mudanças de camera, como no loop de renderização dos objetos, etc.
     updateCamera()
     {
-        this.matrixPontoVista   = CriarMatrixPontoVista( "Orbital", this.posicaoCamera, this.miraCamera, this.sentidoCamera );
+        this.matrixPontoVista   = CriarMatrixPontoVista( "FPS", this.posicaoCamera, this.miraCamera, this.sentidoCamera );
         this.matrixVisualizacao = MultiplicarMatrix4x4( new Float32Array(16), this.matrixCamera, this.matrixPontoVista );
     }
 

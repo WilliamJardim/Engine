@@ -11,7 +11,7 @@ import { VisualMesh } from './Mesh/VisualMesh.js';
 import { Renderer }   from './Renderer/Renderer.js';
 
 const canvas       = document.getElementById('glcanvas'); 
-const renderizador = new Renderer( canvas, "perspectiva" );
+const renderizador = new Renderer( canvas, "ortografica" );
 
 // Inicia o loop de renderização
 renderizador.inicializar();
@@ -118,7 +118,7 @@ renderizador.criarObjeto({
 
 window.renderizador = renderizador;
 
-const sensibilidade = 0.1;
+const sensibilidade = 0.001;
 const limiteX       = 10; 
 const limiteY       = 10; 
 const passos        = 0.5;
@@ -132,6 +132,10 @@ const contexto = {
 
     }
 }
+
+renderizador.miraCamera[0] = 0;
+renderizador.miraCamera[1] = 0;
+renderizador.miraCamera[2] = 0;
 
 // Atualiza a posição do mouse
 function onMouseMove(event) 
@@ -161,16 +165,16 @@ function onAndar()
 {
     // ANDAR 
     if( contexto.keyDetection.W ){
-        renderizador.posicaoCamera[0] -= passos;
+        renderizador.posicaoCamera[1] += passos;
     }
     if( contexto.keyDetection.A ){
-        renderizador.posicaoCamera[2] -= passos;
+        renderizador.posicaoCamera[0] -= passos;
     }
     if( contexto.keyDetection.D ){
-        renderizador.posicaoCamera[2] += passos;
+        renderizador.posicaoCamera[0] += passos;
     }
     if( contexto.keyDetection.S ){
-        renderizador.posicaoCamera[0] += passos;
+        renderizador.posicaoCamera[1] -= passos;
     }
 }
 

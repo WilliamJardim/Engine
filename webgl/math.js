@@ -156,18 +156,18 @@ export function CriarMatrixLookAt(olhoJogador, focoCamera, sentidoCamera)
 */
 export function CriarMatrixFPSLivre(rotacaoAtual, posicaoAtual, sentidoAtual)
 {
-    const matrixRotacaoXYZ = CriarMatrixRotacaoCameraXYZ( rotacaoAtual.x, rotacaoAtual.y, rotacaoAtual.z );
+    const matrixRotacaoXYZ = CriarMatrixRotacaoCameraXYZ( rotacaoAtual[0], rotacaoAtual[1], rotacaoAtual[2] );
 
-    const movimentoX = posicaoAtual.x; 
-    const movimentoY = posicaoAtual.y;
-    const movimentoZ = posicaoAtual.z;
+    const movimentoX = posicaoAtual[0]; 
+    const movimentoY = posicaoAtual[1];
+    const movimentoZ = posicaoAtual[2];
 
-    const matrixMovimentacaoXYZ = new Float32Array([
+    const matrixMovimentacaoXYZ = [
         1,            0,          0,           0,
         0,            1,          0,           0,
         0,            0,          1,           0,
         -movimentoX, -movimentoY, -movimentoZ, 1
-    ]);
+    ];
 
     return MultiplicarMatrix4x4(new Float32Array(16), matrixRotacaoXYZ, matrixMovimentacaoXYZ);
 }   
@@ -194,12 +194,12 @@ export function CriarMatrixRotacaoCameraX(angulo)
     const cosseno = Math.cos(angulo);
     const seno    = Math.sin(angulo);
     
-    return new Float32Array([
+    return [
         1,  0,       0,       0,
         0,  cosseno, -seno,   0,
         0,  seno,    cosseno, 0,
         0,  0,       0,       1
-    ]);
+    ];
 }
 
 // Cria uma matriz de rotação de camera em Y para girar ao redor do eixo Y
@@ -208,12 +208,12 @@ export function CriarMatrixRotacaoCameraY(angulo)
     const cosseno = Math.cos(angulo);
     const seno    = Math.sin(angulo);
     
-    return new Float32Array([
+    return [
         cosseno, 0,  seno,     0,
         0,       1,  0,        0,
         -seno,   0,  cosseno,  0,
         0,       0,  0,        1
-    ]);
+    ];
 }
 
 // Cria uma matriz de rotação de camera em Z para girar ao redor do eixo Z
@@ -222,12 +222,12 @@ export function CriarMatrixRotacaoCameraZ(angulo)
     const cosseno = Math.cos(angulo);
     const seno    = Math.sin(angulo);
     
-    return new Float32Array([
+    return [
         cosseno, -seno,   0,  0,
         seno,    cosseno, 0,  0,
         0,       0,       1,  0,
         0,       0,       0,  1
-    ]);
+    ];
 }
 
 // Cria uma matriz de rotação de camera em XYZ

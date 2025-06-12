@@ -11,7 +11,7 @@ import { VisualMesh } from './Mesh/VisualMesh.js';
 import { Renderer }   from './Renderer/Renderer.js';
 
 const canvas       = document.getElementById('glcanvas'); 
-const renderizador = new Renderer( canvas, "ortografica" );
+const renderizador = new Renderer( canvas, "perspectiva" );
 
 // Inicia o loop de renderização
 renderizador.inicializar();
@@ -26,7 +26,7 @@ renderizador.criarObjeto({
     * Posição do objeto 
     */
     position: {
-        x: -5,
+        x: 0,
         y: 8,
         z: 0
     },
@@ -44,8 +44,8 @@ renderizador.criarObjeto({
     * Rotação do objeto 
     */
     rotation: {
-        x: 0.5,
-        y: 18,
+        x: 0,
+        y: 0,
         z: 0
     }
 });
@@ -59,9 +59,9 @@ renderizador.criarObjeto({
     * Posição do objeto 
     */
     position: {
-        x: -5,
-        y: -1,
-        z: -18
+        x: 0,
+        y: -3,
+        z: 0
     },
 
     /**
@@ -77,9 +77,9 @@ renderizador.criarObjeto({
     * Rotação do objeto 
     */
     rotation: {
-        x: 1.5,
-        y: 18,
-        z: 5
+        x: 0,
+        y: 0,
+        z: 0
     }
 });
 
@@ -92,9 +92,9 @@ renderizador.criarObjeto({
     * Posição do objeto 
     */
     position: {
-        x: -5,
+        x: 0,
         y: -8,
-        z: -18
+        z: 0
     },
 
     /**
@@ -102,7 +102,7 @@ renderizador.criarObjeto({
     */
     scale: {
         x: 5,
-        y: 1,
+        y: 0.2,
         z: 5
     },
 
@@ -110,8 +110,8 @@ renderizador.criarObjeto({
     * Rotação do objeto 
     */
     rotation: {
-        x: 1,
-        y: 18,
+        x: 0,
+        y: 0,
         z: 0
     }
 });
@@ -145,7 +145,9 @@ function onMouseMove(event)
     contexto.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     // Atualiza a camera
-    renderizador.miraCamera[2] -= sensibilidade * contexto.mousePosition.x;
+    renderizador.miraCamera[0] += sensibilidade * contexto.mousePosition.y;
+    renderizador.miraCamera[1] -= sensibilidade * contexto.mousePosition.x;
+    
     //if( renderizador.miraCamera[0] > limiteX * Math.sign(renderizador.miraCamera[0]) )
     //{
     //    renderizador.miraCamera[0] = limiteX * Math.sign(renderizador.miraCamera[0]);
@@ -165,7 +167,7 @@ function onAndar()
 {
     // ANDAR 
     if( contexto.keyDetection.W ){
-        renderizador.posicaoCamera[1] += passos;
+        renderizador.posicaoCamera[2] -= passos;
     }
     if( contexto.keyDetection.A ){
         renderizador.posicaoCamera[0] -= passos;
@@ -174,7 +176,7 @@ function onAndar()
         renderizador.posicaoCamera[0] += passos;
     }
     if( contexto.keyDetection.S ){
-        renderizador.posicaoCamera[1] -= passos;
+        renderizador.posicaoCamera[2] += passos;
     }
 }
 
@@ -248,9 +250,6 @@ document.addEventListener('keyup',   onKeyUp);
 function loopTeste(){
     requestAnimationFrame(loopTeste)
 
-    renderizador.getObjetos()[0].rotation.z += 0.0009;
-    renderizador.getObjetos()[2].rotation.y += 0.0009;
-
-    //renderizador.getObjetos()[0].position.y += 0.01;
+    //renderizador.getObjetos()[2].rotation.x+= 0.01;
 }
 loopTeste();

@@ -24,6 +24,7 @@ export class VisualMesh
         // Atributos visuais
         this.tipo          = meshConfig.tipo || 'Nenhum';
         this.position      = meshConfig.position;
+        this.scale         = meshConfig.scale;
         this.rotation      = meshConfig.rotation;
         this.invisivel     = meshConfig.invisivel; 
         this.transparencia = meshConfig.transparencia;

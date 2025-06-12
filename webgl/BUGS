@@ -8,3 +8,21 @@ MAIS A CAMERA ORTOGRAFICA NÂO TEM PROFUNDIDADE
 BUG: As cameras ortograficas e perspectiva o eixo Y vão pra uma direção diferente.
 é como se o Z na perspetiva fosse o Y
 
+
+BUG: Posições incorretas e imprevisiveis:
+
+    BUG: Na camera perspectiva, o eixo Z é o Y,
+    e o eixo Y é o Z
+
+    BUG: O eixo Z por exemplo faz o objeto subir pra cima porém não reto, perfeito.
+    Ele sobe meio diagonal. Depende da posição do objeto
+    MAIS NEM SEMPRE, DEPENDE MUITO DA POSIÇÂO DO OBJETO
+
+    * TUDO ISSO È CAUSADO PELA ROTAÇÂO DOS OBJETOS, QUE BUGA TUDO, DEIXANDO DESALINHADO NAO SEI POR QUE
+    TIPO SE EU ALTERO A ROTAÇÂO DOS OBJETOS DE CIMA PARECE QUE NADA DE RUIM ACONTECE
+    MAIS SE EU ALTERO A ROTAÇÂO DO CHÂO, TUDO FICA DESALINHADO
+    TEM BUG AI!
+
+
+
+

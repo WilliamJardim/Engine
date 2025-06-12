@@ -156,7 +156,7 @@ export function CriarMatrixLookAt(olhoJogador, focoCamera, sentidoCamera)
 */
 export function CriarMatrixFPSLivre(rotacaoAtual, posicaoAtual, sentidoAtual)
 {
-    const matrixRotacaoXYZ = CriarMatrixRotacaoCameraXYZ( rotacaoAtual[0], rotacaoAtual[1], rotacaoAtual[2] );
+    const matrixRotacaoXYZ = CriarMatrixRotacaoCameraXYZ( 0, rotacaoAtual[1], rotacaoAtual[2] ); // Mexe apenas no Y e Z, que nesse caso foi o que deu certo
 
     const movimentoX = posicaoAtual[0]; 
     const movimentoY = posicaoAtual[1];

@@ -46,6 +46,7 @@ export class Renderer
         
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.depthFunc(this.gl.LEQUAL);
+        //this.gl.depthFunc(this.gl.LESS);
 
         // Permite transparencia
         this.gl.enable(this.gl.BLEND);

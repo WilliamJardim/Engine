@@ -27,8 +27,8 @@ renderizador.criarObjeto({
     */
     position: {
         x: -5,
-        y: 2,
-        z: -18
+        y: 8,
+        z: 0
     },
 
     /**
@@ -248,6 +248,9 @@ document.addEventListener('keyup',   onKeyUp);
 function loopTeste(){
     requestAnimationFrame(loopTeste)
 
+    renderizador.getObjetos()[0].rotation.z += 0.0009;
     renderizador.getObjetos()[2].rotation.y += 0.0009;
+
+    //renderizador.getObjetos()[0].position.y += 0.01;
 }
 loopTeste();

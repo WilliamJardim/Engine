@@ -1,0 +1,10 @@
+(CORRIGIDO) Na camera ortografica, Em qualquer objeto,
+O eixo Z parece funcionar com uma escala diferente de X e Y, pois valores pequenos não afetam em nada.
+PIOR: E quando eu tento alterar o eixo Z, ao invez de mover o objeto em Z, a renderização buga e objeto perde parte de sua visualização
+se eu ir somando gradualmente, o efeito é que o objeto vai sumindo gradualmente, poligno por poligno,
+MAIS A CAMERA ORTOGRAFICA NÂO TEM PROFUNDIDADE
+
+
+BUG: As cameras ortograficas e perspectiva o eixo Y vão pra uma direção diferente.
+é como se o Z na perspetiva fosse o Y
+

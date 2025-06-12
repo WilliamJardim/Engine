@@ -178,6 +178,12 @@ function onAndar()
     if( contexto.keyDetection.S ){
         renderizador.posicaoCamera[2] += passos;
     }
+    if( contexto.keyDetection.ArrowUp ){
+        renderizador.posicaoCamera[1] += passos;
+    }
+    if( contexto.keyDetection.ArrowDown ){
+        renderizador.posicaoCamera[1] -= passos;
+    }
 }
 
 const onKeyDown = (event) => {

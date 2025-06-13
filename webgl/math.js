@@ -108,7 +108,7 @@ export function CriarMatrixOrtografica(ladoEsquerdo, ladoDireito, baixo, cima, p
 * Nesse caso, uma que aponta para um objeto, fazendo a camera orbitar ao redor dele
 * Permitindo assim mover a camera para outro local na cena 
 */
-export function CriarMatrixLookAt(olhoJogador, focoCamera, sentidoCamera) 
+export function CriarMatrixLookAt(frameDelta, olhoJogador, focoCamera, sentidoCamera) 
 {
     // eixoZ = normaliza(olhoJogador - focoCamera)
     const diferencaFocoX   = olhoJogador[0] - focoCamera[0];
@@ -154,7 +154,7 @@ export function CriarMatrixLookAt(olhoJogador, focoCamera, sentidoCamera)
 * Nesse caso, uma livre, que não fica restrita a orbitar em volta de um objeto, mais que pode se definir manualmente a rotação XYZ
 * Permitindo assim mover a camera para outro local na cena 
 */
-export function CriarMatrixFPSLivre(rotacaoAtual, posicaoAtual, sentidoAtual)
+export function CriarMatrixFPSLivre(frameDelta, rotacaoAtual, posicaoAtual, sentidoAtual)
 {
     const matrixRotacaoXYZ = CriarMatrixRotacaoCameraXYZ( rotacaoAtual[0], rotacaoAtual[1], rotacaoAtual[2] ); // Mexe apenas no Y e Z, que nesse caso foi o que deu certo
 
@@ -173,16 +173,43 @@ export function CriarMatrixFPSLivre(rotacaoAtual, posicaoAtual, sentidoAtual)
 }   
 
 /**
+* Calcula a direção que a camera está apontando
+*/
+export function calcularDirecaoCamera(rotacaoAtual) {
+    const rotacaoY = rotacaoAtual[1]; 
+    const rotacaoX = rotacaoAtual[0]; 
+
+    const frenteX = Math.cos(rotacaoX) * Math.sin(rotacaoY);
+    const frenteY = Math.sin(rotacaoX);
+    const frenteZ = Math.cos(rotacaoX) * Math.cos(rotacaoY);
+
+    return [frenteX, frenteY, frenteZ];
+}
+
+/**
+* Calcula o lado direito da camera
+*/
+function calcularDireitaCamera(rotacaoAtual) {
+    const rotacaoY = rotacaoAtual[1];
+
+    const direitaX = Math.cos(rotacaoY);
+    const direitaZ = -Math.sin(rotacaoY);
+
+    return [direitaX, 0, direitaZ];
+}
+
+
+/**
 * Cria o ponto de vista desejado para a camera: FPS ou Orbital
 */
-export function CriarMatrixPontoVista( tipo = "FPS", posicaoCamera, rotacaoCamera, sentidoCamera )
+export function CriarMatrixPontoVista( frameDelta, tipo = "FPS", posicaoCamera, rotacaoCamera, sentidoCamera )
 {
     if( tipo == "FPS" ){
-        return CriarMatrixFPSLivre(rotacaoCamera, posicaoCamera, sentidoCamera);
+        return CriarMatrixFPSLivre(frameDelta, rotacaoCamera, posicaoAtualRelacaoDirecao, sentidoCamera);
 
     }else if( tipo == "Orbital" ){
         // Nesse caso, a rotacaoCamera vai ser o foco da camera(para qual ponto ela sempre vai orbitar) 
-        return CriarMatrixLookAt(posicaoCamera, rotacaoCamera, sentidoCamera);
+        return CriarMatrixLookAt(frameDelta, posicaoCamera, rotacaoCamera, sentidoCamera);
     }
 
     return null;
@@ -361,4 +388,40 @@ export function DefinirZ( matrixVisualizacao, vetorPosicaoAtual, novaPosicaoZ )
     const novoZ = novaPosicaoZ;
 
     DefinirTranslacao( matrixVisualizacao, [novoX, novoY, novoZ] );
+}
+
+export class FrameCounter
+{
+    constructor( frameLimit = 60, norm = 16.666 ){
+        this.init        = this.getTime();
+        this.lastTime    = this.init;
+        this.frameLimit  = frameLimit;
+        this.norm        = norm;
+        this.frameNumber = 0;
+    }
+
+    /**
+    * Obtem o total de frames já percorridos até o momento
+    */
+    getFrameNumber(){
+        return this.frameNumber;
+    }
+
+    getTime(){
+        return performance.now();
+    }
+
+    /**
+    * Calcula a diferença em milisegundos entre dois frames
+    */
+    calculateFrameDelta(){
+        const agora = this.getTime();
+        const currentFrameDelta = agora - this.lastTime;
+
+        this.lastTime = agora;
+
+        this.frameNumber++;
+
+        return Math.min(currentFrameDelta, this.frameLimit) / this.norm;
+    }
 }

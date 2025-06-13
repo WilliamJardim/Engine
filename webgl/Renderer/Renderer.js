@@ -21,7 +21,8 @@ import {CriarMatrix4x4,
         DefinirRotacao, 
         DefinirX, 
         DefinirY, 
-        DefinirZ} from '../math.js';
+        DefinirZ,
+        FrameCounter} from '../math.js';
         
 import { cuboShaders } from '../Shaders/cube.js';
 
@@ -32,6 +33,8 @@ export class Renderer
 {
     constructor( canvasRef, tipoPerspectiva="perspectiva" ){
         this.canvas = canvasRef;
+
+        this.frameCounter = new FrameCounter(60);
 
         // Calcula o tamanho da tela
         this.width  = window.innerWidth;
@@ -113,9 +116,9 @@ export class Renderer
     }
 
     // chamada sempre que vão haver mudanças de camera, como no loop de renderização dos objetos, etc.
-    updateCamera()
+    updateCamera( frameDelta )
     {
-        this.matrixPontoVista   = CriarMatrixPontoVista( "FPS", this.posicaoCamera, this.miraCamera, this.sentidoCamera );
+        this.matrixPontoVista   = CriarMatrixPontoVista( frameDelta, "FPS", this.posicaoCamera, this.miraCamera, this.sentidoCamera );
         this.matrixVisualizacao = MultiplicarMatrix4x4( new Float32Array(16), this.matrixCamera, this.matrixPontoVista );
     }
 
@@ -154,9 +157,10 @@ export class Renderer
     desenharObjetos()
     {
         const objetosVisuais = this.getObjetos();
+        const frameDelta     = this.frameCounter.calculateFrameDelta();
 
         // Atualiza a camera
-        this.updateCamera();
+        this.updateCamera( frameDelta );
 
         for( let i = 0 ; i < objetosVisuais.length ; i++ )
         {
@@ -166,7 +170,7 @@ export class Renderer
             // Se não está invisivel, desenha o objeto
             if( isInvisivel == false )
             {
-                objetoAtual.desenhar();
+                objetoAtual.desenhar( frameDelta );
             }
         }
     }

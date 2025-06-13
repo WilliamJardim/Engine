@@ -1,3 +1,26 @@
 Criar movimento de camera que leva em conta a rotação da camera
 
 Corrigir o bug da rotação
+
+
+CALCULAR POSIÇÂO DA CAMERA EM RELAÇÂO A ROTAÇÂO:
+(AINDA NÂO TERMINADO)
+
+    let passosCamera = 0.5;
+    let passosLateralCamera = 0.5;
+    let posicaoAtualRelacaoDirecao = [0, 0, 0];
+
+    // Calcula o movimento de andar pra frente/traz
+    const direcaoFrente = calcularDirecaoCamera(rotacaoCamera);
+    
+    // Calcula o movimento de andar na lateral
+    const direcaoDireita = calcularDireitaCamera(rotacaoCamera);
+    
+    // Ajusta a posição da camera de acordo com a rotação da camera, no sentido frente/traz
+    posicaoAtualRelacaoDirecao[0] = posicaoCamera[0] + direcaoFrente[0] * passosCamera * frameDelta;
+    posicaoAtualRelacaoDirecao[1] = posicaoCamera[1] + direcaoFrente[1] * passosCamera * frameDelta;
+    posicaoAtualRelacaoDirecao[2] = posicaoCamera[2] + direcaoFrente[2] * passosCamera * frameDelta;
+
+    // Ajusta a posição da camera de acordo com a rotação da camera, no sentido lateral
+    posicaoAtualRelacaoDirecao[0] = posicaoCamera[0] + direcaoDireita[0] * passosLateralCamera * frameDelta;
+    posicaoAtualRelacaoDirecao[2] = posicaoCamera[2] + direcaoDireita[2] * passosLateralCamera * frameDelta;

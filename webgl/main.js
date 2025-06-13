@@ -141,11 +141,23 @@ renderizador.miraCamera[2] = 0;
 // Atualiza a posição do mouse
 function onMouseMove(event) 
 {
+    const viradaEsquerdaOrigem = renderizador.miraCamera[0] >= 1.4918051575931215  ? true : false;
+    const viradaDireitaOrigem  = renderizador.miraCamera[0] <= -1.4918051575931215 ? true : false;
+
     // Normaliza a posição do mouse para o intervalo de -1 a 1
     contexto.mousePosition.x =  (event.clientX / window.innerWidth)  * 2 - 1;
     contexto.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     // Atualiza a camera
+    /*
+    if( viradaDireitaOrigem == false && viradaEsquerdaOrigem == false )
+    {
+        //renderizador.miraCamera[0] += sensibilidade * contexto.mousePosition.y;
+    }else{
+        renderizador.miraCamera[2] += sensibilidade * contexto.mousePosition.y;
+    }
+    */
+
     renderizador.miraCamera[0] += sensibilidade * contexto.mousePosition.y;
     renderizador.miraCamera[1] -= sensibilidade * contexto.mousePosition.x;
     
@@ -166,6 +178,9 @@ window.addEventListener('mousemove', onMouseMove, false);
 
 function onAndar()
 {
+    const viradaEsquerdaOrigem = renderizador.miraCamera[0] >= 1.4918051575931215  ? true : false;
+    const viradaDireitaOrigem  = renderizador.miraCamera[0] <= -1.4918051575931215 ? true : false;
+
     // ANDAR 
     if( contexto.keyDetection.W ){
         renderizador.posicaoCamera[2] -= passos;
@@ -258,5 +273,34 @@ function loopTeste(){
     requestAnimationFrame(loopTeste)
 
     //renderizador.getObjetos()[2].rotation.x+= 0.01;
+
+    // Mantem a rotação da camera estavel
+    /*
+    if( renderizador.miraCamera[0] > 1.6183333333333352 ){
+        renderizador.miraCamera[0] = 1.6183333333333352;
+    }
+    if( renderizador.miraCamera[0] < -1.6183333333333352 ){
+        renderizador.miraCamera[0] = -1.6183333333333352;
+    }
+
+    if( renderizador.miraCamera[1] < -1.12611111111111148 ){   
+        renderizador.miraCamera[1] = -1.12611111111111148;
+    }
+    if( renderizador.miraCamera[1] > 1.12611111111111148 ){
+        renderizador.miraCamera[1] = 1.12611111111111148;
+    }
+    */
+
+    // Condicoes especiais anti bug
+    /*
+    const ultrapassouLimiteAgradavel1 = renderizador.miraCamera[0] <= -0.189661835748794 && renderizador.miraCamera[1] >= 0.74836297357529475;
+
+    if( ultrapassouLimiteAgradavel1 == true )
+    {
+        renderizador.miraCamera[0] = -0.189661835748794;
+        renderizador.miraCamera[1] = 0.74836297357529475;
+    }
+    */
+
 }
 loopTeste();

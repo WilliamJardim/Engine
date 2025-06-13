@@ -24,5 +24,9 @@ BUG: Posições incorretas e imprevisiveis:
     TEM BUG AI!
 
 
+BUG: Na camera perspectiva, o eixo Z e Y realizam o mesmo movimento
+QUANDO A CAMERA ESTÀ NA POSIÇÂO DE ORIGEM, ELA OLHA PRA CIMA PRA BAIXO
+Mais quando eu vou pro lado com ela, e olho do sentido esquerdo dos cubos, quando eu tento olhar pra cima ou pra baixo, ela olha pro lado tambem, como se fosse Z
+
 
 

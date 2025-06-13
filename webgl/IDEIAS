@@ -24,3 +24,47 @@ CALCULAR POSIÇÂO DA CAMERA EM RELAÇÂO A ROTAÇÂO:
     // Ajusta a posição da camera de acordo com a rotação da camera, no sentido lateral
     posicaoAtualRelacaoDirecao[0] = posicaoCamera[0] + direcaoDireita[0] * passosLateralCamera * frameDelta;
     posicaoAtualRelacaoDirecao[2] = posicaoCamera[2] + direcaoDireita[2] * passosLateralCamera * frameDelta;
+
+OUTRA IDEIA DISSO:
+
+function onAndar()
+{
+    let frameDelta = renderizador.lastFrameDelta;
+    let posicaoAtualRelacaoDirecao = [0, 0, 0];
+
+    // Calcula o movimento de andar pra frente/traz
+    const direcaoFrente = calcularDirecaoCamera(renderizador.miraCamera);
+    
+    // Calcula o movimento de andar na lateral
+    const direcaoDireita = calcularDireitaCamera(renderizador.miraCamera);
+    
+    // Ajusta a posição da camera de acordo com a rotação da camera, no sentido frente/traz
+    posicaoAtualRelacaoDirecao[0] = renderizador.posicaoCamera[0] + direcaoFrente[0] * passos * frameDelta;
+    posicaoAtualRelacaoDirecao[1] = renderizador.posicaoCamera[1] + direcaoFrente[1] * passos * frameDelta;
+    posicaoAtualRelacaoDirecao[2] = renderizador.posicaoCamera[2] + direcaoFrente[2] * passos * frameDelta;
+
+    // Ajusta a posição da camera de acordo com a rotação da camera, no sentido lateral
+    posicaoAtualRelacaoDirecao[0] = renderizador.posicaoCamera[0] + direcaoDireita[0] * passos * frameDelta;
+    posicaoAtualRelacaoDirecao[2] = renderizador.posicaoCamera[2] + direcaoDireita[2] * passos * frameDelta;
+
+
+    // ANDAR 
+    if( contexto.keyDetection.W ){
+        renderizador.posicaoCamera[2] -= posicaoAtualRelacaoDirecao[2];
+    }
+    if( contexto.keyDetection.A ){
+        renderizador.posicaoCamera[0] -= posicaoAtualRelacaoDirecao[0];
+    }
+    if( contexto.keyDetection.D ){
+        renderizador.posicaoCamera[0] += posicaoAtualRelacaoDirecao[0];
+    }
+    if( contexto.keyDetection.S ){
+        renderizador.posicaoCamera[2] += posicaoAtualRelacaoDirecao[2];
+    }
+    if( contexto.keyDetection.ArrowUp ){
+        renderizador.posicaoCamera[1] += posicaoAtualRelacaoDirecao[1];
+    }
+    if( contexto.keyDetection.ArrowDown ){
+        renderizador.posicaoCamera[1] -= posicaoAtualRelacaoDirecao[1];
+    }
+}

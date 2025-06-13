@@ -158,6 +158,7 @@ export class Renderer
     {
         const objetosVisuais = this.getObjetos();
         const frameDelta     = this.frameCounter.calculateFrameDelta();
+        this.lastFrameDelta  = frameDelta;
 
         // Atualiza a camera
         this.updateCamera( frameDelta );

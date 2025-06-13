@@ -189,7 +189,7 @@ export function calcularDirecaoCamera(rotacaoAtual) {
 /**
 * Calcula o lado direito da camera
 */
-function calcularDireitaCamera(rotacaoAtual) {
+export function calcularDireitaCamera(rotacaoAtual) {
     const rotacaoY = rotacaoAtual[1];
 
     const direitaX = Math.cos(rotacaoY);

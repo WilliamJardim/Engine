@@ -205,7 +205,7 @@ function calcularDireitaCamera(rotacaoAtual) {
 export function CriarMatrixPontoVista( frameDelta, tipo = "FPS", posicaoCamera, rotacaoCamera, sentidoCamera )
 {
     if( tipo == "FPS" ){
-        return CriarMatrixFPSLivre(frameDelta, rotacaoCamera, posicaoAtualRelacaoDirecao, sentidoCamera);
+        return CriarMatrixFPSLivre(frameDelta, rotacaoCamera, posicaoCamera, sentidoCamera);
 
     }else if( tipo == "Orbital" ){
         // Nesse caso, a rotacaoCamera vai ser o foco da camera(para qual ponto ela sempre vai orbitar) 

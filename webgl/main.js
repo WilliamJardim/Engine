@@ -119,7 +119,7 @@ renderizador.criarObjeto({
 
 window.renderizador = renderizador;
 
-const sensibilidade = 0.01;
+const sensibilidade = 0.03;
 const limiteX       = 10; 
 const limiteY       = 10; 
 const passos        = 0.5;
@@ -150,17 +150,6 @@ function onMouseMove(event)
 
     renderizador.miraCamera[0] -= sensibilidade * contexto.mousePosition.y;
     renderizador.miraCamera[1] += sensibilidade * contexto.mousePosition.x;
-    
-    //if( renderizador.miraCamera[0] > limiteX * Math.sign(renderizador.miraCamera[0]) )
-    //{
-    //    renderizador.miraCamera[0] = limiteX * Math.sign(renderizador.miraCamera[0]);
-    //}
-
-    //renderizador.miraCamera[1] += sensibilidade * contexto.mousePosition.y;
-    //if( renderizador.miraCamera[2] > limiteY * Math.sign(renderizador.miraCamera[2]) )
-    //{
-    //    renderizador.miraCamera[2] = limiteY * Math.sign(renderizador.miraCamera[2]);
-    //}
 }
 
 // Adiciona o evento de movimento do mouse
@@ -273,8 +262,7 @@ function loopTeste(){
 
     //renderizador.getObjetos()[2].rotation.x+= 0.01;
 
-    // Mantem a rotação da camera estavel
-    /*
+    // Mantem a rotação Y da camera estavel
     if( renderizador.miraCamera[0] > 1.6183333333333352 ){
         renderizador.miraCamera[0] = 1.6183333333333352;
     }
@@ -282,14 +270,14 @@ function loopTeste(){
         renderizador.miraCamera[0] = -1.6183333333333352;
     }
 
+    /*
     if( renderizador.miraCamera[1] < -1.12611111111111148 ){   
         renderizador.miraCamera[1] = -1.12611111111111148;
     }
     if( renderizador.miraCamera[1] > 1.12611111111111148 ){
         renderizador.miraCamera[1] = 1.12611111111111148;
-    }
-    */
-
+    }*/
+    
     // Condicoes especiais anti bug
     /*
     const ultrapassouLimiteAgradavel1 = renderizador.miraCamera[0] <= -0.189661835748794 && renderizador.miraCamera[1] >= 0.74836297357529475;

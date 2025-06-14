@@ -87,7 +87,7 @@ renderizador.criarObjeto({
 renderizador.criarObjeto({
     tipo: 'Triangulo3D',
     invisivel: false,
-    transparencia: 0.5, // 100 opaco
+    transparencia: 100, // 100 opaco
 
     /**
     * Posição do objeto 

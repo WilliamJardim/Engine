@@ -179,23 +179,31 @@ export function calcularDirecaoCamera(rotacaoAtual) {
     const rotacaoY = rotacaoAtual[1]; 
     const rotacaoX = rotacaoAtual[0]; 
 
-    const frenteX = Math.cos(rotacaoX) * Math.sin(rotacaoY);
-    const frenteY = Math.sin(rotacaoX);
-    const frenteZ = Math.cos(rotacaoX) * Math.cos(rotacaoY);
+    const cosY = Math.cos(rotacaoY);
+    const sinY = Math.sin(rotacaoY);
+    const cosX = Math.cos(rotacaoX);
+    const sinX = Math.sin(rotacaoX);
 
-    return [frenteX, frenteY, frenteZ];
+    const direcaoX = sinY * cosX;
+    const direcaoY = -sinX;
+    const direcaoZ = -cosY * cosX;
+
+    return [direcaoX, direcaoY, direcaoZ]; // vetor direção da câmera
 }
 
 /**
 * Calcula o lado direito da camera
 */
-export function calcularDireitaCamera(rotacaoAtual) {
-    const rotacaoY = rotacaoAtual[1];
+export function calcularDireitaCamera(direcao) {
+    // praCima global (0, 1, 0)
+    const praCima = [0, 1, 0];
 
-    const direitaX = Math.cos(rotacaoY);
-    const direitaZ = -Math.sin(rotacaoY);
-
-    return [direitaX, 0, direitaZ];
+    // produto vetorial: direita = up x direção
+    return [
+        praCima[1] * direcao[2] - praCima[2] * direcao[1],
+        praCima[2] * direcao[0] - praCima[0] * direcao[2],
+        praCima[0] * direcao[1] - praCima[1] * direcao[0]
+    ];
 }
 
 
@@ -264,7 +272,8 @@ export function CriarMatrixRotacaoCameraXYZ(rotacaoX, rotacaoY, rotacaoZ)
     const matrixRotacaoY = CriarMatrixRotacaoCameraY(rotacaoY);
     const matrixRotacaoZ = CriarMatrixRotacaoCameraZ(rotacaoZ);
 
-    return MultiplicarMatrix4x4(new Float32Array(16), MultiplicarMatrix4x4(new Float32Array(16), matrixRotacaoZ, matrixRotacaoY), matrixRotacaoX);
+    //return MultiplicarMatrix4x4(new Float32Array(16), MultiplicarMatrix4x4(new Float32Array(16), matrixRotacaoZ, matrixRotacaoY), matrixRotacaoX);
+    return MultiplicarMatrix4x4(new Float32Array(16), matrixRotacaoY, matrixRotacaoX);
 }
 
 

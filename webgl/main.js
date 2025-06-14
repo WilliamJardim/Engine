@@ -148,16 +148,6 @@ function onMouseMove(event)
     contexto.mousePosition.x =  (event.clientX / window.innerWidth)  * 2 - 1;
     contexto.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    // Atualiza a camera
-    /*
-    if( viradaDireitaOrigem == false && viradaEsquerdaOrigem == false )
-    {
-        //renderizador.miraCamera[0] += sensibilidade * contexto.mousePosition.y;
-    }else{
-        renderizador.miraCamera[2] += sensibilidade * contexto.mousePosition.y;
-    }
-    */
-
     renderizador.miraCamera[0] += sensibilidade * contexto.mousePosition.y;
     renderizador.miraCamera[1] -= sensibilidade * contexto.mousePosition.x;
     
@@ -178,27 +168,36 @@ window.addEventListener('mousemove', onMouseMove, false);
 
 function onAndar()
 {
-    const viradaEsquerdaOrigem = renderizador.miraCamera[0] >= 1.4918051575931215  ? true : false;
-    const viradaDireitaOrigem  = renderizador.miraCamera[0] <= -1.4918051575931215 ? true : false;
+    const frameDelta = renderizador.lastFrameDelta;
+   
+    // Calcula a direção da câmera com base na rotação
+    const direcao = calcularDirecaoCamera(renderizador.miraCamera);
 
-    // ANDAR 
-    if( contexto.keyDetection.W ){
-        renderizador.posicaoCamera[2] -= passos;
+    // Calcula o vetor "direita" (eixo X local)
+    const direita = calcularDireitaCamera(direcao);
+
+    // Aplica movimentação com base em eixos locais
+    const velocidadeFinal = passos * frameDelta;
+
+    if (contexto.keyDetection.W) {
+        renderizador.posicaoCamera[0] += direcao[0] * velocidadeFinal;
+        renderizador.posicaoCamera[1] += direcao[1] * velocidadeFinal;
+        renderizador.posicaoCamera[2] += direcao[2] * velocidadeFinal;
     }
-    if( contexto.keyDetection.A ){
-        renderizador.posicaoCamera[0] -= passos;
+    if (contexto.keyDetection.S) {
+        renderizador.posicaoCamera[0] -= direcao[0] * velocidadeFinal;
+        renderizador.posicaoCamera[1] -= direcao[1] * velocidadeFinal;
+        renderizador.posicaoCamera[2] -= direcao[2] * velocidadeFinal;
     }
-    if( contexto.keyDetection.D ){
-        renderizador.posicaoCamera[0] += passos;
+    if (contexto.keyDetection.A) {
+        renderizador.posicaoCamera[0] += direita[0] * velocidadeFinal;
+        renderizador.posicaoCamera[1] += direita[1] * velocidadeFinal;
+        renderizador.posicaoCamera[2] += direita[2] * velocidadeFinal;
     }
-    if( contexto.keyDetection.S ){
-        renderizador.posicaoCamera[2] += passos;
-    }
-    if( contexto.keyDetection.ArrowUp ){
-        renderizador.posicaoCamera[1] += passos;
-    }
-    if( contexto.keyDetection.ArrowDown ){
-        renderizador.posicaoCamera[1] -= passos;
+    if (contexto.keyDetection.D) {
+        renderizador.posicaoCamera[0] -= direita[0] * velocidadeFinal;
+        renderizador.posicaoCamera[1] -= direita[1] * velocidadeFinal;
+        renderizador.posicaoCamera[2] -= direita[2] * velocidadeFinal;
     }
 }
 

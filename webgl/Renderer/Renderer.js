@@ -26,10 +26,12 @@ import {CriarMatrix4x4,
         
 import { cuboShaders } from '../Shaders/cube.js';
 import { esferaShaders } from '../Shaders/esfera.js';
+import { trianguloShaders } from '../Shaders/triangulo.js';
 
 import { criarGL }    from '../funcoesBase.js';
 import { CuboMesh } from '../Mesh/CuboMesh.js';
 import { EsferaMesh } from '../Mesh/EsferaMesh.js';
+import { Triangulo2DMesh } from '../Mesh/Triangulo2DMesh.js';
 
 export class Renderer
 {
@@ -97,13 +99,17 @@ export class Renderer
         // Armazena os programs( um para cada tipo de objeto )
         this.programs = {
 
-            cubeProgram   : createProgram(this.gl, 
+            cubeProgram      : createProgram(this.gl, 
                                           cuboShaders.vertexScript, 
                                           cuboShaders.fragmentScript),
 
-            esferaProgram : createProgram(this.gl, 
+            esferaProgram    : createProgram(this.gl, 
                                           esferaShaders.vertexScript, 
-                                          esferaShaders.fragmentScript)
+                                          esferaShaders.fragmentScript),
+
+            trianguloProgram : createProgram(this.gl, 
+                                          trianguloShaders.vertexScript, 
+                                          trianguloShaders.fragmentScript)
                                        
         };
 
@@ -125,6 +131,11 @@ export class Renderer
     getEsferaProgram()
     {
         return this.programs.esferaProgram;
+    }
+
+    getTrianguloProgram()
+    {
+        return this.programs.trianguloProgram;
     }
 
 
@@ -165,6 +176,12 @@ export class Renderer
             case "Esfera":
                 this.objetos.push( new EsferaMesh( contextoRenderizador, 
                                                    propriedadesObjeto ) 
+                                 );
+                break;
+
+            case "Triangulo2D":
+                this.objetos.push( new Triangulo2DMesh( contextoRenderizador, 
+                                                        propriedadesObjeto ) 
                                  );
                 break;
         }

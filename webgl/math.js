@@ -56,6 +56,18 @@ export function MultiplicarMatrix4x4(resultadoMultiplicacao, a, b)
 }
 
 /**
+* Calcula a matrix transposta
+*/
+export function TransporMatrix4x4(m) {
+    return [
+        m[0],  m[4],  m[8],  m[12],
+        m[1],  m[5],  m[9],  m[13],
+        m[2],  m[6],  m[10], m[14],
+        m[3],  m[7],  m[11], m[15],
+    ];
+}
+
+/**
 * Cria matriz perspectiva(simula o olho humano, os objetos mais longes ficam menores)
 * @param {Number} anguloVisaoY - Em radianos
 * @param {Number} aspectoCamera - Aspecto da camera
@@ -157,6 +169,7 @@ export function CriarMatrixLookAt(frameDelta, olhoJogador, focoCamera, sentidoCa
 export function CriarMatrixFPSLivre(frameDelta, rotacaoAtual, posicaoAtual, sentidoAtual)
 {
     const matrixRotacaoXYZ = CriarMatrixRotacaoCameraXYZ( rotacaoAtual[0], rotacaoAtual[1], rotacaoAtual[2] ); // Mexe apenas no Y e Z, que nesse caso foi o que deu certo
+    const matrixRotacaoTransposta = TransporMatrix4x4(matrixRotacaoXYZ);
 
     const movimentoX = posicaoAtual[0]; 
     const movimentoY = posicaoAtual[1];
@@ -169,7 +182,7 @@ export function CriarMatrixFPSLivre(frameDelta, rotacaoAtual, posicaoAtual, sent
         -movimentoX, -movimentoY, -movimentoZ, 1
     ];
 
-    return MultiplicarMatrix4x4(new Float32Array(16), matrixRotacaoXYZ, matrixMovimentacaoXYZ);
+    return MultiplicarMatrix4x4(new Float32Array(16), matrixRotacaoTransposta, matrixMovimentacaoXYZ);
 }   
 
 /**

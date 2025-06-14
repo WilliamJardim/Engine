@@ -148,8 +148,8 @@ function onMouseMove(event)
     contexto.mousePosition.x =  (event.clientX / window.innerWidth)  * 2 - 1;
     contexto.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    renderizador.miraCamera[0] += sensibilidade * contexto.mousePosition.y;
-    renderizador.miraCamera[1] -= sensibilidade * contexto.mousePosition.x;
+    renderizador.miraCamera[0] -= sensibilidade * contexto.mousePosition.y;
+    renderizador.miraCamera[1] += sensibilidade * contexto.mousePosition.x;
     
     //if( renderizador.miraCamera[0] > limiteX * Math.sign(renderizador.miraCamera[0]) )
     //{

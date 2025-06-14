@@ -25,9 +25,11 @@ import {CriarMatrix4x4,
         FrameCounter} from '../math.js';
         
 import { cuboShaders } from '../Shaders/cube.js';
+import { esferaShaders } from '../Shaders/esfera.js';
 
 import { criarGL }    from '../funcoesBase.js';
 import { CuboMesh } from '../Mesh/CuboMesh.js';
+import { EsferaMesh } from '../Mesh/EsferaMesh.js';
 
 export class Renderer
 {
@@ -95,9 +97,13 @@ export class Renderer
         // Armazena os programs( um para cada tipo de objeto )
         this.programs = {
 
-            cubeProgram: createProgram(this.gl, 
-                                       cuboShaders.vertexScript, 
-                                       cuboShaders.fragmentScript)
+            cubeProgram   : createProgram(this.gl, 
+                                          cuboShaders.vertexScript, 
+                                          cuboShaders.fragmentScript),
+
+            esferaProgram : createProgram(this.gl, 
+                                          esferaShaders.vertexScript, 
+                                          esferaShaders.fragmentScript)
                                        
         };
 
@@ -109,11 +115,19 @@ export class Renderer
         this.render = this.render.bind(this);
     }
 
+
     /*** PROGRAMS (para cada tipo de objeto) */
     getCubeProgram()
     {
         return this.programs.cubeProgram;
     }
+
+    getEsferaProgram()
+    {
+        return this.programs.esferaProgram;
+    }
+
+
 
     // chamada sempre que vão haver mudanças de camera, como no loop de renderização dos objetos, etc.
     updateCamera( frameDelta )
@@ -142,9 +156,15 @@ export class Renderer
 
         switch( propriedadesObjeto.tipo )
         {
-            case 'Cubo':
+            case "Cubo":
                 this.objetos.push( new CuboMesh( contextoRenderizador, 
                                                  propriedadesObjeto ) 
+                                 );
+                break;
+
+            case "Esfera":
+                this.objetos.push( new EsferaMesh( contextoRenderizador, 
+                                                   propriedadesObjeto ) 
                                  );
                 break;
         }

@@ -52,6 +52,39 @@ renderizador.criarObjeto({
 });
 
 renderizador.criarObjeto({
+    tipo: 'Esfera',
+    invisivel: false,
+    transparencia: 100, // 100 opaco
+
+    /**
+    * Posição do objeto 
+    */
+    position: {
+        x: 4,
+        y: 8,
+        z: 0
+    },
+
+    /**
+    * Escala do objeto 
+    */
+    scale: {
+        x: 1,
+        y: 1,
+        z: 1
+    },
+
+    /**
+    * Rotação do objeto 
+    */
+    rotation: {
+        x: 0,
+        y: 0,
+        z: 0
+    }
+});
+
+renderizador.criarObjeto({
     tipo: 'Cubo',
     invisivel: false,
     transparencia: 100, // 100 opaco

@@ -32,6 +32,7 @@ import { criarGL }    from '../funcoesBase.js';
 import { CuboMesh } from '../Mesh/CuboMesh.js';
 import { EsferaMesh } from '../Mesh/EsferaMesh.js';
 import { Triangulo2DMesh } from '../Mesh/Triangulo2DMesh.js';
+import { Triangulo3DMesh } from '../Mesh/Triangulo3DMesh.js';
 
 export class Renderer
 {
@@ -181,6 +182,12 @@ export class Renderer
 
             case "Triangulo2D":
                 this.objetos.push( new Triangulo2DMesh( contextoRenderizador, 
+                                                        propriedadesObjeto ) 
+                                 );
+                break;
+
+            case "Triangulo3D":
+                this.objetos.push( new Triangulo3DMesh( contextoRenderizador, 
                                                         propriedadesObjeto ) 
                                  );
                 break;

@@ -12,7 +12,7 @@ import { createBuffer } from "../funcoesBase.js";
 import { cuboShaders } from "../Shaders/cube.js";
 import { CriarMatrix4x4, DefinirTranslacao, RotacionarX, RotacionarY, RotacionarZ, DefinirEscala } from "../math.js";
 
-export class Triangulo2DMesh extends VisualMesh 
+export class Triangulo3DMesh extends VisualMesh 
 {
     constructor(renderer, propriedadesMesh) 
     {
@@ -20,7 +20,7 @@ export class Triangulo2DMesh extends VisualMesh
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
-        this.tipo = "Triangulo2D";
+        this.tipo = "Triangulo3D";
         this.setProgram(renderer.getTrianguloProgram()); 
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
@@ -33,21 +33,54 @@ export class Triangulo2DMesh extends VisualMesh
     getPositions() 
     {
         return [
-            0.0,  1.0,  0.0,   // Topo
-           -1.0, -1.0,  0.0,   // Esquerda
-            1.0, -1.0,  0.0    // Direita
+            // Base (quadrado)
+            -1, 0, -1,
+             1, 0, -1,
+             1, 0,  1,
+            -1, 0,  1,
+
+            // Topo (vértice da pirâmide)
+             0, 1.5, 0
+        ];
+    }
+
+    getIndices()
+    {
+        return [
+            // Base (2 triângulos)
+            0, 1, 2,
+            0, 2, 3,
+
+            // Lados
+            0, 1, 4,
+            1, 2, 4,
+            2, 3, 4,
+            3, 0, 4
+        ];
+    }
+
+    getFaceColors() {
+        const nivelTransparencia = this.getTransparencia();
+
+        return [
+            [1, 0, 0, nivelTransparencia], // base 1
+            [1, 0, 0, nivelTransparencia], // base 2
+            [0, 1, 0, nivelTransparencia],
+            [0, 0, 1, nivelTransparencia],
+            [1, 1, 0, nivelTransparencia],
+            [1, 0, 1, nivelTransparencia],   
         ];
     }
 
     getColors() 
     {
-        const nivelTransparencia = this.getTransparencia();
+        const faceColors = this.getFaceColors();
 
-        return [
-            1.0, 0.0, 0.0, nivelTransparencia,  // Vermelho
-            0.0, 1.0, 0.0, nivelTransparencia,  // Verde
-            0.0, 0.0, 1.0, nivelTransparencia   // Azul
-        ];
+        let cores = [];
+        for (let cor of faceColors) {
+            cores = cores.concat(cor, cor, cor); // Cada face tem 3 vértices
+        }
+        return cores;
     }
 
     getInformacoesPrograma() 
@@ -80,6 +113,10 @@ export class Triangulo2DMesh extends VisualMesh
         if (this.bufferCor == null) {
             this.bufferCor = createBuffer(gl, this.getColors(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
         }
+
+        if (this.bufferIndices == null) {
+            this.bufferIndices = createBuffer(gl, this.getIndices(), gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
+        }
     }
 
     desenhar() 
@@ -87,6 +124,7 @@ export class Triangulo2DMesh extends VisualMesh
         const renderer                       = this.getRenderer();
         const matrixVisualizacao             = renderer.getMatrixVisualizacao();
         const atributosTriangulo             = this.getAtributos();
+        const indices                        = this.getIndices();
         const gl                             = renderer.gl;
         const programUsado                   = this.getProgram();
         const informacoesPrograma            = this.getInformacoesPrograma();
@@ -133,7 +171,29 @@ export class Triangulo2DMesh extends VisualMesh
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
 
         // Desenha o tringulo
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        gl.drawArrays(gl.TRIANGLES, this.getIndices().length, gl.UNSIGNED_SHORT, 0);
+
+        if (isTransparente) 
+        {
+            gl.depthMask(true);
+        }
+        
+        gl.useProgram(programUsado);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
+        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.posicao);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferCor);
+        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.cor, 4, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.cor);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
+
+        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
+        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
+
+        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
         if (isTransparente) 
         {

@@ -34,10 +34,16 @@ import { EsferaMesh } from '../Mesh/EsferaMesh.js';
 import { Triangulo2DMesh } from '../Mesh/Triangulo2DMesh.js';
 import { Triangulo3DMesh } from '../Mesh/Triangulo3DMesh.js';
 
+import { skyboxPlaneShaders } from '../Shaders/planeskybox.js';
+
 export class Renderer
 {
     constructor( canvasRef, tipoPerspectiva="perspectiva" ){
         this.canvas = canvasRef;
+
+        // Inicializa a textura do skybox nula
+        this.skyTexture    = null;
+        this.skyQuadBuffer = null;
 
         this.frameCounter = new FrameCounter(60);
 
@@ -100,6 +106,10 @@ export class Renderer
         // Armazena os programs( um para cada tipo de objeto )
         this.programs = {
 
+            skyboxProgram    : createProgram(this.gl, 
+                                          skyboxPlaneShaders.vertexScript, 
+                                          skyboxPlaneShaders.fragmentScript),
+
             cubeProgram      : createProgram(this.gl, 
                                           cuboShaders.vertexScript, 
                                           cuboShaders.fragmentScript),
@@ -124,6 +134,11 @@ export class Renderer
 
 
     /*** PROGRAMS (para cada tipo de objeto) */
+    getSkyboxProgram()
+    {
+        return this.programs.skyboxProgram;
+    }
+
     getCubeProgram()
     {
         return this.programs.cubeProgram;
@@ -139,6 +154,68 @@ export class Renderer
         return this.programs.trianguloProgram;
     }
 
+
+    /**
+    * Carrega a textura do fundo a cena(o skybox 2D)
+    */
+    carregarImagemSkybox(imagemURL) 
+    {
+        const gl            = this.gl;
+        const programSkybox = this.getSkyboxProgram();
+
+        // Criar buffer com quad (-1,-1 a 1,1)
+        this.skyQuadBuffer = gl.createBuffer();
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.skyQuadBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -1, -1,
+            1, -1,
+            -1,  1,
+            1,  1
+        ]), gl.STATIC_DRAW);
+
+        // Criar textura
+        const skyTexture = gl.createTexture();
+        const imagem = new Image();
+        imagem.src = imagemURL;
+        imagem.onload = () => {
+            gl.bindTexture(gl.TEXTURE_2D, skyTexture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imagem);
+            gl.generateMipmap(gl.TEXTURE_2D);
+        };
+
+        // Salva o skybox no renderizador objeto
+        this.skyTexture = skyTexture;
+    }
+
+    /**
+    * Desenha o skybox da cena 
+    */
+    desenharSkyboxFundo() 
+    {
+        const gl            = this.gl;
+        const programSkybox = this.getSkyboxProgram();
+        const a_sky_pos     = gl.getAttribLocation(programSkybox, 'a_position');
+        const u_sky_texture = gl.getUniformLocation(programSkybox, 'u_texture');
+
+        if (this.getSkyboxProgram() != null && this.skyTexture != null)
+        {
+            gl.useProgram(programSkybox);
+
+            gl.disable(gl.DEPTH_TEST); // para não bloquear nada do fundo
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.skyQuadBuffer);
+            gl.enableVertexAttribArray(a_sky_pos);
+            gl.vertexAttribPointer(a_sky_pos, 2, gl.FLOAT, false, 0, 0);
+
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, this.skyTexture);
+            gl.uniform1i(u_sky_texture, 0);
+
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            gl.enable(gl.DEPTH_TEST); // reativa o depth test para objetos 3D
+        }
+
+    }
 
 
     // chamada sempre que vão haver mudanças de camera, como no loop de renderização dos objetos, etc.
@@ -229,6 +306,7 @@ export class Renderer
         // Códigos para a renderização aqui....
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
+        this.desenharSkyboxFundo();
         this.desenharObjetos();
     }
 
@@ -237,6 +315,7 @@ export class Renderer
     */
     inicializar()
     {
+        this.carregarImagemSkybox("./images/sky.jpg");
         this.render();    
     }
 }

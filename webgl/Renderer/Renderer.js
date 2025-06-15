@@ -32,6 +32,7 @@ import { trianguloShaders } from '../Shaders/triangulo.js';
 import { criarGL }    from '../funcoesBase.js';
 import { CuboMesh } from '../Mesh/CuboMesh.js';
 import { TexturedUVCuboMesh } from '../Mesh/TexturedUVCubeMesh.js';
+import { TexturedFacesCuboMesh } from '../Mesh/TexturedFacesCubeMesh.js';
 import { EsferaMesh } from '../Mesh/EsferaMesh.js';
 import { Triangulo2DMesh } from '../Mesh/Triangulo2DMesh.js';
 import { Triangulo3DMesh } from '../Mesh/Triangulo3DMesh.js';
@@ -192,7 +193,7 @@ export class Renderer
         imagem.onload = () => {
             gl.bindTexture(gl.TEXTURE_2D, skyTexture);
 
-             // Inverte verticalmente a imagem ao carregar
+            // Inverte verticalmente a imagem ao carregar
             gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imagem);
@@ -270,6 +271,13 @@ export class Renderer
                 this.objetos.push( new TexturedUVCuboMesh( contextoRenderizador, 
                                                            propriedadesObjeto ) 
                                  );
+                break;
+
+            case "TexturedFacesCubo":
+                this.objetos.push( new TexturedFacesCuboMesh( contextoRenderizador, 
+                                                              propriedadesObjeto ) 
+                                 );
+                
                 break;
 
             case "Esfera":

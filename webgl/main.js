@@ -54,8 +54,18 @@ renderizador.criarObjeto({
 
 // Cria um cubo
 renderizador.criarObjeto({
-    tipo: 'TexturedUVCubo',
-    texturaUV: carregarTextura( renderizador.gl, "../images/sky.jpg" ),
+    tipo: 'TexturedFacesCubo',
+
+    // Carrega as texturas de cada face
+    texturasFaces: [
+        carregarTextura( renderizador.gl, "../images/sky.jpg" ),
+        carregarTextura( renderizador.gl, "../images/sky.jpg" ),
+        carregarTextura( renderizador.gl, "../images/sky.jpg" ),
+        carregarTextura( renderizador.gl, "../images/sky.jpg" ),
+        carregarTextura( renderizador.gl, "../images/sky.jpg" ),
+        carregarTextura( renderizador.gl, "../images/sky.jpg" )
+    ],
+
     useColors: false,
     invisivel: false,
     transparencia: 100, // 100 opaco

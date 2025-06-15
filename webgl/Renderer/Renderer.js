@@ -30,12 +30,12 @@ import { esferaShaders } from '../Shaders/esfera.js';
 import { trianguloShaders } from '../Shaders/triangulo.js';
 
 import { criarGL }    from '../funcoesBase.js';
-import { CuboMesh } from '../Mesh/CuboMesh.js';
-import { TexturedUVCuboMesh } from '../Mesh/TexturedUVCubeMesh.js';
-import { TexturedFacesCuboMesh } from '../Mesh/TexturedFacesCubeMesh.js';
-import { EsferaMesh } from '../Mesh/EsferaMesh.js';
-import { Triangulo2DMesh } from '../Mesh/Triangulo2DMesh.js';
-import { Triangulo3DMesh } from '../Mesh/Triangulo3DMesh.js';
+import { CuboMesh } from '../Mesh/colored/CuboMesh.js';
+import { TexturedUVCuboMesh } from '../Mesh/textured/TexturedUVCubeMesh.js';
+import { TexturedFacesCuboMesh } from '../Mesh/textured/TexturedFacesCubeMesh.js';
+import { EsferaMesh } from '../Mesh/colored/EsferaMesh.js';
+import { Triangulo2DMesh } from '../Mesh/colored/Triangulo2DMesh.js';
+import { Triangulo3DMesh } from '../Mesh/colored/Triangulo3DMesh.js';
 
 import { skyboxPlaneShaders } from '../Shaders/planeskybox.js';
 

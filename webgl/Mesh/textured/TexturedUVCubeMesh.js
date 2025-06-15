@@ -7,9 +7,9 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { VisualMesh } from "./VisualMesh.js";
-import { createShader, createBuffer, createProgram} from '../funcoesBase.js';
-import { cuboTextureUVShaders } from '../Shaders/cubeTextureUV.js';
+import { VisualMesh } from "../VisualMesh.js";
+import { createShader, createBuffer, createProgram} from '../../funcoesBase.js';
+import { cuboTextureUVShaders } from '../../Shaders/cubeTextureUV.js';
 
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
@@ -22,7 +22,7 @@ import {CriarMatrix4x4,
         DefinirRotacao, 
         DefinirX, 
         DefinirY, 
-        DefinirZ} from '../math.js';
+        DefinirZ} from '../../math.js';
 
 export class TexturedUVCuboMesh extends VisualMesh
 {

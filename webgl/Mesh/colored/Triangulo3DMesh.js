@@ -7,10 +7,10 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { VisualMesh } from "./VisualMesh.js";
-import { createBuffer } from "../funcoesBase.js";
-import { cuboShaders } from "../Shaders/cube.js";
-import { CriarMatrix4x4, DefinirTranslacao, RotacionarX, RotacionarY, RotacionarZ, DefinirEscala } from "../math.js";
+import { VisualMesh } from "../VisualMesh.js";
+import { createBuffer } from "../../funcoesBase.js";
+import { cuboShaders } from "../../Shaders/cube.js";
+import { CriarMatrix4x4, DefinirTranslacao, RotacionarX, RotacionarY, RotacionarZ, DefinirEscala } from "../../math.js";
 
 export class Triangulo3DMesh extends VisualMesh 
 {

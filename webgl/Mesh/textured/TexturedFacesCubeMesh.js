@@ -7,9 +7,15 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { VisualMesh } from "../Mesh/VisualMesh.js";
-import { createShader, createBuffer, createProgram} from '../funcoesBase.js';
-import { cuboShaders } from '../Shaders/cube.js';
+
+/**
+* Similar ao TexturedUVCubeMesh, 
+* porém, permite aplicar uma textura diferente para cada face
+*/
+
+import { VisualMesh } from "../VisualMesh.js";
+import { createShader, createBuffer, createProgram} from '../../funcoesBase.js';
+import { cuboTextureUVShaders } from '../../Shaders/cubeTextureUV.js';
 
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
@@ -22,9 +28,9 @@ import {CriarMatrix4x4,
         DefinirRotacao, 
         DefinirX, 
         DefinirY, 
-        DefinirZ} from '../math.js';
+        DefinirZ} from '../../math.js';
 
-export class CuboMesh extends VisualMesh
+export class TexturedFacesCuboMesh extends VisualMesh
 {
     constructor( renderer, propriedadesMesh )
     {
@@ -32,18 +38,62 @@ export class CuboMesh extends VisualMesh
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
-        this.tipo = 'Cubo';
-        this.setProgram( renderer.getCubeProgram() );
+        this.tipo = 'CuboFacesTexturizadas';
+        this.setProgram( renderer.getCubeTextureUVProgram() );
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
         this.bufferPosicao = null;
         this.bufferCor     = null;
         this.bufferIndices = null;
 
-        // Um cubo sem textura sempre vai usar cores
-        this.useColors     = true;
+        // Pega a textura UV como atributo do objeto
+        this.useColors     = propriedadesMesh.useColors || false;
+        this.texturasFaces = propriedadesMesh.texturasFaces; // Array de 6 texturas WebGLTexture
+
+        if( this.texturasFaces == null )
+        {
+            throw Error("Voce precisa definir as 6 texturas!");
+        }
+
         this.criar();
 
+    }
+
+    /**
+    * Cria os indices de cada face
+    */
+    getIndicesPorFace() 
+    {
+        return [
+            [0, 1, 2, 0, 2, 3],     // front
+            [4, 5, 6, 4, 6, 7],     // back
+            [8, 9,10, 8,10,11],     // top
+            [12,13,14,12,14,15],    // bottom
+            [16,17,18,16,18,19],    // right
+            [20,21,22,20,22,23],    // left
+        ];
+    }
+
+    /**
+    * Obtem o mapa UV do cubo, que permite aplicar uma textura em cada face,
+    * A partir de uma unica imagem que contém o mapa UV nele
+    */
+    getUVs() 
+    {
+        return [
+            // Front
+            0, 0, 1, 0, 1, 1, 0, 1,
+            // Back
+            0, 0, 1, 0, 1, 1, 0, 1,
+            // Top
+            0, 0, 1, 0, 1, 1, 0, 1,
+            // Bottom
+            0, 0, 1, 0, 1, 1, 0, 1,
+            // Right
+            0, 0, 1, 0, 1, 1, 0, 1,
+            // Left
+            0, 0, 1, 0, 1, 1, 0, 1
+        ];
     }
 
     /**
@@ -90,14 +140,27 @@ export class CuboMesh extends VisualMesh
         // A implantação em C++ seria diferente
         const nivelTransparencia = this.getTransparencia();
 
-        return [
-            [1, 0, 0, nivelTransparencia],    // red
-            [0, 1, 0, nivelTransparencia],    // green
-            [0, 0, 1, nivelTransparencia],    // blue
-            [1, 1, 0, nivelTransparencia],    // yellow
-            [1, 0, 1, nivelTransparencia],    // magenta
-            [0, 1, 1, nivelTransparencia],    // cyan
-        ];
+        if( this.useColors == true ){
+            return [
+                [1, 0, 0, nivelTransparencia],    // red
+                [0, 1, 0, nivelTransparencia],    // green
+                [0, 0, 1, nivelTransparencia],    // blue
+                [1, 1, 0, nivelTransparencia],    // yellow
+                [1, 0, 1, nivelTransparencia],    // magenta
+                [0, 1, 1, nivelTransparencia],    // cyan
+            ];
+
+        }else{
+            // Tudo branco pra nao ter cor
+            return [
+                [1, 1, 1, 1],
+                [1, 1, 1, 1],
+                [1, 1, 1, 1],
+                [1, 1, 1, 1],
+                [1, 1, 1, 1],
+                [1, 1, 1, 1],
+            ];
+        }
     }
 
     /**
@@ -127,13 +190,13 @@ export class CuboMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao   : gl.getAttribLocation(programUsado, cuboShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
-                cor       : gl.getAttribLocation(programUsado, cuboShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                posicao   : gl.getAttribLocation(programUsado, cuboTextureUVShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
+                cor       : gl.getAttribLocation(programUsado, cuboTextureUVShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
             },
 
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao : gl.getUniformLocation(programUsado, cuboShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
-                modeloObjetoVisual : gl.getUniformLocation(programUsado, cuboShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
+                matrixVisualizacao : gl.getUniformLocation(programUsado, cuboTextureUVShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
+                modeloObjetoVisual : gl.getUniformLocation(programUsado, cuboTextureUVShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
             }
         }
     }
@@ -166,6 +229,11 @@ export class CuboMesh extends VisualMesh
             this.bufferIndices   = createBuffer(gl, this.getIndices(),   gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
         }
 
+        if (this.bufferUV == null) 
+        {
+            this.bufferUV = createBuffer(gl, this.getUVs(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+        }
+
         //Se não é null é por que ja existe, então nao faz nada!
     }
 
@@ -182,7 +250,7 @@ export class CuboMesh extends VisualMesh
         const gl                  = renderer.gl;
         const programUsado        = this.getProgram();
         const informacoesPrograma = this.getInformacoesPrograma();
-        const indices             = this.getIndices();
+        const indicesFaces        = this.getIndicesPorFace();
         const isTransparente      = this.isTransparente();
         
         // Atributos visuais 
@@ -218,11 +286,10 @@ export class CuboMesh extends VisualMesh
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.posicao);
         
-
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferCor);
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.cor, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.cor);
-        
+
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 
@@ -233,8 +300,28 @@ export class CuboMesh extends VisualMesh
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
 
-        // Desenha o cubo
-        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+        // Ativa o atributo UV
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferUV);
+        gl.vertexAttribPointer(gl.getAttribLocation(programUsado, "aUV"), 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(gl.getAttribLocation(programUsado, "aUV"));
+
+        // Desenha cada face com sua respectiva textura
+        for( let i=0; i < 6; i++ )
+        {
+            // Vincula a textura da face i
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, this.texturasFaces[i]);
+
+            // Inverte verticalmente a imagem ao carregar
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            
+            gl.uniform1i(gl.getUniformLocation(programUsado, "u_textura"), 0);
+
+            // Desenha só os índices daquela face (passa o offset correto)
+            // O offset do drawElements é em bytes. Cada índice é um UNSIGNED_SHORT (2 bytes).
+            const offset = 6 * i * 2; // 6 indices por face * i * 2 bytes por indice
+            gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, offset);
+        }
 
         // Se for um objeto transparente
         if( isTransparente )

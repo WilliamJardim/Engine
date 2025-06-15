@@ -7,9 +7,9 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { VisualMesh } from "./VisualMesh.js";
-import { createShader, createBuffer, createProgram} from '../funcoesBase.js';
-import { cuboShaders } from '../Shaders/cube.js';
+import { VisualMesh } from "../VisualMesh.js";
+import { createShader, createBuffer, createProgram} from '../../funcoesBase.js';
+import { cuboShaders } from '../../Shaders/cube.js';
 
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
@@ -22,9 +22,9 @@ import {CriarMatrix4x4,
         DefinirRotacao, 
         DefinirX, 
         DefinirY, 
-        DefinirZ} from '../math.js';
+        DefinirZ} from '../../math.js';
 
-export class EsferaMesh extends VisualMesh
+export class CuboMesh extends VisualMesh
 {
     constructor( renderer, propriedadesMesh )
     {
@@ -32,17 +32,16 @@ export class EsferaMesh extends VisualMesh
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
-        this.tipo = 'Esfera';
-        this.setProgram( renderer.getEsferaProgram() );
+        this.tipo = 'Cubo';
+        this.setProgram( renderer.getCubeProgram() );
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
         this.bufferPosicao = null;
         this.bufferCor     = null;
         this.bufferIndices = null;
 
-        // Sem textura sempre vai usar cores
+        // Um cubo sem textura sempre vai usar cores
         this.useColors     = true;
-
         this.criar();
 
     }
@@ -52,32 +51,20 @@ export class EsferaMesh extends VisualMesh
     */
     getPositions()
     {
-        const positions   = [];
-        const latitudes   = 30;
-        const longitudes  = 30;
-        const raio        = 1;
-
-        for (let lat = 0; lat <= latitudes; lat++) 
-        {
-            const theta = lat * Math.PI / latitudes;
-            const sinTheta = Math.sin(theta);
-            const cosTheta = Math.cos(theta);
-
-            for (let lon = 0; lon <= longitudes; lon++) 
-            {
-                const phi = lon * 2 * Math.PI / longitudes;
-                const sinPhi = Math.sin(phi);
-                const cosPhi = Math.cos(phi);
-
-                const x = raio * cosPhi * sinTheta;
-                const y = raio * cosTheta;
-                const z = raio * sinPhi * sinTheta;
-
-                positions.push(x, y, z);
-            }
-        }
-
-        return positions;
+        return [
+            // Front
+            -1, -1,  1,   1, -1,  1,   1,  1,  1,  -1,  1,  1,
+            // Back
+            -1, -1, -1,  -1,  1, -1,   1,  1, -1,   1, -1, -1,
+            // Top
+            -1,  1, -1,  -1,  1,  1,   1,  1,  1,   1,  1, -1,
+            // Bottom
+            -1, -1, -1,   1, -1, -1,   1, -1,  1,  -1, -1,  1,
+            // Right
+            1, -1, -1,   1,  1, -1,   1,  1,  1,   1, -1,  1,
+            // Left
+            -1, -1, -1,  -1, -1,  1,  -1,  1,  1,  -1,  1, -1,
+        ];
     }
 
     /**
@@ -85,23 +72,14 @@ export class EsferaMesh extends VisualMesh
     */
     getIndices()
     {
-        const indices = [];
-        const latitudes = 30;
-        const longitudes = 30;
-
-        for (let lat = 0; lat < latitudes; lat++) 
-        {
-            for (let lon = 0; lon < longitudes; lon++) 
-            {
-                const first = (lat * (longitudes + 1)) + lon;
-                const second = first + longitudes + 1;
-
-                indices.push(first, second, first + 1);
-                indices.push(second, second + 1, first + 1);
-            }
-        }
-
-        return indices;
+        return [
+            0, 1, 2,    0, 2, 3,     // front
+            4, 5, 6,    4, 6, 7,     // back
+            8, 9,10,    8,10,11,     // top
+            12,13,14,   12,14,15,    // bottom
+            16,17,18,   16,18,19,    // right
+            20,21,22,   20,22,23,    // left
+        ];
     }
 
     /**
@@ -109,7 +87,17 @@ export class EsferaMesh extends VisualMesh
     */
     getFaceColors()
     {
-        return [];
+        // A implantação em C++ seria diferente
+        const nivelTransparencia = this.getTransparencia();
+
+        return [
+            [1, 0, 0, nivelTransparencia],    // red
+            [0, 1, 0, nivelTransparencia],    // green
+            [0, 0, 1, nivelTransparencia],    // blue
+            [1, 1, 0, nivelTransparencia],    // yellow
+            [1, 0, 1, nivelTransparencia],    // magenta
+            [0, 1, 1, nivelTransparencia],    // cyan
+        ];
     }
 
     /**
@@ -117,16 +105,12 @@ export class EsferaMesh extends VisualMesh
     */
     getColors()
     {
-        const cores = [];
-        const latitudes = 30;
-        const longitudes = 30;
-        const nivelTransparencia = this.getTransparencia();
+        const faceColors = this.getFaceColors();
 
-        for (let lat = 0; lat <= latitudes; lat++) {
-            for (let lon = 0; lon <= longitudes; lon++) {
-                // Aqui, cada vértice recebe uma cor RGBA
-                cores.push(1, 0, 0, nivelTransparencia); // vermelho como exemplo
-            }
+        let cores = [];
+        for ( let c = 0 ; c < faceColors.length ; c++ ) {
+            const cor = faceColors[c];
+            cores = cores.concat(cor, cor, cor, cor);
         }
 
         return cores;

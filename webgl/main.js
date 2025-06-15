@@ -58,9 +58,9 @@ renderizador.criarObjeto({
 
     // Carrega as texturas de cada face
     texturasFaces: [
-        carregarTextura( renderizador.gl, "../images/sky.jpg" ),
-        carregarTextura( renderizador.gl, "../images/sky.jpg" ),
-        carregarTextura( renderizador.gl, "../images/sky.jpg" ),
+        carregarTextura( renderizador.gl, "../images/nostalgic.png" ),
+        carregarTextura( renderizador.gl, "../images/nostalgic.png" ),
+        carregarTextura( renderizador.gl, "../images/nostalgic.png" ),
         carregarTextura( renderizador.gl, "../images/sky.jpg" ),
         carregarTextura( renderizador.gl, "../images/sky.jpg" ),
         carregarTextura( renderizador.gl, "../images/sky.jpg" )

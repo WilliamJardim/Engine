@@ -9,6 +9,7 @@
 */
 import { VisualMesh } from './Mesh/VisualMesh.js';
 import { Renderer }   from './Renderer/Renderer.js';
+import { carregarTextura } from './funcoesBase.js';
 import {calcularDirecaoCamera, calcularDireitaCamera} from './math.js';
 
 const canvas       = document.getElementById('glcanvas'); 
@@ -28,6 +29,41 @@ renderizador.criarObjeto({
     */
     position: {
         x: 0,
+        y: 8,
+        z: 0
+    },
+
+    /**
+    * Escala do objeto 
+    */
+    scale: {
+        x: 1,
+        y: 1,
+        z: 1
+    },
+
+    /**
+    * Rotação do objeto 
+    */
+    rotation: {
+        x: 0,
+        y: 0,
+        z: 0
+    }
+});
+
+// Cria um cubo
+renderizador.criarObjeto({
+    tipo: 'TexturedUVCubo',
+    texturaUV: carregarTextura( renderizador.gl, "../images/sky.jpg" ),
+    invisivel: false,
+    transparencia: 100, // 100 opaco
+
+    /**
+    * Posição do objeto 
+    */
+    position: {
+        x: -2,
         y: 8,
         z: 0
     },

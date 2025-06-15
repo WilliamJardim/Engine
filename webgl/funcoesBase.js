@@ -55,3 +55,31 @@ export function createProgram(gl, vertexScript, fragmentScript)
 
     return program;
 }
+
+export function carregarTextura(gl, urlTextura) 
+{
+    const textura = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, textura);
+
+    // Placeholder enquanto a imagem carrega
+    const nivel   = 0;
+    const interno = gl.RGBA;
+    const largura = 1;
+    const altura  = 1;
+    const borda   = 0;
+    const formato = gl.RGBA;
+    const tipo    = gl.UNSIGNED_BYTE;
+    const pixel   = new Uint8Array([255, 255, 255, 255]);
+    
+    gl.texImage2D(gl.TEXTURE_2D, nivel, interno, largura, altura, borda, formato, tipo, pixel);
+
+    const imagem = new Image();
+    imagem.onload = () => {
+        gl.bindTexture(gl.TEXTURE_2D, textura);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imagem);
+        gl.generateMipmap(gl.TEXTURE_2D);
+    };
+    imagem.src = urlTextura;
+
+    return textura;
+}

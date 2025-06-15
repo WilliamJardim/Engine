@@ -25,11 +25,13 @@ import {CriarMatrix4x4,
         FrameCounter} from '../math.js';
         
 import { cuboShaders } from '../Shaders/cube.js';
+import { cuboTextureUVShaders } from '../Shaders/cubeTextureUV.js'
 import { esferaShaders } from '../Shaders/esfera.js';
 import { trianguloShaders } from '../Shaders/triangulo.js';
 
 import { criarGL }    from '../funcoesBase.js';
 import { CuboMesh } from '../Mesh/CuboMesh.js';
+import { TexturedUVCuboMesh } from '../Mesh/TexturedUVCubeMesh.js';
 import { EsferaMesh } from '../Mesh/EsferaMesh.js';
 import { Triangulo2DMesh } from '../Mesh/Triangulo2DMesh.js';
 import { Triangulo3DMesh } from '../Mesh/Triangulo3DMesh.js';
@@ -114,6 +116,10 @@ export class Renderer
                                           cuboShaders.vertexScript, 
                                           cuboShaders.fragmentScript),
 
+            cubeTextureUVProgram : createProgram(this.gl, 
+                                          cuboTextureUVShaders.vertexScript, 
+                                          cuboTextureUVShaders.fragmentScript),
+
             esferaProgram    : createProgram(this.gl, 
                                           esferaShaders.vertexScript, 
                                           esferaShaders.fragmentScript),
@@ -142,6 +148,11 @@ export class Renderer
     getCubeProgram()
     {
         return this.programs.cubeProgram;
+    }
+
+    getCubeTextureUVProgram()
+    {
+        return this.programs.cubeTextureUVProgram;
     }
 
     getEsferaProgram()
@@ -252,6 +263,12 @@ export class Renderer
             case "Cubo":
                 this.objetos.push( new CuboMesh( contextoRenderizador, 
                                                  propriedadesObjeto ) 
+                                 );
+                break;
+
+            case "TexturedUVCubo":
+                this.objetos.push( new TexturedUVCuboMesh( contextoRenderizador, 
+                                                           propriedadesObjeto ) 
                                  );
                 break;
 

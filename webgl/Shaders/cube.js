@@ -8,8 +8,8 @@ export const cuboShaders = {
         varying lowp vec4 vColor;
 
         void main(void) {
-        gl_Position = uMatrixVisualizacao * uModeloObjetoVisual * aPosicao;
-        vColor = aCor;
+            gl_Position = uMatrixVisualizacao * uModeloObjetoVisual * aPosicao;
+            vColor = aCor;
         }
     `,
 

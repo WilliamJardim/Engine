@@ -43,6 +43,7 @@ export class TexturedUVCuboMesh extends VisualMesh
         this.texturaUV     = null;
 
         // Pega a textura UV como atributo do objeto
+        this.useColors     = propriedadesMesh.useColors || false;
         this.texturaUV     = propriedadesMesh.texturaUV;
 
         this.criar();
@@ -115,14 +116,27 @@ export class TexturedUVCuboMesh extends VisualMesh
         // A implantação em C++ seria diferente
         const nivelTransparencia = this.getTransparencia();
 
-        return [
-            [1, 0, 0, nivelTransparencia],    // red
-            [0, 1, 0, nivelTransparencia],    // green
-            [0, 0, 1, nivelTransparencia],    // blue
-            [1, 1, 0, nivelTransparencia],    // yellow
-            [1, 0, 1, nivelTransparencia],    // magenta
-            [0, 1, 1, nivelTransparencia],    // cyan
-        ];
+        if( this.useColors == true ){
+            return [
+                [1, 0, 0, nivelTransparencia],    // red
+                [0, 1, 0, nivelTransparencia],    // green
+                [0, 0, 1, nivelTransparencia],    // blue
+                [1, 1, 0, nivelTransparencia],    // yellow
+                [1, 0, 1, nivelTransparencia],    // magenta
+                [0, 1, 1, nivelTransparencia],    // cyan
+            ];
+
+        }else{
+            // Tudo branco pra nao ter cor
+            return [
+                [1, 1, 1, 1],
+                [1, 1, 1, 1],
+                [1, 1, 1, 1],
+                [1, 1, 1, 1],
+                [1, 1, 1, 1],
+                [1, 1, 1, 1],
+            ];
+        }
     }
 
     /**
@@ -248,11 +262,10 @@ export class TexturedUVCuboMesh extends VisualMesh
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.posicao);
         
-
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferCor);
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.cor, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.cor);
-        
+
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 

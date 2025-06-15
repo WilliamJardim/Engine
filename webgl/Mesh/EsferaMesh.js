@@ -40,6 +40,9 @@ export class EsferaMesh extends VisualMesh
         this.bufferCor     = null;
         this.bufferIndices = null;
 
+        // Sem textura sempre vai usar cores
+        this.useColors     = true;
+
         this.criar();
 
     }

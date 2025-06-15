@@ -28,6 +28,9 @@ export class VisualMesh
         this.rotation      = meshConfig.rotation;
         this.invisivel     = meshConfig.invisivel; 
         this.transparencia = meshConfig.transparencia;
+
+        // Por padrão sempre vai usar cores
+        this.useColors = true;
     }
 
     isTransparente()

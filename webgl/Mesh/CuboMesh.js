@@ -40,6 +40,8 @@ export class CuboMesh extends VisualMesh
         this.bufferCor     = null;
         this.bufferIndices = null;
 
+        // Um cubo sem textura sempre vai usar cores
+        this.useColors     = true;
         this.criar();
 
     }

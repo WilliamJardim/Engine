@@ -27,6 +27,9 @@ export class Triangulo3DMesh extends VisualMesh
         this.bufferPosicao = null;
         this.bufferCor = null;
 
+        // Sem textura sempre vai usar cores
+        this.useColors     = true;
+
         this.criar();
     }
 

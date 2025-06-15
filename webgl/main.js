@@ -56,6 +56,7 @@ renderizador.criarObjeto({
 renderizador.criarObjeto({
     tipo: 'TexturedUVCubo',
     texturaUV: carregarTextura( renderizador.gl, "../images/sky.jpg" ),
+    useColors: false,
     invisivel: false,
     transparencia: 100, // 100 opaco
 

@@ -1099,3 +1099,10 @@ essa instancia vai ter as cenas, e vai ter o gerenciador de cenas
 Também interface simples com Open GL, com botões transparentes, textos... Troca de página, imagens.
 
 E o menu do jogo também pode ser uma cena, no fundo pode ser um Background
+
+# 17/06/2025 ABStração pra facilitar portabilidade pra C++
+na pasta abstractgraphics, crair um Adapter bem simples que vai simplismente repassar as chamadas para o WebGL,
+isso vai focar o WebGL somente dentro desse arquivo, que vai ser chamado pela Engine
+Melhor dizendo: A Engine chama a função do GL do Adapter, que na verdade é só uma ponte, que chama a função do GL e retorna seu resultado.
+O Adapter é algo simbolico, mais util. Ele apenas repassa as chamadas, mais isso ja é muito util em termos de portabilidade
+

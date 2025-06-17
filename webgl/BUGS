@@ -29,4 +29,8 @@ QUANDO A CAMERA ESTÀ NA POSIÇÂO DE ORIGEM, ELA OLHA PRA CIMA PRA BAIXO
 Mais quando eu vou pro lado com ela, e olho do sentido esquerdo dos cubos, quando eu tento olhar pra cima ou pra baixo, ela olha pro lado tambem, como se fosse Z
 
 
+BUG: ROTAÇÂO XYZ NÂO BATE COM A POSIÇÂO XYZ
+Por exemplo, ao somar +0.01 a POSIÇÂO X, o Cilindro vai pra direita
+Mais ao somar +0.01 na ROTAÇÂO X, o Cilindro gira pra traz.
+Quero que seja consistente
 

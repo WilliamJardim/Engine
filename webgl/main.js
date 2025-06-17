@@ -52,6 +52,40 @@ renderizador.criarObjeto({
     }
 });
 
+// Cria um cilindro
+renderizador.criarObjeto({
+    tipo: 'Cilindro',
+    invisivel: false,
+    transparencia: 100, // 100 opaco
+
+    /**
+    * Posição do objeto 
+    */
+    position: {
+        x: -6,
+        y: 8,
+        z: 0
+    },
+
+    /**
+    * Escala do objeto 
+    */
+    scale: {
+        x: 1,
+        y: 1.2,
+        z: 1
+    },
+
+    /**
+    * Rotação do objeto 
+    */
+    rotation: {
+        x: 0,
+        y: 0,
+        z: 0
+    }
+});
+
 // Cria um cubo
 renderizador.criarObjeto({
     tipo: 'TexturedFacesCubo',

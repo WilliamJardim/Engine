@@ -28,12 +28,14 @@ import { cuboShaders } from '../Shaders/cube.js';
 import { cuboTextureUVShaders } from '../Shaders/cubeTextureUV.js'
 import { esferaShaders } from '../Shaders/esfera.js';
 import { trianguloShaders } from '../Shaders/triangulo.js';
+import { cilindroShaders } from '../Shaders/cilindro.js';
 
 import { criarGL }    from '../funcoesBase.js';
 import { CuboMesh } from '../Mesh/colored/CuboMesh.js';
 import { TexturedUVCuboMesh } from '../Mesh/textured/TexturedUVCubeMesh.js';
 import { TexturedFacesCuboMesh } from '../Mesh/textured/TexturedFacesCubeMesh.js';
 import { EsferaMesh } from '../Mesh/colored/EsferaMesh.js';
+import { CilindroMesh } from '../Mesh/colored/CilindroMesh.js';
 import { Triangulo2DMesh } from '../Mesh/colored/Triangulo2DMesh.js';
 import { Triangulo3DMesh } from '../Mesh/colored/Triangulo3DMesh.js';
 
@@ -125,6 +127,10 @@ export class Renderer
                                           esferaShaders.vertexScript, 
                                           esferaShaders.fragmentScript),
 
+            cilindroProgram   : createProgram(this.gl, 
+                                          cilindroShaders.vertexScript, 
+                                          cilindroShaders.fragmentScript),
+
             trianguloProgram : createProgram(this.gl, 
                                           trianguloShaders.vertexScript, 
                                           trianguloShaders.fragmentScript)
@@ -149,6 +155,11 @@ export class Renderer
     getCubeProgram()
     {
         return this.programs.cubeProgram;
+    }
+
+    getCilindroProgram()
+    {
+        return this.programs.cilindroProgram;
     }
 
     getCubeTextureUVProgram()
@@ -264,6 +275,12 @@ export class Renderer
             case "Cubo":
                 this.objetos.push( new CuboMesh( contextoRenderizador, 
                                                  propriedadesObjeto ) 
+                                 );
+                break;
+
+            case "Cilindro":
+                this.objetos.push( new CilindroMesh( contextoRenderizador, 
+                                                     propriedadesObjeto ) 
                                  );
                 break;
 

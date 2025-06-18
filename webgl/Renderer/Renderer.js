@@ -32,6 +32,7 @@ import { cilindroShaders } from '../Shaders/cilindro.js';
 
 import { criarGL }    from '../funcoesBase.js';
 import { CuboMesh } from '../Mesh/colored/CuboMesh.js';
+import { PlanoOnduladoMesh } from '../Mesh/colored/PlanoOnduladoMesh.js';
 import { TexturedUVCuboMesh } from '../Mesh/textured/TexturedUVCubeMesh.js';
 import { TexturedFacesCuboMesh } from '../Mesh/textured/TexturedFacesCubeMesh.js';
 import { EsferaMesh } from '../Mesh/colored/EsferaMesh.js';
@@ -281,6 +282,12 @@ export class Renderer
             case "Cilindro":
                 this.objetos.push( new CilindroMesh( contextoRenderizador, 
                                                      propriedadesObjeto ) 
+                                 );
+                break;
+
+            case "PlanoOndulado":
+                this.objetos.push( new PlanoOnduladoMesh( contextoRenderizador, 
+                                                          propriedadesObjeto ) 
                                  );
                 break;
 

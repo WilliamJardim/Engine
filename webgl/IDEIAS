@@ -68,3 +68,6 @@ function onAndar()
         renderizador.posicaoCamera[1] -= posicaoAtualRelacaoDirecao[1];
     }
 }
+
+AO RODAR: renderizador.getObjetos()[1].elevarPico(0.5, 2.0, 10.8, 5.3); no PlanoOndular, dá pra criar uma "tenda" para um jogo de sobrevivencia
+

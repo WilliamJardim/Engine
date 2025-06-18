@@ -33,6 +33,223 @@ export class VisualMesh
         this.useColors = true;
     }
 
+    getRotation()
+    {
+        return this.rotation;
+    }
+
+    /**
+    * Soma uma rotação ao redor de cada eixo: X, Y, Z, respectivamente.
+    */
+    addRotationAround(rotation)
+    {
+        this.rotation.x += rotation.x;
+        this.rotation.y += rotation.y;
+        this.rotation.z += rotation.z;
+    }
+
+    addRotationAroundX(rotationX)
+    {
+        this.rotation.x += rotationX;
+    }
+
+    addRotationAroundY(rotationY)
+    {
+        this.rotation.y += rotationY;
+    }
+
+    addRotationAroundZ(rotationZ)
+    {
+        this.rotation.z += rotationZ;
+    }
+
+    /**
+    * Define uma rotação ao redor de cada eixo: X, Y, Z, respectivamente.
+    */
+    setRotationAround(rotation)
+    {
+        this.rotation.x = rotation.x;
+        this.rotation.y = rotation.y;
+        this.rotation.z = rotation.z;
+    }
+
+    setRotationAroundX(rotationX)
+    {
+        this.rotation.x = rotationX;
+    }
+
+    setRotationAroundY(rotationY)
+    {
+        this.rotation.y = rotationY;
+    }
+
+    setRotationAroundZ(rotationZ)
+    {
+        this.rotation.z = rotationZ;
+    }
+
+
+    /**
+    * Soma uma rotação EM DIREÇÂO de cada eixo: X, Y, Z, respectivamente.
+    * OU seja, em direção do eixo X,
+    * 
+    * Respeitando a direção de movimento da posição, ou seja, 
+    * Ao mover em +X, ele anda pra direita, então por esse método ao rotacionar em direção a X, ele vai inclinar pra direita tambem
+    */
+    addRotationTowards(rotation)
+    {
+        this.rotation.x += (rotation.z * -1);
+        this.rotation.y += rotation.y;
+        this.rotation.z += (rotation.x * -1);
+    }
+
+    addRotationTowardsX(rotationX)
+    {
+        this.rotation.z += (rotationX * -1);
+    }
+
+    addRotationTowardsY(rotationY)
+    {
+        this.rotation.y += rotationY;
+    }
+
+    addRotationTowardsZ(rotationZ)
+    {
+        this.rotation.x += (rotationZ * -1);
+    }
+
+    /**
+    * Define uma rotação EM DIREÇÂO de cada eixo: X, Y, Z, respectivamente.
+    * OU seja, em direção do eixo X,
+    * 
+    * Respeitando a direção de movimento da posição, ou seja, 
+    * Ao mover em +X, ele anda pra direita, então por esse método ao rotacionar em direção a X, ele vai inclinar pra direita tambem
+    */
+    setRotationTowards(rotation)
+    {
+        this.rotation.x = (rotation.z * -1);
+        this.rotation.y = rotation.y;
+        this.rotation.z = (rotation.x * -1);
+    }
+
+    setRotationTowardsX(rotationX)
+    {
+        this.rotation.z = (rotationX * -1);
+    }
+
+    setRotationTowardsY(rotationY)
+    {
+        this.rotation.y = rotationY;
+    }
+
+    setRotationTowardsZ(rotationZ)
+    {
+        this.rotation.x = (rotationZ * -1);
+    }
+
+
+    getPosition()
+    {
+        return this.position;
+    }
+
+    addPosition(position)
+    {
+        this.position.x += position.x;
+        this.position.y += position.y;
+        this.position.z += position.z;
+    }
+
+    addPositionX(positionX)
+    {
+        this.position.x += positionX;
+    }
+
+    addPositionY(positionY)
+    {
+        this.position.y += positionY;
+    }
+
+    addPositionZ(positionZ)
+    {
+        this.position.z += positionZ;
+    }
+
+
+    setPosition(position)
+    {
+        this.position.x = position.x;
+        this.position.y = position.y;
+        this.position.z = position.z;
+    }
+
+    setPositionX(positionX)
+    {
+        this.position.x = positionX;
+    }
+
+    setPositionY(positionY)
+    {
+        this.position.y = positionY;
+    }
+
+    setPositionZ(positionZ)
+    {
+        this.position.z = positionZ;
+    }
+
+
+    getScale()
+    {
+        return this.scale;
+    }
+
+    addScale(scale)
+    {
+        this.scale.x += scale.x;
+        this.scale.y += scale.y;
+        this.scale.z += scale.z;
+    }
+
+    addScaleX(scaleX)
+    {
+        this.scale.x += scaleX;
+    }
+
+    addScaleY(scaleY)
+    {
+        this.scale.y += scaleY;
+    }
+
+    addScaleZ(scaleZ)
+    {
+        this.scale.z += scaleZ;
+    }
+
+
+    setScale(scale)
+    {
+        this.scale.x = scale.x;
+        this.scale.y = scale.y;
+        this.scale.z = scale.z;
+    }
+
+    setScaleX(scaleX)
+    {
+        this.scale.x = scaleX;
+    }
+
+    setScaleY(scaleY)
+    {
+        this.scale.y = scaleY;
+    }
+
+    setScaleZ(scaleZ)
+    {
+        this.scale.z = scaleZ;
+    }
+
+
     isTransparente()
     {
         return this.transparencia < 1;

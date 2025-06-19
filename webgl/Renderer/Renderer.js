@@ -29,6 +29,7 @@ import { cuboTextureUVShaders } from '../Shaders/cubeTextureUV.js'
 import { esferaShaders } from '../Shaders/esfera.js';
 import { trianguloShaders } from '../Shaders/triangulo.js';
 import { cilindroShaders } from '../Shaders/cilindro.js';
+import { OBJShaders } from '../Shaders/obj.js';
 
 import { criarGL }    from '../funcoesBase.js';
 import { CuboMesh } from '../Mesh/colored/CuboMesh.js';
@@ -40,6 +41,8 @@ import { EsferaMesh } from '../Mesh/colored/EsferaMesh.js';
 import { CilindroMesh } from '../Mesh/colored/CilindroMesh.js';
 import { Triangulo2DMesh } from '../Mesh/colored/Triangulo2DMesh.js';
 import { Triangulo3DMesh } from '../Mesh/colored/Triangulo3DMesh.js';
+
+import { OBJMesh } from '../Mesh/OBJMesh.js';
 
 import { skyboxPlaneShaders } from '../Shaders/planeskybox.js';
 
@@ -121,6 +124,10 @@ export class Renderer
                                           cuboShaders.vertexScript, 
                                           cuboShaders.fragmentScript),
 
+            OBJProgram       : createProgram(this.gl, 
+                                          OBJShaders.vertexScript, 
+                                          OBJShaders.fragmentScript),
+
             cubeTextureUVProgram : createProgram(this.gl, 
                                           cuboTextureUVShaders.vertexScript, 
                                           cuboTextureUVShaders.fragmentScript),
@@ -157,6 +164,11 @@ export class Renderer
     getCubeProgram()
     {
         return this.programs.cubeProgram;
+    }
+
+    getOBJProgram()
+    {
+        return this.programs.OBJProgram;
     }
 
     getCilindroProgram()
@@ -274,6 +286,12 @@ export class Renderer
 
         switch( propriedadesObjeto.tipo )
         {
+            case "OBJ":
+                this.objetos.push( new OBJMesh( contextoRenderizador, 
+                                                propriedadesObjeto ) 
+                                 );
+                break;
+
             case "Cubo":
                 this.objetos.push( new CuboMesh( contextoRenderizador, 
                                                  propriedadesObjeto ) 

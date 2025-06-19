@@ -9,7 +9,7 @@
 */
 import { VisualMesh } from './Mesh/VisualMesh.js';
 import { Renderer }   from './Renderer/Renderer.js';
-import { carregarTextura } from './funcoesBase.js';
+import { carregarTextura, carregarTxt } from './funcoesBase.js';
 import {calcularDirecaoCamera, calcularDireitaCamera} from './math.js';
 
 const canvas       = document.getElementById('glcanvas'); 
@@ -507,3 +507,50 @@ function loopTeste(){
 
 }
 loopTeste();
+
+// FUNÇÂO QUE CARREGA O MODELO 3D DA CAIXA
+async function criarCaixa() 
+{
+    const objText = await carregarTxt('./objs/box.obj');
+    const mtlText = await carregarTxt('./objs/box.mtl');
+
+    // Cria um plano que pode se deformar
+    renderizador.criarObjeto({
+        tipo: 'OBJ',
+        objText: objText,
+        mtlText: mtlText,
+        
+        invisivel: false,
+        transparencia: 1, 
+
+        /**
+        * Posição do objeto 
+        */
+        position: {
+            x: -34,
+            y: 8,
+            z: 0
+        },
+
+        /**
+        * Escala do objeto 
+        */
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        },
+
+        /**
+        * Rotação do objeto 
+        */
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        }
+    });
+}
+
+window.criarCaixa = criarCaixa;
+criarCaixa();

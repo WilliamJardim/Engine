@@ -83,3 +83,18 @@ export function carregarTextura(gl, urlTextura)
 
     return textura;
 }
+
+// Função para carregar arquivos de texto (OBJ e MTL)
+export async function carregarTxt(path) 
+{
+    const response = await fetch(path);
+    return await response.text();
+}
+
+// Função para carregar imagens
+export function carregarImagem(texturePath) 
+{
+    const img = new Image();
+    img.src = `./textures/${texturePath.split('\\').pop()}`;
+    return img;
+}

@@ -251,11 +251,7 @@ export class CilindroMesh extends VisualMesh
 
         modeloObjetoVisual     = DefinirEscala(modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
 
-        // Se for um objeto transparente
-        if( isTransparente )
-        {
-            gl.depthMask(false);
-        }
+        gl.disable(gl.CULL_FACE);
 
         // Atualiza os buffers do objeto 3d com os dados calculados
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
@@ -280,11 +276,7 @@ export class CilindroMesh extends VisualMesh
         // Desenha o cilindro
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
-        // Se for um objeto transparente
-        if( isTransparente )
-        {
-            gl.depthMask(true);
-        }
+        gl.enable(gl.CULL_FACE);
 
         // FIM DESSA LOGICA
     }

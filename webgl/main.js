@@ -22,7 +22,7 @@ renderizador.inicializar();
 renderizador.criarObjeto({
     tipo: 'Cubo',
     invisivel: false,
-    transparencia: 100, // 100 opaco
+    transparencia: 0.5, // 100 opaco
 
     /**
     * Posição do objeto 
@@ -56,7 +56,7 @@ renderizador.criarObjeto({
 renderizador.criarObjeto({
     tipo: 'CuboDeformavel',
     invisivel: false,
-    transparencia: 100, // 100 opaco
+    transparencia: 0.5, // 100 opaco
 
     /**
     * Posição do objeto 
@@ -171,7 +171,7 @@ renderizador.criarObjeto({
 
     useColors: false,
     invisivel: false,
-    transparencia: 100, // 100 opaco
+    transparencia: 0.5, // 100 opaco
 
     /**
     * Posição do objeto 

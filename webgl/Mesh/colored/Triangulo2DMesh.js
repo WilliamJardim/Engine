@@ -113,12 +113,6 @@ export class Triangulo2DMesh extends VisualMesh
 
         modeloObjetoVisual = DefinirEscala(modeloObjetoVisual, [scale.x, scale.y, scale.z]);
 
-        // Se for um objeto transparente
-        if (isTransparente)
-        {
-            gl.depthMask(false);
-        }
-        
         // Atualiza os buffers do objeto 3d com os dados calculados
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
@@ -137,11 +131,6 @@ export class Triangulo2DMesh extends VisualMesh
 
         // Desenha o tringulo
         gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-        if (isTransparente) 
-        {
-            gl.depthMask(true);
-        }
 
         // FIM DESSA LOGICA
     }

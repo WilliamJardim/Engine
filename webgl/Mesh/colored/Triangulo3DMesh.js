@@ -176,11 +176,6 @@ export class Triangulo3DMesh extends VisualMesh
         // Desenha o tringulo
         gl.drawArrays(gl.TRIANGLES, this.getIndices().length, gl.UNSIGNED_SHORT, 0);
 
-        if (isTransparente) 
-        {
-            gl.depthMask(true);
-        }
-        
         gl.useProgram(programUsado);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
@@ -197,11 +192,6 @@ export class Triangulo3DMesh extends VisualMesh
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
 
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-
-        if (isTransparente) 
-        {
-            gl.depthMask(true);
-        }
 
         // FIM DESSA LOGICA
     }

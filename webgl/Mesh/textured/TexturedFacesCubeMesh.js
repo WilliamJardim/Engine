@@ -275,12 +275,6 @@ export class TexturedFacesCuboMesh extends VisualMesh
 
         modeloObjetoVisual     = DefinirEscala(modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
 
-        // Se for um objeto transparente
-        if( isTransparente )
-        {
-            gl.depthMask(false);
-        }
-
         // Atualiza os buffers do objeto 3d com os dados calculados
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
@@ -321,12 +315,6 @@ export class TexturedFacesCuboMesh extends VisualMesh
             // O offset do drawElements é em bytes. Cada índice é um UNSIGNED_SHORT (2 bytes).
             const offset = 6 * i * 2; // 6 indices por face * i * 2 bytes por indice
             gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, offset);
-        }
-
-        // Se for um objeto transparente
-        if( isTransparente )
-        {
-            gl.depthMask(true);
         }
 
         // FIM DESSA LOGICA

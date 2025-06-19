@@ -282,11 +282,6 @@ export class OBJMesh extends VisualMesh
 
         this.createBuffers();
 
-        if ( isTransparente )
-        {
-            gl.depthMask(false);
-        }
-
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.posicao);
@@ -331,11 +326,6 @@ export class OBJMesh extends VisualMesh
         }
 
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-
-        if ( isTransparente )
-        {
-            gl.depthMask(true);
-        }
     }
 
     criar() 

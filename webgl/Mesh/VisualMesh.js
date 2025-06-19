@@ -257,7 +257,7 @@ export class VisualMesh
 
     isOpaco()
     {
-        return this.transparencia == 1;
+        return this.transparencia >= 1;
     }
 
     getTransparencia()

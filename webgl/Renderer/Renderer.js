@@ -355,6 +355,7 @@ export class Renderer
     */
     desenharObjetos()
     {
+        const gl             = this.gl;
         const objetosVisuais = this.getObjetos();
         const frameDelta     = this.frameCounter.calculateFrameDelta();
         this.lastFrameDelta  = frameDelta;
@@ -362,17 +363,49 @@ export class Renderer
         // Atualiza a camera
         this.updateCamera( frameDelta );
 
+        /**
+        * Desenha os objetos não-transparentes
+        */
+        gl.depthMask(true);
+        gl.disable(this.gl.BLEND);
+        gl.enable(this.gl.DEPTH_TEST);
+        gl.enable(this.gl.CULL_FACE);
+
         for( let i = 0 ; i < objetosVisuais.length ; i++ )
         {
             const objetoAtual = objetosVisuais[i];
             const isInvisivel = objetoAtual.invisivel;
+            const isOpaco     = objetoAtual.isOpaco();
 
-            // Se não está invisivel, desenha o objeto
-            if( isInvisivel == false )
+            // Se não está invisivel e SE ES OPACO, ENTAO desenha o objeto
+            if( isInvisivel == false && isOpaco == true )
             {
                 objetoAtual.desenhar( frameDelta );
             }
         }
+
+        /**
+        * Desenha os objetos transparentes
+        */
+        gl.depthMask(false);
+        gl.enable(this.gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+        for( let i = 0 ; i < objetosVisuais.length ; i++ )
+        {
+            const objetoAtual     = objetosVisuais[i];
+            const isInvisivel     = objetoAtual.invisivel;
+            const isTransparente  = objetoAtual.isTransparente();
+
+            // Se não está invisivel e SE ES TRANSPARENTE, ENTAO desenha o objeto
+            if( isInvisivel == false && isTransparente == true )
+            {
+                objetoAtual.desenhar( frameDelta );
+            }
+        }
+
+        gl.depthMask(true);
+        gl.disable(this.gl.BLEND);
     }
 
     // SERIA NECESSARIO ADAPTAR NO C++ POR CAUSA DE CONTEXTO DE BIND

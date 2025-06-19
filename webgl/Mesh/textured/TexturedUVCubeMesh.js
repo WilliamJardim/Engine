@@ -251,12 +251,6 @@ export class TexturedUVCuboMesh extends VisualMesh
 
         modeloObjetoVisual     = DefinirEscala(modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
 
-        // Se for um objeto transparente
-        if( isTransparente )
-        {
-            gl.depthMask(false);
-        }
-
         // Atualiza os buffers do objeto 3d com os dados calculados
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
@@ -291,12 +285,6 @@ export class TexturedUVCuboMesh extends VisualMesh
 
         // Desenha o cubo
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-
-        // Se for um objeto transparente
-        if( isTransparente )
-        {
-            gl.depthMask(true);
-        }
 
         // FIM DESSA LOGICA
     }

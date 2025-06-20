@@ -554,3 +554,63 @@ async function criarCaixa()
 
 window.criarCaixa = criarCaixa;
 criarCaixa();
+
+// FUNÇÂO QUE CARREGA O MODELO 3D DA CAIXA
+async function carregarMapa() 
+{
+    const objText = await carregarTxt('./MAPS/theroom/map.obj');
+    const mtlText = await carregarTxt('./MAPS/theroom/map.mtl');
+
+    // Cria um plano que pode se deformar
+    renderizador.criarObjeto({
+        tipo: 'OBJ',
+        objText: objText,
+        mtlText: mtlText,
+        
+        invisivel: false,
+        transparencia: 1, 
+
+        /**
+        * Posição do objeto 
+        */
+        position: {
+            x: -50,
+            y: 8,
+            z: 0
+        },
+
+        /**
+        * Escala do objeto 
+        */
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        },
+
+        /**
+        * Rotação do objeto 
+        */
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        }
+    });
+}
+
+window.carregarMapa = carregarMapa;
+carregarMapa();
+
+function criarTexturaBranca(gl) {
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    const whitePixel = new Uint8Array([255, 255, 255, 255]);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0,
+                gl.RGBA, gl.UNSIGNED_BYTE, whitePixel);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    return texture;
+}
+
+window.texturaBranca = criarTexturaBranca(renderizador.gl);

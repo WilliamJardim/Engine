@@ -38,6 +38,7 @@ export class OBJMesh extends VisualMesh
         this.bufferPosicao  = null;
         this.bufferCor      = null;
         this.bufferIndices  = null;
+        this.allBuffersCriated = false;
 
         this.setProgram(renderer.getOBJProgram());
 
@@ -70,6 +71,10 @@ export class OBJMesh extends VisualMesh
                 this.materials[current] = { name: current, Kd: [1, 1, 1], map_Kd: null };
 
             } else if (current !== null) {
+                if (line.startsWith('d')) {
+                    this.materials[current].opacity = parseFloat(line.split(/\s+/)[1]);
+                }
+                
                 if (line.indexOf('Kd') === 0) {
                     const tokens = line.split(/\s+/);
                     this.materials[current].Kd = [
@@ -77,15 +82,19 @@ export class OBJMesh extends VisualMesh
                         parseFloat(tokens[2]),
                         parseFloat(tokens[3])
                     ];
+                
                 } else if (line.indexOf('map_Kd') === 0) {
                     const tokens       = line.split(/\s+/);
                     const textureFile  = tokens[1];
+                    
                     const gl           = this.getRenderer().gl;
                     const textureWebGL = carregarTextura(gl, textureFile);
                     this.materials[current].map_Kd = textureWebGL;
                 }
             }
         }
+
+        console.log(this.materials);
     }
 
     _parseOBJ(objText) 
@@ -144,7 +153,7 @@ export class OBJMesh extends VisualMesh
         }
 
         const objectKeys = Object.keys(this.objects);
-        const keyToIndex = {};
+        let keyToIndex = {};
         let currentIndex = 0;
 
         for (let i = 0; i < objectKeys.length; i++) 
@@ -189,6 +198,76 @@ export class OBJMesh extends VisualMesh
                 }
             }
         }
+
+        /**
+        * Mapeia os indices para cada objeto a ser desenhado,
+        * Organiza os buffers de posições, cores, UVs e indices.
+        */
+        keyToIndex = {};
+        currentIndex = 0;
+
+        this.indices = []; // reseta para montar os índices gerais
+
+        this.objectsInfo = {}; // objeto para guardar offset/count por objeto
+
+        let globalIndexCount = 0; // para contar índice total gerado
+
+        for (let i = 0; i < objectKeys.length; i++) 
+        {
+            const nomeObjeto = objectKeys[i];
+            const faces = this.objects[nomeObjeto];
+
+            let localIndexCount = 0; // conta índices desse objeto só
+            const startIndex = globalIndexCount; // índice inicial no buffer geral
+
+            for (let j = 0; j < faces.length; j++) 
+            {
+                const face = faces[j];
+                const faceIndices = [];
+
+                for (let k = 0; k < face.face.length; k++) 
+                {
+                    const v = face.face[k];
+                    const key = v.vi + '/' + v.ti + '/' + v.ni;
+
+                    if (keyToIndex[key] === undefined) {
+                        keyToIndex[key] = currentIndex++;
+
+                        this.colors.push(...(this.materials[face.material]?.Kd || [1, 1, 1]), 1);
+
+                        const pos = this.vertices[v.vi] || [0, 0, 0];
+                        this.positions.push(pos[0], pos[1], pos[2]);
+
+                        if (v.ti >= 0) {
+                            const uv = this.uvs[v.ti];
+                            this.uvArray = this.uvArray || [];
+                            this.uvArray.push(uv[0], uv[1]);
+                        } else {
+                            this.uvArray = this.uvArray || [];
+                            this.uvArray.push(0, 0);
+                        }
+                    }
+
+                    faceIndices.push(keyToIndex[key]);
+                }
+
+                // triangula a face (assumindo que face.face.length >= 3)
+                for (let k = 1; k < faceIndices.length - 1; k++) 
+                {
+                    this.indices.push(faceIndices[0], faceIndices[k], faceIndices[k + 1]);
+                    localIndexCount += 3;
+                    globalIndexCount += 3;
+                }
+            }
+
+            // Armazena o offset em bytes (3 índices * 2 bytes por índice cada) e a contagem de índices
+            this.objectsInfo[nomeObjeto] = {
+                offset: startIndex * 2, // offset em bytes, pois drawElements espera offset em bytes
+                count: localIndexCount
+            };
+        }
+
+        console.log(this.uvArray);
     }
 
     getPositions() 
@@ -226,6 +305,11 @@ export class OBJMesh extends VisualMesh
             atributosVisualizacaoObjeto: {
                 matrixVisualizacao: gl.getUniformLocation(programUsado, OBJShaders.vertexExtraInfo.variavelMatrixVisualizacao),
                 modeloObjetoVisual: gl.getUniformLocation(programUsado, OBJShaders.vertexExtraInfo.variavelModeloObjeto)
+            },
+            uniformsCustomizados: {
+                usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),
+                opacidade  : gl.getUniformLocation(programUsado, "uOpacidade"),
+                sampler    : gl.getUniformLocation(programUsado, "uSampler")
             }
         };
     }
@@ -253,6 +337,9 @@ export class OBJMesh extends VisualMesh
         {
             this.bufferUV = createBuffer(gl, this.getUVs(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
         }
+
+        // Diz que ja criou todos os buffers para não chamar novamente
+        this.allBuffersCriated = true;
     }
 
     desenhar() 
@@ -280,7 +367,12 @@ export class OBJMesh extends VisualMesh
 
         modeloObjetoVisual     = DefinirEscala(modeloObjetoVisual, [scale.x, scale.y, scale.z]);
 
-        this.createBuffers();
+        if( this.allBuffersCriated == false )
+        {
+            this.createBuffers();
+        }
+
+        gl.useProgram(programUsado);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
@@ -299,33 +391,32 @@ export class OBJMesh extends VisualMesh
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 
-        gl.useProgram(programUsado);
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, renderer.getMatrixVisualizacao());
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
 
-        const material = this.materials[this.activeMaterial];
-        const usarTextura = material && material.map_Kd;
+        for (const nomeObjeto in this.objects) 
+        {
+            const info        = this.objectsInfo[nomeObjeto];
+            const material    = this.materials[this.objects[nomeObjeto][0].material];
+            const usarTextura = material && material.map_Kd;
+            const opacidade   = material?.opacity ?? 1.0;
+
+            gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, usarTextura ? 1 : 0);
+            gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, opacidade);
+
+            if (usarTextura) 
+            {
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, material.map_Kd);
+                gl.uniform1i(informacoesPrograma.uniformsCustomizados.sampler, 0);
+            }
+
+            gl.drawElements(gl.TRIANGLES, info.count, gl.UNSIGNED_SHORT, info.offset);
+
+            //break; //Interrompe o loop pois todos os dados ja foram enviados
+        }
+
         
-        gl.uniform1i(gl.getUniformLocation(programUsado, "uUsarTextura"), usarTextura ? 1 : 0);
-
-        if ( usarTextura ) 
-        {
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, material.map_Kd);
-            gl.uniform1i(gl.getUniformLocation(programUsado, "uSampler"), 0);
-        }
-
-        if ( material && material.map_Kd ) 
-        {
-            const textura = material.map_Kd;
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, textura);
-            
-            const localDoSampler = gl.getUniformLocation(programUsado, "uSampler"); 
-            gl.uniform1i(localDoSampler, 0); // TEXTURE0
-        }
-
-        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
     }
 
     criar() 

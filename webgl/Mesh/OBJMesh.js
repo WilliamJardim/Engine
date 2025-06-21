@@ -425,6 +425,7 @@ export class OBJMesh extends VisualMesh
             // Se tiver opacidade, ativa blending
             if( opacidade < 1 )
             {
+                gl.depthMask(false);
                 gl.enable(gl.BLEND);
                 gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
             }else {
@@ -441,6 +442,13 @@ export class OBJMesh extends VisualMesh
             gl.drawElements(gl.TRIANGLES, info.count, gl.UNSIGNED_SHORT, info.offset);
 
             //break; //Interrompe o loop pois todos os dados ja foram enviados
+
+            // Se foi usado transparencia, desliga a excessão, e volta ao padrão
+            if( opacidade < 1 )
+            {
+                gl.depthMask(true);
+                gl.disable(gl.BLEND);
+            }
         }
 
         

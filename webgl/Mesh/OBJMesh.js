@@ -126,7 +126,14 @@ export class OBJMesh extends VisualMesh
 
             } else if (prefix === 'f') {
                 if (this.activeObject === null) this.activeObject = 'default';
-                if (!this.objects[this.activeObject]) this.objects[this.activeObject] = [];
+                if (this.activeMaterial === null) this.activeMaterial = 'defaultMat';
+
+                // Agrupa por objeto + material
+                const grupo = `${this.activeObject}__${this.activeMaterial}`;
+
+                if (!this.objects[grupo]) {
+                    this.objects[grupo] = [];
+                }
 
                 const face = [];
                 for (let j = 1; j < parts.length; j++)
@@ -138,8 +145,8 @@ export class OBJMesh extends VisualMesh
                         ni: comp[2] ? parseInt(comp[2], 10) - 1 : -1
                     });
                 }
-
-                this.objects[this.activeObject].push({
+                
+                this.objects[grupo].push({
                     face: face,
                     material: this.activeMaterial
                 });

@@ -43,3 +43,8 @@ Agora quando o objeto está inteiramente separado, ai não dá problema nenhum.
 
 SOLUÇÔES: Na minha Engine, criar um sistema pra unir os Meshs do objeto, mesmo estando separados, permitindo mover eles como um só.
 OU TENTAR CORRIGIR ISSO NO CÒDIGO DO OBJMesh
+
+
+BUG: Por causa do gl.depthMask(false);, na hora de renderizar objetos transparentes,
+Se um modelo 3d grande como o do MAPA DO QUARTO for focado pela camera, qualquer outro objeto transparente que estiver na frente dele, na mesma direção que a camera está apontando, ESSE OBJETO SOME
+SOMENTE QUANDO OLHA EM DIREÇÂO PRO OBJETO GRANDE,.. mais para direções contrarias isso não ocorre. Ele meio que "ocupa" uma area da visão desse objeto

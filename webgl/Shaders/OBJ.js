@@ -52,6 +52,9 @@ export const OBJShaders = {
 
             } else {
                 gl_FragColor = vColor;
+
+                // Corrigir se houver opacidade definida
+                gl_FragColor.a *= uOpacidade;
             }
         }
     `,

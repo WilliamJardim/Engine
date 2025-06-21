@@ -42,10 +42,11 @@ export class OBJMesh extends VisualMesh
 
         this.setProgram(renderer.getOBJProgram());
 
-        this.materials      = {};
-        this.objects        = {};
-        this.activeObject   = null;
-        this.activeMaterial = null;
+        this.materials       = {};
+        this.objects         = {};
+        this.activeObject    = null;
+        this.activeMaterial  = null;
+        this._isTransparente = false;
 
         this._parseMTL(this.mtlText);
         this._parseOBJ(this.objText);
@@ -73,6 +74,7 @@ export class OBJMesh extends VisualMesh
             } else if (current !== null) {
                 if (line.startsWith('d')) {
                     this.materials[current].opacity = parseFloat(line.split(/\s+/)[1]);
+                    this._isTransparente = true; // Diz pra Engine que este objeto tem transparencia
                 }
                 
                 if (line.indexOf('Kd') === 0) {
@@ -349,6 +351,15 @@ export class OBJMesh extends VisualMesh
         this.allBuffersCriated = true;
     }
 
+    /**
+    * @override
+    * @implementation
+    */
+    isTransparente()
+    {
+        return this.transparencia < 1 || this._isTransparente == true;
+    }
+
     desenhar() 
     {
         const renderer            = this.getRenderer();
@@ -410,6 +421,15 @@ export class OBJMesh extends VisualMesh
 
             gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, usarTextura ? 1 : 0);
             gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, opacidade);
+
+            // Se tiver opacidade, ativa blending
+            if( opacidade < 1 )
+            {
+                gl.enable(gl.BLEND);
+                gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+            }else {
+                gl.disable(gl.BLEND);
+            }
 
             if (usarTextura) 
             {

@@ -34,3 +34,12 @@ Por exemplo, ao somar +0.01 a POSIÇÂO X, o Cilindro vai pra direita
 Mais ao somar +0.01 na ROTAÇÂO X, o Cilindro gira pra traz.
 Quero que seja consistente
 
+
+
+
+BUG: NO OBJMesh
+Quando eu exporto um objeto modelado pelo Blender em .obj COM ELE TODO JUNTADO(COM TUDO JUNTO EM UM SÒ USANDO A OPÇÂO CTRL + P DO BLENDER),  a minha Engine ao ler esse .obj aplica uma unica textura para o objeto inteiro.
+Agora quando o objeto está inteiramente separado, ai não dá problema nenhum.
+
+SOLUÇÔES: Na minha Engine, criar um sistema pra unir os Meshs do objeto, mesmo estando separados, permitindo mover eles como um só.
+OU TENTAR CORRIGIR ISSO NO CÒDIGO DO OBJMesh

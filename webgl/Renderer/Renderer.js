@@ -65,7 +65,9 @@ export class Renderer
         this.height = window.innerHeight;
 
         // Inicializo o contexto GL que vai ser usado pra desenhar tudo na tela
-        this.gl = criarGL( this.canvas ); 
+        const glContextRetrive = criarGL( this.canvas, "auto" );
+        this.gl        = glContextRetrive.gl; 
+        this.glVersion = glContextRetrive.version; 
 
         this.gl.viewport(0, 0, this.width, this.height);
         this.gl.clearColor(0, 0, 0, 1);

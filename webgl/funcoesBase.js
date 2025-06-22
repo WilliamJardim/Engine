@@ -7,13 +7,51 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-export function criarGL( canvas )
+export function criarGL( canvas, version="auto" )
 {
-    const gl = canvas.getContext('webgl');
+    let gl;
+    let v = 'N';
+
+    if( version != '1' && version != '2' && version != 'auto' )
+    {
+        throw Error("Versão invalida do WebGL!");
+    }
+
+    if( version == 'auto' )
+    {
+        // Tenta WebGL 2
+        gl = canvas.getContext('webgl2');
+
+        if (gl) {
+            console.log('WebGL 2 está disponível!');
+            v = "2";
+
+        } else {
+            // Tenta WebGL 1
+            gl = canvas.getContext('webgl');
+
+            if (gl) {
+                console.log('WebGL 1 está disponível!');
+                v = "1";
+
+            } else {
+                console.log('WebGL não está disponível neste navegador.');
+                v = "N";
+            }
+        }
+
+    }else{
+        gl = canvas.getContext('webgl' + (version == "1" ? '' : version) );
+        v = version;
+    }
+
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    return gl;
+    
+    return {
+        gl: gl,
+        version: v
+    };
 }
 
 export function createShader(gl, type, source) {

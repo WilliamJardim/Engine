@@ -9,7 +9,7 @@
 */
 import { VisualMesh } from "../VisualMesh.js";
 import { createBuffer } from "../../funcoesBase.js";
-import { basicShaders } from '../../Shaders/Basic.js';
+import { baseShaders } from '../../Shaders/Base.js';
 import { CriarMatrix4x4, DefinirTranslacao, RotacionarX, RotacionarY, RotacionarZ, DefinirEscala } from "../../math.js";
 
 export class Triangulo3DMesh extends VisualMesh 
@@ -94,12 +94,17 @@ export class Triangulo3DMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao: gl.getAttribLocation(programUsado, basicShaders.vertexExtraInfo.variavelPosicaoCubo),
-                cor:     gl.getAttribLocation(programUsado, basicShaders.vertexExtraInfo.variavelCorCubo)
+                posicao: gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
+                cor:     gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo)
             },
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao: gl.getUniformLocation(programUsado, basicShaders.vertexExtraInfo.variavelMatrixVisualizacao),
-                modeloObjetoVisual: gl.getUniformLocation(programUsado, basicShaders.vertexExtraInfo.variavelModeloObjeto)
+                matrixVisualizacao: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
+                modeloObjetoVisual: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelModeloObjeto)
+            },
+            uniformsCustomizados: {
+                usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),
+                opacidade  : gl.getUniformLocation(programUsado, "uOpacidade"),
+                sampler    : gl.getUniformLocation(programUsado, "uSampler")
             }
         };
     }
@@ -177,6 +182,15 @@ export class Triangulo3DMesh extends VisualMesh
         gl.drawArrays(gl.TRIANGLES, this.getIndices().length, gl.UNSIGNED_SHORT, 0);
 
         gl.useProgram(programUsado);
+
+        // Não usa textura
+        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, false );
+
+        if( isTransparente )
+        {
+            // Opacidade
+            gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, this.transparencia );
+        }
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);

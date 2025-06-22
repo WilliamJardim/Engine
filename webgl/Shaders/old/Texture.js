@@ -22,11 +22,11 @@ export const textureShaders = {
     vertexExtraInfo: {
         variavelPosicaoCubo: 'aPosicao',
         variavelCorCubo: 'aCor',
-        variavelUV: 'aUV', // NOVO
+        variavelUV: 'aUV', 
         variavelMatrixVisualizacao: 'uMatrixVisualizacao',
         variavelModeloObjeto: 'uModeloObjetoVisual',
         variavelCorFragment: 'vColor',
-        variavelUVFragment: 'vUV' // NOVO
+        variavelUVFragment: 'vUV' 
     },
 
     // Fragment shader

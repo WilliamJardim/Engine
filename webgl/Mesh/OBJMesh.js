@@ -10,7 +10,7 @@
 
 import { VisualMesh } from "./VisualMesh.js";
 import { createBuffer, carregarTextura } from '../funcoesBase.js';
-import { textureShaders } from '../Shaders/Texture.js';
+import { baseShaders } from '../Shaders/Base.js';
 import { 
     CriarMatrix4x4,
     DefinirTranslacao,
@@ -307,13 +307,13 @@ export class OBJMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao : gl.getAttribLocation(programUsado, textureShaders.vertexExtraInfo.variavelPosicaoCubo),
-                cor     : gl.getAttribLocation(programUsado, textureShaders.vertexExtraInfo.variavelCorCubo),
-                uv      : gl.getAttribLocation(programUsado, textureShaders.vertexExtraInfo.variavelUV)
+                posicao : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
+                cor     : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),
+                uv      : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelUV)
             },
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao: gl.getUniformLocation(programUsado, textureShaders.vertexExtraInfo.variavelMatrixVisualizacao),
-                modeloObjetoVisual: gl.getUniformLocation(programUsado, textureShaders.vertexExtraInfo.variavelModeloObjeto)
+                matrixVisualizacao: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
+                modeloObjetoVisual: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelModeloObjeto)
             },
             uniformsCustomizados: {
                 usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),

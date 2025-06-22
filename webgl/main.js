@@ -92,7 +92,7 @@ renderizador.criarObjeto({
     invisivel: false,
     usarOndulacao: true,
     usarOndulacaoSimples: true,
-    transparencia: 100, // 100 opaco
+    transparencia: 0.999, // Para o plano, por algum motivo, se for 1 ele fica todo branco, é alguma coisa no shader
 
     /**
     * Posição do objeto 
@@ -173,7 +173,7 @@ renderizador.criarObjeto({
 
     useColors: false,
     invisivel: false,
-    transparencia: 0.5, // 100 opaco
+    transparencia: 1, // 100 opaco
 
     /**
     * Posição do objeto 

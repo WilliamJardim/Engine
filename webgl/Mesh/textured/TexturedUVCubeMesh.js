@@ -9,7 +9,7 @@
 */
 import { VisualMesh } from "../VisualMesh.js";
 import { createShader, createBuffer, createProgram} from '../../funcoesBase.js';
-import { textureShaders } from '../../Shaders/Texture.js';
+import { baseShaders } from '../../Shaders/Base.js';
 
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
@@ -166,13 +166,17 @@ export class TexturedUVCuboMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao   : gl.getAttribLocation(programUsado, textureShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
-                cor       : gl.getAttribLocation(programUsado, textureShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                posicao   : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
+                cor       : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
             },
-
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao : gl.getUniformLocation(programUsado, textureShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
-                modeloObjetoVisual : gl.getUniformLocation(programUsado, textureShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
+                matrixVisualizacao : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
+                modeloObjetoVisual : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
+            },
+            uniformsCustomizados: {
+                usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),
+                opacidade  : gl.getUniformLocation(programUsado, "uOpacidade"),
+                sampler    : gl.getUniformLocation(programUsado, "uSampler")
             }
         }
     }
@@ -272,6 +276,8 @@ export class TexturedUVCuboMesh extends VisualMesh
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, this.texturaUV ); // o texturaUV precisa estar carregado!
             gl.uniform1i(gl.getUniformLocation(programUsado, "u_textura"), 0);
+
+            gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, true );
         }
 
         // Ativa o atributo UV
@@ -282,6 +288,12 @@ export class TexturedUVCuboMesh extends VisualMesh
         // Usa as informações do cubo(que criamos e calculamos acima)
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
+
+        if( isTransparente )
+        {
+            // Opacidade
+            gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, this.transparencia );
+        }
 
         // Desenha o cubo
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);

@@ -31,8 +31,7 @@ import {CriarMatrix4x4,
 /**
 * Importando shaders 
 */
-import { basicShaders } from '../Shaders/Basic.js';
-import { textureShaders } from '../Shaders/Texture.js';
+import { baseShaders } from '../Shaders/Base.js';
 import { skyboxPlaneShaders } from '../Shaders/planeskybox.js';
 
 /**
@@ -124,16 +123,16 @@ export class Renderer
                                           skyboxPlaneShaders.fragmentScript),
 
             basicProgram              : createProgram(this.gl, 
-                                          basicShaders.vertexScript, 
-                                          basicShaders.fragmentScript),
+                                          baseShaders.vertexScript, 
+                                          baseShaders.fragmentScript),
 
             onduladoProgram           : createProgram(this.gl, 
-                                          basicShaders.vertexScript, 
-                                          basicShaders.fragmentScript),
+                                          baseShaders.vertexScript, 
+                                          baseShaders.fragmentScript),
 
             textureProgram            : createProgram(this.gl, 
-                                          textureShaders.vertexScript, 
-                                          textureShaders.fragmentScript)            
+                                          baseShaders.vertexScript, 
+                                          baseShaders.fragmentScript)            
         };
 
         // Armazena os objetos visuais que serão desenhados

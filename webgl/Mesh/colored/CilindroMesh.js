@@ -9,7 +9,7 @@
 */
 import { VisualMesh } from "../VisualMesh.js";
 import { createShader, createBuffer, createProgram} from '../../funcoesBase.js';
-import { basicShaders } from '../../Shaders/Basic.js';
+import { baseShaders } from '../../Shaders/Base.js';
 
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
@@ -171,13 +171,17 @@ export class CilindroMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao   : gl.getAttribLocation(programUsado, basicShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
-                cor       : gl.getAttribLocation(programUsado, basicShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                posicao   : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
+                cor       : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
             },
-
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao : gl.getUniformLocation(programUsado, basicShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
-                modeloObjetoVisual : gl.getUniformLocation(programUsado, basicShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
+                matrixVisualizacao : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
+                modeloObjetoVisual : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
+            },
+            uniformsCustomizados: {
+                usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),
+                opacidade  : gl.getUniformLocation(programUsado, "uOpacidade"),
+                sampler    : gl.getUniformLocation(programUsado, "uSampler")
             }
         }
     }
@@ -272,6 +276,15 @@ export class CilindroMesh extends VisualMesh
         // Usa as informações do cilindro(que criamos e calculamos acima)
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
+
+        // Não usa textura
+        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, false );
+
+        if( isTransparente )
+        {
+            // Opacidade
+            gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, this.transparencia );
+        }
 
         // Desenha o cilindro
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);

@@ -13,7 +13,6 @@ export const baseShaders = {
         attribute vec4 aPosicao;
         attribute vec4 aCor;
         attribute vec2 aUV;
-        attribute vec3 aNormal;
 
         uniform mat4 uMatrixVisualizacao;
         uniform mat4 uModeloObjetoVisual;
@@ -23,8 +22,6 @@ export const baseShaders = {
 
         varying lowp vec4 vColor;
         varying vec2 vUV;
-        varying vec3 vNormal;
-        varying vec3 vFragPos;
 
         void main() 
         {
@@ -56,13 +53,8 @@ export const baseShaders = {
             }
 
             gl_Position = uMatrixVisualizacao * uModeloObjetoVisual * vec4(pos, 1.0);
-
-            // transformar normal
-            vNormal = mat3(uModeloObjetoVisual) * aNormal; 
-
             vColor = aCor;
             vUV = aUV;
-            vFragPos = pos;
         }
     `,
 
@@ -90,57 +82,25 @@ export const baseShaders = {
         uniform bool uUsarTextura;
         uniform float uOpacidade;
 
-        uniform vec3 uPosicaoLuz;
-        uniform vec3 uPosicaoVisualizacao;
-
-        varying vec3 vNormal;
-        varying vec3 vFragPos;
-
         void main(void) 
         {
-            vec3 norm = normalize(vNormal);
-            vec3 direcaoLuz = normalize(uPosicaoLuz - vFragPos);
-            vec3 direcaoVisualizacao = normalize(uPosicaoVisualizacao - vFragPos);
-
-            // ----- Blinn-Phong -----
-            vec3 metadeDirecao = normalize(direcaoLuz + direcaoVisualizacao);
-
-            // Coeficientes
-            float diff = max(dot(norm, direcaoLuz), 0.0);
-            float spec = pow(max(dot(norm, metadeDirecao), 0.0), 32.0); // brilho = 32
-
-            vec3 ambient = 0.1 * vColor.rgb;
-            vec3 diffuse = 0.8 * diff * vColor.rgb;
-            vec3 specular = 0.6 * spec * vec3(1.0); // branco
-
-            vec3 luminanciaObjeto = ambient + diffuse + specular;
-
             vec4 corBase = vColor;
             
             // Se tem textura
             if ( uUsarTextura ) 
             {
-                // Aplica a luz
-                corBase = vec4(luminanciaObjeto, corBase.a);
-
-                // Aplica a textura por cima
                 corBase *= texture2D(uSampler, vUV);
 
                 // Aplica a opacidade
                 corBase.a *= uOpacidade;
-                 
-                // Aplica isso
+                
                 gl_FragColor = corBase;
             
             // Se não tem textura, aplica apenas cor
             }else{
-                // Aplica a luz
-                corBase = vec4(luminanciaObjeto, corBase.a);
-
                 // Aplica a opacidade
                 corBase.a *= uOpacidade;
 
-                // Aplica isso
                 gl_FragColor = corBase;
             }
 

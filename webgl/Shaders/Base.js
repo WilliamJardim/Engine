@@ -185,6 +185,17 @@ export const baseShaders = {
         variavelCorFragment: 'vColor',
         variavelUVFragment: 'vUV',
         variavelSampler: 'uSampler',
-        variavelUsarTextura: 'uUsarTextura'
+        variavelUsarTextura: 'uUsarTextura',
+
+        // Variaveis que configuram luz no objeto
+        variavelBrilho: 'brilhoObjeto',
+        variavelAmbient: 'ambientObjeto',
+        variavelDiffuse: 'diffuseObjeto',
+        variavelSpecular: 'specularObjeto',
+
+        // Variveis que definem luzes
+        variavelPosicaoLuz: 'uPosicaoLuz',
+        variavelCorLuz: 'uCorLuz',
+        variavelIntensidadeLuz: 'uIntensidadeLuz' 
     }
 }

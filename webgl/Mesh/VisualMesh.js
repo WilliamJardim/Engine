@@ -33,6 +33,50 @@ export class VisualMesh
         this.useColors = true;
     }
 
+    /**
+    * Responsavel por retornar quais luzes o objeto está recebendo 
+    * @returns { posicao, cor, intensidade }
+    */
+    getLuzes()
+    {
+        return [
+            {
+                posicao     : [0,0,0],
+                cor         : [0,0,0],
+                intensidade : [0,0,0]
+            },
+            {
+                posicao     : [5,5,0],
+                cor         : [0,0,0],
+                intensidade : [0,0,0]
+            }
+        ];
+    }
+
+    /**
+    * Código base para aplicar iluminação, usado em todos os objetos
+    */
+    aplicarIluminacao( gl, informacoesPrograma )
+    {
+        // Configurações gerais da luz no objeto
+        const brilho         = informacoesPrograma.atributosObjeto.brilho;
+        const ambient        = informacoesPrograma.atributosObjeto.ambient;
+        const diffuse        = informacoesPrograma.atributosObjeto.diffuse;
+        const specular       = informacoesPrograma.atributosObjeto.specular;
+
+        // Posição e detalhes das luzes
+        const posicaoLuz     = informacoesPrograma.atributosObjeto.posicaoLuz; // um ARRAY
+        const corLuz         = informacoesPrograma.atributosObjeto.corLuz; // um ARRAY
+        const intensidadeLuz = informacoesPrograma.atributosObjeto.intensidadeLuz; // um ARRAY
+
+        // Obtem as luzes que objeto está recebendo
+        const luzes = this.getLuzes();
+
+
+
+
+    }
+
     getRotation()
     {
         return this.rotation;

@@ -307,9 +307,19 @@ export class OBJMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
-                cor     : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),
-                uv      : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelUV)
+                posicao    : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
+                cor        : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),
+                uv         : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelUV),
+
+                // Iluminação
+                brilho     : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
+                ambient    : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
+                diffuse    : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                specular   : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
+                posicaoLuz     : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelPosicaoLuz),
+                corLuz         : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
+                intensidadeLuz : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
+
             },
             atributosVisualizacaoObjeto: {
                 matrixVisualizacao: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
@@ -438,6 +448,8 @@ export class OBJMesh extends VisualMesh
                 gl.bindTexture(gl.TEXTURE_2D, material.map_Kd);
                 gl.uniform1i(informacoesPrograma.uniformsCustomizados.sampler, 0);
             }
+
+            this.aplicarIluminacao( gl, informacoesPrograma );
 
             gl.drawElements(gl.TRIANGLES, info.count, gl.UNSIGNED_SHORT, info.offset);
 

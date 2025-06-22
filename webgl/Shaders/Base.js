@@ -90,7 +90,10 @@ export const baseShaders = {
         uniform bool uUsarTextura;
         uniform float uOpacidade;
 
-        uniform vec3 uPosicaoLuz;
+        #define QUANTIDADE_LUZES 4
+
+        uniform vec3 uPosicaoLuz[QUANTIDADE_LUZES];
+        uniform vec3 uCorLuz[QUANTIDADE_LUZES];
         uniform vec3 uPosicaoVisualizacao;
 
         varying vec3 vNormal;
@@ -99,21 +102,37 @@ export const baseShaders = {
         void main(void) 
         {
             vec3 norm = normalize(vNormal);
-            vec3 direcaoLuz = normalize(uPosicaoLuz - vFragPos);
             vec3 direcaoVisualizacao = normalize(uPosicaoVisualizacao - vFragPos);
 
+            vec3 luminanciaObjeto = vec3(0.0);
+
             // ----- Blinn-Phong -----
-            vec3 metadeDirecao = normalize(direcaoLuz + direcaoVisualizacao);
+            float brilho = 32.0;
+            float intensidadeAmbient = 0.1;
+            float intensidadeDiffuse = 0.8;
+            float intensidadeSpecular = 0.6;
 
-            // Coeficientes
-            float diff = max(dot(norm, direcaoLuz), 0.0);
-            float spec = pow(max(dot(norm, metadeDirecao), 0.0), 32.0); // brilho = 32
+            for (int i = 0; i < QUANTIDADE_LUZES; i++) 
+            {
+                vec3 direcaoLuz = normalize(uPosicaoLuz[i] - vFragPos);
+                vec3 metadeDirecao = normalize(direcaoLuz + direcaoVisualizacao);
 
-            vec3 ambient = 0.1 * vColor.rgb;
-            vec3 diffuse = 0.8 * diff * vColor.rgb;
-            vec3 specular = 0.6 * spec * vec3(1.0); // branco
+                // COEFICIENTES:
 
-            vec3 luminanciaObjeto = ambient + diffuse + specular;
+                // Diffuse
+                float diff = max(dot(norm, direcaoLuz), 0.0);
+
+                // Specular
+                float spec = pow(max(dot(norm, metadeDirecao), 0.0), brilho);
+
+                // Soma de tudo isso pra calcular a luminancia do objeto
+                vec3 ambient = intensidadeAmbient * vColor.rgb;
+                vec3 diffuse = intensidadeDiffuse * diff * vColor.rgb;
+                vec3 specular = intensidadeSpecular * spec * uCorLuz[i]; // branco
+
+                // Define a luminancia do objeto
+                luminanciaObjeto += (ambient + diffuse + specular);
+            }
 
             vec4 corBase = vColor;
             

@@ -9,7 +9,7 @@
 */
 import { VisualMesh } from "../VisualMesh.js";
 import { createBuffer } from "../../funcoesBase.js";
-import { cuboShaders } from "../../Shaders/cube.js";
+import { basicShaders } from '../../Shaders/Basic.js';
 import { CriarMatrix4x4, DefinirTranslacao, RotacionarX, RotacionarY, RotacionarZ, DefinirEscala } from "../../math.js";
 
 export class Triangulo2DMesh extends VisualMesh 
@@ -61,12 +61,12 @@ export class Triangulo2DMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao: gl.getAttribLocation(programUsado, cuboShaders.vertexExtraInfo.variavelPosicaoCubo),
-                cor:     gl.getAttribLocation(programUsado, cuboShaders.vertexExtraInfo.variavelCorCubo)
+                posicao: gl.getAttribLocation(programUsado, basicShaders.vertexExtraInfo.variavelPosicaoCubo),
+                cor:     gl.getAttribLocation(programUsado, basicShaders.vertexExtraInfo.variavelCorCubo)
             },
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao: gl.getUniformLocation(programUsado, cuboShaders.vertexExtraInfo.variavelMatrixVisualizacao),
-                modeloObjetoVisual: gl.getUniformLocation(programUsado, cuboShaders.vertexExtraInfo.variavelModeloObjeto)
+                matrixVisualizacao: gl.getUniformLocation(programUsado, basicShaders.vertexExtraInfo.variavelMatrixVisualizacao),
+                modeloObjetoVisual: gl.getUniformLocation(programUsado, basicShaders.vertexExtraInfo.variavelModeloObjeto)
             }
         };
     }

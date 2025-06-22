@@ -9,7 +9,7 @@
 */
 import { VisualMesh } from "../VisualMesh.js";
 import { createShader, createBuffer, createProgram} from '../../funcoesBase.js';
-import { cuboShaders } from '../../Shaders/cube.js';
+import { basicShaders } from '../../Shaders/Basic.js';
 
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
@@ -127,13 +127,13 @@ export class CuboMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao   : gl.getAttribLocation(programUsado, cuboShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
-                cor       : gl.getAttribLocation(programUsado, cuboShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                posicao   : gl.getAttribLocation(programUsado, basicShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
+                cor       : gl.getAttribLocation(programUsado, basicShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
             },
 
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao : gl.getUniformLocation(programUsado, cuboShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
-                modeloObjetoVisual : gl.getUniformLocation(programUsado, cuboShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
+                matrixVisualizacao : gl.getUniformLocation(programUsado, basicShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
+                modeloObjetoVisual : gl.getUniformLocation(programUsado, basicShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
             }
         }
     }

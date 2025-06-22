@@ -24,11 +24,8 @@ import {CriarMatrix4x4,
         DefinirZ,
         FrameCounter} from '../math.js';
         
-import { cuboShaders } from '../Shaders/cube.js';
+import { basicShaders } from '../Shaders/Basic.js';
 import { cuboTextureUVShaders } from '../Shaders/cubeTextureUV.js'
-import { esferaShaders } from '../Shaders/esfera.js';
-import { trianguloShaders } from '../Shaders/triangulo.js';
-import { cilindroShaders } from '../Shaders/cilindro.js';
 import { OBJShaders } from '../Shaders/obj.js';
 
 import { criarGL }    from '../funcoesBase.js';
@@ -116,34 +113,21 @@ export class Renderer
         // Armazena os programs( um para cada tipo de objeto )
         this.programs = {
 
-            skyboxProgram    : createProgram(this.gl, 
+            skyboxProgram         : createProgram(this.gl, 
                                           skyboxPlaneShaders.vertexScript, 
                                           skyboxPlaneShaders.fragmentScript),
 
-            cubeProgram      : createProgram(this.gl, 
-                                          cuboShaders.vertexScript, 
-                                          cuboShaders.fragmentScript),
+            basicProgram          : createProgram(this.gl, 
+                                          basicShaders.vertexScript, 
+                                          basicShaders.fragmentScript),
 
-            OBJProgram       : createProgram(this.gl, 
+            OBJProgram            : createProgram(this.gl, 
                                           OBJShaders.vertexScript, 
                                           OBJShaders.fragmentScript),
 
-            cubeTextureUVProgram : createProgram(this.gl, 
+            cubeTextureUVProgram  : createProgram(this.gl, 
                                           cuboTextureUVShaders.vertexScript, 
-                                          cuboTextureUVShaders.fragmentScript),
-
-            esferaProgram    : createProgram(this.gl, 
-                                          esferaShaders.vertexScript, 
-                                          esferaShaders.fragmentScript),
-
-            cilindroProgram   : createProgram(this.gl, 
-                                          cilindroShaders.vertexScript, 
-                                          cilindroShaders.fragmentScript),
-
-            trianguloProgram : createProgram(this.gl, 
-                                          trianguloShaders.vertexScript, 
-                                          trianguloShaders.fragmentScript)
-                                       
+                                          cuboTextureUVShaders.fragmentScript)                       
         };
 
         // Armazena os objetos visuais que serão desenhados
@@ -163,17 +147,7 @@ export class Renderer
 
     getCubeProgram()
     {
-        return this.programs.cubeProgram;
-    }
-
-    getOBJProgram()
-    {
-        return this.programs.OBJProgram;
-    }
-
-    getCilindroProgram()
-    {
-        return this.programs.cilindroProgram;
+        return this.programs.basicProgram;
     }
 
     getCubeTextureUVProgram()
@@ -183,12 +157,22 @@ export class Renderer
 
     getEsferaProgram()
     {
-        return this.programs.esferaProgram;
+        return this.programs.basicProgram;
     }
 
     getTrianguloProgram()
     {
-        return this.programs.trianguloProgram;
+        return this.programs.basicProgram;
+    }
+
+    getCilindroProgram()
+    {
+        return this.programs.basicProgram;
+    }
+
+    getOBJProgram()
+    {
+        return this.programs.OBJProgram;
     }
 
 

@@ -1,4 +1,4 @@
-export const cuboShaders = {
+export const basicShaders = {
     // Vertex shader
     vertexScript: `
         attribute vec4 aPosicao;
@@ -29,7 +29,7 @@ export const cuboShaders = {
         varying lowp vec4 vColor;
 
         void main(void) {
-        gl_FragColor = vColor;
+            gl_FragColor = vColor;
         }
     `,
 

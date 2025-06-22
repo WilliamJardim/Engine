@@ -32,7 +32,8 @@ import {CriarMatrix4x4,
 * Importando shaders 
 */
 import { basicShaders } from '../Shaders/Basic.js';
-import { textureShaders } from '../Shaders/Texture.js'
+import { textureShaders } from '../Shaders/Texture.js';
+import { skyboxPlaneShaders } from '../Shaders/planeskybox.js';
 
 /**
 * Importando Meshes 
@@ -48,7 +49,6 @@ import { Triangulo2DMesh } from '../Mesh/colored/Triangulo2DMesh.js';
 import { Triangulo3DMesh } from '../Mesh/colored/Triangulo3DMesh.js';
 import { OBJMesh } from '../Mesh/OBJMesh.js';
 
-import { skyboxPlaneShaders } from '../Shaders/planeskybox.js';
 
 export class Renderer
 {
@@ -127,6 +127,10 @@ export class Renderer
                                           basicShaders.vertexScript, 
                                           basicShaders.fragmentScript),
 
+            onduladoProgram           : createProgram(this.gl, 
+                                          basicShaders.vertexScript, 
+                                          basicShaders.fragmentScript),
+
             textureProgram            : createProgram(this.gl, 
                                           textureShaders.vertexScript, 
                                           textureShaders.fragmentScript)            
@@ -169,6 +173,11 @@ export class Renderer
     getCilindroProgram()
     {
         return this.programs.basicProgram;
+    }
+
+    getOnduladoProgram()
+    {
+        return this.programs.onduladoProgram;
     }
 
     /**

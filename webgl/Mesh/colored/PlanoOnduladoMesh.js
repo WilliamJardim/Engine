@@ -9,7 +9,7 @@
 */
 import { VisualMesh } from "../VisualMesh.js";
 import { createShader, createBuffer, createProgram} from '../../funcoesBase.js';
-import { planoOnduladoShaders } from '../../Shaders/planoOndulado.js';
+import { basicShaders } from '../../Shaders/Basic.js';
 
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
@@ -33,7 +33,7 @@ export class PlanoOnduladoMesh extends VisualMesh
 
         // Usa o programa para desenhar cubos
         this.tipo = 'PlanoOndulado';
-        this.setProgram( renderer.getCubeProgram() );
+        this.setProgram( renderer.getOnduladoProgram() );
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
         this.bufferPosicao = null;
@@ -50,7 +50,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Obtem as posições de renderização do cubo 
     */
-    getPositions()
+    getPositions() 
     {
         const positions = [];
         const largura = 10;
@@ -63,10 +63,13 @@ export class PlanoOnduladoMesh extends VisualMesh
             {
                 const posX = (x / subdivisoes - 0.5) * largura;
                 const posZ = (y / subdivisoes - 0.5) * altura;
-                const posY = 0; // altura começa em zero, pode mudar depois dinamicamente
+                const posY = 0;
+
                 positions.push(posX, posY, posZ);
             }
         }
+
+        this.vertices = positions;
 
         return positions;
     }
@@ -129,13 +132,13 @@ export class PlanoOnduladoMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao   : gl.getAttribLocation(programUsado, planoOnduladoShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
-                cor       : gl.getAttribLocation(programUsado, planoOnduladoShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                posicao   : gl.getAttribLocation(programUsado, basicShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
+                cor       : gl.getAttribLocation(programUsado, basicShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
             },
 
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao : gl.getUniformLocation(programUsado, planoOnduladoShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
-                modeloObjetoVisual : gl.getUniformLocation(programUsado, planoOnduladoShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
+                matrixVisualizacao : gl.getUniformLocation(programUsado, basicShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
+                modeloObjetoVisual : gl.getUniformLocation(programUsado, basicShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
             }
         }
     }
@@ -230,6 +233,10 @@ export class PlanoOnduladoMesh extends VisualMesh
         // Usa as informações do cubo(que criamos e calculamos acima)
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
+
+        // Usa ondulação
+        gl.uniform1f(gl.getUniformLocation(programUsado, "uTime"), performance.now() / 1000.0);
+        gl.uniform1i(gl.getUniformLocation(programUsado, "uAplicarOndulacao"), true);
 
         // Desenha o cubo
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);

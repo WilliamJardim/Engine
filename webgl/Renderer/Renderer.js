@@ -7,8 +7,12 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import {createShader, createBuffer, createProgram} from '../funcoesBase.js';
 
+/**
+* Importando funções essenciais 
+*/
+import { createShader, createBuffer, createProgram } from '../funcoesBase.js';
+import { criarGL }    from '../funcoesBase.js';
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
         CriarMatrixPerspectiva, 
@@ -24,11 +28,15 @@ import {CriarMatrix4x4,
         DefinirZ,
         FrameCounter} from '../math.js';
         
+/**
+* Importando shaders 
+*/
 import { basicShaders } from '../Shaders/Basic.js';
-import { cuboTextureUVShaders } from '../Shaders/cubeTextureUV.js'
-import { OBJShaders } from '../Shaders/obj.js';
+import { textureShaders } from '../Shaders/Texture.js'
 
-import { criarGL }    from '../funcoesBase.js';
+/**
+* Importando Meshes 
+*/
 import { CuboMesh } from '../Mesh/colored/CuboMesh.js';
 import { CuboDeformavelMesh } from '../Mesh/colored/CuboDeformavelMesh.js';
 import { PlanoOnduladoMesh } from '../Mesh/colored/PlanoOnduladoMesh.js';
@@ -38,7 +46,6 @@ import { EsferaMesh } from '../Mesh/colored/EsferaMesh.js';
 import { CilindroMesh } from '../Mesh/colored/CilindroMesh.js';
 import { Triangulo2DMesh } from '../Mesh/colored/Triangulo2DMesh.js';
 import { Triangulo3DMesh } from '../Mesh/colored/Triangulo3DMesh.js';
-
 import { OBJMesh } from '../Mesh/OBJMesh.js';
 
 import { skyboxPlaneShaders } from '../Shaders/planeskybox.js';
@@ -67,7 +74,6 @@ export class Renderer
         
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.depthFunc(this.gl.LEQUAL);
-        //this.gl.depthFunc(this.gl.LESS);
 
         // Permite transparencia
         this.gl.enable(this.gl.BLEND);
@@ -113,21 +119,17 @@ export class Renderer
         // Armazena os programs( um para cada tipo de objeto )
         this.programs = {
 
-            skyboxProgram         : createProgram(this.gl, 
+            skyboxProgram             : createProgram(this.gl, 
                                           skyboxPlaneShaders.vertexScript, 
                                           skyboxPlaneShaders.fragmentScript),
 
-            basicProgram          : createProgram(this.gl, 
+            basicProgram              : createProgram(this.gl, 
                                           basicShaders.vertexScript, 
                                           basicShaders.fragmentScript),
 
-            OBJProgram            : createProgram(this.gl, 
-                                          OBJShaders.vertexScript, 
-                                          OBJShaders.fragmentScript),
-
-            cubeTextureUVProgram  : createProgram(this.gl, 
-                                          cuboTextureUVShaders.vertexScript, 
-                                          cuboTextureUVShaders.fragmentScript)                       
+            textureProgram            : createProgram(this.gl, 
+                                          textureShaders.vertexScript, 
+                                          textureShaders.fragmentScript)            
         };
 
         // Armazena os objetos visuais que serão desenhados
@@ -140,6 +142,10 @@ export class Renderer
 
 
     /*** PROGRAMS (para cada tipo de objeto) */
+
+    /**
+    * Programas basicos
+    */
     getSkyboxProgram()
     {
         return this.programs.skyboxProgram;
@@ -148,11 +154,6 @@ export class Renderer
     getCubeProgram()
     {
         return this.programs.basicProgram;
-    }
-
-    getCubeTextureUVProgram()
-    {
-        return this.programs.cubeTextureUVProgram;
     }
 
     getEsferaProgram()
@@ -170,10 +171,19 @@ export class Renderer
         return this.programs.basicProgram;
     }
 
+    /**
+    * Programas com textura
+    */
     getOBJProgram()
     {
-        return this.programs.OBJProgram;
+        return this.programs.textureProgram;
     }
+
+    getCubeTextureUVProgram()
+    {
+        return this.programs.textureProgram;
+    }
+
 
 
     /**

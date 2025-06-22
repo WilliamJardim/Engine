@@ -1,4 +1,4 @@
-export const cuboTextureUVShaders = {
+export const textureShaders = {
     // Vertex shader
     vertexScript: `
         attribute vec4 aPosicao;
@@ -22,9 +22,11 @@ export const cuboTextureUVShaders = {
     vertexExtraInfo: {
         variavelPosicaoCubo: 'aPosicao',
         variavelCorCubo: 'aCor',
+        variavelUV: 'aUV', // NOVO
         variavelMatrixVisualizacao: 'uMatrixVisualizacao',
         variavelModeloObjeto: 'uModeloObjetoVisual',
-        variavelCorFragment: 'vColor'
+        variavelCorFragment: 'vColor',
+        variavelUVFragment: 'vUV' // NOVO
     },
 
     // Fragment shader
@@ -34,15 +36,34 @@ export const cuboTextureUVShaders = {
         varying lowp vec4 vColor;
         varying vec2 vUV;
 
-        uniform sampler2D u_textura;
+        uniform sampler2D uSampler;  
+        uniform bool uUsarTextura;
+        uniform float uOpacidade;
 
-        void main(void) {
-            vec4 texColor = texture2D(u_textura, vUV);
-            gl_FragColor = texColor * vColor;
+        void main(void) 
+        {
+            vec4 corBase = vColor;
+            
+            // Se tem textura
+            if ( uUsarTextura ) 
+            {
+                corBase *= texture2D(uSampler, vUV);
+            }
+            
+            // Aplica a opacidade
+            corBase.a *= uOpacidade;
+            
+            gl_FragColor = corBase;
         }
     `,
 
+    /**
+    * Contém informações sobre as variáveis usadas no fragment
+    */
     fragmentExtraInfo: {
-        variavelCorFragment: 'vColor'
+        variavelCorFragment: 'vColor',
+        variavelUVFragment: 'vUV',
+        variavelSampler: 'uSampler',
+        variavelUsarTextura: 'uUsarTextura'
     }
-};
+}

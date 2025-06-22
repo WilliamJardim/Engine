@@ -3,11 +3,9 @@ export const planoOnduladoShaders = {
     vertexScript: `
         attribute vec3 aPosicao;
         attribute vec4 aCor;
-
         uniform mat4 uModeloObjetoVisual;
         uniform mat4 uMatrixVisualizacao;
         uniform float uTime;
-
         varying vec4 vColor;
 
         void main() {

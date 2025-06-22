@@ -92,12 +92,21 @@ export const baseShaders = {
 
         #define QUANTIDADE_LUZES 4
 
+        // Luz
         uniform vec3 uPosicaoLuz[QUANTIDADE_LUZES];
         uniform vec3 uCorLuz[QUANTIDADE_LUZES];
+        uniform float uIntensidadeLuz;
+
         uniform vec3 uPosicaoVisualizacao;
 
         varying vec3 vNormal;
         varying vec3 vFragPos;
+
+        // Permite controlar alguns parametros no JS
+        uniform float brilhoObjeto;
+        uniform float ambientObjeto;
+        uniform float diffuseObjeto;
+        uniform float specularObjeto;
 
         void main(void) 
         {
@@ -107,10 +116,10 @@ export const baseShaders = {
             vec3 luminanciaObjeto = vec3(0.0);
 
             // ----- Blinn-Phong -----
-            float brilho = 32.0;
-            float intensidadeAmbient = 0.1;
-            float intensidadeDiffuse = 0.8;
-            float intensidadeSpecular = 0.6;
+            float brilho = brilhoObjeto;
+            float intensidadeAmbient = ambientObjeto;
+            float intensidadeDiffuse = diffuseObjeto;
+            float intensidadeSpecular = specularObjeto;
 
             for (int i = 0; i < QUANTIDADE_LUZES; i++) 
             {
@@ -126,9 +135,9 @@ export const baseShaders = {
                 float spec = pow(max(dot(norm, metadeDirecao), 0.0), brilho);
 
                 // Soma de tudo isso pra calcular a luminancia do objeto
-                vec3 ambient = intensidadeAmbient * vColor.rgb;
-                vec3 diffuse = intensidadeDiffuse * diff * vColor.rgb;
-                vec3 specular = intensidadeSpecular * spec * uCorLuz[i]; // branco
+                vec3 ambient = intensidadeAmbient * vColor.rgb * uIntensidadeLuz;
+                vec3 diffuse = intensidadeDiffuse * diff * vColor.rgb * uIntensidadeLuz;
+                vec3 specular = intensidadeSpecular * spec * uCorLuz[i] * uIntensidadeLuz; 
 
                 // Define a luminancia do objeto
                 luminanciaObjeto += (ambient + diffuse + specular);

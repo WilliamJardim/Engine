@@ -602,6 +602,100 @@ async function carregarMapa()
 window.carregarMapa = carregarMapa;
 carregarMapa();
 
+// Carregando o mesmo obj denovo pra testar se tem limitações de importação
+async function carregarMapa2() 
+{
+    const objText = await carregarTxt('./MAPS/theroom/map.obj');
+    const mtlText = await carregarTxt('./MAPS/theroom/map.mtl');
+
+    // Cria um plano que pode se deformar
+    renderizador.criarObjeto({
+        tipo: 'OBJ',
+        objText: objText,
+        mtlText: mtlText,
+        
+        invisivel: false,
+        transparencia: 1, 
+
+        /**
+        * Posição do objeto 
+        */
+        position: {
+            x: -200,
+            y: 8,
+            z: 0
+        },
+
+        /**
+        * Escala do objeto 
+        */
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        },
+
+        /**
+        * Rotação do objeto 
+        */
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        }
+    });
+}
+
+window.carregarMapa2= carregarMapa2;
+carregarMapa2();
+
+// Carregando o mesmo obj denovo pra testar se tem limitações de importação
+async function carregarMapa3() 
+{
+    const objText = await carregarTxt('./MAPS/theroom/map.obj');
+    const mtlText = await carregarTxt('./MAPS/theroom/map.mtl');
+
+    // Cria um plano que pode se deformar
+    renderizador.criarObjeto({
+        tipo: 'OBJ',
+        objText: objText,
+        mtlText: mtlText,
+        
+        invisivel: false,
+        transparencia: 1, 
+
+        /**
+        * Posição do objeto 
+        */
+        position: {
+            x: -300,
+            y: 8,
+            z: 0
+        },
+
+        /**
+        * Escala do objeto 
+        */
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        },
+
+        /**
+        * Rotação do objeto 
+        */
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        }
+    });
+}
+
+window.carregarMapa3= carregarMapa3;
+carregarMapa3();
+
 function criarTexturaBranca(gl) {
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);

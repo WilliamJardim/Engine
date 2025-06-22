@@ -4,10 +4,8 @@ export const OBJShaders = {
         attribute vec4 aPosicao;
         attribute vec4 aCor;
         attribute vec2 aUV;
-
         uniform mat4 uMatrixVisualizacao;
         uniform mat4 uModeloObjetoVisual;
-
         varying lowp vec4 vColor;
         varying vec2 vUV;
 
@@ -58,28 +56,6 @@ export const OBJShaders = {
             }
         }
     `,
-    /*
-    fragmentScript: `
-        precision mediump float; 
-
-        varying lowp vec4 vColor;
-        varying vec2 vUV;
-
-        uniform sampler2D uSampler;
-        uniform bool uUsarTextura;
-        uniform float uOpacidade;
-
-        void main(void) {
-            if (uUsarTextura) {
-                // Teste fixo vermelho para ver se textura é usada
-                gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-                // gl_FragColor = texture2D(uSampler, vUV);
-                gl_FragColor.a *= uOpacidade;
-            } else {
-                gl_FragColor = vColor;
-            }
-        }
-    `,*/
 
     /**
     * Contém informações sobre as variáveis usadas no fragment

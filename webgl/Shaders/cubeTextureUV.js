@@ -4,10 +4,8 @@ export const cuboTextureUVShaders = {
         attribute vec4 aPosicao;
         attribute vec4 aCor;
         attribute vec2 aUV;
-
         uniform mat4 uMatrixVisualizacao;
         uniform mat4 uModeloObjetoVisual;
-
         varying lowp vec4 vColor;
         varying vec2 vUV;
 
@@ -18,6 +16,9 @@ export const cuboTextureUVShaders = {
         }
     `,
 
+    /**
+    * Contém informações sobre as variáveis usadas no vertex
+    */
     vertexExtraInfo: {
         variavelPosicaoCubo: 'aPosicao',
         variavelCorCubo: 'aCor',

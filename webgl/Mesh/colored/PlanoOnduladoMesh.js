@@ -236,7 +236,8 @@ export class PlanoOnduladoMesh extends VisualMesh
 
         // Usa ondulação
         gl.uniform1f(gl.getUniformLocation(programUsado, "uTime"), performance.now() / 1000.0);
-        gl.uniform1i(gl.getUniformLocation(programUsado, "uAplicarOndulacao"), true);
+        gl.uniform1i(gl.getUniformLocation(programUsado, "uUsarOndulacaoSimples"),    meshConfig.usarOndulacaoSimples);
+        gl.uniform1i(gl.getUniformLocation(programUsado, "uAplicarOndulacao"),        meshConfig.usarOndulacao);
 
         // Desenha o cubo
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);

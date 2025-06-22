@@ -90,6 +90,8 @@ renderizador.criarObjeto({
 renderizador.criarObjeto({
     tipo: 'PlanoOndulado',
     invisivel: false,
+    usarOndulacao: true,
+    usarOndulacaoSimples: true,
     transparencia: 100, // 100 opaco
 
     /**

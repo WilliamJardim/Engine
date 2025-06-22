@@ -7,6 +7,7 @@ export const basicShaders = {
         uniform mat4 uMatrixVisualizacao;
         uniform float uTime;
         uniform bool uAplicarOndulacao;
+        uniform bool uUsarOndulacaoSimples;
 
         varying vec4 vColor;
 
@@ -16,20 +17,25 @@ export const basicShaders = {
             // Se usa ondulação
             if ( uAplicarOndulacao ) 
             {
-                //pos.y += 0.5 * sin(5.0 * pos.x + uTime) * cos(5.0 * pos.z + uTime);
+                if( uUsarOndulacaoSimples ) {
+                    // Aplica uma onda simples baseada na posição X e Z
+                    pos.y += 0.5 * sin(5.0 * pos.x + uTime) * cos(5.0 * pos.z + uTime);
+
+                }else{
                 
-                // Centraliza X e Z para gerar ondulação simétrica
-                float freq = 5.0;
-                float amp = 0.5;
-                float x = pos.x;
-                float z = pos.z;
+                    // Centraliza X e Z para gerar ondulação simétrica
+                    float freq = 5.0;
+                    float amp = 0.5;
+                    float x = pos.x;
+                    float z = pos.z;
 
-                // Centralizando com base na largura/altura do plano (10x10)
-                x -= 0.0;  // já centrado? senão tente x -= 5.0;
-                z -= 0.0;  // idem
+                    // Centralizando com base na largura/altura do plano (10x10)
+                    x -= 0.0;  // já centrado? senão tente x -= 5.0;
+                    z -= 0.0;  // idem
 
-                float onda = sin(freq * x + uTime) * cos(freq * z + uTime);
-                pos.y += onda * amp;
+                    float onda = sin(freq * x + uTime) * cos(freq * z + uTime);
+                    pos.y += onda * amp;
+                }
             }
 
             gl_Position = uMatrixVisualizacao * uModeloObjetoVisual * vec4(pos, 1.0);

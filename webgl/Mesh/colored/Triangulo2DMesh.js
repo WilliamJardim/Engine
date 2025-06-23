@@ -62,7 +62,12 @@ export class Triangulo2DMesh extends VisualMesh
         return {
             atributosObjeto: {
                 posicao: gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
-                cor:     gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo)
+                cor:     gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),
+                // Iluminação
+                brilho     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
+                ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
+                diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
             },
             atributosVisualizacaoObjeto: {
                 matrixVisualizacao: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
@@ -138,6 +143,8 @@ export class Triangulo2DMesh extends VisualMesh
             // Opacidade
             gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, this.transparencia );
         }
+
+        this.aplicarIluminacao( gl, informacoesPrograma );
 
         // Usa as informações do cubo(que criamos e calculamos acima)
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);

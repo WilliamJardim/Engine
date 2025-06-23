@@ -29,6 +29,13 @@ export class VisualMesh
         this.invisivel     = meshConfig.invisivel; 
         this.transparencia = meshConfig.transparencia;
 
+        // Luzes do objeto
+        this.alwaysUpdateLights = meshConfig.alwaysUpdateLights || true; //Se a todo momento vai atualizar luzes ou não
+        this.brilho             = meshConfig.brilho   || 32;
+        this.ambient            = meshConfig.ambient  || 0.6;
+        this.diffuse            = meshConfig.diffuse  || 0.5;
+        this.specular           = meshConfig.specular || 0.8;
+
         // Por padrão sempre vai usar cores
         this.useColors = true;
     }
@@ -36,27 +43,88 @@ export class VisualMesh
     /**
     * Responsavel por retornar quais luzes o objeto está recebendo 
     * @returns { posicao, cor, intensidade }
-    */
     getLuzes()
     {
         return [
-            {
-                posicao     : [0,0,0],
-                cor         : [0,0,0],
-                intensidade : [0,0,0]
-            },
-            {
-                posicao     : [5,5,0],
-                cor         : [0,0,0],
-                intensidade : [0,0,0]
-            }
+            //Sao 4 luzes, então, o Array precisa ser 4x4(4 Arrays de Array de 3 elementos: XYZ)
+            [
+                [0,0,0], // POSICAO 
+                [255,255,255], // COR
+                [0.1,0.1,0.1]  // INTENSIDADE
+            ],
+            [
+                [100,0,0], // POSICAO 
+                [255,255,255], // COR
+                [0.1,0.1,0.1]  // INTENSIDADE
+            ],
+            [
+                [100,0,0], // POSICAO 
+                [255,255,255], // COR
+                [0.1,0.1,0.1]  // INTENSIDADE
+            ],
+            [
+                [100,0,0], // POSICAO 
+                [255,255,255], // COR
+                [0.1,0.1,0.1]  // INTENSIDADE
+            ],
         ];
-    }
+    }*/
+
+    /**
+    * Converte a minha estrutura de luz para luzes que o shader vai entender
+    getLuzesConvertidas()
+    {
+        let luzes            = this.getLuzes();
+        let arrayPosicoes    = [];
+        let arrayCores       = [];
+        let arrayIntensidade = [];
+
+        // Para cada uma das 4 luzes
+        for( let i = 0 ; i < 4 ; i++ ) 
+        {
+            const luzAtual = luzes[i];
+            const posicaoAtual      = luzAtual[ 0 ];
+            const corAtual          = luzAtual[ 1 ];
+            const intensidadeAtual  = luzAtual[ 2 ];
+
+            arrayPosicoes.push( posicaoAtual[0] );
+            arrayPosicoes.push( posicaoAtual[1] );
+            arrayPosicoes.push( posicaoAtual[2] );
+
+            arrayCores.push( corAtual[0] );
+            arrayCores.push( corAtual[1] );
+            arrayCores.push( corAtual[2] );
+
+            arrayIntensidade.push( intensidadeAtual[0] );
+            arrayIntensidade.push( intensidadeAtual[1] );
+            arrayIntensidade.push( intensidadeAtual[2] );
+        }
+    
+        return {
+            posicoes: new Float32Array(arrayPosicoes),
+            cores: new Float32Array(arrayCores),
+            intensidades: new Float32Array(arrayIntensidade)
+        }
+    }*/
 
     /**
     * Código base para aplicar iluminação, usado em todos os objetos
     */
-    aplicarIluminacao( gl, informacoesPrograma )
+    atualizarIluminacao(gl, informacoesPrograma )
+    {
+        const brilho         = informacoesPrograma.atributosObjeto.brilho;
+        const ambient        = informacoesPrograma.atributosObjeto.ambient;
+        const diffuse        = informacoesPrograma.atributosObjeto.diffuse;
+        const specular       = informacoesPrograma.atributosObjeto.specular;
+
+        // Atualiza as configurações gerais 
+        gl.uniform1f(brilho,   this.brilho);
+        gl.uniform1f(ambient,  this.ambient);
+        gl.uniform1f(diffuse,  this.diffuse);
+        gl.uniform1f(specular, this.specular);
+    }
+    /*
+    atualizarIluminacao(gl, informacoesPrograma )
     {
         // Configurações gerais da luz no objeto
         const brilho         = informacoesPrograma.atributosObjeto.brilho;
@@ -69,12 +137,31 @@ export class VisualMesh
         const corLuz         = informacoesPrograma.atributosObjeto.corLuz; // um ARRAY
         const intensidadeLuz = informacoesPrograma.atributosObjeto.intensidadeLuz; // um ARRAY
 
+        // Atualiza as configurações gerais 
+        gl.uniform1f(brilho,   this.brilho);
+        gl.uniform1f(ambient,  this.ambient);
+        gl.uniform1f(diffuse,  this.diffuse);
+        gl.uniform1f(specular, this.specular);
+
         // Obtem as luzes que objeto está recebendo
-        const luzes = this.getLuzes();
+        const luzesCena = this.getLuzesConvertidas();
 
+        // Atualiza as luzes no shaders do objeto
+        gl.uniform3fv(posicaoLuz,     luzesCena.posicoes );
+        gl.uniform3fv(corLuz,         luzesCena.cores );
+        gl.uniform3fv(intensidadeLuz, luzesCena.intensidades);
+    }*/
 
-
-
+    /**
+    * Código base para aplicar iluminação, usado em todos os objetos
+    */
+    aplicarIluminacao( gl, informacoesPrograma )
+    {
+        // Se o objeto sempre for atualizar luzes
+        if( this.alwaysUpdateLights == true )
+        {
+            this.atualizarIluminacao(gl, informacoesPrograma);
+        }
     }
 
     getRotation()

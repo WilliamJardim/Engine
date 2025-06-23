@@ -312,13 +312,13 @@ export class OBJMesh extends VisualMesh
                 uv         : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelUV),
 
                 // Iluminação
-                brilho     : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
-                ambient    : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
-                diffuse    : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
-                specular   : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
-                posicaoLuz     : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelPosicaoLuz),
-                corLuz         : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
-                intensidadeLuz : gl.getAttribLocation(programUsado, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
+                brilho     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
+                ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
+                diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
+                //posicaoLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelPosicaoLuz),
+                //corLuz         : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
+                //intensidadeLuz : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
 
             },
             atributosVisualizacaoObjeto: {

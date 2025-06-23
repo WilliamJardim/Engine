@@ -24,6 +24,13 @@ renderizador.criarObjeto({
     invisivel: false,
     transparencia: 0.5, // 100 opaco
 
+    // Iluminação
+    alwaysUpdateLights: true,
+    brilho: 32,
+    ambient: 0.6,
+    diffuse: 0.8,
+    specular: 0.8,
+
     /**
     * Posição do objeto 
     */
@@ -568,7 +575,7 @@ async function carregarMapa()
         tipo: 'OBJ',
         objText: objText,
         mtlText: mtlText,
-        
+
         invisivel: false,
         transparencia: 1, 
 

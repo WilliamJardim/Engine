@@ -194,7 +194,16 @@ export class Renderer
         return this.programs.textureProgram;
     }
 
-
+    /**
+    * Atualiza a iluminação de todos os objetos da cena
+    */
+    atualizarIluminacao()
+    {
+        for( let i = 0 ; i < this.objetos.length ; i++ )
+        {
+            this.objetos[i].atualizarIluminacao();
+        }
+    }
 
     /**
     * Carrega a textura do fundo a cena(o skybox 2D)

@@ -95,7 +95,12 @@ export class Triangulo3DMesh extends VisualMesh
         return {
             atributosObjeto: {
                 posicao: gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
-                cor:     gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo)
+                cor:     gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),
+                // Iluminação
+                brilho     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
+                ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
+                diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular)
             },
             atributosVisualizacaoObjeto: {
                 matrixVisualizacao: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
@@ -204,6 +209,8 @@ export class Triangulo3DMesh extends VisualMesh
 
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
+
+        this.aplicarIluminacao( gl, informacoesPrograma );
 
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 

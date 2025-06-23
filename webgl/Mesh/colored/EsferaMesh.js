@@ -145,6 +145,11 @@ export class EsferaMesh extends VisualMesh
             atributosObjeto: {
                 posicao   : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
                 cor       : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                // Iluminação
+                brilho     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
+                ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
+                diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
             },
             atributosVisualizacaoObjeto: {
                 matrixVisualizacao : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
@@ -251,6 +256,8 @@ export class EsferaMesh extends VisualMesh
             // Opacidade
             gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, this.transparencia );
         }
+
+        this.aplicarIluminacao( gl, informacoesPrograma );
 
         // Usa as informações do cubo(que criamos e calculamos acima)
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);

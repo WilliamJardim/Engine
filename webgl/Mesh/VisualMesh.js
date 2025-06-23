@@ -35,6 +35,7 @@ export class VisualMesh
         this.ambientObjeto            = meshConfig.ambient  || 0.2; // Um acrescimento a luz ambiente
         this.diffuseObjeto            = meshConfig.diffuse  || 0.2;
         this.specularObjeto           = meshConfig.specular || 0.2;
+        this.corLuzObjeto             = meshConfig.corLuzObjeto || [0, 0, 0];
 
         // Por padrão sempre vai usar cores
         this.useColors = true;
@@ -122,9 +123,9 @@ export class VisualMesh
 
         // Pega a cor da luz
         this.corLuz    = [0, 0, 0];
-        this.corLuz[0] = this.corLuz[0] + this.renderer.corAmbient[0];
-        this.corLuz[1] = this.corLuz[1] + this.renderer.corAmbient[1];
-        this.corLuz[2] = this.corLuz[2] + this.renderer.corAmbient[2];
+        this.corLuz[0] = this.corLuzObjeto[0] + this.renderer.corAmbient[0];
+        this.corLuz[1] = this.corLuzObjeto[1] + this.renderer.corAmbient[1];
+        this.corLuz[2] = this.corLuzObjeto[2] + this.renderer.corAmbient[2];
 
         /**
         * Aplica os valores 

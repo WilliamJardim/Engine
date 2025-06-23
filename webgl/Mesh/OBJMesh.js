@@ -242,6 +242,7 @@ export class OBJMesh extends VisualMesh
                 ambientObjeto  : 0,
                 diffuseObjeto  : 0,
                 specularObjeto : 0,
+                corLuzObjeto   : [0, 0, 0] //RGB
             };
 
             const faces = this.objects[nomeObjeto];
@@ -336,8 +337,8 @@ export class OBJMesh extends VisualMesh
                 ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
                 diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
                 specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
+                corLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
                 //posicaoLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelPosicaoLuz),
-                //corLuz         : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
                 //intensidadeLuz : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
 
             },
@@ -403,6 +404,11 @@ export class OBJMesh extends VisualMesh
         const specularParte = iluminacaoParte.specularObjeto + this.renderer.specular;
         const brilhoParte   = iluminacaoParte.brilhoObjeto   + this.renderer.brilho;
 
+        let corLuzParte     = [0, 0, 0];
+        corLuzParte[0]      = iluminacaoParte.corLuzObjeto[0] + this.renderer.corAmbient[0];
+        corLuzParte[1]      = iluminacaoParte.corLuzObjeto[1] + this.renderer.corAmbient[1];
+        corLuzParte[2]      = iluminacaoParte.corLuzObjeto[2] + this.renderer.corAmbient[2];
+
         /**
         * Aplica os valores 
         */
@@ -410,12 +416,14 @@ export class OBJMesh extends VisualMesh
         const ambientShader        = informacoesPrograma.atributosObjeto.ambient;
         const diffuseShader        = informacoesPrograma.atributosObjeto.diffuse;
         const specularShader       = informacoesPrograma.atributosObjeto.specular;
+        const corLuzShader         = informacoesPrograma.atributosObjeto.corLuz;
 
         // Atualiza as configurações gerais 
         gl.uniform1f(brilhoShader,   brilhoParte);
         gl.uniform1f(ambientShader,  ambientParte);
         gl.uniform1f(diffuseShader,  diffuseParte);
         gl.uniform1f(specularShader, specularParte);
+        gl.uniform3fv(corLuzShader,   new Float32Array(corLuzParte) );
     }
 
     /**
@@ -429,6 +437,12 @@ export class OBJMesh extends VisualMesh
         this.diffuseObjeto  = iluminationDefinition.diffuseObjeto;
         this.specularObjeto = iluminationDefinition.specularObjeto;
 
+        // Pega a cor da luz
+        this.corLuzObjeto    = [0, 0, 0];
+        this.corLuzObjeto[0] = (iluminationDefinition.corLuzObjeto[0] || 0) + this.renderer.corAmbient[0];
+        this.corLuzObjeto[1] = (iluminationDefinition.corLuzObjeto[1] || 0) + this.renderer.corAmbient[1];
+        this.corLuzObjeto[2] = (iluminationDefinition.corLuzObjeto[2] || 0) + this.renderer.corAmbient[2];
+
         // Se todos os filhos(subojetos) usam iluminação individual
         if( this.childrenIndividualLights == true )
         {
@@ -441,6 +455,7 @@ export class OBJMesh extends VisualMesh
                     ambientObjeto  : iluminationDefinition.ambientObjeto,
                     diffuseObjeto  : iluminationDefinition.diffuseObjeto,
                     specularObjeto : iluminationDefinition.specularObjeto,
+                    corLuzObjeto   : this.corLuzObjeto   
                 }
 
             }

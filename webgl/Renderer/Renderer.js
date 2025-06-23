@@ -63,6 +63,7 @@ export class Renderer
         this.diffuse       = renderConfig.diffuse  || 0.6;
         this.specular      = renderConfig.specular || 0.6;
         this.brilho        = renderConfig.brilho   || 32;   // Brilho geral
+        this.corAmbient    = renderConfig.corAmbient || [1, 1, 1];
 
         this.frameCounter = new FrameCounter(60);
 

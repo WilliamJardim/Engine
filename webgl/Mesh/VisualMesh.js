@@ -120,6 +120,12 @@ export class VisualMesh
         this.specular = this.specularObjeto + this.renderer.specular;
         this.brilho   = this.brilhoObjeto   + this.renderer.brilho;
 
+        // Pega a cor da luz
+        this.corLuz    = [0, 0, 0];
+        this.corLuz[0] = this.corLuz[0] + this.renderer.corAmbient[0];
+        this.corLuz[1] = this.corLuz[1] + this.renderer.corAmbient[1];
+        this.corLuz[2] = this.corLuz[2] + this.renderer.corAmbient[2];
+
         /**
         * Aplica os valores 
         */
@@ -127,12 +133,14 @@ export class VisualMesh
         const ambientShader        = informacoesPrograma.atributosObjeto.ambient;
         const diffuseShader        = informacoesPrograma.atributosObjeto.diffuse;
         const specularShader       = informacoesPrograma.atributosObjeto.specular;
+        const corLuzShader         = informacoesPrograma.atributosObjeto.corLuz;
 
         // Atualiza as configurações gerais 
         gl.uniform1f(brilhoShader,   this.brilho);
         gl.uniform1f(ambientShader,  this.ambient);
         gl.uniform1f(diffuseShader,  this.diffuse);
         gl.uniform1f(specularShader, this.specular);
+        gl.uniform3fv(corLuzShader,  new Float32Array(this.corLuz) );
     }
     
     /**
@@ -144,6 +152,12 @@ export class VisualMesh
         this.ambientObjeto  = iluminationDefinition.ambientObjeto;
         this.diffuseObjeto  = iluminationDefinition.diffuseObjeto;
         this.specularObjeto = iluminationDefinition.specularObjeto;
+
+        // Pega a cor da luz
+        this.corLuz    = [0, 0, 0];
+        this.corLuz[0] = (iluminationDefinition.corLuzObjeto[0] || 0) + this.renderer.corAmbient[0];
+        this.corLuz[1] = (iluminationDefinition.corLuzObjeto[1] || 0) + this.renderer.corAmbient[1];
+        this.corLuz[2] = (iluminationDefinition.corLuzObjeto[2] || 0) + this.renderer.corAmbient[2];
     }
 
     /*

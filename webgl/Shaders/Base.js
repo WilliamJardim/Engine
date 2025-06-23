@@ -101,6 +101,7 @@ export const baseShaders = {
         uniform float ambientObjeto;
         uniform float diffuseObjeto;
         uniform float specularObjeto;
+        uniform vec3 corLuz;
 
         void main(void) 
         {
@@ -120,9 +121,9 @@ export const baseShaders = {
             float diff = max(dot(norm, direcaoLuz), 0.0);
             float spec = pow(max(dot(norm, metadeDirecao), 0.0), brilho);
 
-            vec3 ambient = intensidadeAmbient * vColor.rgb;
-            vec3 diffuse = intensidadeDiffuse * diff * vColor.rgb;
-            vec3 specular = intensidadeSpecular * spec * vec3(1.0); // branco
+            vec3 ambient = intensidadeAmbient * corLuz * vColor.rgb;
+            vec3 diffuse = intensidadeDiffuse * corLuz * diff * vColor.rgb;
+            vec3 specular = intensidadeSpecular * spec * corLuz * vColor.rgb; 
 
             vec3 luminanciaObjeto = ambient + diffuse + specular;
 
@@ -175,5 +176,6 @@ export const baseShaders = {
         variavelAmbient: 'ambientObjeto',
         variavelDiffuse: 'diffuseObjeto',
         variavelSpecular: 'specularObjeto',
+        variavelCorLuz: 'corLuz'
     }
 }

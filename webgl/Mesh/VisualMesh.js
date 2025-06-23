@@ -113,7 +113,7 @@ export class VisualMesh
     atualizarIluminacao(gl, informacoesPrograma )
     {
         /**
-        * Obtem o ambiente atualizado
+        * Obtem o ambiente atualizado como a soma dos valores do objeto com os globais da cena
         */
         this.ambient  = this.ambientObjeto  + this.renderer.ambient;
         this.diffuse  = this.diffuseObjeto  + this.renderer.diffuse;
@@ -134,6 +134,18 @@ export class VisualMesh
         gl.uniform1f(diffuseShader,  this.diffuse);
         gl.uniform1f(specularShader, this.specular);
     }
+    
+    /**
+    * Define a iluminação do objeto como um todo 
+    */
+    setIntireIlumination( iluminationDefinition={} )
+    {
+        this.brilhoObjeto   = iluminationDefinition.brilhoObjeto;
+        this.ambientObjeto  = iluminationDefinition.ambientObjeto;
+        this.diffuseObjeto  = iluminationDefinition.diffuseObjeto;
+        this.specularObjeto = iluminationDefinition.specularObjeto;
+    }
+
     /*
     atualizarIluminacao(gl, informacoesPrograma )
     {

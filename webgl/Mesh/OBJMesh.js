@@ -44,9 +44,13 @@ export class OBJMesh extends VisualMesh
 
         this.materials       = {};
         this.objects         = {};
+        this.objectsNames    = []; 
         this.activeObject    = null;
         this.activeMaterial  = null;
         this._isTransparente = false;
+        this.childrenIndividualLights = true; // Se cada parte vai usar iluminação
+        this.objectsInfo     = {};
+        this.iluminationInfo = {};            // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
 
         this._parseMTL(this.mtlText);
         this._parseOBJ(this.objText);
@@ -162,6 +166,10 @@ export class OBJMesh extends VisualMesh
         }
 
         const objectKeys = Object.keys(this.objects);
+
+        // Obtem os nomes dos objetos
+        this.objectsNames = objectKeys;
+
         let keyToIndex = {};
         let currentIndex = 0;
 
@@ -218,12 +226,24 @@ export class OBJMesh extends VisualMesh
         this.indices = []; // reseta para montar os índices gerais
 
         this.objectsInfo = {}; // objeto para guardar offset/count por objeto
+        this.iluminationInfo = {} // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
 
         let globalIndexCount = 0; // para contar índice total gerado
 
         for (let i = 0; i < objectKeys.length; i++) 
         {
             const nomeObjeto = objectKeys[i];
+
+            /**
+            * Define a iluminação do objeto como sendo a iluminação padrão
+            */
+            this.iluminationInfo[nomeObjeto] = {
+                brilhoObjeto   : 0,
+                ambientObjeto  : 0,
+                diffuseObjeto  : 0,
+                specularObjeto : 0,
+            };
+
             const faces = this.objects[nomeObjeto];
 
             let localIndexCount = 0; // conta índices desse objeto só
@@ -370,6 +390,63 @@ export class OBJMesh extends VisualMesh
         return this.transparencia < 1 || this._isTransparente == true;
     }
 
+    /**
+    * Define a iluminação de uma parte do modelo
+    */
+    atualizarIluminacaoParte(gl, informacoesPrograma, iluminacaoParte={} )
+    {
+        /**
+        * Obtem o ambiente atualizado como a soma dos valores do objeto com os globais da cena
+        */
+        const ambientParte  = iluminacaoParte.ambientObjeto  + this.renderer.ambient;
+        const diffuseParte  = iluminacaoParte.diffuseObjeto  + this.renderer.diffuse;
+        const specularParte = iluminacaoParte.specularObjeto + this.renderer.specular;
+        const brilhoParte   = iluminacaoParte.brilhoObjeto   + this.renderer.brilho;
+
+        /**
+        * Aplica os valores 
+        */
+        const brilhoShader         = informacoesPrograma.atributosObjeto.brilho;
+        const ambientShader        = informacoesPrograma.atributosObjeto.ambient;
+        const diffuseShader        = informacoesPrograma.atributosObjeto.diffuse;
+        const specularShader       = informacoesPrograma.atributosObjeto.specular;
+
+        // Atualiza as configurações gerais 
+        gl.uniform1f(brilhoShader,   brilhoParte);
+        gl.uniform1f(ambientShader,  ambientParte);
+        gl.uniform1f(diffuseShader,  diffuseParte);
+        gl.uniform1f(specularShader, specularParte);
+    }
+
+    /**
+    * Define a iluminação do objeto como um todo 
+    * @override
+    */
+    setIntireIlumination( iluminationDefinition={} )
+    {
+        this.brilhoObjeto   = iluminationDefinition.brilhoObjeto;
+        this.ambientObjeto  = iluminationDefinition.ambientObjeto;
+        this.diffuseObjeto  = iluminationDefinition.diffuseObjeto;
+        this.specularObjeto = iluminationDefinition.specularObjeto;
+
+        // Se todos os filhos(subojetos) usam iluminação individual
+        if( this.childrenIndividualLights == true )
+        {
+            for( let i = 0 ; i < this.objectsNames.length ; i++ )
+            {
+                const nomeObjeto = this.objectsNames[i];
+
+                this.iluminationInfo[ nomeObjeto ] = {
+                    brilhoObjeto   : iluminationDefinition.brilhoObjeto,
+                    ambientObjeto  : iluminationDefinition.ambientObjeto,
+                    diffuseObjeto  : iluminationDefinition.diffuseObjeto,
+                    specularObjeto : iluminationDefinition.specularObjeto,
+                }
+
+            }
+        }
+    }
+
     desenhar() 
     {
         const renderer            = this.getRenderer();
@@ -429,6 +506,13 @@ export class OBJMesh extends VisualMesh
             const usarTextura = material && material.map_Kd;
             const opacidade   = material?.opacity ?? 1.0;
 
+            // Se esse objeto usa iluminação por cada sub-objeto
+            if( this.childrenIndividualLights == true )
+            {
+                const iluminacaoParte = this.iluminationInfo[ nomeObjeto ];
+                this.atualizarIluminacaoParte( gl, informacoesPrograma, iluminacaoParte );
+            }
+
             gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, usarTextura ? 1 : 0);
             gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, opacidade);
 
@@ -449,7 +533,11 @@ export class OBJMesh extends VisualMesh
                 gl.uniform1i(informacoesPrograma.uniformsCustomizados.sampler, 0);
             }
 
-            this.aplicarIluminacao( gl, informacoesPrograma );
+            // Se este objeto usa iluminação por partes, ele não aplica a global(EM TODO), pois as partes ja controlam isso
+            if( this.childrenIndividualLights == false )
+            {
+                this.aplicarIluminacao( gl, informacoesPrograma );
+            }
 
             gl.drawElements(gl.TRIANGLES, info.count, gl.UNSIGNED_SHORT, info.offset);
 

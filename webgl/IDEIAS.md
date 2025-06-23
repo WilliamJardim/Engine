@@ -71,3 +71,29 @@ function onAndar()
 
 AO RODAR: renderizador.getObjetos()[1].elevarPico(0.5, 2.0, 10.8, 5.3); no PlanoOndular, dá pra criar uma "tenda" para um jogo de sobrevivencia
 
+
+
+# TODO LIST 23/06/2025
+LUZ:
+Adicionar cor de luz, cor de luz na iluminação ambiente do Renderizador, e dos objetos. E cor de luz na iluminação das partes individuais do OBJ 
+
+OBJ:
+adicionar controle visual por material individual, exemplo:
+Iluminação, brilho, visibilidade(visível ou não), o que vai permitir afetar vários objetos de uma só vez dentro de um modelo OBj.
+
+PATCHs
+Criar sistema de PATCHs que permite substituir ou modificar, adicionar objetos de um OBJ, como se fosse um arquivo OBJ a parte que serve apenas pra complementar e modificar o primeiro.
+
+CONTROLE DAS PARTES OBJ
+para cada parte individual do OBJ, poder alterar posição, rotação e escala, também visibilidade
+
+Adicionar intensidade da luz de volta
+
+
+SISTEMA DE ILUMINAÇÂO:
+Criar um sistema de iluminação interna da Engine, que chama setIluminacaoTotal ou o setIluminacaoParte em cada parte do objeto, 
+Com o intuito de aplicar iluminação gradual e local nas regiões onde tiver pontos de iluminação. Vai simular de forma crua luzes com diferentes cores, intensidades, e alcances. Calculando a distância de cada objeto com os pontos de iluminação
+
+
+EDITOR DE OBJETOS DA ENGINE
+Criar um sistema que permite exportar o OBJ carregado de volta para um novo OBJ, por que aí abre portas pra eu começar a criar meu editor de mapas e objetos embutido

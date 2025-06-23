@@ -567,8 +567,8 @@ criarCaixa();
 // FUNÇÂO QUE CARREGA O MODELO 3D DA CAIXA
 async function carregarMapa() 
 {
-    const objText = await carregarTxt('./MAPS/theroom/map.obj');
-    const mtlText = await carregarTxt('./MAPS/theroom/map.mtl');
+    const objText = await carregarTxt('./MAPS/theroom2/map.obj');
+    const mtlText = await carregarTxt('./MAPS/theroom2/map.mtl');
 
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({
@@ -661,8 +661,8 @@ carregarMapa2();
 // Carregando o mesmo obj denovo pra testar se tem limitações de importação
 async function carregarMapa3() 
 {
-    const objText = await carregarTxt('./MAPS/theroom/map.obj');
-    const mtlText = await carregarTxt('./MAPS/theroom/map.mtl');
+    const objText = await carregarTxt('./MAPS/theroom2/map.obj');
+    const mtlText = await carregarTxt('./MAPS/theroom2/map.mtl');
 
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({

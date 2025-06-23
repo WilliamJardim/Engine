@@ -51,12 +51,18 @@ import { OBJMesh } from '../Mesh/OBJMesh.js';
 
 export class Renderer
 {
-    constructor( canvasRef, tipoPerspectiva="perspectiva" ){
+    constructor( canvasRef, tipoPerspectiva="perspectiva", renderConfig={} ){
         this.canvas = canvasRef;
 
         // Inicializa a textura do skybox nula
         this.skyTexture    = null;
         this.skyQuadBuffer = null;
+
+        // Iluminação global base que todos os objetos vão seguir
+        this.ambient       = renderConfig.ambient  || 1.5; // Força da luz ambiente
+        this.diffuse       = renderConfig.diffuse  || 0.6;
+        this.specular      = renderConfig.specular || 0.6;
+        this.brilho        = renderConfig.brilho   || 32;   // Brilho geral
 
         this.frameCounter = new FrameCounter(60);
 
@@ -143,6 +149,14 @@ export class Renderer
         // AQUI USEI BIND PRA NAO DAR ERRO NA HORA DE RODAR O LOOP COM O requestAnimationFrame
         // SERIA NECESSARIO ADAPTAR NO C++
         this.render = this.render.bind(this);
+    }
+
+    ficarNoite()
+    {
+        this.ambient  = 0.2;  
+        this.diffuse  = 0.3; 
+        this.specular = 0.2;  
+        this.brilho   = 16;   
     }
 
 

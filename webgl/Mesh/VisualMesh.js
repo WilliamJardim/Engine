@@ -30,11 +30,11 @@ export class VisualMesh
         this.transparencia = meshConfig.transparencia;
 
         // Luzes do objeto
-        this.alwaysUpdateLights = meshConfig.alwaysUpdateLights || true; //Se a todo momento vai atualizar luzes ou não
-        this.brilho             = meshConfig.brilho   || 32;
-        this.ambient            = meshConfig.ambient  || 0.6;
-        this.diffuse            = meshConfig.diffuse  || 0.5;
-        this.specular           = meshConfig.specular || 0.8;
+        this.alwaysUpdateLights       = meshConfig.alwaysUpdateLights || true; //Se a todo momento vai atualizar luzes ou não
+        this.brilhoObjeto             = meshConfig.brilho   || 16;
+        this.ambientObjeto            = meshConfig.ambient  || 0.2; // Um acrescimento a luz ambiente
+        this.diffuseObjeto            = meshConfig.diffuse  || 0.2;
+        this.specularObjeto           = meshConfig.specular || 0.2;
 
         // Por padrão sempre vai usar cores
         this.useColors = true;
@@ -112,16 +112,27 @@ export class VisualMesh
     */
     atualizarIluminacao(gl, informacoesPrograma )
     {
-        const brilho         = informacoesPrograma.atributosObjeto.brilho;
-        const ambient        = informacoesPrograma.atributosObjeto.ambient;
-        const diffuse        = informacoesPrograma.atributosObjeto.diffuse;
-        const specular       = informacoesPrograma.atributosObjeto.specular;
+        /**
+        * Obtem o ambiente atualizado
+        */
+        this.ambient  = this.ambientObjeto  + this.renderer.ambient;
+        this.diffuse  = this.diffuseObjeto  + this.renderer.diffuse;
+        this.specular = this.specularObjeto + this.renderer.specular;
+        this.brilho   = this.brilhoObjeto   + this.renderer.brilho;
+
+        /**
+        * Aplica os valores 
+        */
+        const brilhoShader         = informacoesPrograma.atributosObjeto.brilho;
+        const ambientShader        = informacoesPrograma.atributosObjeto.ambient;
+        const diffuseShader        = informacoesPrograma.atributosObjeto.diffuse;
+        const specularShader       = informacoesPrograma.atributosObjeto.specular;
 
         // Atualiza as configurações gerais 
-        gl.uniform1f(brilho,   this.brilho);
-        gl.uniform1f(ambient,  this.ambient);
-        gl.uniform1f(diffuse,  this.diffuse);
-        gl.uniform1f(specular, this.specular);
+        gl.uniform1f(brilhoShader,   this.brilho);
+        gl.uniform1f(ambientShader,  this.ambient);
+        gl.uniform1f(diffuseShader,  this.diffuse);
+        gl.uniform1f(specularShader, this.specular);
     }
     /*
     atualizarIluminacao(gl, informacoesPrograma )

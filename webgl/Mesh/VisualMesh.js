@@ -36,6 +36,7 @@ export class VisualMesh
         this.diffuseObjeto            = meshConfig.diffuse  || 0.2;
         this.specularObjeto           = meshConfig.specular || 0.2;
         this.corLuzObjeto             = meshConfig.corLuzObjeto || [0, 0, 0];
+        this.intensidadeLuzObjeto     = meshConfig.intensidadeLuzObjeto || 0;
 
         // Por padrão sempre vai usar cores
         this.useColors = true;
@@ -116,10 +117,11 @@ export class VisualMesh
         /**
         * Obtem o ambiente atualizado como a soma dos valores do objeto com os globais da cena
         */
-        this.ambient  = this.ambientObjeto  + this.renderer.ambient;
-        this.diffuse  = this.diffuseObjeto  + this.renderer.diffuse;
-        this.specular = this.specularObjeto + this.renderer.specular;
-        this.brilho   = this.brilhoObjeto   + this.renderer.brilho;
+        this.ambient         = this.ambientObjeto        + this.renderer.ambient;
+        this.diffuse         = this.diffuseObjeto        + this.renderer.diffuse;
+        this.specular        = this.specularObjeto       + this.renderer.specular;
+        this.brilho          = this.brilhoObjeto         + this.renderer.brilho;
+        this.intensidadeLuz  = this.intensidadeLuzObjeto + this.renderer.intensidadeLuz;
 
         // Pega a cor da luz
         this.corLuz    = [0, 0, 0];
@@ -130,11 +132,12 @@ export class VisualMesh
         /**
         * Aplica os valores 
         */
-        const brilhoShader         = informacoesPrograma.atributosObjeto.brilho;
-        const ambientShader        = informacoesPrograma.atributosObjeto.ambient;
-        const diffuseShader        = informacoesPrograma.atributosObjeto.diffuse;
-        const specularShader       = informacoesPrograma.atributosObjeto.specular;
-        const corLuzShader         = informacoesPrograma.atributosObjeto.corLuz;
+        const brilhoShader          = informacoesPrograma.atributosObjeto.brilho;
+        const ambientShader         = informacoesPrograma.atributosObjeto.ambient;
+        const diffuseShader         = informacoesPrograma.atributosObjeto.diffuse;
+        const specularShader        = informacoesPrograma.atributosObjeto.specular;
+        const corLuzShader          = informacoesPrograma.atributosObjeto.corLuz;
+        const intensidadeLuzShader  = informacoesPrograma.atributosObjeto.intensidadeLuz;
 
         // Atualiza as configurações gerais 
         gl.uniform1f(brilhoShader,   this.brilho);
@@ -142,6 +145,7 @@ export class VisualMesh
         gl.uniform1f(diffuseShader,  this.diffuse);
         gl.uniform1f(specularShader, this.specular);
         gl.uniform3fv(corLuzShader,  new Float32Array(this.corLuz) );
+        gl.uniform1f(intensidadeLuzShader, this.intensidadeLuz);
     }
     
     /**
@@ -153,6 +157,7 @@ export class VisualMesh
         this.ambientObjeto  = iluminationDefinition.ambientObjeto;
         this.diffuseObjeto  = iluminationDefinition.diffuseObjeto;
         this.specularObjeto = iluminationDefinition.specularObjeto;
+        this.intensidadeLuzObjeto = iluminationDefinition.intensidadeLuzObjeto;
 
         // Pega a cor da luz
         this.corLuz    = [0, 0, 0];

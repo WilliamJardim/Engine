@@ -59,11 +59,12 @@ export class Renderer
         this.skyQuadBuffer = null;
 
         // Iluminação global base que todos os objetos vão seguir
-        this.ambient       = renderConfig.ambient  || 1.5; // Força da luz ambiente
-        this.diffuse       = renderConfig.diffuse  || 0.6;
-        this.specular      = renderConfig.specular || 0.6;
-        this.brilho        = renderConfig.brilho   || 32;   // Brilho geral
-        this.corAmbient    = renderConfig.corAmbient || [1, 1, 1];
+        this.ambient        = renderConfig.ambient  || 1.5; // Força da luz ambiente
+        this.diffuse        = renderConfig.diffuse  || 0.6;
+        this.specular       = renderConfig.specular || 0.6;
+        this.brilho         = renderConfig.brilho   || 32;   // Brilho geral
+        this.corAmbient     = renderConfig.corAmbient || [1, 1, 1];
+        this.intensidadeLuz = renderConfig.intensidadeLuz || 1;
 
         this.frameCounter = new FrameCounter(60);
 

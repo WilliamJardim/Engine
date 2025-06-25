@@ -1106,3 +1106,24 @@ isso vai focar o WebGL somente dentro desse arquivo, que vai ser chamado pela En
 Melhor dizendo: A Engine chama a função do GL do Adapter, que na verdade é só uma ponte, que chama a função do GL e retorna seu resultado.
 O Adapter é algo simbolico, mais util. Ele apenas repassa as chamadas, mais isso ja é muito util em termos de portabilidade
 
+
+# 25/06/2025 FÍSICA DA RODA
+Toda vez que o objeto receber rotação em +X, ela vai girar obviamente. Pra isso vou usar a função AddRotation, se o atributo useTorque for true.
+
+Então criar uma lógica, aproveitar pra somar a posição X, ou a velocidade X, pra aplicar um movimento pra frente ou pra trás dependendo do sentido da rotação.
+
+E dependendo dos valores XYZ da rotação, aplicar deslocamentos em múltiplos eixos da posição ou velocidade. Por que assim eu poderia simular uma roda andando em círculos, ou então ela virando pra um lado, de forma realista
+
+Tipo, se a rotação for x90 y0 z0, então ela só vai andar pra frente.
+Se for x90 y20 z0, ela vai andar pra frente mais deslocando um pouco pro lado direito também.
+E assim por diante 
+
+O ideal seria aplicar forças
+
+E se tiver objetos presos na roda, esses objetos precisam acompanhar a posição e rotação da roda.
+
+Já se tiver duas rodas presas a um mesmo objeto, a roda que se mover primeiro é a que o objeto preso vai seguir ela. Já Se ambas estiverem em movimento, o objeto vai acompanhar a posição e rotação das duas, seja por média, valor máximo ou soma. Dependendo das minhas regras. Ele poderia até acompanhar mais a última que se mover, e isso pode influenciar a outra
+
+Isso eu posso abstrair na lógica de anexos dos objetos 
+
+Isso vai ser útil pra programar física de carro.

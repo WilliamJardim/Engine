@@ -535,14 +535,14 @@ loopTeste();
 // FUNÇÂO QUE CARREGA O MODELO 3D DA CAIXA
 async function criarCaixa() 
 {
-    const objText = await carregarTxt('./objs/box.obj');
-    const mtlText = await carregarTxt('./objs/box.mtl');
+    const objString = await carregarTxt('./objs/box.obj');
+    const mtlString = await carregarTxt('./objs/box.mtl');
 
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({
         tipo: 'OBJ',
-        objText: objText,
-        mtlText: mtlText,
+        objString: objString,
+        mtlString: mtlString,
         
         invisivel: false,
         transparencia: 1, 
@@ -582,14 +582,14 @@ criarCaixa();
 // FUNÇÂO QUE CARREGA O MODELO 3D DA CAIXA
 async function criarCarro() 
 {
-    const objText = await carregarTxt('./objs/carros/classic-car.obj');
-    const mtlText = await carregarTxt('./objs/carros/classic-car.mtl');
+    const objString = await carregarTxt('./objs/carros/classic-car.obj');
+    const mtlString = await carregarTxt('./objs/carros/classic-car.mtl');
 
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({
         tipo: 'OBJ',
-        objText: objText,
-        mtlText: mtlText,
+        objString: objString,
+        mtlString: mtlString,
         
         invisivel: false,
         transparencia: 1, 
@@ -629,14 +629,14 @@ criarCarro();
 // FUNÇÂO QUE CARREGA O MODELO 3D DA CAIXA
 async function carregarMapa() 
 {
-    const objText = await carregarTxt('./MAPS/theroom2/map.obj');
-    const mtlText = await carregarTxt('./MAPS/theroom2/map.mtl');
+    const objString = await carregarTxt('./MAPS/theroom2/map.obj');
+    const mtlString = await carregarTxt('./MAPS/theroom2/map.mtl');
 
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({
         tipo: 'OBJ',
-        objText: objText,
-        mtlText: mtlText,
+        objString: objString,
+        mtlString: mtlString,
 
         invisivel: false,
         transparencia: 1, 
@@ -676,14 +676,14 @@ carregarMapa();
 // Carregando o mesmo obj denovo pra testar se tem limitações de importação
 async function carregarMapa2() 
 {
-    const objText = await carregarTxt('./MAPS/theroom/map.obj');
-    const mtlText = await carregarTxt('./MAPS/theroom/map.mtl');
+    const objString = await carregarTxt('./MAPS/theroom/map.obj');
+    const mtlString = await carregarTxt('./MAPS/theroom/map.mtl');
 
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({
         tipo: 'OBJ',
-        objText: objText,
-        mtlText: mtlText,
+        objString: objString,
+        mtlString: mtlString,
         
         invisivel: false,
         transparencia: 1, 
@@ -723,14 +723,14 @@ carregarMapa2();
 // Carregando o mesmo obj denovo pra testar se tem limitações de importação
 async function carregarMapa3() 
 {
-    const objText = await carregarTxt('./MAPS/theroom2/map.obj');
-    const mtlText = await carregarTxt('./MAPS/theroom2/map.mtl');
+    const objString = await carregarTxt('./MAPS/theroom2/map.obj');
+    const mtlString = await carregarTxt('./MAPS/theroom2/map.mtl');
 
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({
         tipo: 'OBJ',
-        objText: objText,
-        mtlText: mtlText,
+        objString: objString,
+        mtlString: mtlString,
         
         invisivel: false,
         transparencia: 1, 

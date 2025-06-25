@@ -26,175 +26,248 @@ export class OBJMesh extends VisualMesh
     {
         super(renderer, propriedadesMesh);
 
-        this.tipo           = 'OBJ';
-        this.mtlText        = propriedadesMesh.mtlText;
-        this.objText        = propriedadesMesh.objText;
+        this.tipo             = 'OBJ';
+        this._isTransparente  = false;
+        this.mtlString        = propriedadesMesh.mtlString;
+        this.objString        = propriedadesMesh.objString;
+
         this.vertices       = [];
         this.uvs            = [];
         this.normals        = [];
         this.positions      = [];
         this.indices        = [];
-        this.colors         = [];
-        this.bufferPosicao  = null;
-        this.bufferCor      = null;
-        this.bufferIndices  = null;
+        this.cores         = [];
+
+        this.bufferPosicao     = null;
+        this.bufferCor         = null;
+        this.bufferIndices     = null;
         this.allBuffersCriated = false;
 
-        this.setProgram(renderer.getOBJProgram());
+        this.materiais       = {};
+        this.materialAtivo   = null;
 
-        this.materials       = {};
-        this.objects         = {};
-        this.objectsNames    = []; 
-        this.activeObject    = null;
-        this.activeMaterial  = null;
-        this._isTransparente = false;
+        this.objetos         = {};
+        this.nomesObjetos    = []; 
+        this.objetoAtivo     = null;
+        this.objetosInfo     = {};
+
         this.childrenIndividualLights = true; // Se cada parte vai usar iluminação
-        this.objectsInfo     = {};
         this.iluminationInfo = {};            // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
 
-        this._parseMTL(this.mtlText);
-        this._parseOBJ(this.objText);
+        this.setProgram( renderer.getOBJProgram() );
+
+        // (1) - Ler o arquivo MTL que contém os materiais e links para as texturas usadas
+        this.carregarMTL( this.mtlString );
+
+        // (2) - Ler o arquivo OBJ que contem a malha em si: os vertices, polignos, faces, etc...
+        this.carregarOBJ( this.objString );
+
+        // (3) - Criar o OBJ na memoria com seus buffers, etc...
         this.criar();
     }
 
-    _parseMTL(mtlText) 
+    /**
+    * Função que vai ler um arquivo .MTL
+    * Para cada material, ele vai cadastrando esses materiais num dicionario, e vai tambem definindo seus atributos conforme estão nas linhas do .MTL
+    * Assim que uma nova declaração de material newmtl é encontrada, ele cadastra esse novo material e repete esse processo,
+    * Assim ele cria todos os materiais um por um, conforme eles estao definidos no .MTL 
+    * 
+    * Serve para interpretar os comandos de um arquivo MTL
+    * como "newmtl" = novo material, "d" = opacidade, etc....
+    */
+    carregarMTL(mtlString) 
     {
-        const lines = mtlText.split('\n');
-        let current = null;
+        let linhas = mtlString.split('\n');
 
-        for (let i = 0; i < lines.length; i++) 
+        // o material atual é o material que está sendo carregado com suas informações
+        let materialAtual = null;
+
+        for (let i = 0; i < linhas.length; i++) 
         {
-            let line = lines[i].trim();
-            if (line.length === 0)
+            let linha = linhas[i].trim();
+
+            if (linha.length === 0)
             { 
                 continue;
             }
 
-            if (line.indexOf('newmtl') === 0) {
-                const tokens = line.split(/\s+/);
-                current = tokens[1];
-                this.materials[current] = { name: current, Kd: [1, 1, 1], map_Kd: null };
+            // Declara um novo material
+            if (linha.indexOf('newmtl') === 0) {
+                const itensLinha = linha.split(/\s+/);
 
-            } else if (current !== null) {
-                if (line.startsWith('d')) {
-                    this.materials[current].opacity = parseFloat(line.split(/\s+/)[1]);
+                materialAtual = itensLinha[1];
+                this.materiais[ materialAtual ] = { 
+                                                    nome   : materialAtual, 
+                                                    Kd     : [1, 1, 1], 
+                                                    map_Kd : null 
+                                                };
+
+            // Se o current for null              
+            } else if (materialAtual !== null) {
+                
+                // Se tiver transparencia
+                if (linha.startsWith('d')) 
+                {
+                    this.materiais[ materialAtual ].opacity = parseFloat(linha.split(/\s+/)[1]);
                     this._isTransparente = true; // Diz pra Engine que este objeto tem transparencia
                 }
                 
-                if (line.indexOf('Kd') === 0) {
-                    const tokens = line.split(/\s+/);
-                    this.materials[current].Kd = [
-                        parseFloat(tokens[1]),
-                        parseFloat(tokens[2]),
-                        parseFloat(tokens[3])
+                // Determina qual a cor do materal
+                if (linha.indexOf('Kd') === 0) {
+                    const itensLinha = linha.split(/\s+/);
+
+                    this.materiais[ materialAtual ].Kd = [
+                        parseFloat( itensLinha[1] ),
+                        parseFloat( itensLinha[2] ),
+                        parseFloat( itensLinha[3] )
                     ];
                 
-                } else if (line.indexOf('map_Kd') === 0) {
-                    const tokens       = line.split(/\s+/);
-                    const textureFile  = tokens[1];
+                // Determina qual a imagem(imagem de textura) que o material usa
+                } else if (linha.indexOf('map_Kd') === 0) {
+                    const itensLinha   = linha.split(/\s+/);
+                    const textureFile  = itensLinha[1];
                     
                     const gl           = this.getRenderer().gl;
                     const textureWebGL = carregarTextura(gl, textureFile);
-                    this.materials[current].map_Kd = textureWebGL;
+
+                    this.materiais[ materialAtual ].map_Kd = textureWebGL;
                 }
             }
         }
 
-        console.log(this.materials);
+        console.log(this.materiais);
     }
 
-    _parseOBJ(objText) 
+    /**
+    * Função auxiliar que serve para interpretar os comandos de um arquivo OBJ
+    * como "o" = objeto, "f" = faces, etc.... 
+    */
+    _interpretarInstrucaoOBJ( comando=String(), partesLinha=[] )
     {
-        const lines = objText.split('\n');
+        // Se for um Vertice
+        if (comando === 'v') {
+            const v = [ 
+                        parseFloat(partesLinha[1]), 
+                        parseFloat(partesLinha[2]), 
+                        parseFloat(partesLinha[3]) 
+                      ];
 
-        for (let i = 0; i < lines.length; i++)
+            this.vertices.push(v);
+
+        // Se for uma Textura de Vertice
+        } else if (comando === 'vt') {
+            const vt = [ 
+                         parseFloat(partesLinha[1]), 
+                         parseFloat(partesLinha[2]) 
+                       ];
+
+            this.uvs.push(vt);
+
+        // Se for uma Normal do Vertice
+        } else if (comando === 'vn') {
+            const vn = [ 
+                         parseFloat(partesLinha[1]), 
+                         parseFloat(partesLinha[2]), 
+                         parseFloat(partesLinha[3]) 
+                       ];
+
+            this.normals.push(vn);
+
+        // Se for uma Face
+        } else if (comando === 'f') {
+            if (this.objetoAtivo === null) this.objetoAtivo = 'default';
+            if (this.materialAtivo === null) this.materialAtivo = 'defaultMat';
+
+            // Agrupa por objeto + material
+            const grupo = `${this.objetoAtivo}__${this.materialAtivo}`;
+
+            if (!this.objetos[grupo]) {
+                this.objetos[grupo] = [];
+            }
+
+            const face = [];
+            for (let j = 1; j < partesLinha.length; j++)
+            {
+                const itemLinha = partesLinha[j].split('/');
+
+                face.push({
+                    vi: parseInt(itemLinha[0], 10) - 1,
+                    ti: itemLinha[1] ? parseInt(itemLinha[1], 10) - 1 : -1,
+                    ni: itemLinha[2] ? parseInt(itemLinha[2], 10) - 1 : -1
+                });
+            }
+            
+            this.objetos[grupo].push({
+                face: face,
+                material: this.materialAtivo
+            });
+
+        // Diz qual material esta sendo usado
+        } else if (comando === 'usemtl') {
+            this.materialAtivo = partesLinha[1];
+
+        // Definicao de um sub-objeto
+        } else if (comando === 'o') {
+            this.objetoAtivo = partesLinha[1];
+        }
+    }
+
+    /**
+    * Função que carrega um arquivo .OBJ
+    */
+    carregarOBJ(objString) 
+    {
+        const linhas = objString.split('\n');
+
+        for (let i = 0; i < linhas.length; i++)
         {
-            let line = lines[i].trim();
-            if (line.length === 0 || line.charAt(0) === '#')
+            let linha = linhas[i].trim();
+            if( linha.length === 0 || linha.charAt(0) === '#' )
             {
                 continue;
             }
 
-            const parts = line.split(/\s+/);
-            const prefix = parts[0];
+            // (1) - Divide a linha em palavras separadas(uma lista de palavras)
+            // (2) - Extrai apenas o comando(que é sempre o primeiro elemento da lista de palavras acima)
+            const partes = linha.split(/\s+/);
+            const comando = partes[0];
 
-            if (prefix === 'v') {
-                const v = [parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])];
-                this.vertices.push(v);
-
-            } else if (prefix === 'vt') {
-                const vt = [parseFloat(parts[1]), parseFloat(parts[2])];
-                this.uvs.push(vt);
-
-            } else if (prefix === 'vn') {
-                const vn = [parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])];
-                this.normals.push(vn);
-
-            } else if (prefix === 'f') {
-                if (this.activeObject === null) this.activeObject = 'default';
-                if (this.activeMaterial === null) this.activeMaterial = 'defaultMat';
-
-                // Agrupa por objeto + material
-                const grupo = `${this.activeObject}__${this.activeMaterial}`;
-
-                if (!this.objects[grupo]) {
-                    this.objects[grupo] = [];
-                }
-
-                const face = [];
-                for (let j = 1; j < parts.length; j++)
-                {
-                    const comp = parts[j].split('/');
-                    face.push({
-                        vi: parseInt(comp[0], 10) - 1,
-                        ti: comp[1] ? parseInt(comp[1], 10) - 1 : -1,
-                        ni: comp[2] ? parseInt(comp[2], 10) - 1 : -1
-                    });
-                }
-                
-                this.objects[grupo].push({
-                    face: face,
-                    material: this.activeMaterial
-                });
-
-            } else if (prefix === 'usemtl') {
-                this.activeMaterial = parts[1];
-
-            } else if (prefix === 'o') {
-                this.activeObject = parts[1];
-            }
+            // (3) - Interpreta o comando atual
+            this._interpretarInstrucaoOBJ( comando, partes );
         }
 
-        const objectKeys = Object.keys(this.objects);
+        const objectKeys = Object.keys(this.objetos);
 
         // Obtem os nomes dos objetos
-        this.objectsNames = objectKeys;
+        this.nomesObjetos = objectKeys;
 
-        let keyToIndex = {};
-        let currentIndex = 0;
+        let keyToIndex  = {};
+        let indiceAtual = 0;
 
         for (let i = 0; i < objectKeys.length; i++) 
         {
-            const name = objectKeys[i];
-            const faces = this.objects[name];
+            const nome  = objectKeys[i];
+            const faces = this.objetos[nome];
 
             for (let j = 0; j < faces.length; j++) 
             {
-                const face = faces[j];
-                const faceIndices = [];
+                const face          = faces[j];
+                const indicesFaces  = [];
 
                 for (let k = 0; k < face.face.length; k++) 
                 {
                     const v = face.face[k];
-                    const key = v.vi + '/' + v.ti + '/' + v.ni;
+                    const key = v.vi + '/' + v.ti + '/' + v.ni;    // Concatena os valores que vem no .OBJ para usar como chave
 
-                    if (keyToIndex[key] === undefined) {
-                        keyToIndex[key] = currentIndex++;
+                    // Se o indice da chave nao foi cadastrado, salva ele, com posição, cor
+                    if ( keyToIndex[key] === undefined ) 
+                    {
+                        keyToIndex[key] = indiceAtual++;
 
-                        this.colors.push(...(this.materials[face.material]?.Kd || [1, 1, 1]), 1);
+                        this.cores.push( ...(this.materiais[face.material].Kd || [1, 1, 1]), 1);
 
-                        const pos = this.vertices[v.vi] || [0, 0, 0];
-                        this.positions.push(pos[0], pos[1], pos[2]);
+                        const posicao = this.vertices[v.vi] || [0, 0, 0];
+                        this.positions.push(posicao[0], posicao[1], posicao[2]);
 
                         if (v.ti >= 0) {
                             const uv = this.uvs[v.ti];
@@ -206,12 +279,12 @@ export class OBJMesh extends VisualMesh
                         }
                     }
 
-                    faceIndices.push(keyToIndex[key]);
+                    indicesFaces.push(keyToIndex[key]);
                 }
 
-                for (let k = 1; k < faceIndices.length - 1; k++) 
+                for (let k = 1; k < indicesFaces.length - 1; k++) 
                 {
-                    this.indices.push(faceIndices[0], faceIndices[k], faceIndices[k + 1]);
+                    this.indices.push(indicesFaces[0], indicesFaces[k], indicesFaces[k + 1]);
                 }
             }
         }
@@ -221,18 +294,22 @@ export class OBJMesh extends VisualMesh
         * Organiza os buffers de posições, cores, UVs e indices.
         */
         keyToIndex = {};
-        currentIndex = 0;
+        indiceAtual = 0;
 
         this.indices = []; // reseta para montar os índices gerais
 
-        this.objectsInfo = {}; // objeto para guardar offset/count por objeto
+        this.objetosInfo = {}; // objeto para guardar offset/count por objeto
         this.iluminationInfo = {} // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
 
         let globalIndexCount = 0; // para contar índice total gerado
 
         for (let i = 0; i < objectKeys.length; i++) 
         {
-            const nomeObjeto = objectKeys[i];
+            const nomeObjeto    = objectKeys[i];
+            const faces         = this.objetos[nomeObjeto];
+            const startIndex    = globalIndexCount;  // índice inicial no buffer geral
+
+            let localIndexCount = 0;               // conta índices desse objeto só
 
             /**
             * Define a iluminação do objeto como sendo a iluminação padrão
@@ -246,28 +323,24 @@ export class OBJMesh extends VisualMesh
                 intensidadeLuzObjeto : 0
             };
 
-            const faces = this.objects[nomeObjeto];
-
-            let localIndexCount = 0; // conta índices desse objeto só
-            const startIndex = globalIndexCount; // índice inicial no buffer geral
-
             for (let j = 0; j < faces.length; j++) 
             {
-                const face = faces[j];
-                const faceIndices = [];
+                const face         = faces[j];
+                const indicesFaces = [];
 
                 for (let k = 0; k < face.face.length; k++) 
                 {
                     const v = face.face[k];
-                    const key = v.vi + '/' + v.ti + '/' + v.ni;
+                    const key = v.vi + '/' + v.ti + '/' + v.ni;   // Concatena os valores que vem no .OBJ para usar como chave
 
-                    if (keyToIndex[key] === undefined) {
-                        keyToIndex[key] = currentIndex++;
+                    if ( keyToIndex[key] === undefined ) 
+                    {
+                        keyToIndex[key] = indiceAtual++;
 
-                        this.colors.push(...(this.materials[face.material]?.Kd || [1, 1, 1]), 1);
+                        this.cores.push(...(this.materiais[face.material].Kd || [1, 1, 1]), 1);
 
-                        const pos = this.vertices[v.vi] || [0, 0, 0];
-                        this.positions.push(pos[0], pos[1], pos[2]);
+                        const posicao = this.vertices[v.vi] || [0, 0, 0];
+                        this.positions.push(posicao[0], posicao[1], posicao[2]);
 
                         if (v.ti >= 0) {
                             const uv = this.uvs[v.ti];
@@ -279,20 +352,20 @@ export class OBJMesh extends VisualMesh
                         }
                     }
 
-                    faceIndices.push(keyToIndex[key]);
+                    indicesFaces.push(keyToIndex[key]);
                 }
 
                 // triangula a face (assumindo que face.face.length >= 3)
-                for (let k = 1; k < faceIndices.length - 1; k++) 
+                for (let k = 1; k < indicesFaces.length - 1; k++) 
                 {
-                    this.indices.push(faceIndices[0], faceIndices[k], faceIndices[k + 1]);
+                    this.indices.push(indicesFaces[0], indicesFaces[k], indicesFaces[k + 1]);
                     localIndexCount += 3;
                     globalIndexCount += 3;
                 }
             }
 
             // Armazena o offset em bytes (3 índices * 2 bytes por índice cada) e a contagem de índices
-            this.objectsInfo[nomeObjeto] = {
+            this.objetosInfo[nomeObjeto] = {
                 offset: startIndex * 2, // offset em bytes, pois drawElements espera offset em bytes
                 count: localIndexCount
             };
@@ -308,7 +381,7 @@ export class OBJMesh extends VisualMesh
 
     getColors() 
     {
-        return this.colors;
+        return this.cores;
     }
 
     getIndices() 
@@ -451,9 +524,9 @@ export class OBJMesh extends VisualMesh
         // Se todos os filhos(subojetos) usam iluminação individual
         if( this.childrenIndividualLights == true )
         {
-            for( let i = 0 ; i < this.objectsNames.length ; i++ )
+            for( let i = 0 ; i < this.nomesObjetos.length ; i++ )
             {
-                const nomeObjeto = this.objectsNames[i];
+                const nomeObjeto = this.nomesObjetos[i];
 
                 this.iluminationInfo[ nomeObjeto ] = {
                     brilhoObjeto          : iluminationDefinition.brilhoObjeto,
@@ -520,12 +593,16 @@ export class OBJMesh extends VisualMesh
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, renderer.getMatrixVisualizacao());
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
 
-        for (const nomeObjeto in this.objects) 
+        /**
+        * Desenha cada objeto dentro deste OBJ 
+        */
+        for ( let i = 0 ; i < this.nomesObjetos.length ; i++ ) 
         {
-            const info        = this.objectsInfo[nomeObjeto];
-            const material    = this.materials[this.objects[nomeObjeto][0].material];
-            const usarTextura = material && material.map_Kd;
-            const opacidade   = material?.opacity ?? 1.0;
+            const nomeObjeto  = this.nomesObjetos[i];
+            const info        = this.objetosInfo[nomeObjeto];
+            const material    = this.materiais[this.objetos[nomeObjeto][0].material];
+            const usarTextura = material != null && material.map_Kd != null;
+            const opacidade   = material.opacity || 1.0;
 
             // Se esse objeto usa iluminação por cada sub-objeto
             if( this.childrenIndividualLights == true )

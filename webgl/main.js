@@ -565,6 +565,53 @@ window.criarCaixa = criarCaixa;
 criarCaixa();
 
 // FUNÇÂO QUE CARREGA O MODELO 3D DA CAIXA
+async function criarCarro() 
+{
+    const objText = await carregarTxt('./objs/carros/classic-car.obj');
+    const mtlText = await carregarTxt('./objs/carros/classic-car.mtl');
+
+    // Cria um plano que pode se deformar
+    renderizador.criarObjeto({
+        tipo: 'OBJ',
+        objText: objText,
+        mtlText: mtlText,
+        
+        invisivel: false,
+        transparencia: 1, 
+
+        /**
+        * Posição do objeto 
+        */
+        position: {
+            x: -34,
+            y: -12,
+            z: 0
+        },
+
+        /**
+        * Escala do objeto 
+        */
+        scale: {
+            x: 5,
+            y: 5,
+            z: 5
+        },
+
+        /**
+        * Rotação do objeto 
+        */
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        }
+    });
+}
+
+window.criarCarro = criarCarro;
+criarCarro();
+
+// FUNÇÂO QUE CARREGA O MODELO 3D DA CAIXA
 async function carregarMapa() 
 {
     const objText = await carregarTxt('./MAPS/theroom2/map.obj');

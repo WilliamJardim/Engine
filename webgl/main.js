@@ -347,7 +347,7 @@ window.renderizador = renderizador;
 const sensibilidade = 0.03;
 const limiteX       = 10; 
 const limiteY       = 10; 
-const passos        = 0.5;
+let passos        = 0.5;
 
 const contexto = {
     mousePosition: {
@@ -382,6 +382,13 @@ window.addEventListener('mousemove', onMouseMove, false);
 
 function onAndar()
 {
+    if( contexto.keyDetection.SHIFT )
+    {
+        passos = 3.5;
+    }else{
+        passos = 0.9;
+    }
+
     const frameDelta = renderizador.lastFrameDelta;
    
     // Calcula a direção da câmera com base na rotação
@@ -444,6 +451,10 @@ const onKeyDown = (event) => {
             break;
     }
 
+    if( event.shiftKey ){
+        contexto.keyDetection.SHIFT = true;
+    }
+
     onAndar();
 };
 
@@ -474,6 +485,10 @@ const onKeyUp = (event) => {
         case 'KeyD':
             contexto.keyDetection.D = false;
             break;
+    }
+
+    if( event.shiftKey ){
+        contexto.keyDetection.SHIFT = false;
     }
 
     onAndar();

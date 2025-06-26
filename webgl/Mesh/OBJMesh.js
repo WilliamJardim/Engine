@@ -175,14 +175,25 @@ export class OBJMesh extends VisualMesh
 
         // Se for uma Face
         } else if (comando === 'f') {
-            if (this.objetoAtivo === null) this.objetoAtivo = 'default';
-            if (this.materialAtivo === null) this.materialAtivo = 'defaultMat';
+
+            // Se nao tem objeto ativo
+            if (this.objetoAtivo === null) 
+            {
+                this.objetoAtivo = 'default';
+            }
+
+            // Se nao tem material ativo
+            if (this.materialAtivo === null) 
+            {
+                this.materialAtivo = 'defaultMat';
+            }
 
             // Agrupa por objeto + material
-            const grupo = `${this.objetoAtivo}__${this.materialAtivo}`;
+            const grupoObjeto = String( this.objetoAtivo ) + '__' + String( this.materialAtivo );
 
-            if (!this.objetos[grupo]) {
-                this.objetos[grupo] = [];
+            if ( !this.objetos[ grupoObjeto ] ) 
+            {
+                this.objetos[ grupoObjeto ] = [];
             }
 
             const face = [];
@@ -191,15 +202,15 @@ export class OBJMesh extends VisualMesh
                 const itemLinha = partesLinha[j].split('/');
 
                 face.push({
-                    vi: parseInt(itemLinha[0], 10) - 1,
-                    ti: itemLinha[1] ? parseInt(itemLinha[1], 10) - 1 : -1,
-                    ni: itemLinha[2] ? parseInt(itemLinha[2], 10) - 1 : -1
+                    vi : parseInt(itemLinha[0], 10) - 1,
+                    ti : itemLinha[1] ? parseInt(itemLinha[1], 10) - 1 : -1,
+                    ni : itemLinha[2] ? parseInt(itemLinha[2], 10) - 1 : -1
                 });
             }
             
-            this.objetos[grupo].push({
-                face: face,
-                material: this.materialAtivo
+            this.objetos[ grupoObjeto ].push({
+                face     : face,
+                material : this.materialAtivo
             });
 
         // Diz qual material esta sendo usado

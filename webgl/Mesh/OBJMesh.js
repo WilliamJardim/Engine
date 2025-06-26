@@ -50,6 +50,7 @@ export class OBJMesh extends VisualMesh
         this.nomesObjetos    = []; 
         this.objetoAtivo     = null;
         this.objetosInfo     = {};
+        this.verticesObjetos = {}; // Vertices por partes
 
         this.childrenIndividualLights = true; // Se cada parte vai usar iluminação
         this.iluminationInfo = {};            // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
@@ -144,6 +145,22 @@ export class OBJMesh extends VisualMesh
     */
     _interpretarInstrucaoOBJ( comando=String(), partesLinha=[] )
     {
+        // Se nao tem objeto ativo
+        if (this.objetoAtivo === null) 
+        {
+            this.objetoAtivo = 'default';
+        }
+
+        // Se nao tem material ativo
+        if (this.materialAtivo === null) 
+        {
+            this.materialAtivo = 'defaultMat';
+        }
+
+        // Agrupa por objeto + material
+        const grupoObjeto = String( this.objetoAtivo ) + '__' + String( this.materialAtivo );
+
+        
         // Se for um Vertice
         if (comando === 'v') {
             const v = [ 
@@ -153,6 +170,9 @@ export class OBJMesh extends VisualMesh
                       ];
 
             this.vertices.push(v);
+
+            // Identifica esses vertices como sendo do objeto atual
+            this.verticesObjetos[ grupoObjeto ].push( v );
 
         // Se for uma Textura de Vertice
         } else if (comando === 'vt') {
@@ -175,21 +195,6 @@ export class OBJMesh extends VisualMesh
 
         // Se for uma Face
         } else if (comando === 'f') {
-
-            // Se nao tem objeto ativo
-            if (this.objetoAtivo === null) 
-            {
-                this.objetoAtivo = 'default';
-            }
-
-            // Se nao tem material ativo
-            if (this.materialAtivo === null) 
-            {
-                this.materialAtivo = 'defaultMat';
-            }
-
-            // Agrupa por objeto + material
-            const grupoObjeto = String( this.objetoAtivo ) + '__' + String( this.materialAtivo );
 
             if ( !this.objetos[ grupoObjeto ] ) 
             {
@@ -220,6 +225,25 @@ export class OBJMesh extends VisualMesh
         // Definicao de um sub-objeto
         } else if (comando === 'o') {
             this.objetoAtivo = partesLinha[1];
+
+            // Se nao tem objeto ativo
+            if (this.objetoAtivo === null) 
+            {
+                this.objetoAtivo = 'default';
+            }
+
+            // Se nao tem material ativo
+            if (this.materialAtivo === null) 
+            {
+                this.materialAtivo = 'defaultMat';
+            }
+
+            // Agrupa por objeto + material
+            const grupoObjeto = String( this.objetoAtivo ) + '__' + String( this.materialAtivo );
+
+            //Cadastra o objeto atual no dicionario de vertices objetos
+            this.verticesObjetos[ grupoObjeto ] = [];
+
         }
     }
 
@@ -643,6 +667,39 @@ export class OBJMesh extends VisualMesh
         }
 
         return partes;
+    }
+
+    /**
+    * Traz todas as partes do modelo que estão dentro de um range de coordenadas
+    */
+    queryPartesCoordenadas( minXYZ=Array(), maxXYZ=Array(), expansion=1 )
+    {
+        // Min Max X
+        const minX = minXYZ[0];
+        const maxX = maxXYZ[0];
+
+        // Min Max Y
+        const minY = minXYZ[1];
+        const maxY = maxXYZ[1];
+
+        // Min Max Z
+        const minZ = minXYZ[2];
+        const maxZ = maxXYZ[2];
+
+
+        const partes = []; // Array de ponteiros
+
+        // Para cada uma das partes
+        for( let i = 0 ; i < this.nomesObjetos.length ; i++ )
+        {
+            const nomeParte       = this.nomesObjetos[i];
+            const referenciaParte = this.objetos[ nomeParte ];
+
+
+        }
+
+        // TERMINAR
+
     }
 
     desenhar() 

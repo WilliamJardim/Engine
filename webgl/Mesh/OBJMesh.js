@@ -676,20 +676,26 @@ export class OBJMesh extends VisualMesh
 
     /**
     * Traz todas as partes do modelo que estão dentro de um range de coordenadas
+    * Pra isso, descobre em quais coordenadas locais do objeto essas partes estão, comparando as posições dos vertices, pra ver se essas posições dos vertices estão dentro da zona de busca
+    * 
+    * EXEMPLOS:
+    * renderizador.getObjetos()[11].queryPartesCoordenadas( [0,-1,-1], [1,0,1], 1 )
+    * renderizador.getObjetos()[11].queryPartesCoordenadas( [0,0,0], [1,1,1], 1 )
+    * 
     */
     queryPartesCoordenadas( minXYZ=Array(), maxXYZ=Array(), expansion=1 )
     {
         // Min Max X
-        const minX = minXYZ[0];
-        const maxX = maxXYZ[0];
+        const minX = minXYZ[0] * expansion;
+        const maxX = maxXYZ[0] * expansion;
 
         // Min Max Y
-        const minY = minXYZ[1];
-        const maxY = maxXYZ[1];
+        const minY = minXYZ[1] * expansion;
+        const maxY = maxXYZ[1] * expansion;
 
         // Min Max Z
-        const minZ = minXYZ[2];
-        const maxZ = maxXYZ[2];
+        const minZ = minXYZ[2] * expansion;
+        const maxZ = maxXYZ[2] * expansion;
 
 
         const partes = []; // Array de ponteiros
@@ -700,8 +706,65 @@ export class OBJMesh extends VisualMesh
             const nomeParte       = this.nomesObjetos[i];
             const referenciaParte = this.objetos[ nomeParte ];
 
+            // Se a parte não tem seu vertice cadastrado, ignora
+            if( this.verticesComecaObjetos[ nomeParte ] != null )
+            {   
+                
+                /**
+                * Cada vértice ocupa 3 posições na memoria (X, Y, Z)
+                * Exemplo:
+                * índice 0 => vértice 0
+                * índice 1 => vértice 1
+                * índice 2 => vértice 2
+                * 
+                * Então, pra saber as coordenadas exatas do vertice, basta ler esse Array. Elas são as posições.
+                * Portanto, cada vertice tem 3 elementos: X, Y e Z, como ja disse, e que são coodenadas. E são justamente as coordenadas que posicionam cada pedacinho do modelo a onde ele está sendo visto.
+                *
+                * É como se cada vértice fosse um prego com um endereço 3D (X, Y, Z).
+                * Esses pregos dizem onde estão os cantos das superfícies do modelo.
+                * O WebGL liga esses pregos formando faces e triângulos, criando o modelo visual. 
+                */
+
+                /**
+                * Abaixo eu pego o indice/numero que marca o inicio dos vertices da parte atual na memoria(dentro do array vertices geral do modelo)
+                */
+                const indiceComecaVerticesDaParte = this.verticesComecaObjetos[ nomeParte ];
+                const verticesParte               = this.verticesObjetos[ nomeParte ];
+                const totalVerticesParte          = verticesParte.length;
+
+                const indiceInicialVerticesParte  = indiceComecaVerticesDaParte;
+                const indiceFinalVerticesParte    = indiceComecaVerticesDaParte + totalVerticesParte;
+
+                // Para cada vertice da parte
+                let parteEstaNaZona   = false;
+
+                for( let j = 0 ; j < totalVerticesParte ; j++ )
+                {
+                    const verticeAtual_Parte = verticesParte[ j ];
+                    const xVertice           = verticeAtual_Parte[ 0 ];
+                    const yVertice           = verticeAtual_Parte[ 1 ];
+                    const zVertice           = verticeAtual_Parte[ 2 ];
+
+                    // Se o vertice atual da parte atual estiver dentro da zona de busca
+                    if(    
+                        ( xVertice >= minX && xVertice < maxX )
+                        && ( yVertice >= minY && yVertice < maxY )
+                        && ( zVertice >= minZ && yVertice < maxZ )
+                    ){
+                        parteEstaNaZona = true;
+                        break;
+                    }   
+                }
+
+                if( parteEstaNaZona == true )
+                {
+                    partes.push( [referenciaParte, nomeParte] );
+                }
+            }
 
         }
+
+        return partes;
 
         // TERMINAR
 

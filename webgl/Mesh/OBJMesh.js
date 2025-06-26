@@ -552,6 +552,99 @@ export class OBJMesh extends VisualMesh
         }
     }
 
+    /**
+    * Abaixo criei métodos para permitir obter, pesquisar, e manipular partes do modelo, individualmente, ou em grupo
+    */
+    getObjetos()
+    {
+        return this.objetos;
+    }
+
+    getPartes()
+    {
+        return this.objetos;
+    }
+
+    getNomesObjetos()
+    {
+        return this.nomesObjetos;
+    }
+
+    getNomesPartes()
+    {
+        return this.nomesObjetos;
+    }
+
+    getParteByIndex( index=0 )
+    {
+        return this.objetos[ this.nomesObjetos[ index ] ];
+    }
+
+    getParteByName( nomeParte )
+    {
+        return this.objetos[ nomeParte ];
+    }
+
+    /**
+    * Obtem um objeto/parte que contenha nomeParte em seu nome, ou algum outro critério
+    */
+    queryPartes( criterio="nome", 
+                 operador="like", 
+                 valorPesquisar="" 
+    ){
+        const partes      = []; // Com referencia(Array de ponteiros)
+        const nomesPartes = []; // Se precisar 
+
+        for( let i = 0 ; i < this.nomesObjetos.length ; i++ )
+        {
+            const nomeParte        = this.nomesObjetos[i];
+            const referenciaParte  = this.objetos[ nomeParte ];
+
+            // Pesquisar por nome das partes/objetos
+            if( criterio == "nome" )
+            {
+                let encontrouNome = false;
+                if( operador == "like"  ){ encontrouNome = String(nomeParte).toLowerCase().indexOf( String( valorPesquisar ).toLowerCase() ) != -1 };
+                if( operador == "equal" ){ encontrouNome = String(nomeParte).toLowerCase() == String( valorPesquisar ).toLowerCase() };
+
+                if( encontrouNome == true )
+                {   
+                    partes.push( referenciaParte );
+                    nomesPartes.push(nomeParte);
+                }
+            }
+
+            if( criterio == "material" )
+            {
+                let parteTemMaterial = false;
+
+                for( let j = 0 ; j < referenciaParte.length ; j++ )
+                {
+                    const pedacoParte  = referenciaParte[j];
+                    const nomeMaterial = pedacoParte.material;
+
+                    let encontrouNomeMaterial = false;
+                    if( operador == "like"  ){ encontrouNomeMaterial = String(nomeMaterial).toLowerCase().indexOf( String( valorPesquisar ).toLowerCase() ) != -1 };
+                    if( operador == "equal" ){ encontrouNomeMaterial = String(nomeMaterial).toLowerCase() == String( valorPesquisar ).toLowerCase() };
+
+                    if( encontrouNomeMaterial == true )
+                    {   
+                        parteTemMaterial = true;
+                        break;
+                    }
+                }
+
+                if( parteTemMaterial == true )
+                {
+                    partes.push( referenciaParte );
+                    nomesPartes.push(nomeParte);
+                }
+            }
+        }
+
+        return partes;
+    }
+
     desenhar() 
     {
         const renderer            = this.getRenderer();

@@ -50,7 +50,8 @@ export class OBJMesh extends VisualMesh
         this.nomesObjetos    = []; 
         this.objetoAtivo     = null;
         this.objetosInfo     = {};
-        this.verticesObjetos = {}; // Vertices por partes
+        this.verticesObjetos = {};        // Vertices por partes
+        this.verticesComecaObjetos = {};  // Length que começa os vertices de cada objeto no vetor geral vertices
 
         this.childrenIndividualLights = true; // Se cada parte vai usar iluminação
         this.iluminationInfo = {};            // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
@@ -174,6 +175,7 @@ export class OBJMesh extends VisualMesh
             // Identifica esses vertices como sendo do objeto atual
             this.verticesObjetos[ grupoObjeto ].push( v );
 
+
         // Se for uma Textura de Vertice
         } else if (comando === 'vt') {
             const vt = [ 
@@ -243,6 +245,9 @@ export class OBJMesh extends VisualMesh
 
             //Cadastra o objeto atual no dicionario de vertices objetos
             this.verticesObjetos[ grupoObjeto ] = [];
+
+            // Marca que os vertices desse OBJETO(denominado grupoObjeto) começa no indice numero tal do vetor de vertices global do modelo
+            this.verticesComecaObjetos[ grupoObjeto ] = this.vertices.length;
 
         }
     }

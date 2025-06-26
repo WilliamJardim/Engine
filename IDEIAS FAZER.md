@@ -1127,3 +1127,11 @@ Já se tiver duas rodas presas a um mesmo objeto, a roda que se mover primeiro �
 Isso eu posso abstrair na lógica de anexos dos objetos 
 
 Isso vai ser útil pra programar física de carro.
+
+
+# 25/06/2025 CRIAR FORMAS DE OBJETOS MOVEREM OUTROS OBJETOS PRA CIMA
+Ideia: Na parte de física, revisar a parte dos movimentos via atrito(quando um objeto está em cima de outro), para que, se o objeto que sustenta esse objeto se mover pra cima, esse objeto que está em cima dele também sobe, como se fosse um elevador
+
+A propia gravidade faz o trabalho para que o objeto caia se o objeto que o sustenta cair
+
+

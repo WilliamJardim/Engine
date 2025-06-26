@@ -675,6 +675,98 @@ export class OBJMesh extends VisualMesh
     }
 
     /**
+    * Traz todos os vertices que estão dentro de um range de coordenadas
+    */
+    queryVerticesCoordenadas( minXYZ=Array(), maxXYZ=Array(), expansion=1, trazerNomeParte=true )
+    {
+        // Min Max X
+        const minX = minXYZ[0] * expansion;
+        const maxX = maxXYZ[0] * expansion;
+
+        // Min Max Y
+        const minY = minXYZ[1] * expansion;
+        const maxY = maxXYZ[1] * expansion;
+
+        // Min Max Z
+        const minZ = minXYZ[2] * expansion;
+        const maxZ = maxXYZ[2] * expansion;
+
+
+        // detalhes dos vertices
+        const verticesInfo = [];
+
+        /**
+        * Cada vértice ocupa 3 posições na memoria (X, Y, Z)
+        * Exemplo:
+        * índice 0 => vértice 0
+        * índice 1 => vértice 1
+        * índice 2 => vértice 2
+        * 
+        * Então, pra saber as coordenadas exatas do vertice, basta ler esse Array. Elas são as posições.
+        * Portanto, cada vertice tem 3 elementos: X, Y e Z, como ja disse, e que são coodenadas. E são justamente as coordenadas que posicionam cada pedacinho do modelo a onde ele está sendo visto.
+        *
+        * É como se cada vértice fosse um prego com um endereço 3D (X, Y, Z).
+        * Esses pregos dizem onde estão os cantos das superfícies do modelo.
+        * O WebGL liga esses pregos formando faces e triângulos, criando o modelo visual. 
+        */
+        const totalVertices = this.vertices.length;
+
+        for( let i = 0 ; i < totalVertices ; i++ )
+        {
+            const verticeAtual       = this.vertices[ i ];
+            const indiceVertice      = i;
+            const xVertice           = verticeAtual[ 0 ];
+            const yVertice           = verticeAtual[ 1 ];
+            const zVertice           = verticeAtual[ 2 ];
+
+            // Se o vertice atual da parte atual estiver dentro da zona de busca
+            if( 
+                true    
+                && ( xVertice >= minX && xVertice < maxX )
+                && ( yVertice >= minY && yVertice < maxY )
+                && ( zVertice >= minZ && yVertice < maxZ )
+            ){
+                let nomeParteVertice = "NENHUMA";
+
+                if( trazerNomeParte == true )
+                {
+                    // Descobre o nome da parte associada ao tal vertice
+                    // Para cada uma das partes
+                    /*
+                    for( let j = 0 ; j < this.nomesObjetos.length ; j++ )
+                    {
+                        const nomeParte       = this.nomesObjetos[j];
+                        const referenciaParte = this.objetos[ nomeParte ];
+                        const indiceComecaVerticesDaParte = this.verticesComecaObjetos[ nomeParte ];
+
+                        if( this.verticesObjetos[ nomeParte ] != null )
+                        {
+                            // Se o vertice atual pertence a essa parte em questão
+                            if( indiceVertice >= indiceComecaVerticesDaParte &&
+                                this.vertices[ indiceComecaVerticesDaParte ][ 0 ] == xVertice &&
+                                this.vertices[ indiceComecaVerticesDaParte ][ 1 ] == yVertice &&
+                                this.vertices[ indiceComecaVerticesDaParte ][ 2 ] == zVertice
+                            ){
+                                nomeParteVertice = nomeParte;
+                                break;
+                            }
+                        }
+                    }
+                    */
+                }
+
+                verticesInfo.push({
+                    vertice       : verticeAtual,    // Os valores X, Y e Z do vertice
+                    indiceVertice : indiceVertice,   // O indice do vertice no array de vertices,
+                    nomeParte     : nomeParteVertice // O nome da parte do modelo a qual este vertice pertence
+                });
+            }   
+        }
+
+        return verticesInfo;
+    }   
+
+    /**
     * Traz todas as partes do modelo que estão dentro de um range de coordenadas
     * Pra isso, descobre em quais coordenadas locais do objeto essas partes estão, comparando as posições dos vertices, pra ver se essas posições dos vertices estão dentro da zona de busca
     * 

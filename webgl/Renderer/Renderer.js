@@ -451,6 +451,96 @@ export class Renderer
     }
 
     /**
+    * Obtem um objeto que contenha nomeObjeto em seu nome, ou algum outro critério
+    */
+    queryObjetos( criterio="nome", 
+                  operador="like", 
+                  valorPesquisar="" 
+    ){
+        const objetos      = []; // Com referencia(Array de ponteiros)
+        const nomesObjetos = []; // Se precisar 
+
+        for( let i = 0 ; i < this.objetos.length ; i++ )
+        {
+            const objeto  = this.objetos[i];
+
+            // Pesquisar por nome dos objetos
+            if( criterio == "nome" )
+            {
+                let encontrouNome = false;
+                if( operador == "like"  ){ encontrouNome = String( objeto.nome ).toLowerCase().indexOf( String( valorPesquisar ).toLowerCase() ) != -1 };
+                if( operador == "equal" ){ encontrouNome = String( objeto.nome ).toLowerCase() == String( valorPesquisar ).toLowerCase() };
+
+                if( encontrouNome == true )
+                {   
+                    objetos.push( objeto );
+                    nomesObjetos.push( objeto.nome );
+                }
+            }
+
+            if( criterio == "id" )
+            {
+                let encontrouId = false;
+                if( operador == "like"  ){ encontrouId = String( objeto.id ).toLowerCase().indexOf( String( valorPesquisar ).toLowerCase() ) != -1 };
+                if( operador == "equal" ){ encontrouId = String( objeto.id ).toLowerCase() == String( valorPesquisar ).toLowerCase() };
+
+                if( encontrouId == true )
+                {   
+                    objetos.push( objeto );
+                    nomesObjetos.push( objeto.nome );
+                }
+            }
+
+            if( criterio == "tipo" )
+            {
+                let encontrouTipo = false;
+                if( operador == "like"  ){ encontrouTipo = String( objeto.tipo ).toLowerCase().indexOf( String( valorPesquisar ).toLowerCase() ) != -1 };
+                if( operador == "equal" ){ encontrouTipo = String( objeto.tipo ).toLowerCase() == String( valorPesquisar ).toLowerCase() };
+
+                if( encontrouTipo == true )
+                {   
+                    objetos.push( objeto );
+                    nomesObjetos.push( objeto.nome );
+                }
+            }
+
+            if( criterio == "classe" )
+            {
+                let encontrouClasse = false;
+                if( operador == "like"  ){ encontrouClasse = String( objeto.classe ).toLowerCase().indexOf( String( valorPesquisar ).toLowerCase() ) != -1 };
+                if( operador == "equal" ){ encontrouClasse = String( objeto.classe ).toLowerCase() == String( valorPesquisar ).toLowerCase() };
+
+                if( encontrouClasse == true )
+                {   
+                    objetos.push( objeto );
+                    nomesObjetos.push( objeto.nome );
+                }
+            }
+
+            if( criterio == "material" )
+            {
+                let parteTemMaterial = false;
+
+                // .... eu posso criar tambem
+
+                if( parteTemMaterial == true )
+                {
+                    partes.push( referenciaParte );
+                    nomesPartes.push(nomeParte);
+                }
+            }
+        }
+
+        return objetos;
+    }
+
+    // Traz o primeiro que encontrar
+    queryObjeto( criterio, operador, valorPesquisar )
+    {
+        return this.queryObjetos(criterio, operador, valorPesquisar)[0];
+    }
+
+    /**
     * Inicia o loop de renderização 
     */
     inicializar()

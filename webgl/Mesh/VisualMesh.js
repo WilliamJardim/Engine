@@ -22,6 +22,9 @@ export class VisualMesh
         this.fragmentScript = ''; 
 
         // Atributos visuais
+        this.nome          = meshConfig.nome || "SemNome";
+        this.id            = this.nome + String(new Date().getTime());
+        this.classe        = meshConfig.classe || "Geral";
         this.tipo          = meshConfig.tipo || 'Nenhum';
         this.position      = meshConfig.position;
         this.scale         = meshConfig.scale;

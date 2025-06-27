@@ -21,6 +21,7 @@ renderizador.inicializar();
 // Cria um cubo
 renderizador.criarObjeto({
     tipo: 'Cubo',
+    nome: 'Cubo',
     invisivel: false,
     transparencia: 0.5, // 100 opaco
 
@@ -62,6 +63,7 @@ renderizador.criarObjeto({
 // Cria um plano que pode se deformar
 renderizador.criarObjeto({
     tipo: 'CuboDeformavel',
+    nome: 'CuboDeformavel',
     invisivel: false,
     transparencia: 0.5, // 100 opaco
 
@@ -96,6 +98,7 @@ renderizador.criarObjeto({
 // Cria um plano que pode se deformar
 renderizador.criarObjeto({
     tipo: 'PlanoOndulado',
+    nome: 'PlanoOndulado',
     invisivel: false,
     usarOndulacao: true,
     usarOndulacaoSimples: true,
@@ -133,6 +136,7 @@ renderizador.criarObjeto({
 // Cria um cilindro
 renderizador.criarObjeto({
     tipo: 'Cilindro',
+    nome: 'Cilondro',
     invisivel: false,
     transparencia: 100, // 100 opaco
 
@@ -167,6 +171,7 @@ renderizador.criarObjeto({
 // Cria um cubo
 renderizador.criarObjeto({
     tipo: 'TexturedFacesCubo',
+    nome: 'CuboDemo',
 
     // Carrega as texturas de cada face
     texturasFaces: [
@@ -212,6 +217,7 @@ renderizador.criarObjeto({
 
 renderizador.criarObjeto({
     tipo: 'Esfera',
+    nome: 'Esfera',
     invisivel: false,
     transparencia: 100, // 100 opaco
 
@@ -245,6 +251,7 @@ renderizador.criarObjeto({
 
 renderizador.criarObjeto({
     tipo: 'Triangulo3D',
+    nome: 'Triangulo1',
     invisivel: false,
     transparencia: 100, // 100 opaco
 
@@ -278,6 +285,7 @@ renderizador.criarObjeto({
 
 renderizador.criarObjeto({
     tipo: 'Cubo',
+    nome: 'CuboAleatorio',
     invisivel: false,
     transparencia: 100, // 100 opaco
 
@@ -311,6 +319,7 @@ renderizador.criarObjeto({
 
 renderizador.criarObjeto({
     tipo: 'Cubo',
+    nome: 'CuboAleatorio2',
     invisivel: false,
     transparencia: 100, // 100 opaco
 
@@ -541,6 +550,7 @@ async function criarCaixa()
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({
         tipo: 'OBJ',
+        nome: 'Caixa',
         objString: objString,
         mtlString: mtlString,
         
@@ -588,6 +598,7 @@ async function criarCarro()
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({
         tipo: 'OBJ',
+        nome: 'Carro',
         objString: objString,
         mtlString: mtlString,
         
@@ -635,6 +646,7 @@ async function carregarMapa()
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({
         tipo: 'OBJ',
+        nome: 'Mapa novo',
         objString: objString,
         mtlString: mtlString,
 
@@ -682,6 +694,7 @@ async function carregarMapa2()
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({
         tipo: 'OBJ',
+        nome: 'Mapa antigo',
         objString: objString,
         mtlString: mtlString,
         
@@ -729,6 +742,7 @@ async function carregarMapa3()
     // Cria um plano que pode se deformar
     renderizador.criarObjeto({
         tipo: 'OBJ',
+        nome: 'Mapa novo 2',
         objString: objString,
         mtlString: mtlString,
         

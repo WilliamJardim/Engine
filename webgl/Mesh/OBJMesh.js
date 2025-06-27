@@ -862,6 +862,34 @@ export class OBJMesh extends VisualMesh
 
     }
 
+    /**
+    * Causa uma deformação em alguma parte do modelo, igual no CuboDeformavelMesh.js
+    */
+    deformarVerticePorProximidade(xAlvo, yAlvo, zAlvo, raio, intensidade) 
+    {
+        const vertices = this.getPositions();
+
+        for (let i = 0; i < vertices.length; i += 3) 
+        {
+            const dx = vertices[i]     - xAlvo;
+            const dy = vertices[i + 1] - yAlvo;
+            const dz = vertices[i + 2] - zAlvo;
+            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+            if (dist < raio && dist > 0.00001) 
+            {
+                const fator = Math.cos((dist / raio) * Math.PI) * intensidade;
+                vertices[i]     += (dx / dist) * fator;
+                vertices[i + 1] += (dy / dist) * fator;
+                vertices[i + 2] += (dz / dist) * fator;
+            }
+        }
+
+        const gl = this.getRenderer().gl;
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
+    }
+
     desenhar() 
     {
         const renderer            = this.getRenderer();

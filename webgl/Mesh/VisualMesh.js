@@ -29,7 +29,7 @@ export class VisualMesh
         this.position      = meshConfig.position;
         this.scale         = meshConfig.scale;
         this.rotation      = meshConfig.rotation;
-        this.invisivel     = meshConfig.invisivel; 
+        this.invisivel     = meshConfig.invisivel || false; 
         this.transparencia = meshConfig.transparencia;
 
         // Luzes do objeto

@@ -47,7 +47,7 @@ import { CilindroMesh } from '../Mesh/colored/CilindroMesh.js';
 import { Triangulo2DMesh } from '../Mesh/colored/Triangulo2DMesh.js';
 import { Triangulo3DMesh } from '../Mesh/colored/Triangulo3DMesh.js';
 import { OBJMesh } from '../Mesh/OBJMesh.js';
-
+import { Light } from '../Mesh/Light.js';
 
 export class Renderer
 {
@@ -375,6 +375,12 @@ export class Renderer
                                                         propriedadesObjeto ) 
                                  );
                 break;
+
+            case "Light":
+                this.objetos.push( new Light( contextoRenderizador, 
+                                              propriedadesObjeto ) 
+                                 );
+                break;
         }
     }   
 
@@ -403,6 +409,7 @@ export class Renderer
         for( let i = 0 ; i < objetosVisuais.length ; i++ )
         {
             const objetoAtual = objetosVisuais[i];
+            const tipoObjeto  = objetoAtual.tipo;
             const isInvisivel = objetoAtual.invisivel;
             const isOpaco     = objetoAtual.isOpaco();
 

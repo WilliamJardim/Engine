@@ -412,6 +412,24 @@ export function DefinirZ( matrixVisualizacao, vetorPosicaoAtual, novaPosicaoZ )
     DefinirTranslacao( matrixVisualizacao, [novoX, novoY, novoZ] );
 }
 
+export function isDentroRaio( positionObjeto, positionCentro, raioDesejado ) 
+{
+  const xObjeto = positionObjeto.x; 
+  const yObjeto = positionObjeto.y; 
+  const zObjeto = positionObjeto.z; 
+
+  const xCentro = positionCentro.x; 
+  const yCentro = positionCentro.y; 
+  const zCentro = positionCentro.z; 
+
+  const dx = xObjeto - xCentro;
+  const dy = yObjeto - yCentro;
+  const dz = zObjeto - zCentro;
+  const distancia2 = dx*dx + dy*dy + dz*dz;
+
+  return distancia2 <= raioDesejado * raioDesejado;
+}
+
 export class FrameCounter
 {
     constructor( frameLimit = 60, norm = 16.666 ){

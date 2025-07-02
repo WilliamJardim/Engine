@@ -33,13 +33,16 @@ export class VisualMesh
         this.transparencia = meshConfig.transparencia;
 
         // Luzes do objeto
-        this.alwaysUpdateLights       = meshConfig.alwaysUpdateLights || true; //Se a todo momento vai atualizar luzes ou não
-        this.brilhoObjeto             = meshConfig.brilho   || 0;
-        this.ambientObjeto            = meshConfig.ambient  || 0; // Um acrescimento a luz ambiente
-        this.diffuseObjeto            = meshConfig.diffuse  || 0;
-        this.specularObjeto           = meshConfig.specular || 0;
-        this.corLuzObjeto             = meshConfig.corLuzObjeto || [0, 0, 0];
-        this.intensidadeLuzObjeto     = meshConfig.intensidadeLuzObjeto || 0;
+        this.alwaysUpdateLights          = meshConfig.alwaysUpdateLights || true;         // Se a todo momento vai atualizar luzes ou não
+        this.alwaysCalculateLocalLights  = meshConfig.alwaysCalculateLocalLights || true; // Se eu quiser desativar o calculo das luzes locais por achar pesado
+        // NOTA: Cada objeto pode atualizar a iluminação apenas levando em conta suas configuracoes fixas e do ambiente, OU TAMBEM PODE LEVAR EM CONTA CADA PONTO DE LUZ PELO CENARIO
+
+        this.brilhoObjeto                = meshConfig.brilho   || 0;
+        this.ambientObjeto               = meshConfig.ambient  || 0; // Um acrescimento a luz ambiente
+        this.diffuseObjeto               = meshConfig.diffuse  || 0;
+        this.specularObjeto              = meshConfig.specular || 0;
+        this.corLuzObjeto                = meshConfig.corLuzObjeto || [0, 0, 0];
+        this.intensidadeLuzObjeto        = meshConfig.intensidadeLuzObjeto || 0;
 
         // Iluminação acumulada do objeto (soma de todas as luzes que afetam ele)
         this.brilhoLocalAcumulado          = 0;
@@ -54,9 +57,9 @@ export class VisualMesh
     }
 
     /**
-    * Código base para aplicar iluminação, usado em todos os objetos
+    * Calcula o recebimento de todas as luzes que afeta esse objeto 
     */
-    atualizarIluminacao(gl, informacoesPrograma )
+    calcularIluminacaoDasLuzes()
     {
         const renderer      = this.renderer;
         const luzesCena     = renderer.getLuzes();
@@ -94,6 +97,31 @@ export class VisualMesh
             this.corLocalAcumulado[0]         += luz.cor[0]      / distancia2;
             this.corLocalAcumulado[1]         += luz.cor[1]      / distancia2;
             this.corLocalAcumulado[2]         += luz.cor[2]      / distancia2;
+        }
+    }
+
+    /**
+    * Código base para aplicar iluminação, usado em todos os objetos
+    */
+    atualizarIluminacao(gl, informacoesPrograma )
+    {
+        const renderer      = this.renderer;
+        const luzesCena     = renderer.getLuzes();
+
+        /**
+        * Calcula o recebimento de todas as luzes que afeta esse objeto 
+        */
+        this.brilhoLocalAcumulado          = 0;
+        this.ambientLocalAcumulado         = 0;
+        this.diffuseLocalAcumulado         = 0;
+        this.specularLocalAcumulado        = 0;
+        this.corLocalAcumulado             = [0,0,0];
+        this.intensidadeLocalAcumulado     = 0;
+
+        // Se esse recurso está ativado
+        if( this.alwaysCalculateLocalLights == true )
+        {
+            this.calcularIluminacaoDasLuzes();
         }
 
         /**

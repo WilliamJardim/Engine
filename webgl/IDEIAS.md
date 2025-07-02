@@ -97,3 +97,9 @@ Com o intuito de aplicar iluminação gradual e local nas regiões onde tiver po
 
 EDITOR DE OBJETOS DA ENGINE
 Criar um sistema que permite exportar o OBJ carregado de volta para um novo OBJ, por que aí abre portas pra eu começar a criar meu editor de mapas e objetos embutido
+
+
+01/07/2025
+Aplicar a iluminação tambem nas partes individuais dos OBJ 
+pra isso ver os vertices na região da luz, para poder identificar os nomes das partes, para poder aplicar iluminação
+

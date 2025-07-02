@@ -13,6 +13,7 @@ import { createBuffer, carregarTextura } from '../funcoesBase.js';
 import { baseShaders } from '../Shaders/Base.js';
 import { 
     CriarMatrix4x4,
+    MultiplicarMatrix4x4PorVetor4,
     DefinirTranslacao,
     DefinirEscala,
     RotacionarX,
@@ -50,11 +51,16 @@ export class OBJMesh extends VisualMesh
         this.nomesObjetos    = []; 
         this.objetoAtivo     = null;
         this.objetosInfo     = {};
-        this.verticesObjetos = {};        // Vertices por partes
+        this.verticesObjetos = {};              // Vertices por partes
+        this.verticesObjetosOnlyNomeParte = {}; // Vertices por partes (somente o nome da parte sem usar material na chave)
         this.verticesComecaObjetos = {};  // Length que começa os vertices de cada objeto no vetor geral vertices
 
         this.childrenIndividualLights = true; // Se cada parte vai usar iluminação
         this.iluminationInfo = {};            // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
+        this.iluminationAcumuladaInfo = {}    // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
+
+        // Variaveis de renderização
+        this.modeloObjetoVisual = CriarMatrix4x4();
 
         this.setProgram( renderer.getOBJProgram() );
 
@@ -174,6 +180,7 @@ export class OBJMesh extends VisualMesh
 
             // Identifica esses vertices como sendo do objeto atual
             this.verticesObjetos[ grupoObjeto ].push( v );
+            this.verticesObjetosOnlyNomeParte[ this.objetoAtivo ].push( v );
 
 
         // Se for uma Textura de Vertice
@@ -245,6 +252,7 @@ export class OBJMesh extends VisualMesh
 
             //Cadastra o objeto atual no dicionario de vertices objetos
             this.verticesObjetos[ grupoObjeto ] = [];
+            this.verticesObjetosOnlyNomeParte[ this.objetoAtivo ] = [];
 
             // Marca que os vertices desse OBJETO(denominado grupoObjeto) começa no indice numero tal do vetor de vertices global do modelo
             this.verticesComecaObjetos[ grupoObjeto ] = this.vertices.length;
@@ -362,6 +370,18 @@ export class OBJMesh extends VisualMesh
                 corLuzObjeto         : [0, 0, 0], //RGB
                 intensidadeLuzObjeto : 0
             };
+
+            /**
+            * Define a iluminação acumulada do objeto(usada para receber iluminação dinamica de pontos de luz)
+            */
+            this.iluminationAcumuladaInfo[nomeObjeto] = {
+                brilhoLocalAcumulado      : 0,
+                ambientLocalAcumulado     : 0,
+                diffuseLocalAcumulado     : 0,
+                specularLocalAcumulado    : 0,
+                corLocalAcumulado         : [0, 0, 0], //RGB
+                intensidadeLocalAcumulado : 0
+            };  
 
             for (let j = 0; j < faces.length; j++) 
             {
@@ -506,23 +526,80 @@ export class OBJMesh extends VisualMesh
     }
 
     /**
+    * Calcula o recebimento de todas as luzes que afeta todas as partes desse objeto 
+    */
+    calcularIluminacaoDasLuzesPartes()
+    {
+        const renderer         = this.renderer;
+        const luzesCena        = renderer.getLuzes();
+        const nomePartesObjeto = this.nomesObjetos;
+
+        /**
+        * Para cada parte 
+        */
+        for( let i = 0 ; i < nomePartesObjeto.length ; i++ )
+        {
+            const nomeParte                 = nomePartesObjeto[i];
+            const posicaoCentroParte        = this.calcularCentroideGlobalParte( nomeParte );
+            const iluminacaoAcumuladaParte  = this.iluminationAcumuladaInfo[ nomeParte ]; 
+
+            /**
+            * Calcula o recebimento de todas as luzes que afeta esse objeto 
+            */
+            iluminacaoAcumuladaParte.brilhoLocalAcumulado          = 0;
+            iluminacaoAcumuladaParte.ambientLocalAcumulado         = 0;
+            iluminacaoAcumuladaParte.diffuseLocalAcumulado         = 0;
+            iluminacaoAcumuladaParte.specularLocalAcumulado        = 0;
+            iluminacaoAcumuladaParte.corLocalAcumulado             = [0,0,0];
+            iluminacaoAcumuladaParte.intensidadeLocalAcumulado     = 0;
+
+            for( let j = 0 ; j < luzesCena.length ; j++ )
+            {
+                const luz        = luzesCena[j];
+                const posicaoLuz = luz.position;
+                const alcanceLuz = luz.raio;
+
+                // A distanca entre o objeto e a luz
+                const dx = posicaoLuz.x - posicaoCentroParte[0];
+                const dy = posicaoLuz.y - posicaoCentroParte[1];
+                const dz = posicaoLuz.z - posicaoCentroParte[2];
+                const distancia2 = Math.sqrt( dx*dx + dy*dy + dz*dz ) * alcanceLuz;
+
+                // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
+                iluminacaoAcumuladaParte.brilhoLocalAcumulado         += luz.brilho      / distancia2;
+                iluminacaoAcumuladaParte.ambientLocalAcumulado        += luz.ambient     / distancia2;
+                iluminacaoAcumuladaParte.diffuseLocalAcumulado        += luz.diffuse     / distancia2;
+                iluminacaoAcumuladaParte.specularLocalAcumulado       += luz.specular    / distancia2;
+                iluminacaoAcumuladaParte.intensidadeLocalAcumulado    += luz.intensidade / distancia2;
+
+                // As luzes mais proximas terão tambem mais influencia na cor
+                iluminacaoAcumuladaParte.corLocalAcumulado[0]         += luz.cor[0]      / distancia2;
+                iluminacaoAcumuladaParte.corLocalAcumulado[1]         += luz.cor[1]      / distancia2;
+                iluminacaoAcumuladaParte.corLocalAcumulado[2]         += luz.cor[2]      / distancia2;
+            }
+        }
+    }
+
+    /**
     * Define a iluminação de uma parte do modelo
     */
-    atualizarIluminacaoParte(gl, informacoesPrograma, iluminacaoParte={} )
+    atualizarIluminacaoParte(gl, informacoesPrograma, iluminacaoParte={}, iluminacaoAcumuladaParte={} )
     {
+        // OBS: AQUI NESSE PONTO, A ILUMINAÇÂO DAS PARTES JA FOI CALCULADA NO LOOP PRINCIPAL, ANTES DE CHAMAR ESSA FUNÇÂO
+
         /**
         * Obtem o ambiente atualizado como a soma dos valores do objeto com os globais da cena
         */
-        const ambientParte     = iluminacaoParte.ambientObjeto  + this.renderer.ambient;
-        const diffuseParte     = iluminacaoParte.diffuseObjeto  + this.renderer.diffuse;
-        const specularParte    = iluminacaoParte.specularObjeto + this.renderer.specular;
-        const brilhoParte      = iluminacaoParte.brilhoObjeto   + this.renderer.brilho;
-        const intensidadeParte = iluminacaoParte.intensidadeLuzObjeto + this.renderer.intensidadeLuz;
+        const ambientParte     = iluminacaoParte.ambientObjeto         + this.renderer.ambient                + iluminacaoAcumuladaParte.ambientLocalAcumulado;
+        const diffuseParte     = iluminacaoParte.diffuseObjeto         + this.renderer.diffuse                + iluminacaoAcumuladaParte.diffuseLocalAcumulado;
+        const specularParte    = iluminacaoParte.specularObjeto        + this.renderer.specular               + iluminacaoAcumuladaParte.specularLocalAcumulado;
+        const brilhoParte      = iluminacaoParte.brilhoObjeto          + this.renderer.brilho                 + iluminacaoAcumuladaParte.brilhoLocalAcumulado;
+        const intensidadeParte = iluminacaoParte.intensidadeLuzObjeto  + this.renderer.intensidadeLuz         + iluminacaoAcumuladaParte.intensidadeLocalAcumulado;
 
         let corLuzParte     = [0, 0, 0];
-        corLuzParte[0]      = iluminacaoParte.corLuzObjeto[0] + this.renderer.corAmbient[0];
-        corLuzParte[1]      = iluminacaoParte.corLuzObjeto[1] + this.renderer.corAmbient[1];
-        corLuzParte[2]      = iluminacaoParte.corLuzObjeto[2] + this.renderer.corAmbient[2];
+        corLuzParte[0]      = iluminacaoParte.corLuzObjeto[0] + this.renderer.corAmbient[0] + iluminacaoAcumuladaParte.corLocalAcumulado[0];
+        corLuzParte[1]      = iluminacaoParte.corLuzObjeto[1] + this.renderer.corAmbient[1] + iluminacaoAcumuladaParte.corLocalAcumulado[1];
+        corLuzParte[2]      = iluminacaoParte.corLuzObjeto[2] + this.renderer.corAmbient[2] + iluminacaoAcumuladaParte.corLocalAcumulado[2];
 
         /**
         * Aplica os valores 
@@ -672,6 +749,91 @@ export class OBJMesh extends VisualMesh
         }
 
         return partes;
+    }
+
+    /**
+    * Obtem todos so vertices de uma parte especifica, extraidos do vetor de vertices do OBJ
+    */
+    getVerticesParte( nomeParte )
+    {
+        return {
+            inicio   : this.verticesComecaObjetos[nomeParte],
+            vertices : this.verticesObjetos[ nomeParte ]
+        };
+    }
+
+    /**
+    * Calcula as posições X, Y e Z do centro de uma parte especifica desse OBJ
+    * Pra isso, basta calcular a média de X, Y e Z
+    * 
+    * Passos que dei:
+    *  (1) Somar X, Y e Z de todos os vertices, fazendo uma acumulação
+    *  (2) Dividir pela quantidade de vertices
+    */
+    calcularCentroideParte( nomeParte )
+    {
+        let verticesParte       = 0;
+
+        // Se for apenas um vertice
+        if( this.nomesObjetos.length == 1 )
+        {
+            verticesParte = this.verticesObjetos[ Object.keys(this.verticesObjetos)[0] ];
+
+        }else{
+
+            // se existe literalmente NOME__MATERIAL
+            if( this.verticesObjetos[ nomeParte ] != null ) {
+                verticesParte = this.verticesObjetos[ nomeParte ];
+
+            // Se não existe literamente NOME__GRUPO, então despreza o material e pega só o nome
+            }else{
+                const apenasNomeObjetoSemMaterial = nomeParte.split('__')[0];
+                verticesParte = this.verticesObjetosOnlyNomeParte[ apenasNomeObjetoSemMaterial ];
+            }
+        }
+
+        let totalVertices = verticesParte.length;
+        let xSomado       = 0;
+        let ySomado       = 0;
+        let zSomado       = 0; 
+    
+        for ( let i = 0 ; i < totalVertices ; i++ ) 
+        {
+            const verticeAtual = verticesParte[i];
+
+            xSomado += verticeAtual[0];
+            ySomado += verticeAtual[1];
+            zSomado += verticeAtual[2];
+        }
+
+        let xCentro = xSomado / totalVertices;
+        let yCentro = ySomado / totalVertices;
+        let zCentro = zSomado / totalVertices;
+
+        return [xCentro, yCentro, zCentro];
+    }
+
+    /**
+    * Obtem a posição global XYZ de uma parte especifica desse OBJ
+    * 
+    * FORMULA MATEMATICA:
+    *    posicaoGlobalParte = matrixModeloObjetoVisual * posicaoLocalParte
+    */
+    calcularCentroideGlobalParte( nomeParte )
+    {
+        const matrixModeloObjetoVisual = this.modeloObjetoVisual;
+        const centroLocalParte         = this.calcularCentroideParte( nomeParte );
+
+        const centroLocalParte4        = [ 
+                                           centroLocalParte[0], 
+                                           centroLocalParte[1], 
+                                           centroLocalParte[2], 
+                                           1 
+                                         ]; // o 1 é constante para posições
+    
+        const posicaoGlobalParte       = MultiplicarMatrix4x4PorVetor4( matrixModeloObjetoVisual, centroLocalParte4 );
+
+        return posicaoGlobalParte;
     }
 
     /**
@@ -905,15 +1067,15 @@ export class OBJMesh extends VisualMesh
         const rotation   = meshConfig.rotation;
         const scale      = meshConfig.scale;
 
-        let modeloObjetoVisual = CriarMatrix4x4();
+        this.modeloObjetoVisual = CriarMatrix4x4();
 
-        modeloObjetoVisual     = DefinirTranslacao(modeloObjetoVisual, [position.x, position.y, position.z]);
+        this.modeloObjetoVisual     = DefinirTranslacao(this.modeloObjetoVisual, [position.x, position.y, position.z]);
 
-        modeloObjetoVisual     = RotacionarX(modeloObjetoVisual, rotation.x);
-        modeloObjetoVisual     = RotacionarY(modeloObjetoVisual, rotation.y);
-        modeloObjetoVisual     = RotacionarZ(modeloObjetoVisual, rotation.z);
+        this.modeloObjetoVisual     = RotacionarX(this.modeloObjetoVisual, rotation.x);
+        this.modeloObjetoVisual     = RotacionarY(this.modeloObjetoVisual, rotation.y);
+        this.modeloObjetoVisual     = RotacionarZ(this.modeloObjetoVisual, rotation.z);
 
-        modeloObjetoVisual     = DefinirEscala(modeloObjetoVisual, [scale.x, scale.y, scale.z]);
+        this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual, [scale.x, scale.y, scale.z]);
 
         if( this.allBuffersCriated == false )
         {
@@ -940,7 +1102,12 @@ export class OBJMesh extends VisualMesh
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, renderer.getMatrixVisualizacao());
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
+        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
+
+        /**
+        * Calcula a iluminação de todas as partes desse OBJ 
+        */
+        this.calcularIluminacaoDasLuzesPartes();
 
         /**
         * Desenha cada objeto dentro deste OBJ 
@@ -956,8 +1123,14 @@ export class OBJMesh extends VisualMesh
             // Se esse objeto usa iluminação por cada sub-objeto
             if( this.childrenIndividualLights == true )
             {
-                const iluminacaoParte = this.iluminationInfo[ nomeObjeto ];
-                this.atualizarIluminacaoParte( gl, informacoesPrograma, iluminacaoParte );
+                const iluminacaoParte           = this.iluminationInfo[ nomeObjeto ];
+                const iluminacaoAcumuladaParte  = this.iluminationAcumuladaInfo[ nomeObjeto ];
+
+                this.atualizarIluminacaoParte( gl, 
+                                               informacoesPrograma, 
+                                               iluminacaoParte, 
+                                               iluminacaoAcumuladaParte 
+                                             );
             }
 
             gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, usarTextura ? 1 : 0);

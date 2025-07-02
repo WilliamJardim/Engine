@@ -1138,4 +1138,3 @@ A propia gravidade faz o trabalho para que o objeto caia se o objeto que o suste
 # 25/06/2025 DEFORMAÇÔES EM OBJETOS E EM VEICULOS
 Modificar os vertices dos modelos OBJ para poder criar achatamentos e deformações
 eu posso fazer isso calculando a zona do impacto, e em seguida puxando ou retraindo grupos de vertices
-

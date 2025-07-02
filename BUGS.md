@@ -120,3 +120,14 @@ a lista dos objetos proximos não está calculando por id ( byID ),
 ele está sempre um Array vazio
 
 # 31/05/2025 - o infoCollision e infoProximity mostra IDs duplicados as vezes, nao sei por que
+
+# 02/07/2025 (ENCONTRADO E RESOLVIDO)
+O calcularIluminacaoDasLuzesPartes do ObjMESH, ainda não está funcionando corretamente
+Muito provavelmente eu vou precisar converter as posições XYZ dos vertices para algo global do mundo
+pois muito provavelmente as posições XYZ dos vertices dos objetos dentro do OBJ são locais, apenas dentro do contexto do OBJ, e não posições XYZ globais do mundo
+Formula matematica pra isso com minha interpretação: posicaoGlobalParte = matrixModeloObjetoVisual * posicaoLocalParte
+
+# 02/07/2025 
+O calcularIluminacaoDasLuzesPartes do ObjMESH, ainda não está funcionando corretamente
+ele está aplicando a mesma iluminação pra todas as partes do OBJ
+mais sei que o problema não está nas posições globais

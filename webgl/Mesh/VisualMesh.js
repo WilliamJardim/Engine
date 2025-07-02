@@ -34,103 +34,82 @@ export class VisualMesh
 
         // Luzes do objeto
         this.alwaysUpdateLights       = meshConfig.alwaysUpdateLights || true; //Se a todo momento vai atualizar luzes ou não
-        this.brilhoObjeto             = meshConfig.brilho   || 16;
-        this.ambientObjeto            = meshConfig.ambient  || 0.2; // Um acrescimento a luz ambiente
-        this.diffuseObjeto            = meshConfig.diffuse  || 0.2;
-        this.specularObjeto           = meshConfig.specular || 0.2;
+        this.brilhoObjeto             = meshConfig.brilho   || 0;
+        this.ambientObjeto            = meshConfig.ambient  || 0; // Um acrescimento a luz ambiente
+        this.diffuseObjeto            = meshConfig.diffuse  || 0;
+        this.specularObjeto           = meshConfig.specular || 0;
         this.corLuzObjeto             = meshConfig.corLuzObjeto || [0, 0, 0];
         this.intensidadeLuzObjeto     = meshConfig.intensidadeLuzObjeto || 0;
+
+        // Iluminação acumulada do objeto (soma de todas as luzes que afetam ele)
+        this.brilhoLocalAcumulado          = 0;
+        this.ambientLocalAcumulado         = 0;
+        this.diffuseLocalAcumulado         = 0;
+        this.specularLocalAcumulado        = 0;
+        this.corLocalAcumulado             = [0,0,0];
+        this.intensidadeLocalAcumulado     = 0;
 
         // Por padrão sempre vai usar cores
         this.useColors = true;
     }
 
     /**
-    * Responsavel por retornar quais luzes o objeto está recebendo 
-    * @returns { posicao, cor, intensidade }
-    getLuzes()
-    {
-        return [
-            //Sao 4 luzes, então, o Array precisa ser 4x4(4 Arrays de Array de 3 elementos: XYZ)
-            [
-                [0,0,0], // POSICAO 
-                [255,255,255], // COR
-                [0.1,0.1,0.1]  // INTENSIDADE
-            ],
-            [
-                [100,0,0], // POSICAO 
-                [255,255,255], // COR
-                [0.1,0.1,0.1]  // INTENSIDADE
-            ],
-            [
-                [100,0,0], // POSICAO 
-                [255,255,255], // COR
-                [0.1,0.1,0.1]  // INTENSIDADE
-            ],
-            [
-                [100,0,0], // POSICAO 
-                [255,255,255], // COR
-                [0.1,0.1,0.1]  // INTENSIDADE
-            ],
-        ];
-    }*/
-
-    /**
-    * Converte a minha estrutura de luz para luzes que o shader vai entender
-    getLuzesConvertidas()
-    {
-        let luzes            = this.getLuzes();
-        let arrayPosicoes    = [];
-        let arrayCores       = [];
-        let arrayIntensidade = [];
-
-        // Para cada uma das 4 luzes
-        for( let i = 0 ; i < 4 ; i++ ) 
-        {
-            const luzAtual = luzes[i];
-            const posicaoAtual      = luzAtual[ 0 ];
-            const corAtual          = luzAtual[ 1 ];
-            const intensidadeAtual  = luzAtual[ 2 ];
-
-            arrayPosicoes.push( posicaoAtual[0] );
-            arrayPosicoes.push( posicaoAtual[1] );
-            arrayPosicoes.push( posicaoAtual[2] );
-
-            arrayCores.push( corAtual[0] );
-            arrayCores.push( corAtual[1] );
-            arrayCores.push( corAtual[2] );
-
-            arrayIntensidade.push( intensidadeAtual[0] );
-            arrayIntensidade.push( intensidadeAtual[1] );
-            arrayIntensidade.push( intensidadeAtual[2] );
-        }
-    
-        return {
-            posicoes: new Float32Array(arrayPosicoes),
-            cores: new Float32Array(arrayCores),
-            intensidades: new Float32Array(arrayIntensidade)
-        }
-    }*/
-
-    /**
     * Código base para aplicar iluminação, usado em todos os objetos
     */
     atualizarIluminacao(gl, informacoesPrograma )
     {
+        const renderer      = this.renderer;
+        const luzesCena     = renderer.getLuzes();
+
+        /**
+        * Calcula o recebimento de todas as luzes que afeta esse objeto 
+        */
+        this.brilhoLocalAcumulado          = 0;
+        this.ambientLocalAcumulado         = 0;
+        this.diffuseLocalAcumulado         = 0;
+        this.specularLocalAcumulado        = 0;
+        this.corLocalAcumulado             = [0,0,0];
+        this.intensidadeLocalAcumulado     = 0;
+
+        for( let i = 0 ; i < luzesCena.length ; i++ )
+        {
+            const luz        = luzesCena[i];
+            const posicaoLuz = luz.position;
+            const alcanceLuz = luz.raio;
+
+            // A distanca entre o objeto e a luz
+            const dx = posicaoLuz.x - this.position.x;
+            const dy = posicaoLuz.y - this.position.y;
+            const dz = posicaoLuz.z - this.position.z;
+            const distancia2 = Math.sqrt( dx*dx + dy*dy + dz*dz ) * alcanceLuz;
+
+            // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
+            this.brilhoLocalAcumulado         += luz.brilho      / distancia2;
+            this.ambientLocalAcumulado        += luz.ambient     / distancia2;
+            this.diffuseLocalAcumulado        += luz.diffuse     / distancia2;
+            this.specularLocalAcumulado       += luz.specular    / distancia2;
+            this.intensidadeLocalAcumulado    += luz.intensidade / distancia2;
+
+            // As luzes mais proximas terão tambem mais influencia na cor
+            this.corLocalAcumulado[0]         += luz.cor[0]      / distancia2;
+            this.corLocalAcumulado[1]         += luz.cor[1]      / distancia2;
+            this.corLocalAcumulado[2]         += luz.cor[2]      / distancia2;
+        }
+
         /**
         * Obtem o ambiente atualizado como a soma dos valores do objeto com os globais da cena
         */
-        this.ambient         = this.ambientObjeto        + this.renderer.ambient;
-        this.diffuse         = this.diffuseObjeto        + this.renderer.diffuse;
-        this.specular        = this.specularObjeto       + this.renderer.specular;
-        this.brilho          = this.brilhoObjeto         + this.renderer.brilho;
-        this.intensidadeLuz  = this.intensidadeLuzObjeto + this.renderer.intensidadeLuz;
+        this.ambient         = this.ambientObjeto        + this.renderer.ambient         + this.ambientLocalAcumulado;
+        this.diffuse         = this.diffuseObjeto        + this.renderer.diffuse         + this.diffuseLocalAcumulado;
+        this.specular        = this.specularObjeto       + this.renderer.specular        + this.specularLocalAcumulado;
+        this.brilho          = this.brilhoObjeto         + this.renderer.brilho          + this.brilhoLocalAcumulado;
+        this.intensidadeLuz  = this.intensidadeLuzObjeto + this.renderer.intensidadeLuz  + this.intensidadeLocalAcumulado;
 
         // Pega a cor da luz
         this.corLuz    = [0, 0, 0];
-        this.corLuz[0] = this.corLuzObjeto[0] + this.renderer.corAmbient[0];
-        this.corLuz[1] = this.corLuzObjeto[1] + this.renderer.corAmbient[1];
-        this.corLuz[2] = this.corLuzObjeto[2] + this.renderer.corAmbient[2];
+        this.corLuz[0] = this.corLuzObjeto[0] + this.renderer.corAmbient[0] + this.corLocalAcumulado[0];
+        this.corLuz[1] = this.corLuzObjeto[1] + this.renderer.corAmbient[1] + this.corLocalAcumulado[1];
+        this.corLuz[2] = this.corLuzObjeto[2] + this.renderer.corAmbient[2] + this.corLocalAcumulado[2];
 
         /**
         * Aplica os valores 

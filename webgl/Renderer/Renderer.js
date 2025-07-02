@@ -59,10 +59,10 @@ export class Renderer
         this.skyQuadBuffer = null;
 
         // Iluminação global base que todos os objetos vão seguir
-        this.ambient        = renderConfig.ambient  || 1.5; // Força da luz ambiente
+        this.ambient        = renderConfig.ambient  || 0.4; // Força da luz ambiente
         this.diffuse        = renderConfig.diffuse  || 0.6;
         this.specular       = renderConfig.specular || 0.6;
-        this.brilho         = renderConfig.brilho   || 32;   // Brilho geral
+        this.brilho         = renderConfig.brilho   || 16;   // Brilho geral
         this.corAmbient     = renderConfig.corAmbient || [1, 1, 1];
         this.intensidadeLuz = renderConfig.intensidadeLuz || 1;
 
@@ -147,6 +147,9 @@ export class Renderer
 
         // Armazena os objetos visuais que serão desenhados
         this.objetos = [];
+
+        // Armazena as luzes que afetam os objetos
+        this.luzes   = []; 
 
         // AQUI USEI BIND PRA NAO DAR ERRO NA HORA DE RODAR O LOOP COM O requestAnimationFrame
         // SERIA NECESSARIO ADAPTAR NO C++
@@ -306,6 +309,11 @@ export class Renderer
         return this.objetos;
     }
 
+    getLuzes()
+    {
+        return this.luzes;
+    }
+
     /**
     * Cria um novo objeto na cena( adicionando ele na lista de renderização )
     */
@@ -377,8 +385,8 @@ export class Renderer
                 break;
 
             case "Light":
-                this.objetos.push( new Light( contextoRenderizador, 
-                                              propriedadesObjeto ) 
+                this.luzes.push( new Light( contextoRenderizador, 
+                                            propriedadesObjeto ) 
                                  );
                 break;
         }

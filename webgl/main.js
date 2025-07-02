@@ -293,7 +293,7 @@ renderizador.criarObjeto({
     * Posição do objeto 
     */
     position: {
-        x: 0,
+        x: 10,
         y: -3,
         z: 0
     },

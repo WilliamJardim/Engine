@@ -54,3 +54,7 @@ Se um modelo 3d grande como o do MAPA DO QUARTO for focado pela camera, qualquer
 SOMENTE QUANDO OLHA EM DIREÇÂO PRO OBJETO GRANDE,.. mais para direções contrarias isso não ocorre. Ele meio que "ocupa" uma area da visão desse objeto
 
 
+BUG: No código do Light, a cor não está funcionando ainda quando eu passo uma cor 
+em: renderizador.criarObjeto( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 10, raio: 1 , cor: [0,255,0]} )
+
+

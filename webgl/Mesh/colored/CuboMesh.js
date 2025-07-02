@@ -91,12 +91,12 @@ export class CuboMesh extends VisualMesh
         const nivelTransparencia = this.getTransparencia();
 
         return [
-            [1, 0, 0, nivelTransparencia],    // red
-            [0, 1, 0, nivelTransparencia],    // green
-            [0, 0, 1, nivelTransparencia],    // blue
-            [1, 1, 0, nivelTransparencia],    // yellow
-            [1, 0, 1, nivelTransparencia],    // magenta
-            [0, 1, 1, nivelTransparencia],    // cyan
+            [0.3, 0, 0, nivelTransparencia],    // red
+            [0, 0.3, 0, nivelTransparencia],    // green
+            [0, 0, 0.3, nivelTransparencia],    // blue
+            [0.3, 0.3, 0, nivelTransparencia],    // yellow
+            [0.3, 0, 0.3, nivelTransparencia],    // magenta
+            [0, 0.3, 0.3, nivelTransparencia],    // cyan
         ];
     }
 

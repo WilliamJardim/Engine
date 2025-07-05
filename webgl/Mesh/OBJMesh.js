@@ -55,7 +55,9 @@ export class OBJMesh extends VisualMesh
         this.verticesObjetosOnlyNomeParte = {}; // Vertices por partes (somente o nome da parte sem usar material na chave)
         this.verticesComecaObjetos = {};  // Length que começa os vertices de cada objeto no vetor geral vertices
 
-        this.childrenIndividualLights = true; // Se cada parte vai usar iluminação
+        this.childrenIndividualLights = true;  // Se cada parte vai usar iluminação
+        this.useAccumulatedLights     = true;  // Se cada parte vai receber uma acumulação de luzes ao seu redor
+
         this.iluminationInfo = {};            // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
         this.iluminationAcumuladaInfo = {}    // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
 
@@ -72,6 +74,30 @@ export class OBJMesh extends VisualMesh
 
         // (3) - Criar o OBJ na memoria com seus buffers, etc...
         this.criar();
+    }
+
+    // Ativa a iluminação individual de cada parte individual do OBJ
+    enableChildrenIndividualLights()
+    {   
+        this.childrenIndividualLights = true;
+    }
+
+    // Desativa a iluminação individual de cada parte individual do OBJ
+    disableChildrenIndividualLights()
+    {
+        this.childrenIndividualLights = false;
+    }
+
+    // Ativa a acumulação de luzes em cada parte individual do OBJ
+    enableAccumulatedLights()
+    {
+        this.useAccumulatedLights = true;
+    }
+
+    // Disativa a acumulação de luzes em cada parte individual do OBJ
+    disableAccumulatedLights()
+    {
+        this.useAccumulatedLights = false;
     }
 
     /**
@@ -531,6 +557,7 @@ export class OBJMesh extends VisualMesh
     atualizarIluminacaoParte(gl, informacoesPrograma, iluminacaoParte={}, iluminacaoAcumuladaParte={} )
     {
         // OBS: AQUI NESSE PONTO, A ILUMINAÇÂO DAS PARTES JA FOI CALCULADA NO LOOP PRINCIPAL, ANTES DE CHAMAR ESSA FUNÇÂO
+        // OBS: Se this.useAccumulatedLights for false, aqui nada muda, as variaveis de acumulação só vão estar sempre zeradas
 
         /**
         * Obtem o ambiente atualizado como a soma dos valores do objeto com os globais da cena
@@ -1072,43 +1099,46 @@ export class OBJMesh extends VisualMesh
                 const iluminacaoAcumuladaParte  = this.iluminationAcumuladaInfo[ nomeObjeto ];
 
                 /**
-                * Calcula a iluminação dessa parte atual
+                * Calcula a iluminação dessa parte atual ( se esse OBJ usa acumulação de luzes )
                 */
-                const posicaoCentroParte        = this.calcularCentroideGlobalParte( nomeObjeto );
-
-                iluminacaoAcumuladaParte.brilhoLocalAcumulado          = 0;
-                iluminacaoAcumuladaParte.ambientLocalAcumulado         = 0;
-                iluminacaoAcumuladaParte.diffuseLocalAcumulado         = 0;
-                iluminacaoAcumuladaParte.specularLocalAcumulado        = 0;
-                iluminacaoAcumuladaParte.corLocalAcumulado             = [0,0,0];
-                iluminacaoAcumuladaParte.intensidadeLocalAcumulado     = 0;
-
-                /**
-                * Calcula o recebimento de todas as luzes que afeta essa parte 
-                */
-                for( let j = 0 ; j < luzesCena.length ; j++ )
+                if( this.useAccumulatedLights == true )
                 {
-                    const luz        = luzesCena[j];
-                    const posicaoLuz = luz.position;
-                    const alcanceLuz = luz.raio;
+                    const posicaoCentroParte        = this.calcularCentroideGlobalParte( nomeObjeto );
 
-                    // A distanca entre o objeto e a luz
-                    const dx = posicaoLuz.x - posicaoCentroParte[0];
-                    const dy = posicaoLuz.y - posicaoCentroParte[1];
-                    const dz = posicaoLuz.z - posicaoCentroParte[2];
-                    const distancia2 = Math.sqrt( dx*dx + dy*dy + dz*dz ) * alcanceLuz;
+                    iluminacaoAcumuladaParte.brilhoLocalAcumulado          = 0;
+                    iluminacaoAcumuladaParte.ambientLocalAcumulado         = 0;
+                    iluminacaoAcumuladaParte.diffuseLocalAcumulado         = 0;
+                    iluminacaoAcumuladaParte.specularLocalAcumulado        = 0;
+                    iluminacaoAcumuladaParte.corLocalAcumulado             = [0,0,0];
+                    iluminacaoAcumuladaParte.intensidadeLocalAcumulado     = 0;
 
-                    // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
-                    iluminacaoAcumuladaParte.brilhoLocalAcumulado         += luz.brilho      / distancia2;
-                    iluminacaoAcumuladaParte.ambientLocalAcumulado        += luz.ambient     / distancia2;
-                    iluminacaoAcumuladaParte.diffuseLocalAcumulado        += luz.diffuse     / distancia2;
-                    iluminacaoAcumuladaParte.specularLocalAcumulado       += luz.specular    / distancia2;
-                    iluminacaoAcumuladaParte.intensidadeLocalAcumulado    += luz.intensidade / distancia2;
+                    /**
+                    * Calcula o recebimento de todas as luzes que afeta essa parte 
+                    */
+                    for( let j = 0 ; j < luzesCena.length ; j++ )
+                    {
+                        const luz        = luzesCena[j];
+                        const posicaoLuz = luz.position;
+                        const alcanceLuz = luz.raio;
 
-                    // As luzes mais proximas terão tambem mais influencia na cor
-                    iluminacaoAcumuladaParte.corLocalAcumulado[0]         += luz.cor[0]      / distancia2;
-                    iluminacaoAcumuladaParte.corLocalAcumulado[1]         += luz.cor[1]      / distancia2;
-                    iluminacaoAcumuladaParte.corLocalAcumulado[2]         += luz.cor[2]      / distancia2;
+                        // A distanca entre o objeto e a luz
+                        const dx = posicaoLuz.x - posicaoCentroParte[0];
+                        const dy = posicaoLuz.y - posicaoCentroParte[1];
+                        const dz = posicaoLuz.z - posicaoCentroParte[2];
+                        const distancia2 = Math.sqrt( dx*dx + dy*dy + dz*dz ) * alcanceLuz;
+
+                        // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
+                        iluminacaoAcumuladaParte.brilhoLocalAcumulado         += luz.brilho      / distancia2;
+                        iluminacaoAcumuladaParte.ambientLocalAcumulado        += luz.ambient     / distancia2;
+                        iluminacaoAcumuladaParte.diffuseLocalAcumulado        += luz.diffuse     / distancia2;
+                        iluminacaoAcumuladaParte.specularLocalAcumulado       += luz.specular    / distancia2;
+                        iluminacaoAcumuladaParte.intensidadeLocalAcumulado    += luz.intensidade / distancia2;
+
+                        // As luzes mais proximas terão tambem mais influencia na cor
+                        iluminacaoAcumuladaParte.corLocalAcumulado[0]         += luz.cor[0]      / distancia2;
+                        iluminacaoAcumuladaParte.corLocalAcumulado[1]         += luz.cor[1]      / distancia2;
+                        iluminacaoAcumuladaParte.corLocalAcumulado[2]         += luz.cor[2]      / distancia2;
+                    }
                 }
 
                 // Depois de calcular, atualiza a iluminação

@@ -140,3 +140,10 @@ export function carregarImagem(texturePath)
     img.src = `./textures/${texturePath.split('\\').pop()}`;
     return img;
 }
+
+/*
+export function copyVector( vector )
+{
+    return ...(vector);
+}
+*/

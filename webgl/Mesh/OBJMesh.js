@@ -338,18 +338,24 @@ export class OBJMesh extends VisualMesh
                     {
                         keyToIndex[key] = indiceAtual++;
 
-                        this.cores.push( ...(this.materiais[face.material].Kd || [1, 1, 1]), 1);
+                        this.cores.push( ...( this.materiais[face.material].Kd || [1, 1, 1] ) );
+                        this.cores.push(1);
 
                         const posicao = this.vertices[v.vi] || [0, 0, 0];
-                        this.positions.push(posicao[0], posicao[1], posicao[2]);
+                        this.positions.push(posicao[0]);
+                        this.positions.push(posicao[1]);
+                        this.positions.push(posicao[2]);
 
                         if (v.ti >= 0) {
                             const uv = this.uvs[v.ti];
                             this.uvArray = this.uvArray || [];
-                            this.uvArray.push(uv[0], uv[1]);
+                            this.uvArray.push(uv[0]);
+                            this.uvArray.push(uv[1]);
+
                         } else {
                             this.uvArray = this.uvArray || [];
-                            this.uvArray.push(0, 0);
+                            this.uvArray.push(0);
+                            this.uvArray.push(0);
                         }
                     }
 
@@ -358,7 +364,9 @@ export class OBJMesh extends VisualMesh
 
                 for (let k = 1; k < indicesFaces.length - 1; k++) 
                 {
-                    this.indices.push(indicesFaces[0], indicesFaces[k], indicesFaces[k + 1]);
+                    this.indices.push(indicesFaces[0]);
+                    this.indices.push(indicesFaces[k]);
+                    this.indices.push(indicesFaces[k + 1]);
                 }
             }
         }
@@ -423,18 +431,24 @@ export class OBJMesh extends VisualMesh
                     {
                         keyToIndex[key] = indiceAtual++;
 
-                        this.cores.push(...(this.materiais[face.material].Kd || [1, 1, 1]), 1);
+                        this.cores.push( ...( this.materiais[face.material].Kd || [1, 1, 1] )  );
+                        this.cores.push(1);
 
                         const posicao = this.vertices[v.vi] || [0, 0, 0];
-                        this.positions.push(posicao[0], posicao[1], posicao[2]);
+                        this.positions.push(posicao[0]);
+                        this.positions.push(posicao[1]);
+                        this.positions.push(posicao[2]);
 
                         if (v.ti >= 0) {
                             const uv = this.uvs[v.ti];
                             this.uvArray = this.uvArray || [];
-                            this.uvArray.push(uv[0], uv[1]);
+                            this.uvArray.push(uv[0]);
+                            this.uvArray.push(uv[1]);
+
                         } else {
                             this.uvArray = this.uvArray || [];
-                            this.uvArray.push(0, 0);
+                            this.uvArray.push(0);
+                            this.uvArray.push(0);
                         }
                     }
 
@@ -444,7 +458,10 @@ export class OBJMesh extends VisualMesh
                 // triangula a face (assumindo que face.face.length >= 3)
                 for (let k = 1; k < indicesFaces.length - 1; k++) 
                 {
-                    this.indices.push(indicesFaces[0], indicesFaces[k], indicesFaces[k + 1]);
+                    this.indices.push(indicesFaces[0]);
+                    this.indices.push(indicesFaces[k]);
+                    this.indices.push(indicesFaces[k + 1]);
+
                     localIndexCount += 3;
                     globalIndexCount += 3;
                 }

@@ -150,7 +150,7 @@ export class OBJMesh extends VisualMesh
                 if (linha.indexOf('Kd') === 0) {
                     const itensLinha = linha.split(/\s+/);
 
-                    this.materiais[ materialAtual ].Kd = [
+                    this.materiais[ materialAtual ]["Kd"] = [
                         parseFloat( itensLinha[1] ),
                         parseFloat( itensLinha[2] ),
                         parseFloat( itensLinha[3] )
@@ -277,8 +277,8 @@ export class OBJMesh extends VisualMesh
             const grupoObjeto = String( this.objetoAtivo ) + '__' + String( this.materialAtivo );
 
             //Cadastra o objeto atual no dicionario de vertices objetos
-            this.verticesObjetos[ grupoObjeto ] = [];
-            this.verticesObjetosOnlyNomeParte[ this.objetoAtivo ] = [];
+            this.verticesObjetos[ grupoObjeto ]                    = [];
+            this.verticesObjetosOnlyNomeParte[ this.objetoAtivo ]  = [];
 
             // Marca que os vertices desse OBJETO(denominado grupoObjeto) começa no indice numero tal do vetor de vertices global do modelo
             this.verticesComecaObjetos[ grupoObjeto ] = this.vertices.length;
@@ -336,7 +336,7 @@ export class OBJMesh extends VisualMesh
                     // Se o indice da chave nao foi cadastrado, salva ele, com posição, cor
                     if ( keyToIndex[key] === undefined ) 
                     {
-                        const kdMaterial = this.materiais[face.material].Kd || [1, 1, 1];
+                        const kdMaterial = this.materiais[face.material]["Kd"] || [1, 1, 1];
                         const posicao    = this.vertices[v.vi] || [0, 0, 0];
 
                         // Define o indice
@@ -437,8 +437,8 @@ export class OBJMesh extends VisualMesh
 
                     if ( keyToIndex[key] === undefined ) 
                     {
-                        const kdMaterial = this.materiais[face.material].Kd || [1, 1, 1];
-                        const posicao    = this.vertices[v.vi] || [0, 0, 0];
+                        const kdMaterial = this.materiais[face.material]["Kd"]  || [1, 1, 1];
+                        const posicao    = this.vertices[v.vi]                  || [0, 0, 0];
 
                         // Define o indice
                         keyToIndex[key] = indiceAtual++;

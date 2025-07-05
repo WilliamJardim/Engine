@@ -27,39 +27,39 @@ export class OBJMesh extends VisualMesh
     {
         super(renderer, propriedadesMesh);
 
-        this.tipo             = 'OBJ';
-        this._isTransparente  = false;
-        this.mtlString        = propriedadesMesh.mtlString;
-        this.objString        = propriedadesMesh.objString;
+        this.tipo              = 'OBJ';
+        this._isTransparente   = false;
+        this.mtlString         = propriedadesMesh.mtlString;
+        this.objString         = propriedadesMesh.objString; 
 
-        this.vertices       = [];
-        this.uvs            = [];
-        this.normals        = [];
-        this.positions      = [];
-        this.indices        = [];
-        this.cores         = [];
+        this.vertices          = new Array();
+        this.uvs               = new Array();
+        this.normals           = new Array();
+        this.positions         = new Array();
+        this.indices           = new Array();
+        this.cores             = new Array();
 
         this.bufferPosicao     = null;
         this.bufferCor         = null;
         this.bufferIndices     = null;
         this.allBuffersCriated = false;
 
-        this.materiais       = {};
-        this.materialAtivo   = null;
+        this.materiais         = new Map();
+        this.materialAtivo     = null;
 
-        this.objetos         = {};
-        this.nomesObjetos    = []; 
-        this.objetoAtivo     = null;
-        this.objetosInfo     = {};
-        this.verticesObjetos = {};              // Vertices por partes
-        this.verticesObjetosOnlyNomeParte = {}; // Vertices por partes (somente o nome da parte sem usar material na chave)
-        this.verticesComecaObjetos = {};  // Length que começa os vertices de cada objeto no vetor geral vertices
+        this.objetos                       = new Map();
+        this.nomesObjetos                  = new Array(); 
+        this.objetoAtivo                   = null;
+        this.objetosInfo                   = new Map();
+        this.verticesObjetos               = new Map();   // Vertices por partes
+        this.verticesObjetosOnlyNomeParte  = new Map();   // Vertices por partes (somente o nome da parte sem usar material na chave)
+        this.verticesComecaObjetos         = new Map();   // Length que começa os vertices de cada objeto no vetor geral vertices
 
         this.childrenIndividualLights = true;  // Se cada parte vai usar iluminação
         this.useAccumulatedLights     = true;  // Se cada parte vai receber uma acumulação de luzes ao seu redor
 
-        this.iluminationInfo = {};            // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
-        this.iluminationAcumuladaInfo = {}    // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
+        this.iluminationInfo          = new Map();  // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
+        this.iluminationAcumuladaInfo = new Map();  // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
 
         // Variaveis de renderização
         this.modeloObjetoVisual = CriarMatrix4x4();
@@ -330,26 +330,30 @@ export class OBJMesh extends VisualMesh
 
                 for (let k = 0; k < face.face.length; k++) 
                 {
-                    const v = face.face[k];
+                    const v   = face.face[k];
                     const key = v.vi + '/' + v.ti + '/' + v.ni;    // Concatena os valores que vem no .OBJ para usar como chave
 
                     // Se o indice da chave nao foi cadastrado, salva ele, com posição, cor
                     if ( keyToIndex[key] === undefined ) 
                     {
+                        const kdMaterial = this.materiais[face.material].Kd || [1, 1, 1];
+                        const posicao    = this.vertices[v.vi] || [0, 0, 0];
+
+                        // Define o indice
                         keyToIndex[key] = indiceAtual++;
 
-                        const kdMaterial = this.materiais[face.material].Kd || [1, 1, 1];
-
+                        // Adiciona a cor do material
                         this.cores.push( kdMaterial[0] );
                         this.cores.push( kdMaterial[1] );
                         this.cores.push( kdMaterial[2] );
                         this.cores.push(1);
 
-                        const posicao = this.vertices[v.vi] || [0, 0, 0];
+                        // Adiciona a posição
                         this.positions.push(posicao[0]);
                         this.positions.push(posicao[1]);
                         this.positions.push(posicao[2]);
 
+                        // Adiciona a UV
                         if (v.ti >= 0) {
                             const uv = this.uvs[v.ti];
                             this.uvArray = this.uvArray || [];
@@ -428,25 +432,29 @@ export class OBJMesh extends VisualMesh
 
                 for (let k = 0; k < face.face.length; k++) 
                 {
-                    const v = face.face[k];
+                    const v   = face.face[k];
                     const key = v.vi + '/' + v.ti + '/' + v.ni;   // Concatena os valores que vem no .OBJ para usar como chave
 
                     if ( keyToIndex[key] === undefined ) 
                     {
+                        const kdMaterial = this.materiais[face.material].Kd || [1, 1, 1];
+                        const posicao    = this.vertices[v.vi] || [0, 0, 0];
+
+                        // Define o indice
                         keyToIndex[key] = indiceAtual++;
 
-                        const kdMaterial = this.materiais[face.material].Kd || [1, 1, 1];
-
+                        // Define a cor do material
                         this.cores.push( kdMaterial[0]  );
                         this.cores.push( kdMaterial[1]  );
                         this.cores.push( kdMaterial[2]  );
                         this.cores.push(1);
 
-                        const posicao = this.vertices[v.vi] || [0, 0, 0];
+                        // Define a posição
                         this.positions.push(posicao[0]);
                         this.positions.push(posicao[1]);
                         this.positions.push(posicao[2]);
 
+                        // Define a UV
                         if (v.ti >= 0) {
                             const uv = this.uvs[v.ti];
                             this.uvArray = this.uvArray || [];

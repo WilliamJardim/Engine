@@ -103,3 +103,18 @@ Criar um sistema que permite exportar o OBJ carregado de volta para um novo OBJ,
 Aplicar a iluminação tambem nas partes individuais dos OBJ 
 pra isso ver os vertices na região da luz, para poder identificar os nomes das partes, para poder aplicar iluminação
 
+05/07/2025
+Documentar melhor o verticesObjetosOnlyNomeParte, e outros, pra ficar bem claro
+
+Tambem, padronizar melhor os {} pra ser Map:
+
+    materiais
+    objetos
+    objetosInfo
+    verticesObjetos
+    verticesObjetosOnlyNomeParte
+    verticesComecaObjetos
+    iluminationInfo
+    iluminationAcumuladaInfo
+
+

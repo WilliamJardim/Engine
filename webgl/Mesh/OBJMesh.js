@@ -338,7 +338,11 @@ export class OBJMesh extends VisualMesh
                     {
                         keyToIndex[key] = indiceAtual++;
 
-                        this.cores.push( ...( this.materiais[face.material].Kd || [1, 1, 1] ) );
+                        const kdMaterial = this.materiais[face.material].Kd || [1, 1, 1];
+
+                        this.cores.push( kdMaterial[0] );
+                        this.cores.push( kdMaterial[1] );
+                        this.cores.push( kdMaterial[2] );
                         this.cores.push(1);
 
                         const posicao = this.vertices[v.vi] || [0, 0, 0];
@@ -431,7 +435,11 @@ export class OBJMesh extends VisualMesh
                     {
                         keyToIndex[key] = indiceAtual++;
 
-                        this.cores.push( ...( this.materiais[face.material].Kd || [1, 1, 1] )  );
+                        const kdMaterial = this.materiais[face.material].Kd || [1, 1, 1];
+
+                        this.cores.push( kdMaterial[0]  );
+                        this.cores.push( kdMaterial[1]  );
+                        this.cores.push( kdMaterial[2]  );
                         this.cores.push(1);
 
                         const posicao = this.vertices[v.vi] || [0, 0, 0];

@@ -59,6 +59,20 @@ export class VisualMesh
         this.useColors = true;
     }
 
+    // ATIVAR EM TODOS: renderizador.getObjetos().forEach((o)=>{ o.enableStaticAccumulatedLights() })
+
+    // Ativa as luzes acumuladas estaticas
+    enableStaticAccumulatedLights()
+    {
+        this.staticAccumulatedLights = true;
+    }
+
+    // Desativa as luzes acumuladas estaticas
+    disableStaticAccumulatedLights()
+    {
+        this.staticAccumulatedLights = false;
+    }
+
     /**
     * Código base para aplicar iluminação, usado em todos os objetos
     */

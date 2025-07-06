@@ -124,7 +124,7 @@ Sombras: são formadas pela ausência de luz.
 
 A luz do sol ou artificial, clareia tudo... Mais aí, a onde está o carro, o jogador, a malha deles impede a luz de passar, deixando os contornos do objeto preto no chão
 
-# 06/07/2025
+# 06/07/2025 (JA FIZ)
 Lightmap usando minha iluminação local das partes 
 
 Criar uma variável no Renderizador, que se ativada true, ele só vai acumular a iluminação das partes uma única vez(levando em conta os pontos de iluminação), e depois deixar isso estático, interrompendo os laços de atualização das luzes.
@@ -133,7 +133,8 @@ Isso também vai valer para objetos únicos sem ser OBJ.
 
 A ideia é reduzir custo de processamento
 
-# 06/07/2025
+
+# 06/07/2025 
 Também adicionar exceção: que alguns Objetos vão poder ter iluminação dinâmica, mesmo com esse recurso ativado.
 Isso pode ser feito por exemplo, dizendo que os objetos copiam o valor booleano do renderizador. O que permite alterar dentro do objeto
 Outra ideia mais simples que tive: adicionar uma nova variável booleana dentro do objeto, que permite que as partes tenham iluminação individual, porém, que não acumule luzes locais. Ou seja, seria algo mais manual mesmo.

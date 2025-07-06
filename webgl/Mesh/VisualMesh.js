@@ -34,8 +34,11 @@ export class VisualMesh
 
         // Luzes do objeto
         this.alwaysUpdateLights          = meshConfig.alwaysUpdateLights || true;         // Se a todo momento vai atualizar luzes ou não
-        this.alwaysCalculateLocalLights  = meshConfig.alwaysCalculateLocalLights || true; // Se eu quiser desativar o calculo das luzes locais por achar pesado
         // NOTA: Cada objeto pode atualizar a iluminação apenas levando em conta suas configuracoes fixas e do ambiente, OU TAMBEM PODE LEVAR EM CONTA CADA PONTO DE LUZ PELO CENARIO
+
+        this.useAccumulatedLights     = true;   // Se esse objeto vai receber uma acumulação de luzes ao seu redor (posso desativar se eu achar pesado)
+        this.staticAccumulatedLights  = false;  // Se ativado, a acumulação das luzes ao redor do objeto só vai ocorrer uma unica vez
+        this._jaAcumulouLuzes         = false;  // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
 
         this.brilhoObjeto                = meshConfig.brilho   || 0;
         this.ambientObjeto               = meshConfig.ambient  || 0; // Um acrescimento a luz ambiente
@@ -57,50 +60,6 @@ export class VisualMesh
     }
 
     /**
-    * Calcula o recebimento de todas as luzes que afeta esse objeto 
-    */
-    calcularIluminacaoDasLuzes()
-    {
-        const renderer      = this.renderer;
-        const luzesCena     = renderer.getLuzes();
-
-        /**
-        * Calcula o recebimento de todas as luzes que afeta esse objeto 
-        */
-        this.brilhoLocalAcumulado          = 0;
-        this.ambientLocalAcumulado         = 0;
-        this.diffuseLocalAcumulado         = 0;
-        this.specularLocalAcumulado        = 0;
-        this.corLocalAcumulado             = [0,0,0];
-        this.intensidadeLocalAcumulado     = 0;
-
-        for( let i = 0 ; i < luzesCena.length ; i++ )
-        {
-            const luz        = luzesCena[i];
-            const posicaoLuz = luz.position;
-            const alcanceLuz = luz.raio;
-
-            // A distanca entre o objeto e a luz
-            const dx = posicaoLuz.x - this.position.x;
-            const dy = posicaoLuz.y - this.position.y;
-            const dz = posicaoLuz.z - this.position.z;
-            const distancia2 = Math.sqrt( dx*dx + dy*dy + dz*dz ) * alcanceLuz;
-
-            // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
-            this.brilhoLocalAcumulado         += luz.brilho      / distancia2;
-            this.ambientLocalAcumulado        += luz.ambient     / distancia2;
-            this.diffuseLocalAcumulado        += luz.diffuse     / distancia2;
-            this.specularLocalAcumulado       += luz.specular    / distancia2;
-            this.intensidadeLocalAcumulado    += luz.intensidade / distancia2;
-
-            // As luzes mais proximas terão tambem mais influencia na cor
-            this.corLocalAcumulado[0]         += luz.cor[0]      / distancia2;
-            this.corLocalAcumulado[1]         += luz.cor[1]      / distancia2;
-            this.corLocalAcumulado[2]         += luz.cor[2]      / distancia2;
-        }
-    }
-
-    /**
     * Código base para aplicar iluminação, usado em todos os objetos
     */
     atualizarIluminacao(gl, informacoesPrograma )
@@ -119,9 +78,52 @@ export class VisualMesh
         this.intensidadeLocalAcumulado     = 0;
 
         // Se esse recurso está ativado
-        if( this.alwaysCalculateLocalLights == true )
+        if( this.useAccumulatedLights == true )
         {
-            this.calcularIluminacaoDasLuzes();
+            /** NOVA REGRA: 
+            *      Se ele usa acumulação estatica(que acumula apenas uma unica vez), então essa condição não vai permitir que o loop continue
+            *      EXCETO, se staticAccumulatedLights for false, que ai ele passa direto e não interrompe nada por que o recurso está desativado
+            */
+            if( 
+                (this.staticAccumulatedLights == false) ||                                 // Se não usa o recurso passa direto
+                (this.staticAccumulatedLights == true && this._jaAcumulouLuzes == false)   // se usa, e ja acumulou, então não faz mais
+
+            ){
+                /**
+                * Calcula o recebimento de todas as luzes que afeta esse objeto 
+                */
+                this.brilhoLocalAcumulado          = 0;
+                this.ambientLocalAcumulado         = 0;
+                this.diffuseLocalAcumulado         = 0;
+                this.specularLocalAcumulado        = 0;
+                this.corLocalAcumulado             = [0,0,0];
+                this.intensidadeLocalAcumulado     = 0;
+
+                for( let i = 0 ; i < luzesCena.length ; i++ )
+                {
+                    const luz        = luzesCena[i];
+                    const posicaoLuz = luz.position;
+                    const alcanceLuz = luz.raio;
+
+                    // A distanca entre o objeto e a luz
+                    const dx = posicaoLuz.x - this.position.x;
+                    const dy = posicaoLuz.y - this.position.y;
+                    const dz = posicaoLuz.z - this.position.z;
+                    const distancia2 = Math.sqrt( dx*dx + dy*dy + dz*dz ) * alcanceLuz;
+
+                    // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
+                    this.brilhoLocalAcumulado         += luz.brilho      / distancia2;
+                    this.ambientLocalAcumulado        += luz.ambient     / distancia2;
+                    this.diffuseLocalAcumulado        += luz.diffuse     / distancia2;
+                    this.specularLocalAcumulado       += luz.specular    / distancia2;
+                    this.intensidadeLocalAcumulado    += luz.intensidade / distancia2;
+
+                    // As luzes mais proximas terão tambem mais influencia na cor
+                    this.corLocalAcumulado[0]         += luz.cor[0]      / distancia2;
+                    this.corLocalAcumulado[1]         += luz.cor[1]      / distancia2;
+                    this.corLocalAcumulado[2]         += luz.cor[2]      / distancia2;
+                }
+            }
         }
 
         /**
@@ -156,6 +158,9 @@ export class VisualMesh
         gl.uniform1f(specularShader, this.specular);
         gl.uniform3fv(corLuzShader,  new Float32Array(this.corLuz) );
         gl.uniform1f(intensidadeLuzShader, this.intensidadeLuz);
+
+        // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
+        this._jaAcumulouLuzes = true;
     }
     
     /**

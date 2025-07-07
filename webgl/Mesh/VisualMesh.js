@@ -140,8 +140,10 @@ export class VisualMesh
 
                 for( let i = 0 ; i < luzesCena.length ; i++ )
                 {
-                    const luz               = luzesCena[i];
-                    const interferenciaLuz  = luz.calcularInterferencia( this.position );
+                    const luz                = luzesCena[i];
+                    const posicaoObjetoArray = [this.position.x, this.position.y, this.position.z];
+
+                    const interferenciaLuz  = luz.calcularInterferencia( posicaoObjetoArray );
 
                     /**
                     * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto atual(do primeiro laço FOR)

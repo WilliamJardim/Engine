@@ -66,6 +66,16 @@ export class Renderer
         this.corAmbient     = renderConfig.corAmbient || [1, 1, 1];
         this.intensidadeLuz = renderConfig.intensidadeLuz || 1;
 
+        // Configurações globais de aplicação de iluminação
+        this.childrenIndividualLights = true;   // Em OBJs: Se cada parte vai usar iluminação propia
+        this.useAccumulatedLights     = true;   // Se cada objeto vai receber uma acumulação de luzes ao seu redor
+        this.staticAccumulatedLights  = false;  // Se ativado, a acumulação das luzes ao redor dos objetos só vai ocorrer uma unica vez
+
+        if( this.staticAccumulatedLights == true )
+        {
+            console.warn("Usando luzes acumuladas (se elas foram calculadas antes de inserir pontos de iluminação , nenhuma iluminação será aplicada e vai parecer que luzes não fazem efeito )");
+        }
+
         this.frameCounter = new FrameCounter(60);
 
         // Calcula o tamanho da tela

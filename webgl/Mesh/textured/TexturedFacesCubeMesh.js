@@ -50,6 +50,10 @@ export class TexturedFacesCuboMesh extends VisualMesh
         this.useColors     = propriedadesMesh.useColors || false;
         this.texturasFaces = propriedadesMesh.texturasFaces; // Array de 6 texturas WebGLTexture
 
+        this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
+        this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights;       // Se os objetos vai receber uma acumulação de luzes ao seu redor
+        this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;    // Se ativado, a acumulação das luzes ao redor dos objetos só vai ocorrer uma unica vez
+
         if( this.texturasFaces == null )
         {
             throw Error("Voce precisa definir as 6 texturas!");
@@ -269,6 +273,9 @@ export class TexturedFacesCuboMesh extends VisualMesh
         const position   = meshConfig.position;
         const rotation   = meshConfig.rotation;
         const scale      = meshConfig.scale;
+
+        // Copia os valores do renderer que o objeto acompanha
+        this.copiarValoresRenderer();
 
         /**
         * Cria os buffers que vão ser usados na renderização

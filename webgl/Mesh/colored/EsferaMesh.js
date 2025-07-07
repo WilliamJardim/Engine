@@ -43,6 +43,10 @@ export class EsferaMesh extends VisualMesh
         // Sem textura sempre vai usar cores
         this.useColors     = true;
 
+        this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
+        this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights;       // Se os objetos vai receber uma acumulação de luzes ao seu redor
+        this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;    // Se ativado, a acumulação das luzes ao redor dos objetos só vai ocorrer uma unica vez
+
         this.criar();
 
     }
@@ -217,6 +221,9 @@ export class EsferaMesh extends VisualMesh
         const position   = meshConfig.position;
         const rotation   = meshConfig.rotation;
         const scale      = meshConfig.scale;
+
+        // Copia os valores do renderer que o objeto acompanha
+        this.copiarValoresRenderer();
 
         /**
         * Cria os buffers que vão ser usados na renderização

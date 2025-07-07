@@ -36,6 +36,8 @@ export class VisualMesh
         this.alwaysUpdateLights          = meshConfig.alwaysUpdateLights || true;         // Se a todo momento vai atualizar luzes ou não
         // NOTA: Cada objeto pode atualizar a iluminação apenas levando em conta suas configuracoes fixas e do ambiente, OU TAMBEM PODE LEVAR EM CONTA CADA PONTO DE LUZ PELO CENARIO
 
+        this.childrenIndividualLights = true;  // Usado por alguns objetos da minha engine, como o OBJ
+
         this.useAccumulatedLights     = true;   // Se esse objeto vai receber uma acumulação de luzes ao seu redor (posso desativar se eu achar pesado)
         this.staticAccumulatedLights  = false;  // Se ativado, a acumulação das luzes ao redor do objeto só vai ocorrer uma unica vez
         this._jaAcumulouLuzes         = false;  // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
@@ -59,12 +61,35 @@ export class VisualMesh
         this.useColors = true;
     }
 
+    // Copia os valores do renderer que o objeto acompanha
+    copiarValoresRenderer()
+    {   
+        const renderer = this.renderer;
+
+        // Quando o valor é falso, ele pega do renderer(que tambem pode ser falso)
+        if( this.childrenIndividualLights == false )
+        {
+            this.childrenIndividualLights = renderer.childrenIndividualLights;
+        }
+
+        if( this.useAccumulatedLights == false )
+        {
+            this.useAccumulatedLights = renderer.useAccumulatedLights;
+        }
+
+        if( this.staticAccumulatedLights == false )
+        {
+            this.staticAccumulatedLights = renderer.staticAccumulatedLights;
+        }
+    }
+
     // ATIVAR EM TODOS: renderizador.getObjetos().forEach((o)=>{ o.enableStaticAccumulatedLights() })
 
     // Ativa as luzes acumuladas estaticas
     enableStaticAccumulatedLights()
     {
         this.staticAccumulatedLights = true;
+        this._jaAcumulouLuzes        = false; 
     }
 
     // Desativa as luzes acumuladas estaticas

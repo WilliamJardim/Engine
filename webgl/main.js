@@ -32,6 +32,10 @@ renderizador.criarObjeto({
     diffuse: 0.8,
     specular: 0.8,
 
+    childrenIndividualLights: true,
+    useAccumulatedLights: true,
+    staticAccumulatedLights: false,
+
     /**
     * Posição do objeto 
     */
@@ -66,6 +70,10 @@ renderizador.criarObjeto({
     nome: 'CuboDeformavel',
     invisivel: false,
     transparencia: 0.5, // 100 opaco
+
+    childrenIndividualLights: true,
+    useAccumulatedLights: true,
+    staticAccumulatedLights: false,
 
     /**
     * Posição do objeto 
@@ -104,6 +112,10 @@ renderizador.criarObjeto({
     usarOndulacaoSimples: true,
     transparencia: 0.999, // Para o plano, por algum motivo, se for 1 ele fica todo branco, é alguma coisa no shader
 
+    childrenIndividualLights: true,
+    useAccumulatedLights: true,
+    staticAccumulatedLights: false,
+
     /**
     * Posição do objeto 
     */
@@ -139,6 +151,10 @@ renderizador.criarObjeto({
     nome: 'Cilondro',
     invisivel: false,
     transparencia: 100, // 100 opaco
+
+    childrenIndividualLights: true,
+    useAccumulatedLights: true,
+    staticAccumulatedLights: false,
 
     /**
     * Posição do objeto 
@@ -187,6 +203,10 @@ renderizador.criarObjeto({
     invisivel: false,
     transparencia: 1, // 100 opaco
 
+    childrenIndividualLights: true,
+    useAccumulatedLights: true,
+    staticAccumulatedLights: false,
+
     /**
     * Posição do objeto 
     */
@@ -220,6 +240,10 @@ renderizador.criarObjeto({
     nome: 'Esfera',
     invisivel: false,
     transparencia: 100, // 100 opaco
+
+    childrenIndividualLights: true,
+    useAccumulatedLights: true,
+    staticAccumulatedLights: false,
 
     /**
     * Posição do objeto 
@@ -255,6 +279,10 @@ renderizador.criarObjeto({
     invisivel: false,
     transparencia: 100, // 100 opaco
 
+    childrenIndividualLights: true,
+    useAccumulatedLights: true,
+    staticAccumulatedLights: false,
+
     /**
     * Posição do objeto 
     */
@@ -289,6 +317,10 @@ renderizador.criarObjeto({
     invisivel: false,
     transparencia: 100, // 100 opaco
 
+    childrenIndividualLights: true,
+    useAccumulatedLights: true,
+    staticAccumulatedLights: false,
+
     /**
     * Posição do objeto 
     */
@@ -322,6 +354,10 @@ renderizador.criarObjeto({
     nome: 'CuboAleatorio2',
     invisivel: false,
     transparencia: 100, // 100 opaco
+
+    childrenIndividualLights: true,
+    useAccumulatedLights: true,
+    staticAccumulatedLights: false,
 
     /**
     * Posição do objeto 
@@ -557,6 +593,10 @@ async function criarCaixa()
         invisivel: false,
         transparencia: 1, 
 
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false,
+
         /**
         * Posição do objeto 
         */
@@ -604,6 +644,10 @@ async function criarCarro()
         
         invisivel: false,
         transparencia: 1, 
+
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false,
 
         /**
         * Posição do objeto 
@@ -653,6 +697,10 @@ async function carregarMapa()
         invisivel: false,
         transparencia: 1, 
 
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false,
+
         /**
         * Posição do objeto 
         */
@@ -701,6 +749,10 @@ async function carregarMapa2()
         invisivel: false,
         transparencia: 1, 
 
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false,
+
         /**
         * Posição do objeto 
         */
@@ -748,6 +800,10 @@ async function carregarMapa3()
         
         invisivel: false,
         transparencia: 1, 
+
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false,
 
         /**
         * Posição do objeto 

@@ -55,11 +55,11 @@ export class OBJMesh extends VisualMesh
         this.verticesObjetosOnlyNomeParte  = new Map();   // Vertices por partes (somente o nome da parte sem usar material na chave)
         this.verticesComecaObjetos         = new Map();   // Length que começa os vertices de cada objeto no vetor geral vertices
 
-        this.childrenIndividualLights = true;   // Se cada parte vai usar iluminação
+        this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
 
-        this.useAccumulatedLights     = true;   // Se cada parte vai receber uma acumulação de luzes ao seu redor
-        this.staticAccumulatedLights  = false;  // Se ativado, a acumulação das luzes ao redor das partes só vai ocorrer uma unica vez
-        this._jaAcumulouLuzes         = false;  // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
+        this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights;     // Se cada parte vai receber uma acumulação de luzes ao seu redor
+        this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;  // Se ativado, a acumulação das luzes ao redor das partes só vai ocorrer uma unica vez
+        this._jaAcumulouLuzes         = false;                                     // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
 
         this.iluminationInfo          = new Map();  // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
         this.iluminationAcumuladaInfo = new Map();  // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
@@ -1078,6 +1078,9 @@ export class OBJMesh extends VisualMesh
         const position   = meshConfig.position;
         const rotation   = meshConfig.rotation;
         const scale      = meshConfig.scale;
+
+        // Copia os valores do renderer que o objeto acompanha
+        this.copiarValoresRenderer();
 
         this.modeloObjetoVisual = CriarMatrix4x4();
 

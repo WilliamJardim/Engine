@@ -15,7 +15,7 @@ import {
    isDentroRaio
 } from '../math.js';
 
-// renderizador.criarObjeto( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 10, raio: 1 , cor: [0,255,0]} )
+// renderizador.criarObjeto( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 0.5, raio: 0.1 , cor: [255,0,0]} )
 
 export class Light
 {
@@ -33,5 +33,106 @@ export class Light
         this.specular    = propriedadesMesh.specular    || 0.2;
         this.cor         = propriedadesMesh.cor         || [0, 0, 0];
         this.intensidade = propriedadesMesh.intensidade || 0;
+    }
+
+    /**
+    * Calcula a força da luz em relação a distancia do objeto
+    * Pra isso, eu passo a posição XYZ de interesse do objeto em questão
+    * 
+    * De modo que:
+    *  - Objetos mais longe recebem menas influencia da luz
+    *  - E objetos mais perto recebem mais influencia da luz
+    */
+    calcularForcaLuz( posicaoObjeto )
+    {       
+        const posicaoLuz = this.position;
+        const alcanceLuz = this.raio;
+
+        const xInteresseObjeto = posicaoObjeto[0];
+        const yInteresseObjeto = posicaoObjeto[1];
+        const zInteresseObjeto = posicaoObjeto[2];
+
+        // A distanca entre o objeto e a luz
+        const dx = posicaoLuz.x - xInteresseObjeto;
+        const dy = posicaoLuz.y - yInteresseObjeto;
+        const dz = posicaoLuz.z - zInteresseObjeto;
+
+        const distancia2 = Math.sqrt( dx*dx + dy*dy + dz*dz ) / alcanceLuz;
+
+        return distancia2;
+    }
+
+    /**
+    * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto
+    */
+    calcularInfluenciaBrilho( forcaLuz )
+    {
+        return this.brilho / forcaLuz;
+    }
+
+    calcularInfluenciaAmbient( forcaLuz )
+    {
+        return this.ambient / forcaLuz;
+    }
+
+    calcularInfluenciaDiffuse( forcaLuz )
+    {
+        return this.diffuse / forcaLuz
+    }
+
+    calcularInfluenciaSpecular( forcaLuz )
+    {
+        return this.specular / forcaLuz;
+    }
+
+    calcularInfluenciaIntensidade( forcaLuz )
+    {   
+        return this.intensidade / forcaLuz;
+    }
+
+    calcularInfluenciaCores( forcaLuz )
+    {
+        const vermelho  =  this.cor[0] / forcaLuz;
+        const verde     =  this.cor[1] / forcaLuz;
+        const azul      =  this.cor[2] / forcaLuz;
+
+        return [ vermelho, verde, azul ];
+    }
+
+    /**
+    * Calcula o como essa luz, influencia a iluminação do objeto no brilho, diffuse, intensidade, cor, etc...  
+    * Usando a função calcularForcaLuz, e as outras acima
+    */
+    calcularInterferencia( posicaoObjeto )
+    {
+        /**
+        * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto atual(do primeiro laço FOR)
+        */
+        const forcaLuz               =  this.calcularForcaLuz( posicaoObjeto );
+        const influenciaBrilho       =  this.calcularInfluenciaBrilho( forcaLuz );
+        const influenciaAmbient      =  this.calcularInfluenciaAmbient( forcaLuz );
+        const influenciaDiffuse      =  this.calcularInfluenciaDiffuse( forcaLuz );
+        const influenciaSpecular     =  this.calcularInfluenciaSpecular( forcaLuz );
+        const influenciaIntensidade  =  this.calcularInfluenciaIntensidade( forcaLuz );
+
+        // Cores
+        const influenciaCores        =  this.calcularInfluenciaCores( forcaLuz );
+        const influenciaVermelho     =  influenciaCores[0];
+        const influenciaVerde        =  influenciaCores[1];
+        const influenciaAzul         =  influenciaCores[2];
+
+        return [ 
+            forcaLuz,
+            influenciaBrilho,
+            influenciaAmbient,
+            influenciaDiffuse,
+            influenciaSpecular,
+            influenciaIntensidade,
+
+            // Cores
+            influenciaVermelho,
+            influenciaVerde,
+            influenciaAzul
+        ]
     }
 }

@@ -140,27 +140,35 @@ export class VisualMesh
 
                 for( let i = 0 ; i < luzesCena.length ; i++ )
                 {
-                    const luz        = luzesCena[i];
-                    const posicaoLuz = luz.position;
-                    const alcanceLuz = luz.raio;
+                    const luz               = luzesCena[i];
+                    const interferenciaLuz  = luz.calcularInterferencia( this.position );
 
-                    // A distanca entre o objeto e a luz
-                    const dx = posicaoLuz.x - this.position.x;
-                    const dy = posicaoLuz.y - this.position.y;
-                    const dz = posicaoLuz.z - this.position.z;
-                    const distancia2 = Math.sqrt( dx*dx + dy*dy + dz*dz ) * alcanceLuz;
+                    /**
+                    * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto atual(do primeiro laço FOR)
+                    */
+                    const forcaLuz               =  interferenciaLuz[0];
+                    const influenciaBrilho       =  interferenciaLuz[1];
+                    const influenciaAmbient      =  interferenciaLuz[2];
+                    const influenciaDiffuse      =  interferenciaLuz[3];
+                    const influenciaSpecular     =  interferenciaLuz[4];
+                    const influenciaIntensidade  =  interferenciaLuz[5];
+
+                    // Cores
+                    const influenciaVermelho     =  interferenciaLuz[6];
+                    const influenciaVerde        =  interferenciaLuz[7];
+                    const influenciaAzul         =  interferenciaLuz[8];
 
                     // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
-                    this.brilhoLocalAcumulado         += luz.brilho      / distancia2;
-                    this.ambientLocalAcumulado        += luz.ambient     / distancia2;
-                    this.diffuseLocalAcumulado        += luz.diffuse     / distancia2;
-                    this.specularLocalAcumulado       += luz.specular    / distancia2;
-                    this.intensidadeLocalAcumulado    += luz.intensidade / distancia2;
+                    this.brilhoLocalAcumulado         += influenciaBrilho;
+                    this.ambientLocalAcumulado        += influenciaAmbient;
+                    this.diffuseLocalAcumulado        += influenciaDiffuse;
+                    this.specularLocalAcumulado       += influenciaSpecular;
+                    this.intensidadeLocalAcumulado    += influenciaIntensidade;
 
                     // As luzes mais proximas terão tambem mais influencia na cor
-                    this.corLocalAcumulado[0]         += luz.cor[0]      / distancia2;
-                    this.corLocalAcumulado[1]         += luz.cor[1]      / distancia2;
-                    this.corLocalAcumulado[2]         += luz.cor[2]      / distancia2;
+                    this.corLocalAcumulado[0]         += influenciaVermelho;
+                    this.corLocalAcumulado[1]         += influenciaVerde;
+                    this.corLocalAcumulado[2]         += influenciaAzul;
                 }
             }
         }

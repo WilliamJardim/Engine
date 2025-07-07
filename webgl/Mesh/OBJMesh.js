@@ -1169,27 +1169,33 @@ export class OBJMesh extends VisualMesh
                         */
                         for( let j = 0 ; j < luzesCena.length ; j++ )
                         {
-                            const luz        = luzesCena[j];
-                            const posicaoLuz = luz.position;
-                            const alcanceLuz = luz.raio;
+                            // Calcula a força da luz em relação a posição do objeto atual(do primeiro laço FOR)
+                            const luz               = luzesCena[j];
+                            const interferenciaLuz  = luz.calcularInterferencia( posicaoCentroParte );
 
-                            // A distanca entre o objeto e a luz
-                            const dx = posicaoLuz.x - posicaoCentroParte[0];
-                            const dy = posicaoLuz.y - posicaoCentroParte[1];
-                            const dz = posicaoLuz.z - posicaoCentroParte[2];
-                            const distancia2 = Math.sqrt( dx*dx + dy*dy + dz*dz ) * alcanceLuz;
+                            const forcaLuz               =  interferenciaLuz[0];
+                            const influenciaBrilho       =  interferenciaLuz[1];
+                            const influenciaAmbient      =  interferenciaLuz[2];
+                            const influenciaDiffuse      =  interferenciaLuz[3];
+                            const influenciaSpecular     =  interferenciaLuz[4];
+                            const influenciaIntensidade  =  interferenciaLuz[5];
 
+                            // Cores
+                            const influenciaVermelho     =  interferenciaLuz[6];
+                            const influenciaVerde        =  interferenciaLuz[7];
+                            const influenciaAzul         =  interferenciaLuz[8];
+                            
                             // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
-                            iluminacaoAcumuladaParte.brilhoLocalAcumulado         += luz.brilho      / distancia2;
-                            iluminacaoAcumuladaParte.ambientLocalAcumulado        += luz.ambient     / distancia2;
-                            iluminacaoAcumuladaParte.diffuseLocalAcumulado        += luz.diffuse     / distancia2;
-                            iluminacaoAcumuladaParte.specularLocalAcumulado       += luz.specular    / distancia2;
-                            iluminacaoAcumuladaParte.intensidadeLocalAcumulado    += luz.intensidade / distancia2;
+                            iluminacaoAcumuladaParte.brilhoLocalAcumulado         += influenciaBrilho;
+                            iluminacaoAcumuladaParte.ambientLocalAcumulado        += influenciaAmbient;
+                            iluminacaoAcumuladaParte.diffuseLocalAcumulado        += influenciaDiffuse;
+                            iluminacaoAcumuladaParte.specularLocalAcumulado       += influenciaSpecular;
+                            iluminacaoAcumuladaParte.intensidadeLocalAcumulado    += influenciaIntensidade;
 
                             // As luzes mais proximas terão tambem mais influencia na cor
-                            iluminacaoAcumuladaParte.corLocalAcumulado[0]         += luz.cor[0]      / distancia2;
-                            iluminacaoAcumuladaParte.corLocalAcumulado[1]         += luz.cor[1]      / distancia2;
-                            iluminacaoAcumuladaParte.corLocalAcumulado[2]         += luz.cor[2]      / distancia2;
+                            iluminacaoAcumuladaParte.corLocalAcumulado[0]         += influenciaVermelho;
+                            iluminacaoAcumuladaParte.corLocalAcumulado[1]         += influenciaVerde;
+                            iluminacaoAcumuladaParte.corLocalAcumulado[2]         += influenciaAzul;
                         }
                     }
                 }

@@ -260,15 +260,15 @@ export class CilindroMesh extends VisualMesh
         this.createBuffers();
 
         // Cria uma matrix para a representação visual do objeto 3d
-        let modeloObjetoVisual = CriarMatrix4x4();
+        this.modeloObjetoVisual = CriarMatrix4x4();
         
-        modeloObjetoVisual     = DefinirTranslacao(modeloObjetoVisual, [position.x, position.y, position.z] );
+        this.modeloObjetoVisual     = DefinirTranslacao(this.modeloObjetoVisual, [position.x, position.y, position.z] );
 
-        modeloObjetoVisual     = RotacionarX(modeloObjetoVisual,  rotation.x);
-        modeloObjetoVisual     = RotacionarY(modeloObjetoVisual,  rotation.y);
-        modeloObjetoVisual     = RotacionarZ(modeloObjetoVisual,  rotation.z);
+        this.modeloObjetoVisual     = RotacionarX(this.modeloObjetoVisual,  rotation.x);
+        this.modeloObjetoVisual     = RotacionarY(this.modeloObjetoVisual,  rotation.y);
+        this.modeloObjetoVisual     = RotacionarZ(this.modeloObjetoVisual,  rotation.z);
 
-        modeloObjetoVisual     = DefinirEscala(modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
+        this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z] );
 
         gl.disable(gl.CULL_FACE);
 
@@ -290,7 +290,7 @@ export class CilindroMesh extends VisualMesh
 
         // Usa as informações do cilindro(que criamos e calculamos acima)
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
+        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
 
         // Não usa textura
         gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, false );

@@ -160,15 +160,15 @@ export class Triangulo3DMesh extends VisualMesh
 
         this.createBuffers();
 
-        let modeloObjetoVisual = CriarMatrix4x4();
+        this.modeloObjetoVisual = CriarMatrix4x4();
 
-        modeloObjetoVisual = DefinirTranslacao(modeloObjetoVisual, [position.x, position.y, position.z]);
+        this.modeloObjetoVisual = DefinirTranslacao(this.modeloObjetoVisual, [position.x, position.y, position.z]);
 
-        modeloObjetoVisual = RotacionarX(modeloObjetoVisual, rotation.x);
-        modeloObjetoVisual = RotacionarY(modeloObjetoVisual, rotation.y);
-        modeloObjetoVisual = RotacionarZ(modeloObjetoVisual, rotation.z);
+        this.modeloObjetoVisual = RotacionarX(this.modeloObjetoVisual, rotation.x);
+        this.modeloObjetoVisual = RotacionarY(this.modeloObjetoVisual, rotation.y);
+        this.modeloObjetoVisual = RotacionarZ(this.modeloObjetoVisual, rotation.z);
 
-        modeloObjetoVisual = DefinirEscala(modeloObjetoVisual, [scale.x, scale.y, scale.z]);
+        this.modeloObjetoVisual = DefinirEscala(this.modeloObjetoVisual, [scale.x, scale.y, scale.z]);
 
         // Se for um objeto transparente
         if (isTransparente)
@@ -190,7 +190,7 @@ export class Triangulo3DMesh extends VisualMesh
 
         // Usa as informações do cubo(que criamos e calculamos acima)
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
+        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
 
         // Desenha o tringulo
         gl.drawArrays(gl.TRIANGLES, this.getIndices().length, gl.UNSIGNED_SHORT, 0);
@@ -217,7 +217,7 @@ export class Triangulo3DMesh extends VisualMesh
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
+        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
 
         this.aplicarIluminacao( gl, informacoesPrograma );
 

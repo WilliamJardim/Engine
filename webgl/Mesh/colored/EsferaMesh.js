@@ -231,15 +231,15 @@ export class EsferaMesh extends VisualMesh
         this.createBuffers();
 
         // Cria uma matrix para a representação visual do objeto 3d
-        let modeloObjetoVisual = CriarMatrix4x4();
+        this.modeloObjetoVisual = CriarMatrix4x4();
         
-        modeloObjetoVisual     = DefinirTranslacao(modeloObjetoVisual, [position.x, position.y, position.z] );
+        this.modeloObjetoVisual     = DefinirTranslacao(this.modeloObjetoVisual, [position.x, position.y, position.z] );
 
-        modeloObjetoVisual     = RotacionarX(modeloObjetoVisual,  rotation.x);
-        modeloObjetoVisual     = RotacionarY(modeloObjetoVisual,  rotation.y);
-        modeloObjetoVisual     = RotacionarZ(modeloObjetoVisual,  rotation.z);
+        this.modeloObjetoVisual     = RotacionarX(this.modeloObjetoVisual,  rotation.x);
+        this.modeloObjetoVisual     = RotacionarY(this.modeloObjetoVisual,  rotation.y);
+        this.modeloObjetoVisual     = RotacionarZ(this.modeloObjetoVisual,  rotation.z);
 
-        modeloObjetoVisual     = DefinirEscala(modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
+        this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z] );
 
         // Atualiza os buffers do objeto 3d com os dados calculados
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
@@ -270,7 +270,7 @@ export class EsferaMesh extends VisualMesh
 
         // Usa as informações do cubo(que criamos e calculamos acima)
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, modeloObjetoVisual);
+        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
 
         // Desenha o cubo
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);

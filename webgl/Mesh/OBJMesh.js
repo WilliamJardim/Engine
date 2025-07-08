@@ -29,6 +29,10 @@ export class OBJMesh extends VisualMesh
 
         this.tipo              = 'OBJ';
         this._isTransparente   = false;
+        
+        // Diz se o objeto é uma superficie plana ou não
+        this.isPlano       = false;
+
         this.mtlString         = propriedadesMesh.mtlString;
         this.objString         = propriedadesMesh.objString; 
 

@@ -33,6 +33,10 @@ export class EsferaMesh extends VisualMesh
 
         // Usa o programa para desenhar cubos
         this.tipo = 'Esfera';
+
+        // Diz se o objeto é uma superficie plana ou não
+        this.isPlano       = false;
+        
         this.setProgram( renderer.getEsferaProgram() );
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO

@@ -21,6 +21,9 @@ export class VisualMesh
         
         this.fragmentScript = ''; 
 
+        // Diz se o objeto é uma superficie plana ou não
+        this.isPlano       = false;
+
         // Atributos visuais
         this.nome          = meshConfig.nome || "SemNome";
         this.id            = this.nome + String(new Date().getTime());

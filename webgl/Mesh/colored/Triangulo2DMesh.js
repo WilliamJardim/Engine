@@ -21,6 +21,10 @@ export class Triangulo2DMesh extends VisualMesh
 
         // Usa o programa para desenhar cubos
         this.tipo = "Triangulo2D";
+
+        // Diz se o objeto é uma superficie plana ou não
+        this.isPlano       = false;
+        
         this.setProgram(renderer.getTrianguloProgram()); 
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO

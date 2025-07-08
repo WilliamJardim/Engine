@@ -33,6 +33,10 @@ export class PlanoOnduladoMesh extends VisualMesh
 
         // Usa o programa para desenhar cubos
         this.tipo = 'PlanoOndulado';
+
+        // Diz se o objeto é uma superficie plana ou não
+        this.isPlano       = true;
+
         this.setProgram( renderer.getOnduladoProgram() );
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO

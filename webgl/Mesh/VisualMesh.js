@@ -103,6 +103,14 @@ export class VisualMesh
 
     /**
     * Código base para aplicar iluminação, usado em todos os objetos
+    * 
+    * Pra isso implementar em C++ eu teria 3 opções:
+    *    (1) Declarar ele só no final(pois ele depende da Cena com todos os métodos dela)
+    *    
+    *    (2) Ou então, ele tambem poderia ser virtual, e eu implemento em cada objeto(vai ter que duplicar código)
+    * 
+    *    (3) Ou então, eu poderia criar uma outra classe VisualMesh que vai herdar o ObjectBase, no final das definições raizes, e ai como todos os objetos herdam o VisualMesh, iria seguir o fluxo normal(visto que nesse ponto Cena, ObjectBase e outras classes raiz vão estar totalmente definidas)
+    *        Mais pode ser um pouco mais complicado por causa de conversões de objetos que podem ser necessarias ser feitas
     */
     atualizarIluminacao(gl, informacoesPrograma )
     {

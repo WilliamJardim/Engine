@@ -309,18 +309,6 @@ export class Renderer
         this.matrixVisualizacao = MultiplicarMatrix4x4( new Float32Array(16), this.matrixCamera, this.matrixPontoVista );
     }
 
-    // TODO: DEFINE O PONTO DE VISTA( DEFINE DE QUEM PARTE A VISUALIZAÇÂO )
-    setMatrixPontoVista( novoPontoVista )
-    {
-        this.matrixVisualizacao = novoPontoVista; // muda o ponteiro
-    }
-
-    // TODO: Restaura o ponto de vista original (o da camera do jogador)
-    setMatrixPontoVistaOriginal()
-    {
-        //TODO: USAR UMA COPIA FEITA ANTES DA CHAMADA DO ReflectionDrawer
-    }
-
     /*** OBTEM VISUALIZACAO ATUALIZADA */
     getMatrixVisualizacao()
     {

@@ -131,7 +131,7 @@ export class ReflectionDrawer
         const matrixPontoVistaObjeto = this.calculateObjectPerspective();
 
         // Define o ponto de vista para o renderizador
-        renderizador.setMatrixPontoVista( matrixPontoVistaObjeto );
+        //renderizador.setMatrixPontoVista( matrixPontoVistaObjeto );
         renderizador.desenharTudo();
 
         // Resolução da textura do reflexo a ser criada
@@ -146,7 +146,7 @@ export class ReflectionDrawer
         gl.viewport(0, 0, renderizador.width, renderizador.height);
 
         // Restaura o ponto de vista original
-        renderizador.setMatrixPontoVistaOriginal();
+        //renderizador.setMatrixPontoVistaOriginal();
     }
 
 } 

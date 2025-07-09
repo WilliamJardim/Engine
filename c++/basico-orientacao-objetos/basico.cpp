@@ -1,6 +1,6 @@
 /**
 * William Jardim
-* 09/07/2025
+* 09/07/2025, 14:40 PM
 *
 * ABRANJE: Construtores, herança, polimorfismo, 
 *
@@ -9,6 +9,28 @@
 *          
 *          Metodos virtuais junto com métodos normais
 *          
+*
+* CAPACIDADE: Cena, ObjetoBase e Objetos que herdam ele.
+
+*             A cena tem um Array de Objetos. 
+
+              E cada objeto tem: 
+                 - Os métodos que a ObjetoBase tem(metodos normais), 
+                 - Implantação de métodos virtuais(cada objeto tem sua propia implantação dos métodos), 
+                 - E também métodos novos e exclusivos só dele
+
+              Cada objeto tem uma referencia a Cena, e pode ter referencia a outros objetos (como o objectBelow que representa o objeto abaixo dele)
+
+              Dentro da cena, é possivel listar, modificar e percorrer cada objeto usando laços for
+
+              Dentro do contexto de um Objeto também é possivel acessar ou modificar a cena, inclusive fazer coisas com outros objetos, percorrer eles com laços for, etc....
+
+              Suporte a várias cenas
+
+              Suporte a vários objetos
+
+              Pode-se Adicionar objetos dinamicamente na cena
+*                    
 */
 
 #include <iostream>  // Inclui a biblioteca para entrada e saída
@@ -172,6 +194,20 @@ class Objeto : public ObjetoBase{
         if( cenaObjeto != nullptr )
         {
             std::cout << "\nATUALIZANDO OBJETO " << nomeObjeto << " QUE ESTA NA CENA " << nomeCena << '\n';
+
+            // Percorre todos os objetos da cena
+            for( int i = 0 ; i < cenaObjeto->objetos.size() ; i++ )
+            {
+                ObjetoBase* objAtualCena      = cenaObjeto->objetos[i];
+                string      nomeObjAtualCena  = objAtualCena->getNome();
+
+                // Se nao for ele mesmo
+                if( nomeObjAtualCena != nomeObjeto )
+                {
+                    std::cout << "O objeto " << nomeObjeto << " esta enxergando o objeto " << nomeObjAtualCena;
+                }
+            }
+
         }else{
             std::cout << "\nATUALIZANDO OBJETO " << nomeObjeto << " QUE NAO TEM CENA";
         }
@@ -228,6 +264,20 @@ class Carro : public ObjetoBase{
         if( cenaObjeto != nullptr )
         {
             std::cout << "\nATUALIZANDO OBJETO " << nomeObjeto << " QUE ESTA NA CENA " << nomeCena << '\n';
+
+            // Percorre todos os objetos da cena
+            for( int i = 0 ; i < cenaObjeto->objetos.size() ; i++ )
+            {
+                ObjetoBase* objAtualCena      = cenaObjeto->objetos[i];
+                string      nomeObjAtualCena  = objAtualCena->getNome();
+
+                // Se nao for ele mesmo
+                if( nomeObjAtualCena != nomeObjeto )
+                {
+                    std::cout << "O objeto " << nomeObjeto << " esta enxergando o objeto " << nomeObjAtualCena;
+                }
+            }
+
         }else{
             std::cout << "\nATUALIZANDO OBJETO " << nomeObjeto << " QUE NAO TEM CENA";
         }

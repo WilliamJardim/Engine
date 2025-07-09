@@ -39,10 +39,10 @@ export class VisualMesh
         this.alwaysUpdateLights          = meshConfig.alwaysUpdateLights || true;         // Se a todo momento vai atualizar luzes ou não
         // NOTA: Cada objeto pode atualizar a iluminação apenas levando em conta suas configuracoes fixas e do ambiente, OU TAMBEM PODE LEVAR EM CONTA CADA PONTO DE LUZ PELO CENARIO
 
-        this.childrenIndividualLights = true;  // Usado por alguns objetos da minha engine, como o OBJ
-
+        this.childrenIndividualLights = true;   // Usado por alguns objetos da minha engine, como o OBJ
         this.useAccumulatedLights     = true;   // Se esse objeto vai receber uma acumulação de luzes ao seu redor (posso desativar se eu achar pesado)
         this.staticAccumulatedLights  = false;  // Se ativado, a acumulação das luzes ao redor do objeto só vai ocorrer uma unica vez
+        
         this._jaAcumulouLuzes         = false;  // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
 
         this.brilhoObjeto                = meshConfig.brilho   || 0;
@@ -62,6 +62,14 @@ export class VisualMesh
 
         // Por padrão sempre vai usar cores
         this.useColors = true;
+
+        this.bufferPosicao      = null;
+        this.bufferCor          = null;
+        this.bufferIndices      = null;
+
+        this.modeloObjetoVisual = null;
+
+        
     }
 
     // Copia os valores do renderer que o objeto acompanha

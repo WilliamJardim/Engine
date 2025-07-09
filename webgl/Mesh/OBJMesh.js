@@ -21,6 +21,28 @@ import {
     RotacionarZ
 } from '../utils/math.js';
 
+/**
+* PORTABILIDADE PRA C++:
+* 
+* Classe baseada no VisualMesh. Tem todos os atributos e métodos que VisualMesh tem.
+* Porém implementa os métodos abstratos do VisualMesh que devem implementados por cada objeto
+*
+* Define "informacoesPrograma" na função getInformacoesPrograma(), utilizando informações fornecidas pelo "renderer".
+* Faz uso do "renderer" umas 23 vezes, exatamente com a mesma finalidade que o VisualMesh usa,
+* apenas pra obter informações pra criar o "informacoesPrograma", iluminação, e obter outras coisas que o "renderer" fornece
+*
+* Ele usa o "informacoesPrograma" umas 25 vezes ao todo. 
+* É algo chave: ele precisa do informacoesPrograma para poder se comunicar com o shaders, obter informações sobre as variaveis dos shaders, e outras coisas muito importantes.
+* 
+* A classe OBJMesh também cria vários novos atributos e métodos propios. Os métodos manipulam, retornam ou acessam os propios atributos, ou atributos do "renderer"
+*
+* O código usa bastante Vetores e Mapas( Tabelas Hash ) dinamicos.
+* Também é possivel fazer isso em C++
+*
+* Não é nada muito diferente do VisualMesh
+* Também é 100% portável para C++
+*/
+
 export class OBJMesh extends VisualMesh 
 {
     constructor(renderer, propriedadesMesh) 
@@ -175,8 +197,6 @@ export class OBJMesh extends VisualMesh
                 }
             }
         }
-
-        console.log(this.materiais);
     }
 
     /**
@@ -496,8 +516,6 @@ export class OBJMesh extends VisualMesh
                 count: localIndexCount
             };
         }
-
-        console.log(this.uvArray);
     }
 
     getPositions() 

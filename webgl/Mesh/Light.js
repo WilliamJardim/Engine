@@ -8,6 +8,11 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 
+/**
+* Uma classe, Contem apenas atributos, métodos que usam esses propios atributos, recebem atributos externos como parametros, e retornam valores.
+* 100% compativel com C++ 
+*/
+
 import { VisualMesh } from "./VisualMesh.js";
 import { createBuffer, carregarTextura } from '../utils/funcoesBase.js';
 import { baseShaders } from '../Shaders/Base.js';

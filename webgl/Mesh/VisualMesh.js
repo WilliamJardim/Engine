@@ -7,6 +7,28 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+
+/**
+* PORTABILIDADE PRA C++:
+*
+* Essa é uma classe base, muito similar as que eu criei em C++
+* Usa ponteiros, cria atributos basicos própios,  
+*
+* Usa o ponteiro "renderer", uma referencia ao renderizador umas 26 vezes ao todo 
+* com o intuito de acessar os atributos do "renderer" como ler as luzes, objetos, etc....
+* Um uso de referencia muito simples via ponteiros, com apenas a exigencia do "renderer" existir e não ser nulo
+*
+* Tambem usa 17 vezes o "informacoesPrograma", que também é outra variavel que precisa existir, que será definida(ou obtida) nos objetos que herdarem a classe, e que vão enviar "informacoesPrograma" ao chamarem alguns dos métodos
+* Tambem não é nada extraordinário
+* 
+* Os outros métodos só modificam ou retornam atributos desse propio objeto VisualMesh, alguns fazendo uso das "informacoesPrograma" e dados que vem do "renderer"
+* Tambem não é nada extraordinário
+* 
+* Alguns métodos são abstratos e serão implementados nas classes que herdarem o VisualMesh, quando explicitamente dito em comentário.
+*
+* Tambem é 100% portável para C++, deis de que "informacoesPrograma" e "renderer" estejam acessiveis.
+*/
+
 export class VisualMesh
 {
     constructor( renderer, meshConfig )

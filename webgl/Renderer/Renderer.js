@@ -302,10 +302,23 @@ export class Renderer
 
 
     // chamada sempre que vão haver mudanças de camera, como no loop de renderização dos objetos, etc.
+    // OBS: a matrixVisualizacao ja inclui o ponto de vista da camera, já está embutido
     updateCamera( frameDelta )
     {
         this.matrixPontoVista   = CriarMatrixPontoVista( frameDelta, "FPS", this.posicaoCamera, this.miraCamera, this.sentidoCamera );
         this.matrixVisualizacao = MultiplicarMatrix4x4( new Float32Array(16), this.matrixCamera, this.matrixPontoVista );
+    }
+
+    // TODO: DEFINE O PONTO DE VISTA( DEFINE DE QUEM PARTE A VISUALIZAÇÂO )
+    setMatrixPontoVista( novoPontoVista )
+    {
+        this.matrixVisualizacao = novoPontoVista; // muda o ponteiro
+    }
+
+    // TODO: Restaura o ponto de vista original (o da camera do jogador)
+    setMatrixPontoVistaOriginal()
+    {
+        //TODO: USAR UMA COPIA FEITA ANTES DA CHAMADA DO ReflectionDrawer
     }
 
     /*** OBTEM VISUALIZACAO ATUALIZADA */
@@ -462,17 +475,21 @@ export class Renderer
         gl.disable(this.gl.BLEND);
     }
 
+    // Desenha tudo
+    desenharTudo()
+    {
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+        this.desenharSkyboxFundo();
+        this.desenharObjetos();
+    }
+
     // SERIA NECESSARIO ADAPTAR NO C++ POR CAUSA DE CONTEXTO DE BIND
     render(now) {
         requestAnimationFrame(this.render);
 
         now *= 0.001;
 
-        // Códigos para a renderização aqui....
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-
-        this.desenharSkyboxFundo();
-        this.desenharObjetos();
+        this.desenharTudo();
     }
 
     /**

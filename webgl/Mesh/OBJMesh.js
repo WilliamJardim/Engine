@@ -9,7 +9,7 @@
 */
 
 import { VisualMesh } from "./VisualMesh.js";
-import { createBuffer, carregarTextura } from '../funcoesBase.js';
+import { createBuffer, carregarTextura } from '../utils/funcoesBase.js';
 import { baseShaders } from '../Shaders/Base.js';
 import { 
     CriarMatrix4x4,
@@ -19,7 +19,7 @@ import {
     RotacionarX,
     RotacionarY,
     RotacionarZ
-} from '../math.js';
+} from '../utils/math.js';
 
 export class OBJMesh extends VisualMesh 
 {

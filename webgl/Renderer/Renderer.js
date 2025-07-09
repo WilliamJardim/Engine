@@ -11,8 +11,8 @@
 /**
 * Importando funções essenciais 
 */
-import { createShader, createBuffer, createProgram } from '../funcoesBase.js';
-import { criarGL }    from '../funcoesBase.js';
+import { createShader, createBuffer, createProgram } from '../utils/funcoesBase.js';
+import { criarGL }    from '../utils/funcoesBase.js';
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
         CriarMatrixPerspectiva, 
@@ -26,7 +26,7 @@ import {CriarMatrix4x4,
         DefinirX, 
         DefinirY, 
         DefinirZ,
-        FrameCounter} from '../math.js';
+        FrameCounter} from '../utils/math.js';
         
 /**
 * Importando shaders 

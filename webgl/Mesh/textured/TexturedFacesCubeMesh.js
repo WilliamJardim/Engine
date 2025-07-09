@@ -14,21 +14,23 @@
 */
 
 import { VisualMesh } from "../VisualMesh.js";
-import { createShader, createBuffer, createProgram} from '../../funcoesBase.js';
+import { createShader, createBuffer, createProgram} from '../../utils/funcoesBase.js';
 import { baseShaders } from '../../Shaders/Base.js';
 
-import {CriarMatrix4x4, 
-        MultiplicarMatrix4x4, 
-        CriarMatrixPerspectiva, 
-        DefinirTranslacao, 
-        DefinirEscala,
-        RotacionarX, 
-        RotacionarY, 
-        RotacionarZ, 
-        DefinirRotacao, 
-        DefinirX, 
-        DefinirY, 
-        DefinirZ} from '../../math.js';
+import {
+    CriarMatrix4x4, 
+    MultiplicarMatrix4x4, 
+    CriarMatrixPerspectiva, 
+    DefinirTranslacao, 
+    DefinirEscala,
+    RotacionarX, 
+    RotacionarY, 
+    RotacionarZ, 
+    DefinirRotacao, 
+    DefinirX, 
+    DefinirY, 
+    DefinirZ
+} from '../../utils/math.js';
 
 export class TexturedFacesCuboMesh extends VisualMesh
 {

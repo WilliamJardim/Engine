@@ -9,8 +9,8 @@
 */
 import { VisualMesh } from './Mesh/VisualMesh.js';
 import { Renderer }   from './Renderer/Renderer.js';
-import { carregarTextura, carregarTxt } from './funcoesBase.js';
-import {calcularDirecaoCamera, calcularDireitaCamera} from './math.js';
+import { carregarTextura, carregarTxt } from './utils/funcoesBase.js';
+import {calcularDirecaoCamera, calcularDireitaCamera} from './utils/math.js';
 
 const canvas       = document.getElementById('glcanvas'); 
 const renderizador = new Renderer( canvas, "perspectiva" );

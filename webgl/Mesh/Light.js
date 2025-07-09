@@ -9,11 +9,11 @@
 */
 
 import { VisualMesh } from "./VisualMesh.js";
-import { createBuffer, carregarTextura } from '../funcoesBase.js';
+import { createBuffer, carregarTextura } from '../utils/funcoesBase.js';
 import { baseShaders } from '../Shaders/Base.js';
 import { 
    isDentroRaio
-} from '../math.js';
+} from '../utils/math.js';
 
 // renderizador.criarObjeto( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 0.5, raio: 0.1 , cor: [255,0,0]} )
 

@@ -24,12 +24,14 @@ Este projeto não tem nenhum fim comercial ou profissional.
 
 Os cabeçalhos dos meus arquivos — quando identificados com meu nome — estão escritos em português, com alguns termos em inglês, como `AUTHOR` e `LICENSE`.
 
-## Dependências externas (AVISO DE REMOÇÃO DE DEPENDENCIA)
+## Dependências externas (AVISO DE REMOÇÃO DE DEPENDÊNCIA - 10/07/2025)
 
 ⚠️ A partir da versão `alpha1.0.0.6` [neste commit](https://github.com/WilliamJardim/Engine/commit/e95c59de65fc42a4585bd96d1516029723dce285), este projeto **não utiliza mais o Three.js**.
 
 Versões anteriores usaram o [Three.js](https://threejs.org/) como motor de renderização 3D, instalado via NPM e licenciado sob [MIT License](https://github.com/mrdoob/three.js/blob/dev/LICENSE). O código do Three.js nunca foi incluído diretamente neste repositório.
 
-Atualmente, o projeto utiliza um **renderizador WebGL próprio**, desenvolvido por mim do zero, especificamente para este projeto, sem qualquer dependência ou derivação do Three.js.
+Atualmente, o projeto utiliza um **renderizador WebGL próprio**, desenvolvido por mim do zero, criado com foco exclusivo nas necessidades deste projeto. Este renderizador não possui nenhuma dependência ou derivação do Three.js.
+
+Seu desenvolvimento foi iniciado separadamente, em uma pasta chamada "webgl", antes da remoção definitiva do Three.js do repositório.
 
 

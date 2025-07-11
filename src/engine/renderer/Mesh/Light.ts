@@ -13,7 +13,7 @@
 * 100% compativel com C++ 
 */
 
-import { VisualMesh } from "./VisualMesh";
+import { VisualMesh } from "./VisualMesh.js";
 import { createBuffer, carregarTextura } from '../utils/funcoesBase.js';
 import { baseShaders } from '../Shaders/Base.js';
 import { 

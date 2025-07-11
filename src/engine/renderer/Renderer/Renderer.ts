@@ -60,7 +60,7 @@ export class Renderer
     public diffuse:number;
     public specular:number;
     public brilho:number;
-    public corAmbient:number;
+    public corAmbient:Array<number>;
     public intensidadeLuz:number;
     public childrenIndividualLights:boolean;
     public useAccumulatedLights:boolean;

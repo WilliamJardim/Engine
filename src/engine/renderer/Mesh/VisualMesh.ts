@@ -8,6 +8,10 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 
+import Position3D from "../../interfaces/Position3D";
+import { float, Ponteiro } from "../../types/types-cpp-like";
+import { Renderer } from "../Renderer/Renderer";
+
 /**
 * PORTABILIDADE PRA C++:
 *
@@ -31,7 +35,59 @@
 
 export class VisualMesh
 {
-    constructor( renderer, meshConfig )
+    public renderer:Renderer;
+    public meshConfig:any;
+    public programUsado:Ponteiro<WebGLProgram>;
+    public vertexScript:string;
+    public fragmentScript:string;
+    public isPlano:boolean;
+    public nome:string;
+    public id:string;
+    public classe:string;
+    public tipo:string;
+
+    public position:Position3D;
+    public scale:Position3D;
+    public rotation:Position3D;
+
+    public invisivel:boolean;
+    public transparencia:number;
+    public alwaysUpdateLights:boolean;
+    public childrenIndividualLights:boolean;
+    public useAccumulatedLights:boolean;
+    public staticAccumulatedLights:boolean;
+    public _jaAcumulouLuzes:boolean;
+
+    public brilhoObjeto: number;
+    public ambientObjeto:number;
+    public diffuseObjeto:number;
+    public specularObjeto:number;
+
+    public corLuz:Array<float>;
+    public corLuzObjeto:Array<float>;
+
+    public ambient:number;
+    public diffuse:number;
+    public specular:number;
+    public brilho:number;
+    public intensidadeLuz:number;
+
+    public intensidadeLuzObjeto:number;
+
+    public brilhoLocalAcumulado:number;
+    public ambientLocalAcumulado:number;
+    public diffuseLocalAcumulado:number;
+    public specularLocalAcumulado:number;
+    public corLocalAcumulado:Array<float>;
+    public intensidadeLocalAcumulado:number;
+    public useColors:boolean;
+
+    public bufferPosicao:Ponteiro<WebGLBuffer>;
+    public bufferCor:Ponteiro<WebGLBuffer>;
+    public bufferIndices:Ponteiro<WebGLBuffer>;
+    public modeloObjetoVisual:Ponteiro<Float32Array>;
+
+    constructor( renderer:Renderer, meshConfig:any )
     {
         this.renderer   = renderer;
         this.meshConfig = meshConfig;
@@ -71,6 +127,14 @@ export class VisualMesh
         this.ambientObjeto               = meshConfig.ambient  || 0; // Um acrescimento a luz ambiente
         this.diffuseObjeto               = meshConfig.diffuse  || 0;
         this.specularObjeto              = meshConfig.specular || 0;
+
+        this.corLuz                      = [0, 0, 0];
+        this.ambient                     = 0;
+        this.diffuse                     = 0;
+        this.specular                    = 0;
+        this.brilho                      = 0;
+        this.intensidadeLuz              = 0;
+
         this.corLuzObjeto                = meshConfig.corLuzObjeto || [0, 0, 0];
         this.intensidadeLuzObjeto        = meshConfig.intensidadeLuzObjeto || 0;
 
@@ -142,10 +206,10 @@ export class VisualMesh
     *    (3) Ou então, eu poderia criar uma outra classe VisualMesh que vai herdar o ObjectBase, no final das definições raizes, e ai como todos os objetos herdam o VisualMesh, iria seguir o fluxo normal(visto que nesse ponto Cena, ObjectBase e outras classes raiz vão estar totalmente definidas)
     *        Mais pode ser um pouco mais complicado por causa de conversões de objetos que podem ser necessarias ser feitas
     */
-    atualizarIluminacao(gl, informacoesPrograma )
+    atualizarIluminacao(gl:WebGL2RenderingContext, informacoesPrograma:any )
     {
-        const renderer      = this.renderer;
-        const luzesCena     = renderer.getLuzes();
+        const renderer  : Renderer     = this.renderer;
+        const luzesCena : Array<any>   = renderer.getLuzes();
 
         /**
         * Calcula o recebimento de todas as luzes que afeta esse objeto 
@@ -256,7 +320,7 @@ export class VisualMesh
     /**
     * Define a iluminação do objeto como um todo 
     */
-    setIntireIlumination( iluminationDefinition={} )
+    setIntireIlumination( iluminationDefinition:any={} )
     {
         this.brilhoObjeto   = iluminationDefinition.brilhoObjeto;
         this.ambientObjeto  = iluminationDefinition.ambientObjeto;
@@ -303,7 +367,7 @@ export class VisualMesh
     /**
     * Código base para aplicar iluminação, usado em todos os objetos
     */
-    aplicarIluminacao( gl, informacoesPrograma )
+    aplicarIluminacao( gl:WebGL2RenderingContext, informacoesPrograma:any )
     {
         // Se o objeto sempre for atualizar luzes
         if( this.alwaysUpdateLights == true )
@@ -320,24 +384,24 @@ export class VisualMesh
     /**
     * Soma uma rotação ao redor de cada eixo: X, Y, Z, respectivamente.
     */
-    addRotationAround(rotation)
+    addRotationAround(rotation:Position3D)
     {
         this.rotation.x += rotation.x;
         this.rotation.y += rotation.y;
         this.rotation.z += rotation.z;
     }
 
-    addRotationAroundX(rotationX)
+    addRotationAroundX(rotationX:number)
     {
         this.rotation.x += rotationX;
     }
 
-    addRotationAroundY(rotationY)
+    addRotationAroundY(rotationY:number)
     {
         this.rotation.y += rotationY;
     }
 
-    addRotationAroundZ(rotationZ)
+    addRotationAroundZ(rotationZ:number)
     {
         this.rotation.z += rotationZ;
     }
@@ -345,24 +409,24 @@ export class VisualMesh
     /**
     * Define uma rotação ao redor de cada eixo: X, Y, Z, respectivamente.
     */
-    setRotationAround(rotation)
+    setRotationAround(rotation:Position3D)
     {
         this.rotation.x = rotation.x;
         this.rotation.y = rotation.y;
         this.rotation.z = rotation.z;
     }
 
-    setRotationAroundX(rotationX)
+    setRotationAroundX(rotationX:number)
     {
         this.rotation.x = rotationX;
     }
 
-    setRotationAroundY(rotationY)
+    setRotationAroundY(rotationY:number)
     {
         this.rotation.y = rotationY;
     }
 
-    setRotationAroundZ(rotationZ)
+    setRotationAroundZ(rotationZ:number)
     {
         this.rotation.z = rotationZ;
     }
@@ -375,24 +439,24 @@ export class VisualMesh
     * Respeitando a direção de movimento da posição, ou seja, 
     * Ao mover em +X, ele anda pra direita, então por esse método ao rotacionar em direção a X, ele vai inclinar pra direita tambem
     */
-    addRotationTowards(rotation)
+    addRotationTowards(rotation:Position3D)
     {
         this.rotation.x += (rotation.z * -1);
         this.rotation.y += rotation.y;
         this.rotation.z += (rotation.x * -1);
     }
 
-    addRotationTowardsX(rotationX)
+    addRotationTowardsX(rotationX:number)
     {
         this.rotation.z += (rotationX * -1);
     }
 
-    addRotationTowardsY(rotationY)
+    addRotationTowardsY(rotationY:number)
     {
         this.rotation.y += rotationY;
     }
 
-    addRotationTowardsZ(rotationZ)
+    addRotationTowardsZ(rotationZ:number)
     {
         this.rotation.x += (rotationZ * -1);
     }
@@ -404,24 +468,24 @@ export class VisualMesh
     * Respeitando a direção de movimento da posição, ou seja, 
     * Ao mover em +X, ele anda pra direita, então por esse método ao rotacionar em direção a X, ele vai inclinar pra direita tambem
     */
-    setRotationTowards(rotation)
+    setRotationTowards(rotation:Position3D)
     {
         this.rotation.x = (rotation.z * -1);
         this.rotation.y = rotation.y;
         this.rotation.z = (rotation.x * -1);
     }
 
-    setRotationTowardsX(rotationX)
+    setRotationTowardsX(rotationX:number)
     {
         this.rotation.z = (rotationX * -1);
     }
 
-    setRotationTowardsY(rotationY)
+    setRotationTowardsY(rotationY:number)
     {
         this.rotation.y = rotationY;
     }
 
-    setRotationTowardsZ(rotationZ)
+    setRotationTowardsZ(rotationZ:number)
     {
         this.rotation.x = (rotationZ * -1);
     }
@@ -432,47 +496,47 @@ export class VisualMesh
         return this.position;
     }
 
-    addPosition(position)
+    addPosition(position:Position3D)
     {
         this.position.x += position.x;
         this.position.y += position.y;
         this.position.z += position.z;
     }
 
-    addPositionX(positionX)
+    addPositionX(positionX:number)
     {
         this.position.x += positionX;
     }
 
-    addPositionY(positionY)
+    addPositionY(positionY:number)
     {
         this.position.y += positionY;
     }
 
-    addPositionZ(positionZ)
+    addPositionZ(positionZ:number)
     {
         this.position.z += positionZ;
     }
 
 
-    setPosition(position)
+    setPosition(position:Position3D)
     {
         this.position.x = position.x;
         this.position.y = position.y;
         this.position.z = position.z;
     }
 
-    setPositionX(positionX)
+    setPositionX(positionX:number)
     {
         this.position.x = positionX;
     }
 
-    setPositionY(positionY)
+    setPositionY(positionY:number)
     {
         this.position.y = positionY;
     }
 
-    setPositionZ(positionZ)
+    setPositionZ(positionZ:number)
     {
         this.position.z = positionZ;
     }
@@ -483,47 +547,47 @@ export class VisualMesh
         return this.scale;
     }
 
-    addScale(scale)
+    addScale(scale:Position3D)
     {
         this.scale.x += scale.x;
         this.scale.y += scale.y;
         this.scale.z += scale.z;
     }
 
-    addScaleX(scaleX)
+    addScaleX(scaleX:number)
     {
         this.scale.x += scaleX;
     }
 
-    addScaleY(scaleY)
+    addScaleY(scaleY:number)
     {
         this.scale.y += scaleY;
     }
 
-    addScaleZ(scaleZ)
+    addScaleZ(scaleZ:number)
     {
         this.scale.z += scaleZ;
     }
 
 
-    setScale(scale)
+    setScale(scale:Position3D)
     {
         this.scale.x = scale.x;
         this.scale.y = scale.y;
         this.scale.z = scale.z;
     }
 
-    setScaleX(scaleX)
+    setScaleX(scaleX:number)
     {
         this.scale.x = scaleX;
     }
 
-    setScaleY(scaleY)
+    setScaleY(scaleY:number)
     {
         this.scale.y = scaleY;
     }
 
-    setScaleZ(scaleZ)
+    setScaleZ(scaleZ:number)
     {
         this.scale.z = scaleZ;
     }
@@ -544,12 +608,12 @@ export class VisualMesh
         return this.transparencia;
     }
 
-    setTransparencia( nivelOpacidade )
+    setTransparencia( nivelOpacidade:number )
     {
         this.transparencia = nivelOpacidade;
     }
 
-    setInvisibilidade( novaInvisibilidade=false )
+    setInvisibilidade( novaInvisibilidade:boolean=false )
     {
         this.invisivel = novaInvisibilidade;
     }
@@ -609,12 +673,12 @@ export class VisualMesh
     }
 
     // Muda o valor do ponteiro "this.programUsado"
-    setProgram( programUsar )
+    setProgram( programUsar:WebGLProgram )
     {
         this.programUsado = programUsar;
     }
 
-    getProgram()
+    getProgram(): Ponteiro<WebGLProgram>
     {
         return this.programUsado;
     }

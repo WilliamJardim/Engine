@@ -4,20 +4,23 @@ import RenderizadorCena             from './engine/renderer/RenderizadorCena';
 import './MyEngineScene.css'; 
 
 const MyEngineScene: React.FC = () => {
-  const canvasRef = useRef<HTMLDivElement>(null);
-
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  
   useEffect(() => {
 
-    const renderizadorGL = new RenderizadorCena(canvasRef);
+    const renderizadorGL : RenderizadorCena = new RenderizadorCena(canvasRef);
 
     renderizadorGL.iniciar();
 
     // TODO: Limpeza ao desmontar o componente
+    return () => {
+      renderizadorGL.encerrar();
+    };  
 
   }, []);
 
 
-  return <div className="canvas-container" ref={canvasRef}></div>;
+  return <canvas className="canvas-container" ref={canvasRef} id="glcanvas"></canvas>;
 };
 
 export default MyEngineScene;

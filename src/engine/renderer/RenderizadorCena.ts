@@ -7,6 +7,11 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+
+/**
+* Wrapper para facilitar a comunicação com meu mini renderizador webgl 
+*/
+
 import React          from 'react';
 import ObjectBase     from '../core/ObjectBase';
 import Scene          from '../core/Scene';
@@ -187,6 +192,12 @@ export default class RenderizadorCena
         }, 500);
 
         animate();
+    }
+
+    // Função que vai destruir o Renderizador
+    public encerrar(): void
+    {
+        
     }
 
     public getRenderizador(): any

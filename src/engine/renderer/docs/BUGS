@@ -1,0 +1,60 @@
+(CORRIGIDO) Na camera ortografica, Em qualquer objeto,
+O eixo Z parece funcionar com uma escala diferente de X e Y, pois valores pequenos não afetam em nada.
+PIOR: E quando eu tento alterar o eixo Z, ao invez de mover o objeto em Z, a renderização buga e objeto perde parte de sua visualização
+se eu ir somando gradualmente, o efeito é que o objeto vai sumindo gradualmente, poligno por poligno,
+MAIS A CAMERA ORTOGRAFICA NÂO TEM PROFUNDIDADE
+
+
+BUG: As cameras ortograficas e perspectiva o eixo Y vão pra uma direção diferente.
+é como se o Z na perspetiva fosse o Y
+
+
+BUG: Posições incorretas e imprevisiveis:
+
+    BUG: Na camera perspectiva, o eixo Z é o Y,
+    e o eixo Y é o Z
+
+    BUG: O eixo Z por exemplo faz o objeto subir pra cima porém não reto, perfeito.
+    Ele sobe meio diagonal. Depende da posição do objeto
+    MAIS NEM SEMPRE, DEPENDE MUITO DA POSIÇÂO DO OBJETO
+
+    * TUDO ISSO È CAUSADO PELA ROTAÇÂO DOS OBJETOS, QUE BUGA TUDO, DEIXANDO DESALINHADO NAO SEI POR QUE
+    TIPO SE EU ALTERO A ROTAÇÂO DOS OBJETOS DE CIMA PARECE QUE NADA DE RUIM ACONTECE
+    MAIS SE EU ALTERO A ROTAÇÂO DO CHÂO, TUDO FICA DESALINHADO
+    TEM BUG AI!
+
+
+BUG: Na camera perspectiva, o eixo Z e Y realizam o mesmo movimento
+QUANDO A CAMERA ESTÀ NA POSIÇÂO DE ORIGEM, ELA OLHA PRA CIMA PRA BAIXO
+Mais quando eu vou pro lado com ela, e olho do sentido esquerdo dos cubos, quando eu tento olhar pra cima ou pra baixo, ela olha pro lado tambem, como se fosse Z
+
+
+BUG: ROTAÇÂO XYZ NÂO BATE COM A POSIÇÂO XYZ
+Por exemplo, ao somar +0.01 a POSIÇÂO X, o Cilindro vai pra direita
+Mais ao somar +0.01 na ROTAÇÂO X, o Cilindro gira pra traz.
+Quero que seja consistente
+
+
+
+
+(RESOLVIDO) BUG: NO OBJMesh
+Quando eu exporto um objeto modelado pelo Blender em .obj COM ELE TODO JUNTADO(COM TUDO JUNTO EM UM SÒ USANDO A OPÇÂO CTRL + P DO BLENDER),  a minha Engine ao ler esse .obj aplica uma unica textura para o objeto inteiro.
+Agora quando o objeto está inteiramente separado, ai não dá problema nenhum.
+
+SOLUÇÔES: Na minha Engine, criar um sistema pra unir os Meshs do objeto, mesmo estando separados, permitindo mover eles como um só.
+OU TENTAR CORRIGIR ISSO NO CÒDIGO DO OBJMesh
+
+(RESOLVIDO) BUG: Janelas em modelos 3d, com opacidade, não permitem ver o mundo a fora, elas ficam transparentes e permitem ver o céu, mais não os objetos do mundo de fora...
+EXCETO ALGUNS OBJETOS DO LADO DE DENTRO DO MAPA, QUE APARECEM.
+
+
+
+BUG: Por causa do gl.depthMask(false);, na hora de renderizar objetos transparentes,
+Se um modelo 3d grande como o do MAPA DO QUARTO for focado pela camera, qualquer outro objeto transparente que estiver na frente dele, na mesma direção que a camera está apontando, ESSE OBJETO SOME
+SOMENTE QUANDO OLHA EM DIREÇÂO PRO OBJETO GRANDE,.. mais para direções contrarias isso não ocorre. Ele meio que "ocupa" uma area da visão desse objeto
+
+
+BUG: No código do Light, a cor não está funcionando ainda quando eu passo uma cor 
+em: renderizador.criarObjeto( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 10, raio: 1 , cor: [0,255,0]} )
+
+

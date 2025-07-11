@@ -23,9 +23,16 @@ export default class Mapa<
 
     public internal_map:Record<TIPO_CHAVE, TIPO_VALOR>;
 
-    constructor()
+    constructor( objetoInicializar?: Record<TIPO_CHAVE, TIPO_VALOR> )
     {
-        this.internal_map = {} as Record<TIPO_CHAVE, TIPO_VALOR>;;
+        this.internal_map = {} as Record<TIPO_CHAVE, TIPO_VALOR>;
+
+        if(objetoInicializar) 
+        {
+            for (const key in objetoInicializar) {
+                this.internal_map[key as TIPO_CHAVE] = objetoInicializar[key];
+            }
+        }
 
         // Retorna um Proxy para permitir acesso direto com colchetes
         // SIMPLISMENTE PERMITE FAZER: dicionario["CHAVE"] pra acessar os dados

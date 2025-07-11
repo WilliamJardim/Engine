@@ -26,7 +26,7 @@ Os cabeçalhos dos meus arquivos — quando identificados com meu nome — estã
 
 ## Dependências externas (AVISO DE REMOÇÃO DE DEPENDENCIA)
 
-⚠️ A partir da versão `alpha1.0.0.6`, este projeto **não utiliza mais o Three.js**.
+⚠️ A partir da versão `alpha1.0.0.6` [neste commit](https://github.com/WilliamJardim/Engine/commit/e95c59de65fc42a4585bd96d1516029723dce285), este projeto **não utiliza mais o Three.js**.
 
 Versões anteriores usaram o [Three.js](https://threejs.org/) como motor de renderização 3D, instalado via NPM e licenciado sob [MIT License](https://github.com/mrdoob/three.js/blob/dev/LICENSE). O código do Three.js nunca foi incluído diretamente neste repositório.
 

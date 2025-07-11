@@ -13,18 +13,31 @@
 * 100% compativel com C++ 
 */
 
-import { VisualMesh } from "./VisualMesh.js";
+import { VisualMesh } from "./VisualMesh";
 import { createBuffer, carregarTextura } from '../utils/funcoesBase.js';
 import { baseShaders } from '../Shaders/Base.js';
 import { 
    isDentroRaio
 } from '../utils/math.js';
 
-// renderizador.criarObjeto( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 0.5, raio: 0.1 , cor: [255,0,0]} )
+import { float } from "../../types/types-cpp-like.js";
 
+// renderizador.criarObjeto( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 0.5, raio: 0.1 , cor: [255,0,0]} )
 export class Light
 {
-    constructor(renderer, propriedadesMesh) 
+    public renderer:any;
+    public meshConfig:any;
+    public tipo:string;
+    public position:any;
+    public raio:any;
+    public brilho:any;
+    public ambient:any;
+    public diffuse:any;
+    public specular:any;
+    public cor:any;
+    public intensidade:any;
+
+    constructor(renderer:any, propriedadesMesh:any) 
     {
         this.renderer   = renderer;
         this.meshConfig = propriedadesMesh;
@@ -48,7 +61,7 @@ export class Light
     *  - Objetos mais longe recebem menas influencia da luz
     *  - E objetos mais perto recebem mais influencia da luz
     */
-    calcularForcaLuz( posicaoObjeto )
+    calcularForcaLuz( posicaoObjeto:Array<float> )
     {       
         const posicaoLuz = this.position;
         const alcanceLuz = this.raio;
@@ -70,32 +83,32 @@ export class Light
     /**
     * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto
     */
-    calcularInfluenciaBrilho( forcaLuz )
+    calcularInfluenciaBrilho( forcaLuz:number ) : number
     {
         return this.brilho / forcaLuz;
     }
 
-    calcularInfluenciaAmbient( forcaLuz )
+    calcularInfluenciaAmbient( forcaLuz:number ) : number
     {
         return this.ambient / forcaLuz;
     }
 
-    calcularInfluenciaDiffuse( forcaLuz )
+    calcularInfluenciaDiffuse( forcaLuz:number ) : number
     {
         return this.diffuse / forcaLuz
     }
 
-    calcularInfluenciaSpecular( forcaLuz )
+    calcularInfluenciaSpecular( forcaLuz:number ) : number
     {
         return this.specular / forcaLuz;
     }
 
-    calcularInfluenciaIntensidade( forcaLuz )
+    calcularInfluenciaIntensidade( forcaLuz:number ) : number
     {   
         return this.intensidade / forcaLuz;
     }
 
-    calcularInfluenciaCores( forcaLuz )
+    calcularInfluenciaCores( forcaLuz:number ) : Array<float>
     {
         const vermelho  =  this.cor[0] / forcaLuz;
         const verde     =  this.cor[1] / forcaLuz;
@@ -108,7 +121,7 @@ export class Light
     * Calcula o como essa luz, influencia a iluminação do objeto no brilho, diffuse, intensidade, cor, etc...  
     * Usando a função calcularForcaLuz, e as outras acima
     */
-    calcularInterferencia( posicaoObjeto )
+    calcularInterferencia( posicaoObjeto:Array<float> ): Array<float>
     {
         /**
         * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto atual(do primeiro laço FOR)

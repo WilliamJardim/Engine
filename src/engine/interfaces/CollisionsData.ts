@@ -8,7 +8,7 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 import AbstractObjectBase from "../core/AbstractObjectBase";
-import { Ponteiro } from "../types/types-cpp-like";
+import { Ponteiro }       from "../types/types-cpp-like";
 
 export default interface CollisionsData
 {

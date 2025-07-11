@@ -7,8 +7,9 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-export default function includeString( array: Array<string>, strProcurando: string )
-{   
+export default function includeString( array: Array<string>, 
+                                       strProcurando: string 
+){   
     let tem = false;
 
     for( let i = 0 ; array.length ;  i++ )

@@ -7,10 +7,10 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import AbstractObjectBase from "../core/AbstractObjectBase";
-import ObjectBase from "../core/ObjectBase";
-import { Ponteiro } from "../types/types-cpp-like";
-import Mapa from "../utils/dicionarios/Mapa";
+import AbstractObjectBase  from "../core/AbstractObjectBase";
+import ObjectBase          from "../core/ObjectBase";
+import Mapa                from "../utils/dicionarios/Mapa";
+import { Ponteiro }        from "../types/types-cpp-like";
 
 export default interface CollisionTable
 {

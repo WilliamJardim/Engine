@@ -7,59 +7,47 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import AbstractObjectBase from "./AbstractObjectBase.ts";
-import { EngineMain } from '../main'; // Importa a função EngineMain
-import { EngineLoop } from '../main'; // Importa a função EngineLoop
-import { EngineBeforeLoop } from '../main' //Importa a função EngineBeforeLoop
-import ObjectBase from './ObjectBase';
-import isObjectBase from '../utils/isObjectBase';
-import ObjectProps from '../interfaces/ObjectProps';
-import ImaginaryObject from './ImaginaryObject';
-import ObjectEventLayer from '../interfaces/ObjectEventBlock';
-import ObjectEvents from '../interfaces/ObjectEvents';
-import CollisionTable from '../interfaces/CollisionTable';
-import ProximityTable from '../interfaces/ProximityTable';
-import CollisionBinaryTable from '../interfaces/CollisionBinaryTable';
-import ProximityBinaryTable from '../interfaces/ProximityBinaryTable';
-import ProximityBounds from '../utils/interfaces/ProximityBounds';
-import isProximity from '../utils/logic/isProximity';
-import {globalContext} from '../../engine/main.ts';
-import isCollision from '../utils/logic/isCollision.ts';
-import Wind from '../interfaces/Wind.ts';
-import FrameCounter from './FrameCounter.ts';
-import MovementState from '../interfaces/MovementState.ts';
-import InputListener from "../input/InputListener.ts";
-import SceneConfig from "../interfaces/SceneConfig.ts";
-import Camera from "./Camera.ts";
-import Position3D from "../interfaces/Position3D.ts";
-import VelocityStatus from "../interfaces/VelocityStatus.ts";
-import ObjectVelocity from "../interfaces/ObjectVelocity.ts";
-import { Ponteiro } from "../types/types-cpp-like.ts";
-import Mapa from "../utils/dicionarios/Mapa.ts";
-import LocalSound from "./LocalSound.ts";
+import {globalContext}       from '../../engine/main.ts';
+import AbstractObjectBase    from "./AbstractObjectBase.ts";
+import ObjectEvents          from '../interfaces/ObjectEvents';
+import CollisionTable        from '../interfaces/CollisionTable';
+import ProximityTable        from '../interfaces/ProximityTable';
+import CollisionBinaryTable  from '../interfaces/CollisionBinaryTable';
+import ProximityBinaryTable  from '../interfaces/ProximityBinaryTable';
+import ProximityBounds       from '../utils/interfaces/ProximityBounds';
+import isProximity           from '../utils/logic/isProximity';
+import isCollision           from '../utils/logic/isCollision.ts';
+import Wind                  from '../interfaces/Wind.ts';
+import FrameCounter          from './FrameCounter.ts';
+import MovementState         from '../interfaces/MovementState.ts';
+import InputListener         from "../input/InputListener.ts";
+import SceneConfig           from "../interfaces/SceneConfig.ts";
+import Position3D            from "../interfaces/Position3D.ts";
+import VelocityStatus        from "../interfaces/VelocityStatus.ts";
+import ObjectVelocity        from "../interfaces/ObjectVelocity.ts";
+import Mapa                  from "../utils/dicionarios/Mapa.ts";
+import LocalSound            from "./LocalSound.ts";
+import { EngineMain }        from '../main'; // Importa a função EngineMain
+import { EngineLoop }        from '../main'; // Importa a função EngineLoop
+import { EngineBeforeLoop }  from '../main' //Importa a função EngineBeforeLoop
+import { Ponteiro }          from "../types/types-cpp-like.ts";
 
-export default class Scene{
-
+export default class Scene
+{
     public sceneConfig    : SceneConfig;
     public inputListener  : InputListener;
-    
     public sceneCounter   : FrameCounter;
-    public normalSpeed = 1;
-    public slowSpeed = 0.05;
+
+    public gravity                              : Position3D;
+    public normalSpeed                          : number = 1;
+    public slowSpeed                            : number = 0.05;
     public frameDeltaIntensification            : number = this.normalSpeed;
     public objectPhysicsUpdateRate              : number = 1; //Permite intensificar os efeitos da fisica nos objetos
     public objectPhysicsDesaceleracaoUpdateRate : number = 9.5; //Afeta a velocidade de desaceleracao de objetos
-
-    public gravity               : Position3D;
-    public atrito                : number = 1;
-    public arrastoAr             : number = 1;
+    public atrito                               : number = 1;
+    public arrastoAr                            : number = 1;
 
     public objects               : Array<Ponteiro<AbstractObjectBase>>;
-
-    public players               : Array<Ponteiro<AbstractObjectBase>>; // A lista completa de todos os jogadores
-    public player                : Ponteiro<AbstractObjectBase>;        // O jogador que ESTE cliente controla
-
-    public cameras               : Array<Ponteiro<Camera>>;
     public sounds                : Array<Ponteiro<LocalSound>>;
     
     public objectTableById       : Mapa<string, Ponteiro<AbstractObjectBase>>;
@@ -73,8 +61,8 @@ export default class Scene{
     /**
     * Configurações do vento para física
     */
-    public wind:Wind;
-    public haveWind:boolean;
+    public wind     : Wind;
+    public haveWind : boolean;
 
     constructor( sceneConfig:SceneConfig ){
 
@@ -105,13 +93,6 @@ export default class Scene{
 
         // Objetos
         this.objects = new Array<Ponteiro<AbstractObjectBase>>();
-
-        // Jogadores locais
-        this.players = new Array<Ponteiro<AbstractObjectBase>>();
-        this.player  = null;
-
-        // Cameras
-        this.cameras = new Array<Ponteiro<Camera>>();
 
         // Sons locais
         this.sounds  = new Array<Ponteiro<LocalSound>>();
@@ -156,12 +137,6 @@ export default class Scene{
         /**
         * FIM DAS INICIALIZAÇÔES QUE NÂO PRECISAM EM C++ 
         */
-    }
-
-    // Obtem o jogador 
-    public getPlayer(): Ponteiro<AbstractObjectBase>
-    {
-        return this.player;
     }
 
     public getObjects(): Array<Ponteiro<AbstractObjectBase>>
@@ -415,33 +390,8 @@ export default class Scene{
     /**
     * Adiciona um objeto na cena
     */
-    public add( objeto:Ponteiro<AbstractObjectBase> ): void{
+    public criarObjeto( objeto:Ponteiro<AbstractObjectBase> ): void{
         this.objects.push( objeto );
-    }
-
-    /**
-    * Adiciona um jogador na cena 
-    */
-    public addPlayer( player:Ponteiro<AbstractObjectBase> ): void
-    {
-        this.players.push( player );
-    }
-
-    /**
-    * Define um jogador como principal 
-    */
-    public setClientPlayer( player:Ponteiro<AbstractObjectBase> )
-    {
-        this.player = player;
-    }
-
-    /**
-    * Adiciona um objeto na lista de atualizações da cena 
-    */
-    public addToLogic( objeto:Ponteiro<AbstractObjectBase> ): void{
-        if( this.objects ){
-            this.objects.push( objeto );
-        }
     }
 
     /**
@@ -499,11 +449,7 @@ export default class Scene{
 
         context.updateObjects( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
-        context.updatePlayers( firstRender, renderizadorPronto, frameDelta, frameNumber );
-
         context.updateSounds( firstRender, renderizadorPronto, frameDelta, frameNumber );
-
-        context.updateCameras( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
         if( firstRender == true )
         {
@@ -854,36 +800,6 @@ export default class Scene{
 
     }
 
-    // Update all players in the scene, including the CLIENT PLAYER
-    updatePlayers( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void
-    {
-        const context   = this;
-        const players   = this.players;
-
-        // Para os players da lista
-        for( let i = 0 ; i < players.length ; i++ )
-        {
-            const currentPlayer = players[ i ];
-            const currentPlayerIndex = i;
-
-            // Se o ponteiro não é nulo
-            if( currentPlayer != null )
-            {
-                 /**
-                 * Repass some important informations into the  "currentObject"
-                 */
-                 currentPlayer.scene = this;
-
-                 // Atualiza o player
-                 currentPlayer.updateObject( firstRender, renderizadorPronto, frameDelta, frameNumber );
-            }
-        }
-
-        // Para o jogador controlado pelo cliente
-        const clientPlayer : Ponteiro<AbstractObjectBase> = this.player;
-        // LOGICA ESPECIFICA PARA O PLAYER DO CLIENTE
-    }
-
     // Update all sounds in the scene
     updateSounds( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void
     {
@@ -902,63 +818,11 @@ export default class Scene{
                  * Repass some important informations into the  "currentObject"
                  */
                  currentSound.scene  = this;
-                 currentSound.player = this.getPlayer(); // Define o player dentro do som
+                 currentSound.player = null; // Define o player dentro do som
 
                  // Atualiza o som
                  currentSound.updateSound();
             }
         }
     }
-
-    /**
-    * Update all cameras in the scene
-    */
-    updateCameras( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number  ): void
-    {
-        const context = this;
-        const cameras = this.cameras;
-
-        for( let i = 0 ; i < cameras.length ; i++ )
-        {
-            const currentCamera = cameras[ i ];
-            const currentCameraIndex = i;
-            
-            // Se o ponteiro não é nulo
-            if( currentCamera != null )
-            {
-                /**
-                * Atualiza uma tabela com os nomes dos objetos
-                */
-                if( currentCamera && currentCamera.objProps && currentCamera.getStatus() == true )
-                {
-                    if( currentCamera.objProps.name != "" ){
-                        context.objectTableByName[ currentCamera.objProps.name ] = currentCamera;
-                    }
-                    if( currentCamera.id != "" ){
-                        context.objectTableById[ currentCamera.id ] = currentCamera;
-                    }
-                }
-
-                try{
-                    /**
-                    * Repass some important informations into the  "currentObject"
-                    */
-                    currentCamera.scene = this;
-
-                    /**
-                    * Update the object 
-                    */
-                    currentCamera.updateCamera( firstRender, renderizadorPronto, frameDelta, frameNumber );
-
-                }catch(e){
-                    console.log('CAMERA ERRO', e);
-                }
-            }
-        }
-    }
-
-    getCameraByIndex( cameraIndex: number ){
-        this.cameras[ cameraIndex ];
-    }
-
 }

@@ -72,8 +72,6 @@ export default function DebugTerminal()
     */
     function onKeyDown(event:any): void{
 
-        //globalContext.get('sceneCameraControls').lock(); // Bloqueia o jogo pra não atrapalhar o terminal
-
         if( event.key === "Enter")
         {
             executarComando()
@@ -96,19 +94,19 @@ export default function DebugTerminal()
     * globalContext.get('CaixaRef').setPosition({x: -15,y: 0,z: 0}); 
     * 
     * @example
-    * globalContext.get('CaixaRef').getMesh().position.x = globalContext.get('CuboRef').getMesh().position.x
-    * globalContext.get('CaixaRef').getMesh().position.y = globalContext.get('CuboRef').getMesh().position.y + 5
+    * globalContext.get('CaixaRef').getRepresentacaoMesh().position.x = globalContext.get('CuboRef').getRepresentacaoMesh().position.x
+    * globalContext.get('CaixaRef').getRepresentacaoMesh().position.y = globalContext.get('CuboRef').getRepresentacaoMesh().position.y + 5
     * 
     * @example
-    * globalContext.get('CuboRef').getMesh().position.y = globalContext.get('CaixaRef').getMesh().position.y + 10
+    * globalContext.get('CuboRef').getRepresentacaoMesh().position.y = globalContext.get('CaixaRef').getRepresentacaoMesh().position.y + 10
     * 
     * @example
-    * globalContext.get('CuboRef').getMesh().position.y = globalContext.get('ChaoRef').getMesh().position.y + 25
+    * globalContext.get('CuboRef').getRepresentacaoMesh().position.y = globalContext.get('ChaoRef').getRepresentacaoMesh().position.y + 25
     * 
     * @example
-    * globalContext.get('CuboRef').getMesh().position.x += 0.5
-    * globalContext.get('CuboRef').getMesh().position.y += 0.5
-    * globalContext.get('CuboRef').getMesh().position.y += 2.5
+    * globalContext.get('CuboRef').getRepresentacaoMesh().position.x += 0.5
+    * globalContext.get('CuboRef').getRepresentacaoMesh().position.y += 0.5
+    * globalContext.get('CuboRef').getRepresentacaoMesh().position.y += 2.5
     * 
     * @example
     * globalContext.get('ChaoRef').getPosition().y = -555

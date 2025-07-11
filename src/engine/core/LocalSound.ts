@@ -7,13 +7,12 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import AudioPlayer from "../audio/AudioPlayer";
-import LocalSoundProps from "../interfaces/LocalSoundProps";
-import ObjectPosition from "../interfaces/ObjectPosition";
-import { Ponteiro } from "../types/types-cpp-like";
-import AbstractObjectBase from "./AbstractObjectBase";
-import ObjectBase from "./ObjectBase";
-import Scene from "./Scene";
+import AudioPlayer         from "../audio/AudioPlayer";
+import LocalSoundProps     from "../interfaces/LocalSoundProps";
+import ObjectPosition      from "../interfaces/ObjectPosition";
+import AbstractObjectBase  from "./AbstractObjectBase";
+import Scene               from "./Scene";
+import { Ponteiro }        from "../types/types-cpp-like";
 
 /**
 * Classe responsavel por criar um som 3D local
@@ -133,38 +132,6 @@ export default class LocalSound
                 this.audioPlayer.play();
             }
         }
-
-        // Se o som tem delau pra repetir
-        /*
-        if( this.audioPlayer.isTocando == false )
-        {
-            if( this.audioPlayer.lastEndedTime != -1 )
-            {
-                const tempoAtual   = new Date().getTime();
-                const tempoComecar = this.audioPlayer.lastEndedTime + this.soundProps.startDelay;
-
-                if( tempoAtual >= tempoComecar )
-                {
-                    this.play();
-                }
-            }
-        }
-        */
-
-        // Se o som NUNCA foi tocado ainda, espera o delay pra tocar pela primeira vez
-        /*
-        if( this.soundProps.autoplay == true && this.audioPlayer.neverPlayed == true )
-        {
-            const tempoAtual   = new Date().getTime();
-            const tempoComecar = this.createdTime + this.soundProps.startDelay;
-
-            if( tempoAtual >= tempoComecar )
-            {
-                this.play();
-            }
-        }
-        */
-        
     }
 
 }

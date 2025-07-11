@@ -9,7 +9,8 @@
 */
 import Mapa from "../utils/dicionarios/Mapa";
 
-export default class GlobalContext {
+export default class GlobalContext 
+{
     [key: string]: any; // Assinatura de índice para propriedades dinâmicas
 
     private dados: Record<string, any>;

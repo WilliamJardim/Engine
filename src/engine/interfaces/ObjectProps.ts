@@ -7,18 +7,16 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import * as THREE from 'three';
-import ObjectPosition from "./ObjectPosition";
-import ObjectRotation from "./ObjectRotation";
-import ObjectScale from "./ObjectScale";
-import ObjectEvents from './ObjectEvents';
-import ProximityBounds from '../utils/interfaces/ProximityBounds';
-import ObjectAttachment from './ObjectAttachment';
-import { Ponteiro } from '../types/types-cpp-like';
+import ObjectPosition    from "./ObjectPosition";
+import ObjectRotation    from "./ObjectRotation";
+import ObjectScale       from "./ObjectScale";
+import ObjectEvents      from './ObjectEvents';
+import ProximityBounds   from '../utils/interfaces/ProximityBounds';
+import ObjectAttachment  from './ObjectAttachment';
+import { Ponteiro }      from '../types/types-cpp-like';
 
 export default interface ObjectProps
 {
-    material         : THREE.MeshStandardMaterial | null,
     mass             : number; //A massa do objeto
     type             : string, //Se é cubo, plano, esfera, ou modelo personalizado
     name             : string,
@@ -30,10 +28,10 @@ export default interface ObjectProps
     scaleReduce      : ObjectScale,
     collide          : boolean,
     collisionEvents  : boolean, //Se vai receber eventos de colisão mesmo que ele não colida fisicamente
-    traverse         : boolean, //Se o objeto pode simplismente passar atravez de outros objetos(ignora a fisica)
+    podeAtravessar   : boolean, //Se o objeto pode simplismente passar atravez de outros objetos(ignora a fisica)
     ignoreCollisions : Array<string>,
     proximityConfig  : ProximityBounds,
-    invisible        : boolean,
+    isInvisible      : boolean,
     opacity          : number,
     events           : Array<ObjectEvents>,
     kick_rate        : number,

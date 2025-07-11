@@ -9,10 +9,10 @@
 */
 export default interface InputKeyMap
 {
-    W : boolean,
-    A : boolean,
-    S : boolean,
-    D : boolean,
+    W          : boolean,
+    A          : boolean,
+    S          : boolean,
+    D          : boolean,
     ArrowUp    : boolean,
     ArrowDown  : boolean,
     ArrowLeft  : boolean,

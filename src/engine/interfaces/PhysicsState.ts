@@ -7,9 +7,9 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import ObjectAcceleration from "./ObjectAcceleration";
-import ObjectForce from "./ObjectForce";
-import ObjectVelocity from "./ObjectVelocity";
+import ObjectAcceleration  from "./ObjectAcceleration";
+import ObjectForce         from "./ObjectForce";
+import ObjectVelocity      from "./ObjectVelocity";
 
 export default interface PhysicsState
 {

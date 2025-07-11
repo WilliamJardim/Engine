@@ -1,4 +1,5 @@
-## Engine
+## Engine 
+### Current Version: alpha1.0.0.6
 <p align="center">
     <img src="./images/logo1024x1024.png" width="600px" height="600px" alt="Meu logo" />
 </p>
@@ -23,9 +24,12 @@ Este projeto não tem nenhum fim comercial ou profissional.
 
 Os cabeçalhos dos meus arquivos — quando identificados com meu nome — estão escritos em português, com alguns termos em inglês, como `AUTHOR` e `LICENSE`.
 
-## Dependências externas
-Este projeto utiliza o [Three.js](https://threejs.org/) como motor de renderização 3D.  
-O Three.js está licenciado sob [MIT License](https://github.com/mrdoob/three.js/blob/dev/LICENSE), instalada via NPM e **não incluída diretamente neste repositório**. **O código-fonte do Three.js não está incluído neste repositório**.
+## Dependências externas (AVISO DE REMOÇÃO DE DEPENDENCIA)
 
+⚠️ A partir da versão `alpha1.0.0.6`, este projeto **não utiliza mais o Three.js**.
+
+Versões anteriores usaram o [Three.js](https://threejs.org/) como motor de renderização 3D, instalado via NPM e licenciado sob [MIT License](https://github.com/mrdoob/three.js/blob/dev/LICENSE). O código do Three.js nunca foi incluído diretamente neste repositório.
+
+Atualmente, o projeto utiliza um **renderizador WebGL próprio**, desenvolvido por mim do zero, especificamente para este projeto, sem qualquer dependência ou derivação do Three.js.
 
 

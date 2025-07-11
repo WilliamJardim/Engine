@@ -7,24 +7,25 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import InputKeyMap from "../interfaces/InputKeyMap";
-import Position2D from "../interfaces/Position2D";
+import InputKeyMap  from "../interfaces/InputKeyMap";
+import Position2D   from "../interfaces/Position2D";
 
-export default class InputListener{
+export default class InputListener
+{
     public mousePosition : Position2D;
     public keyDetection  : InputKeyMap;
 
     constructor(){
         const contexto = this;
 
-        this.keyDetection  = { W: false,
-                               A: false,
-                               S: false,
-                               D: false,
-                               ArrowUp: false,
-                               ArrowDown: false,
-                               ArrowLeft: false,
-                               ArrowRight: false };
+        this.keyDetection  = { W          : false,
+                               A          : false,
+                               S          : false,
+                               D          : false,
+                               ArrowUp    : false,
+                               ArrowDown  : false,
+                               ArrowLeft  : false,
+                               ArrowRight : false };
 
         this.mousePosition = { x: 0, y: 0 }; 
                     
@@ -105,8 +106,8 @@ export default class InputListener{
     /**
     * Verifica se uma tecla está sendo precionada 
     */
-    public isKey( keyName:string ): boolean{
-        //return this.keyDetection[ keyName ] === true ? true : false;
+    public isKey( keyName:string ): boolean
+    {
         let isPrecionada:boolean = false;
 
         switch( keyName ){

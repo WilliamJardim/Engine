@@ -17,6 +17,6 @@ export default interface MovementState
     right     : boolean,
     up        : boolean,
     down      : boolean,
-    steps     : number, //Número de passos que o objeto dá(o tento que ele vai andar por movimentação baisca, em qualquer eixo)
+    steps     : number,       //Número de passos que o objeto dá(o tento que ele vai andar por movimentação baisca, em qualquer eixo)
     isJumping : boolean,      // Controle se está pulando ou não
 }

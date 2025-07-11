@@ -7,30 +7,30 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import CollisionsData from "../interfaces/CollisionsData";
-import MeshRepresentation from "../interfaces/MeshRepresentation";
-import MovementState from "../interfaces/MovementState";
-import ObjectAcceleration from "../interfaces/ObjectAcceleration";
-import ObjectAttachment from "../interfaces/ObjectAttachment";
-import ObjectEventLayer from "../interfaces/ObjectEventBlock";
-import ObjectEvents from "../interfaces/ObjectEvents";
-import ObjectForce from "../interfaces/ObjectForce";
-import ObjectPosition from "../interfaces/ObjectPosition";
-import ObjectProps from "../interfaces/ObjectProps";
-import ObjectRotation from "../interfaces/ObjectRotation";
-import ObjectScale from "../interfaces/ObjectScale";
-import ObjectVelocity from "../interfaces/ObjectVelocity";
-import PhysicsState from "../interfaces/PhysicsState";
-import Position3D from "../interfaces/Position3D";
-import RotationState from "../interfaces/RotationState";
-import VelocityStatus from "../interfaces/VelocityStatus";
-import { Ponteiro } from "../types/types-cpp-like";
-import ProximityBounds from "../utils/interfaces/ProximityBounds";
-import ObjectFrameTracker from "./ObjectFrameTracker/ObjectFrameTracker";
-import Scene from "./Scene";
+import CollisionsData      from "../interfaces/CollisionsData";
+import MeshRepresentation  from "../interfaces/MeshRepresentation";
+import MovementState       from "../interfaces/MovementState";
+import ObjectAcceleration  from "../interfaces/ObjectAcceleration";
+import ObjectAttachment    from "../interfaces/ObjectAttachment";
+import ObjectEventLayer    from "../interfaces/ObjectEventBlock";
+import ObjectEvents        from "../interfaces/ObjectEvents";
+import ObjectForce         from "../interfaces/ObjectForce";
+import ObjectPosition      from "../interfaces/ObjectPosition";
+import ObjectProps         from "../interfaces/ObjectProps";
+import ObjectRotation      from "../interfaces/ObjectRotation";
+import ObjectScale         from "../interfaces/ObjectScale";
+import ObjectVelocity      from "../interfaces/ObjectVelocity";
+import PhysicsState        from "../interfaces/PhysicsState";
+import Position3D          from "../interfaces/Position3D";
+import RotationState       from "../interfaces/RotationState";
+import VelocityStatus      from "../interfaces/VelocityStatus";
+import { Ponteiro }        from "../types/types-cpp-like";
+import ProximityBounds     from "../utils/interfaces/ProximityBounds";
+import ObjectFrameTracker  from "./ObjectFrameTracker/ObjectFrameTracker";
+import Scene               from "./Scene";
 
 /**
-* Lembrando que o objeto dessa classe é somente declarar os atributos e métodos da classe ObjectBase e seus derivados vão usar
+* Lembrando que o objetivo dessa classe é somente declarar os atributos e métodos da classe ObjectBase e seus derivados vão usar
 * Apenas nao ter erros de compilação. Todos os métodos são virtuais e devem ser implementados no ObjectBase e seus derivados.
 * 
 * Em varios lugares aqui nesse código, por exemplo no objectBelow, lastObjectBelow, parametros de funcoes como o objeto, outroObjeto, que estão com o  tipo AbstractObjectBase, na realidade são ponteiros da classe AbstractObjectBase,
@@ -42,53 +42,54 @@ import Scene from "./Scene";
 * e isso automaticamente aceita tanto instancias de AbstractObjectBase, quanto de ObjectBase, ou outras derivadas de AbstractObjectBase
 */
 
-export default abstract class AbstractObjectBase{
+export default abstract class AbstractObjectBase
+{
+    public scene            : Ponteiro<Scene>;         // é um ponteiro com referencia: Scene*
+    public onCreate         : Ponteiro<Function>; // è uma função e tambem um ponteiro *
 
-    public scene:Ponteiro<Scene>;         // é um ponteiro com referencia: Scene*
-    public onCreate:Ponteiro<Function>; // è uma função e tambem um ponteiro *
-
-    public objectBelow: Ponteiro<AbstractObjectBase>;     //Um ponteiro AbstractObjectBase*,  O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
-    public lastObjectBelow: Ponteiro<AbstractObjectBase>; //Um ponteiro AbstractObjectBase*, O ultimo objeto cujo o objeto atual esteve em cima 
+    public objectBelow      : Ponteiro<AbstractObjectBase>;     //Um ponteiro AbstractObjectBase*,  O objeto cujo o objeto atual está em cima dele. Ou seja, objectBelow é o objeto que esta abaixo do objeto atual. Pode ser o chao ou outro objeto. Se o objeto atual estiver no ar(caindo, ou se for um objeto sem fisica), essa variavel vai ter valor null
+    public lastObjectBelow  : Ponteiro<AbstractObjectBase>; //Um ponteiro AbstractObjectBase*, O ultimo objeto cujo o objeto atual esteve em cima 
 
     /** OUTROS ATRIBUTOS DO OBJETO */
-    public tipo:string = 'AbstractObjectBase';
-    public name:string;
-    public id:string;
-    public mesh:MeshRepresentation;
-    public objProps:ObjectProps;
-    public objEvents:ObjectEventLayer;
-    public frameHistory:ObjectFrameTracker;
-    public movimentState:MovementState;
-    public movimentSinalyzer:MovementState; // Indica se o objeto está se movendo para essas direções, quer por força ou de forma direta
-    public rotationSinalyzer:RotationState; // Indica a direção de rotação do objeto
-    public velocitySinalyzer:VelocityStatus; // Indica o status da velocidade do objeto para cada eixo
-    public physicsState:PhysicsState;
-    public weight:number;
-    public isFalling:boolean;
-    public groundY:number; // A posição Y do chão atual em relação a este objeto
-    public infoCollisions:CollisionsData;
-    public infoProximity:CollisionsData;
-    public isMovimentoTravadoPorColisao:boolean;
-    public isReceiving_Y_Velocity:boolean; // Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
+    public tipo                : string = 'AbstractObjectBase';
+    public name                : string;
+    public id                  : string;
+    public mesh                : MeshRepresentation;
+    public objProps            : ObjectProps;
+    public objEvents           : ObjectEventLayer;
+    public frameHistory        : ObjectFrameTracker;
+    public movimentState       : MovementState;
+    public movimentSinalyzer   : MovementState; // Indica se o objeto está se movendo para essas direções, quer por força ou de forma direta
+    public rotationSinalyzer   : RotationState; // Indica a direção de rotação do objeto
+    public velocitySinalyzer   : VelocityStatus; // Indica o status da velocidade do objeto para cada eixo
+    public physicsState        : PhysicsState;
+    public weight              : number;
+    public isFalling           : boolean;
+    public groundY             : number; // A posição Y do chão atual em relação a este objeto
+    public infoCollisions      : CollisionsData;
+    public infoProximity       : CollisionsData;
+    public isMovimentoTravadoPorColisao : boolean;
+    public isReceiving_Y_Velocity       : boolean; // Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
 
     /** OUTROS ATRIBUTOS **/
-    public lastPosition:ObjectPosition = {x: 0, y: 0, z: 0};
+    public lastPosition : ObjectPosition = {x: 0, y: 0, z: 0};
 
-    constructor(objProps:ObjectProps){
-        
+    constructor(objProps:ObjectProps)
+    {    
         // Inicialização obrigatória dos valores da classe
-        this.tipo = "AbstractObjectBase";
-        this.name = "";
-        this.id = "";
-        this.scene = null;
-        this.objectBelow = null;
-        this.lastObjectBelow = null;
-        this.weight = 0;
-        this.isFalling = false;
-        this.groundY = 0;
+        this.tipo             = "AbstractObjectBase";
+        this.name             = "";
+        this.id               = "";
+        this.scene            = null;
+        this.objectBelow      = null;
+        this.lastObjectBelow  = null;
+        this.weight           = 0;
+        this.isFalling        = false;
+        this.groundY          = 0;
+        this.onCreate         = null;
+
         this.isMovimentoTravadoPorColisao = false;
-        this.isReceiving_Y_Velocity = false;
-        this.onCreate = null;
+        this.isReceiving_Y_Velocity       = false;
 
         /**
         * Objetos talvez precisem ser incializados em C++ se eles não tiverem um construtor padrão que aceite apenas declaração com inicialização automatica 
@@ -118,7 +119,6 @@ export default abstract class AbstractObjectBase{
             }
         }
         this.objProps = {
-            material: null,
             mass: 0,
             type: "", 
             name: "",
@@ -146,14 +146,14 @@ export default abstract class AbstractObjectBase{
             },
             collide: false,
             collisionEvents: false,
-            traverse: false,
+            podeAtravessar: false,
             ignoreCollisions: new Array<string>(),
             proximityConfig: {
                 x: 0,
                 y: 0,
                 z: 0
             },
-            invisible: false,
+            isInvisible: false,
             opacity: 0,
             events: new Array<ObjectEvents>(),
             kick_rate: 0,
@@ -235,7 +235,8 @@ export default abstract class AbstractObjectBase{
         
     }
 
-    public pre_loop_reset(): void{
+    public pre_loop_reset(): void
+    {
 
     }
 
@@ -249,29 +250,34 @@ export default abstract class AbstractObjectBase{
 
     }
 
-    public haveClass( className:string ): boolean{
+    public haveClass( className:string ): boolean
+    {
         return false;
     }
 
-    public getAttachments(): Array<ObjectAttachment>{
+    public getAttachments(): Array<ObjectAttachment>
+    {
         return [];
     }
 
-    public joinAttachment( outroObjeto:Ponteiro<AbstractObjectBase>, attachementConfig: ObjectAttachment ): void{
+    public joinAttachment( outroObjeto:Ponteiro<AbstractObjectBase>, attachementConfig: ObjectAttachment ): void
+    {
         
     }
 
-    public attach( objetoAnexar:Ponteiro<AbstractObjectBase>, attachementConfig: ObjectAttachment ): void{
+    public attach( objetoAnexar:Ponteiro<AbstractObjectBase>, attachementConfig: ObjectAttachment ): void
+    {
         
     }
 
-    public ClearAttachments(): void{
+    public ClearAttachments(): void
+    {
        
     }
 
-    public getProps(): ObjectProps{
+    public getProps(): ObjectProps
+    {
        return {
-            material    : null,
             mass        : 0,
             type        : "", 
             name        : "",
@@ -301,7 +307,7 @@ export default abstract class AbstractObjectBase{
 
             collide          : false,
             collisionEvents  : false,
-            traverse         : false,
+            podeAtravessar   : false,
             ignoreCollisions : new Array<string>(),
 
             proximityConfig: {
@@ -310,7 +316,7 @@ export default abstract class AbstractObjectBase{
                 z: 0
             },
 
-            invisible   : false,
+            isInvisible : false,
             opacity     : 0,
             events      : new Array<ObjectEvents>(),
             kick_rate   : 0,
@@ -320,15 +326,18 @@ export default abstract class AbstractObjectBase{
         };
     }
 
-    public getMass(): number{
+    public getMass(): number
+    {
        return 0;
     }
 
-    public getWeight(): number{
+    public getWeight(): number
+    {
        return 0;
     }
 
-    public getMesh(): MeshRepresentation{
+    public getRepresentacaoMesh(): MeshRepresentation
+    {
        return {
             position: {
                 x: 0,
@@ -348,15 +357,18 @@ export default abstract class AbstractObjectBase{
         };
     }
 
-    public setMesh(newMesh:MeshRepresentation): void{
+    public setMesh(newMesh:MeshRepresentation): void
+    {
         
     }
 
-    public getScene(): Ponteiro<Scene>{
+    public getScene(): Ponteiro<Scene>
+    {
        return null;
     }
 
-    public getPosition(): ObjectPosition{
+    public getPosition(): ObjectPosition
+    {
         return {
             x: 0,
             y: 0,
@@ -364,7 +376,8 @@ export default abstract class AbstractObjectBase{
         }
     }
 
-    public getLastPosition(): ObjectPosition{
+    public getLastPosition(): ObjectPosition
+    {
         return {
             x: 0,
             y: 0,
@@ -372,63 +385,78 @@ export default abstract class AbstractObjectBase{
         }
     }
 
-    public setPosition( position: ObjectPosition ): void{
+    public setPosition( position: ObjectPosition ): void
+    {
        
     }
 
-    public somarX( x:number ): void{
+    public somarX( x:number ): void
+    {
         
     }
     
-    public somarY( y:number ): void{
+    public somarY( y:number ): void
+    {
         
     }
 
-    public somarZ( z:number ): void{
+    public somarZ( z:number ): void
+    {
         
     }
 
-    public somarPosicaoX( x:number ): void{
+    public somarPosicaoX( x:number ): void
+    {
        
     }
     
-    public somarPosicaoY( y:number ): void{
+    public somarPosicaoY( y:number ): void
+    {
         
     }
 
-    public somarPosicaoZ( z:number ): void{
+    public somarPosicaoZ( z:number ): void
+    {
        
     }
 
-    public subtrairPosicaoX( x:number ): void{
+    public subtrairPosicaoX( x:number ): void
+    {
         
     }
     
-    public subtrairPosicaoY( y:number ): void{
+    public subtrairPosicaoY( y:number ): void
+    {
         
     }
 
-    public subtrairPosicaoZ( z:number ): void{
+    public subtrairPosicaoZ( z:number ): void
+    {
         
     }
 
-    public somarEixo(eixo:string, valor:number): void{
+    public somarEixo(eixo:string, valor:number): void
+    {
         
     }
 
-    public subtrairEixo(eixo:string, valor:number): void{
+    public subtrairEixo(eixo:string, valor:number): void
+    {
         
     }
 
-    public somarPosition( position:ObjectPosition ): void{
+    public somarPosition( position:ObjectPosition ): void
+    {
        
     }
 
-    public setScale( scale: ObjectScale ): void{
+    public setScale( scale: ObjectScale ): void
+    {
         
     }
 
-    public getScale(): ObjectScale{
+    public getScale(): ObjectScale
+    {
       return {
         x: 0,
         y: 0,
@@ -436,23 +464,28 @@ export default abstract class AbstractObjectBase{
       }
     }
 
-    public somarEscalaX( x:number ): void{
+    public somarEscalaX( x:number ): void
+    {
        
     }
     
-    public somarEscalaY( y:number ): void{
+    public somarEscalaY( y:number ): void
+    {
       
     }
 
-    public somarEscalaZ( z:number ): void{
+    public somarEscalaZ( z:number ): void
+    {
         
     }
 
-    public somarEscala( scale:ObjectScale ): void{
+    public somarEscala( scale:ObjectScale ): void
+    {
        
     }
 
-    public getForce(): ObjectForce{
+    public getForce(): ObjectForce
+    {
         return {
             x: 0,
             y: 0,
@@ -460,47 +493,58 @@ export default abstract class AbstractObjectBase{
         }
     }
 
-    public somarForce( forca:ObjectForce, isExternal:boolean = true ): void{
+    public somarForce( forca:ObjectForce, isExternal:boolean = true ): void
+    {
 
     }
 
-    public somarForceX( forca:number ): void{
+    public somarForceX( forca:number ): void
+    {
       
     }
 
-    public somarForceY( forca:number ): void{
+    public somarForceY( forca:number ): void
+    {
        
     }
 
-    public somarForceZ( forca:number ): void{
+    public somarForceZ( forca:number ): void
+    {
         
     }
 
-    public subtrairForceX( forca:number ): void{
+    public subtrairForceX( forca:number ): void
+    {
        
     }
 
-    public subtrairForceY( forca:number ): void{
+    public subtrairForceY( forca:number ): void
+    {
        
     }
 
-    public subtrairForceZ( forca:number ): void{
+    public subtrairForceZ( forca:number ): void
+    {
        
     }
 
-    public somarForceEixo(eixo:string, valor:number): void{
+    public somarForceEixo(eixo:string, valor:number): void
+    {
         
     }
 
-    public subtrairForceEixo(eixo:string, valor:number): void{
+    public subtrairForceEixo(eixo:string, valor:number): void
+    {
        
     }
 
-    public setForce( forca:ObjectForce ): void{
+    public setForce( forca:ObjectForce ): void
+    {
        
     }
 
-    public getAcceleration(): ObjectAcceleration{
+    public getAcceleration(): ObjectAcceleration
+    {
       return {
             x: 0,
             y: 0,
@@ -508,47 +552,58 @@ export default abstract class AbstractObjectBase{
       }
     }
 
-    public somarAcceleration( velocidade:ObjectAcceleration ): void{
+    public somarAcceleration( velocidade:ObjectAcceleration ): void
+    {
        
     }
 
-    public somarAccelerationX( acceleration:number ): void{
+    public somarAccelerationX( acceleration:number ): void
+    {
        
     }
 
-    public somarAccelerationY( acceleration:number ): void{
+    public somarAccelerationY( acceleration:number ): void
+    {
        
     }
 
-    public somarAccelerationZ( acceleration:number ): void{
+    public somarAccelerationZ( acceleration:number ): void
+    {
       
     }
 
-    public subtrairAccelerationX( acceleration:number ): void{
+    public subtrairAccelerationX( acceleration:number ): void
+    {
       
     }
 
-    public subtrairAccelerationY( acceleration:number ): void{
+    public subtrairAccelerationY( acceleration:number ): void
+    {
        
     }
 
-    public subtrairAccelerationZ( acceleration:number ): void{
+    public subtrairAccelerationZ( acceleration:number ): void
+    {
        
     }
 
-    public somarAccelerationEixo(eixo:string, valor:number): void{
+    public somarAccelerationEixo(eixo:string, valor:number): void
+    {
         
     }
 
-    public subtrairAccelerationEixo(eixo:string, valor:number): void{
+    public subtrairAccelerationEixo(eixo:string, valor:number): void
+    {
        
     }
 
-    public setAcceleration( acceleration:ObjectAcceleration ): void{
+    public setAcceleration( acceleration:ObjectAcceleration ): void
+    {
        
     }
 
-    public getVelocity(): ObjectVelocity{
+    public getVelocity(): ObjectVelocity
+    {
       return {
             x: 0,
             y: 0,
@@ -556,66 +611,81 @@ export default abstract class AbstractObjectBase{
       }
     }
 
-    public somarVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void{
+    public somarVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void
+    {
 
     }
 
-    public somarVelocityX( velocidade:number ): void{
+    public somarVelocityX( velocidade:number ): void
+    {
         
     }
 
-    public somarVelocityY( velocidade:number, isExternal:boolean = true ): void{
+    public somarVelocityY( velocidade:number, isExternal:boolean = true ): void
+    {
        
     }
 
-    public somarVelocityZ( velocidade:number ): void{
+    public somarVelocityZ( velocidade:number ): void
+    {
        
     }
 
-    public subtrairVelocityX( velocidade:number ): void{
+    public subtrairVelocityX( velocidade:number ): void
+    {
         
     }
 
-    public subtrairVelocityY( velocidade:number, isExternal:boolean = true ): void{
+    public subtrairVelocityY( velocidade:number, isExternal:boolean = true ): void
+    {
        
     }
 
-    public subtrairVelocityZ( velocidade:number ): void{
+    public subtrairVelocityZ( velocidade:number ): void
+    {
        
     }
 
-    public somarVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void{
+    public somarVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void
+    {
         
     }
 
-    public subtrairVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void{
+    public subtrairVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void
+    {
        
     }
 
-    public setVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void{
+    public setVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void
+    {
        
     }
 
-    public setVelocityX( velocidade:number ): void{
+    public setVelocityX( velocidade:number ): void
+    {
         
     }
 
-    public setVelocityY( velocidade:number, isExternal:boolean = true ): void{
+    public setVelocityY( velocidade:number, isExternal:boolean = true ): void
+    {
        
     }
 
-    public setVelocityZ( velocidade:number ): void{
+    public setVelocityZ( velocidade:number ): void
+    {
        
     }
 
-    public setVelocityEixo( eixo:string, velocidade:number, isExternal:boolean = true ): void{
+    public setVelocityEixo( eixo:string, velocidade:number, isExternal:boolean = true ): void
+    {
         
     }
 
     /**
     * Calcula o momento linear do objeto
     */
-    public getMomentoLinear(): Position3D{
+    public getMomentoLinear(): Position3D
+    {
        return {
             x: 0,
             y: 0,
@@ -626,11 +696,13 @@ export default abstract class AbstractObjectBase{
     /**
     * Calcula a massa invertida
     */
-    public getMassaInvertida(): number{
+    public getMassaInvertida(): number
+    {
        return 0;
     }
 
-    public getRotation(): ObjectRotation{
+    public getRotation(): ObjectRotation
+    {
        return {
             x: 0,
             y: 0,
@@ -638,19 +710,23 @@ export default abstract class AbstractObjectBase{
         }
     }
 
-    public setRotation( rotation: ObjectRotation ): void{
+    public setRotation( rotation: ObjectRotation ): void
+    {
       
     }
 
-    public somarRotationX( x:number ): void{
+    public somarRotationX( x:number ): void
+    {
         
     }
     
-    public somarRotationY( y:number ): void{
+    public somarRotationY( y:number ): void
+    {
         
     }
 
-    public somarRotationZ( z:number ): void{
+    public somarRotationZ( z:number ): void
+    {
        
     }
 
@@ -658,14 +734,16 @@ export default abstract class AbstractObjectBase{
     * Acrescenta uma rotação ao objeto
     * @param rotation 
     */
-    public somarRotation( rotation:ObjectRotation ): void{
+    public somarRotation( rotation:ObjectRotation ): void
+    {
         
     }
 
     /**
     * Obtem a força de rotação 
     */
-    public getRotationForce(): ObjectForce{
+    public getRotationForce(): ObjectForce
+    {
         return {
             x: 0,
             y: 0,
@@ -676,7 +754,8 @@ export default abstract class AbstractObjectBase{
     /**
     * Obtem a aceleração de rotação 
     */
-    public getRotationAcceleration(): ObjectForce{
+    public getRotationAcceleration(): ObjectForce
+    {
         return {
             x: 0,
             y: 0,
@@ -687,7 +766,8 @@ export default abstract class AbstractObjectBase{
     /**
     * Obtem a aceleração de rotação 
     */
-    public getRotationVelocity(): ObjectForce{
+    public getRotationVelocity(): ObjectForce
+    {
         return {
             x: 0,
             y: 0,
@@ -695,91 +775,113 @@ export default abstract class AbstractObjectBase{
         }
     }
 
-    public somarRotationVelocityX( velocidadeRotacao:number ){
+    public somarRotationVelocityX( velocidadeRotacao:number )
+    {
         
     }
 
-    public somarRotationVelocityY( velocidadeRotacao:number ){
+    public somarRotationVelocityY( velocidadeRotacao:number )
+    {
        
     }
 
-    public somarRotationVelocityZ( velocidadeRotacao:number ){
+    public somarRotationVelocityZ( velocidadeRotacao:number )
+    {
         
     }
 
-    public subtrairRotationVelocityX( velocidadeRotacao:number ){
+    public subtrairRotationVelocityX( velocidadeRotacao:number )
+    {
         
     }
 
-    public subtrairRotationVelocityY( velocidadeRotacao:number ){
+    public subtrairRotationVelocityY( velocidadeRotacao:number )
+    {
         
     }
 
-    public subtrairRotationVelocityZ( velocidadeRotacao:number ){
+    public subtrairRotationVelocityZ( velocidadeRotacao:number )
+    {
        
     }
 
-    public somarRotationForceX( velocidadeRotacao:number ){
+    public somarRotationForceX( velocidadeRotacao:number )
+    {
         
     }
 
-    public somarRotationForceY( velocidadeRotacao:number ){
+    public somarRotationForceY( velocidadeRotacao:number )
+    {
        
     }
 
-    public somarRotationForceZ( velocidadeRotacao:number ){
+    public somarRotationForceZ( velocidadeRotacao:number )
+    {
         
     }
 
-    public setRotationVelocityX( velocidadeRotacaoX:number ){
+    public setRotationVelocityX( velocidadeRotacaoX:number )
+    {
       
     }
 
-    public setRotationVelocityY( velocidadeRotacaoY:number ){
+    public setRotationVelocityY( velocidadeRotacaoY:number )
+    {
 
     }
 
-    public setRotationVelocityZ( velocidadeRotacaoZ:number ){
+    public setRotationVelocityZ( velocidadeRotacaoZ:number )
+    {
 
     }
 
-    public destroy(): void{
+    public destroy(): void
+    {
       
     }
 
-    public getVolume(): number {
+    public getVolume(): number 
+    {
         return 0;
     }
 
-    public updateCollisionState( frameDelta:number ): void{
+    public updateCollisionState( frameDelta:number ): void
+    {
 
     }
 
-    public updatePhysics( frameDelta:number ): void{
+    public updatePhysics( frameDelta:number ): void
+    {
 
     }
 
-    public updateRotation( frameDelta:number ): void{
+    public updateRotation( frameDelta:number ): void
+    {
 
     }
 
-    public updateMovement( frameDelta:number ): void{
+    public updateMovement( frameDelta:number ): void
+    {
    
     }
 
-    public updateAttachments( frameDelta:number ): void{
+    public updateAttachments( frameDelta:number ): void
+    {
                            
     }
 
-    public callEvent( funcaoEvento:Function, parametros:any ): void{
+    public callEvent( funcaoEvento:Function, parametros:any ): void
+    {
       
     }
 
-    public updateEvents( frameDelta:number ): void{
+    public updateEvents( frameDelta:number ): void
+    {
         
     }
 
-    public reset_loop_afterframe(): void{
+    public reset_loop_afterframe(): void
+    {
 
     }
 
@@ -788,12 +890,13 @@ export default abstract class AbstractObjectBase{
         
     }
     
-    isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean{
+    isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean
+    {
         return false;
     }
 
     getCollisions( limites:ProximityBounds = {x:0, y:0, z:0}, 
-                    recalculate:boolean = false  
+                   recalculate:boolean = false  
 
     ): Array<Ponteiro<AbstractObjectBase>>
     {
@@ -808,7 +911,8 @@ export default abstract class AbstractObjectBase{
         return [];
     }
 
-    isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean{
+    isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean
+    {
         return false;
     }
 

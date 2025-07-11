@@ -8,15 +8,13 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 import React, { useState } from 'react';
-import ThreeScene from './ThreeScene';
+import MyEngineScene from './MyEngineScene';
 import DebugTerminal from './editor/DebugTerminal';
-import SceneBuilder from './editor/SceneBuilder';
 import './DivComponentes.scss'
 
 const App: React.FC = () => {
   const [sceneEnabled, setSceneEnabled] = useState(true);
   const [terminalEnabled, setTerminalEnabled] = useState(false);
-  const [builderEnabled, setBuilderEnabled] = useState(false);
 
   function onSceneClick()
   { 
@@ -28,30 +26,21 @@ const App: React.FC = () => {
     setTerminalEnabled( !terminalEnabled );
   }
 
-  function onBuilderClick()
-  {
-    setBuilderEnabled( !builderEnabled );
-  }
-
   return (
     <div className='div-principal'>
-      <h1>Three.js com React e TypeScript</h1>
+      <h1> Game Engine em TypeScript e React </h1>
 
       <div className='div-abas'>
         <button className={ sceneEnabled    ? 'enabled' : 'disabled' } onClick={ onSceneClick }    > Scene    </button>
-        <button className={ builderEnabled  ? 'enabled' : 'disabled' } onClick={ onBuilderClick }  > Builder  </button>
         <button className={ terminalEnabled ? 'enabled' : 'disabled' } onClick={ onTerminalClick } > Terminal </button>
       </div>
 
       <div className='div-componentes'>
         {
-          sceneEnabled && <ThreeScene />
+          sceneEnabled && <MyEngineScene />
         }
         {
           terminalEnabled && <DebugTerminal />
-        }
-        {
-          builderEnabled && <SceneBuilder />
         }
       </div>
 

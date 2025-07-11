@@ -12,15 +12,13 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "scss": "^0.2.4",
-    "three": "^0.172.0"
+    "scss": "^0.2.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
     "@types/node": "^22.10.6",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@types/three": "^0.172.0",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
     "@vitejs/plugin-react": "^4.3.3",

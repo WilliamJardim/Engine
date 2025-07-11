@@ -38,8 +38,8 @@ export default class FrameCounter
     * Calcula a diferença em milisegundos entre dois frames
     */
     public calculateFrameDelta(): number{
-        const agora:number = this.getTime();
-        const currentFrameDelta:number = agora - this.lastTime;
+        const agora              : number = this.getTime();
+        const currentFrameDelta  : number = agora - this.lastTime;
 
         this.lastTime = agora;
 

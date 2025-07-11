@@ -7,38 +7,32 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import ObjectProps from '../interfaces/ObjectProps';
-import PhysicsState from '../interfaces/PhysicsState';
-import MovementState from '../interfaces/MovementState';
-import ObjectPosition from '../interfaces/ObjectPosition';
-import Scene from './Scene';
-import ObjectEvents from '../interfaces/ObjectEvents';
-import ObjectEventLayer from '../interfaces/ObjectEventBlock';
-import isCollision from '../utils/logic/isCollision';
-import removeObject from '../utils/removeObject';
-import isProximity from '../utils/logic/isProximity';
-import ProximityBounds from '../utils/interfaces/ProximityBounds';
-import getDistance from '../utils/logic/getDistance';
-import ObjectVelocity from '../interfaces/ObjectVelocity';
-import ImaginaryObject from './ImaginaryObject';
-import ObjectScale from '../interfaces/ObjectScale';
-import ObjectAttachment from '../interfaces/ObjectAttachment';
-import CollisionsData from '../interfaces/CollisionsData';
-import ObjectRotation from '../interfaces/ObjectRotation';
-import Wind from '../interfaces/Wind';
-import MeshRepresentation from "../interfaces/MeshRepresentation";
-import ObjectAcceleration from "../interfaces/ObjectAcceleration";
-import ObjectForce from "../interfaces/ObjectForce";
-import Position3D from "../interfaces/Position3D";
-import RotationState from "../interfaces/RotationState";
-import VelocityStatus from "../interfaces/VelocityStatus";
-import ObjectFrameTracker from "./ObjectFrameTracker/ObjectFrameTracker";
-import includeString from "../utils/array/includeString";
-import objectAHaveSomeClassesIgnoredByObjectB from "../utils/array/objectAHaveSomeClassesIgnoredByObjectB";
+import ObjectProps         from '../interfaces/ObjectProps';
+import MovementState       from '../interfaces/MovementState';
+import ObjectPosition      from '../interfaces/ObjectPosition';
+import Scene               from './Scene';
+import ObjectEvents        from '../interfaces/ObjectEvents';
+import ObjectEventLayer    from '../interfaces/ObjectEventBlock';
+import isCollision         from '../utils/logic/isCollision';
+import isProximity         from '../utils/logic/isProximity';
+import ProximityBounds     from '../utils/interfaces/ProximityBounds';
+import getDistance         from '../utils/logic/getDistance';
+import ObjectVelocity      from '../interfaces/ObjectVelocity';
+import ObjectScale         from '../interfaces/ObjectScale';
+import ObjectAttachment    from '../interfaces/ObjectAttachment';
+import ObjectRotation      from '../interfaces/ObjectRotation';
+import Wind                from '../interfaces/Wind';
+import MeshRepresentation  from "../interfaces/MeshRepresentation";
+import ObjectAcceleration  from "../interfaces/ObjectAcceleration";
+import ObjectForce         from "../interfaces/ObjectForce";
+import Position3D          from "../interfaces/Position3D";
+import VelocityStatus      from "../interfaces/VelocityStatus";
+import ObjectFrameTracker  from "./ObjectFrameTracker/ObjectFrameTracker";
+import includeString       from "../utils/array/includeString";
 import objectANOTHaveSomeClassesIgnoredByObjectB from "../utils/array/objectANOTHaveSomeClassesIgnoredByObjectB";
-import AbstractObjectBase from "./AbstractObjectBase";
-import { Ponteiro } from '../types/types-cpp-like';
-import Mapa from '../utils/dicionarios/Mapa';
+import AbstractObjectBase  from "./AbstractObjectBase";
+import Mapa                from '../utils/dicionarios/Mapa';
+import { Ponteiro }        from '../types/types-cpp-like';
 
 /**
 * O ObjectBase aqui é uma classe implementada, que herda do AbstractObjectBase,
@@ -71,6 +65,7 @@ export default class ObjectBase extends AbstractObjectBase
         this.lastObjectBelow = null;
         this.isMovimentoTravadoPorColisao = false; //Se o objeto atual esta travado por que esta tentando se mover para uma direção em que ele está colidindo com outro objeto
         this.isReceiving_Y_Velocity       = false; //Sinaliza se o objeto está recebendo uma aceleração externa à gravidade ou não(usado para não dar conflito com a logica de queda).
+        
         this.isFalling  = false;
         this.id         = (this.objProps.name) + String(new Date().getTime());
         this.name       = this.objProps.name;
@@ -88,7 +83,8 @@ export default class ObjectBase extends AbstractObjectBase
         this.frameHistory = new ObjectFrameTracker( this );
 
         // Se nao for usar monitoramento de frames
-        if( this.objProps.enable_advanced_frame_tracking == false ){
+        if( this.objProps.enable_advanced_frame_tracking == false )
+        {
             this.frameHistory.disable();
         }
 
@@ -225,8 +221,8 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Reseta algumas coisas basicas, antes de qualquer loop de lógica 
     */
-    public pre_loop_reset(): void{
-
+    public pre_loop_reset(): void
+    {
         this.movimentSinalyzer =  {
             forward   : false,
             backward  : false,
@@ -237,7 +233,6 @@ export default class ObjectBase extends AbstractObjectBase
             isJumping : false,
             steps     : 1
         };
-
     }
 
     /**
@@ -303,14 +298,16 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Verifica se este objeto tem uma classe especifica 
     */
-    public haveClass( className:string ): boolean{
+    public haveClass( className:string ): boolean
+    {
         return includeString(this.objProps.classes, className);
     }
 
     /**
     * Retorna todos os objetos anexados ao objeto atual
     */
-    public getAttachments(): Array<ObjectAttachment>{
+    public getAttachments() : Array<ObjectAttachment>
+    {
         return this.objProps.attachments;
     }
 
@@ -319,7 +316,9 @@ export default class ObjectBase extends AbstractObjectBase
     * @param {AbstractObjectBase*} outroObjeto
     * @param {ObjectAttachment} attachementConfig
     */
-    public joinAttachment( outroObjeto:Ponteiro<AbstractObjectBase>, attachementConfig: ObjectAttachment ): void{
+    public joinAttachment( outroObjeto:Ponteiro<AbstractObjectBase>, 
+                           attachementConfig: ObjectAttachment 
+    ): void{
         // Se o ponteiro não é nulo
         if(outroObjeto != null)
         {
@@ -333,7 +332,9 @@ export default class ObjectBase extends AbstractObjectBase
     * @param {ObjectBase} objetoAnexar
     * @param {ObjectAttachment} attachementConfig
     */
-    public attach( objetoAnexar:Ponteiro<AbstractObjectBase>, attachementConfig: ObjectAttachment ): void{
+    public attach( objetoAnexar:Ponteiro<AbstractObjectBase>, 
+                   attachementConfig: ObjectAttachment 
+    ): void{
         const esteObjeto:Ponteiro<AbstractObjectBase> = this;
 
         if( esteObjeto != null )
@@ -346,7 +347,8 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Limpa a lista de attachments do objeto atual. Similar ao DettachFromAll(), porém, isso limpa a lista do objeto pai, liberando todos os objetos subordinados/anexados a ele.
     */
-    public ClearAttachments(): void{
+    public ClearAttachments(): void
+    {
         const esteObjeto:Ponteiro<AbstractObjectBase> = this;
         esteObjeto.objProps.attachments = [];
 
@@ -354,89 +356,108 @@ export default class ObjectBase extends AbstractObjectBase
         // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
-    public getProps(): ObjectProps{
+    public getProps(): ObjectProps
+    {
         return this.objProps;
     }
 
-    public getMass(): number{
+    public getMass(): number
+    {
         return this.objProps.mass;
     }
 
-    public getWeight(): number{
+    public getWeight(): number
+    {
         return this.weight;
     }
 
-    public getMesh(): MeshRepresentation{
+    public getRepresentacaoMesh(): MeshRepresentation
+    {
         return this.mesh;
     }
 
-    public setMesh(newMesh:MeshRepresentation): void{
+    public setMesh(newMesh:MeshRepresentation): void
+    {
         this.mesh = newMesh;
     }
 
-    public getScene(): Ponteiro<Scene>{
+    public getScene(): Ponteiro<Scene>
+    {
         return this.scene;
     }
 
     /**
     * Obtém a posição: X Y Z do objeto na cena
     */
-    public getPosition(): ObjectPosition{
-        return this.getMesh().position;
+    public getPosition(): ObjectPosition
+    {
+        return this.getRepresentacaoMesh().position;
     }
 
     /**
     * Obtém a posição ANTERIOR: X Y Z do objeto na cena
     */
-    public getLastPosition(): ObjectPosition{
+    public getLastPosition(): ObjectPosition
+    {
         return this.lastPosition;
     }
 
-    public setPosition( position: ObjectPosition ): void{
-        const mesh: MeshRepresentation = this.getMesh();
+    public setPosition( position: ObjectPosition ): void
+    {
+        const mesh: MeshRepresentation = this.getRepresentacaoMesh();
 
         mesh.position.x = position.x;
         mesh.position.y = position.y;
         mesh.position.z = position.z;
     }
 
-    public somarX( x:number ): void{
+    public somarX( x:number ): void
+    {
         this.getPosition().x += x;
     }
     
-    public somarY( y:number ): void{
+    public somarY( y:number ): void
+    {
         this.getPosition().y += y;
     }
 
-    public somarZ( z:number ): void{
+    public somarZ( z:number ): void
+    {
         this.getPosition().z += z;
     }
 
-    public somarPosicaoX( x:number ): void{
+    public somarPosicaoX( x:number ): void
+    {
         this.getPosition().x += x;
     }
     
-    public somarPosicaoY( y:number ): void{
+    public somarPosicaoY( y:number ): void
+    {
         this.getPosition().y += y;
     }
 
-    public somarPosicaoZ( z:number ): void{
+    public somarPosicaoZ( z:number ): void
+    {
         this.getPosition().z += z;
     }
 
-    public subtrairPosicaoX( x:number ): void{
+    public subtrairPosicaoX( x:number ): void
+    {
         this.getPosition().x -= x;
     }
     
-    public subtrairPosicaoY( y:number ): void{
+    public subtrairPosicaoY( y:number ): void
+    {
         this.getPosition().y -= y;
     }
 
-    public subtrairPosicaoZ( z:number ): void{
+    public subtrairPosicaoZ( z:number ): void
+    {
         this.getPosition().z -= z;
     }
 
-    public somarEixo(eixo:string, valor:number): void{
+    public somarEixo(eixo:string, valor:number): void
+    {
         switch( eixo ){
             case 'x':
                 this.somarPosicaoX( valor );
@@ -450,7 +471,8 @@ export default class ObjectBase extends AbstractObjectBase
         }
     }
 
-    public subtrairEixo(eixo:string, valor:number): void{
+    public subtrairEixo(eixo:string, valor:number): void
+    {
         switch( eixo ){
             case 'x':
                 this.subtrairPosicaoX( valor );
@@ -468,33 +490,39 @@ export default class ObjectBase extends AbstractObjectBase
     * Acrescenta uma posição ao objeto
     * @param rotation 
     */
-    public somarPosition( position:ObjectPosition ): void{
+    public somarPosition( position:ObjectPosition ): void
+    {
         this.getPosition().x += position.x;
         this.getPosition().y += position.y;
         this.getPosition().z += position.z;
     }
 
-    public setScale( scale: ObjectScale ): void{
-        const mesh: MeshRepresentation = this.getMesh();
+    public setScale( scale: ObjectScale ): void
+    {
+        const mesh: MeshRepresentation = this.getRepresentacaoMesh();
 
         mesh.scale.x = scale.x;
         mesh.scale.y = scale.y;
         mesh.scale.z = scale.z;
     }
 
-    public getScale(): ObjectScale{
-        return this.getMesh().scale;
+    public getScale(): ObjectScale
+    {
+        return this.getRepresentacaoMesh().scale;
     }
 
-    public somarEscalaX( x:number ): void{
+    public somarEscalaX( x:number ): void
+    {
         this.getScale().x += x;
     }
     
-    public somarEscalaY( y:number ): void{
+    public somarEscalaY( y:number ): void
+    {
         this.getScale().y += y;
     }
 
-    public somarEscalaZ( z:number ): void{
+    public somarEscalaZ( z:number ): void
+    {
         this.getScale().z += z;
     }
 
@@ -502,18 +530,20 @@ export default class ObjectBase extends AbstractObjectBase
     * Acrescenta uma escala ao objeto
     * @param rotation 
     */
-    public somarEscala( scale:ObjectScale ): void{
+    public somarEscala( scale:ObjectScale ): void
+    {
         this.getScale().x += scale.x;
         this.getScale().y += scale.y;
         this.getScale().z += scale.z;
     }
 
-    public getForce(): ObjectForce{
+    public getForce(): ObjectForce
+    {
         return this.physicsState.force;
     }
 
-    public somarForce( forca:ObjectForce, isExternal:boolean = true ): void{
-
+    public somarForce( forca:ObjectForce, isExternal:boolean = true ): void
+    {
         // Em X
         this.getForce().x += forca.x
 
@@ -525,31 +555,38 @@ export default class ObjectBase extends AbstractObjectBase
         this.getForce().z += forca.z
     }
 
-    public somarForceX( forca:number ): void{
+    public somarForceX( forca:number ): void
+    {
         this.getForce().x += forca;
     }
 
-    public somarForceY( forca:number ): void{
+    public somarForceY( forca:number ): void
+    {
         this.getForce().y += forca;
     }
 
-    public somarForceZ( forca:number ): void{
+    public somarForceZ( forca:number ): void
+    {
         this.getForce().z += forca;
     }
 
-    public subtrairForceX( forca:number ): void{
+    public subtrairForceX( forca:number ): void
+    {
         this.getForce().x -= forca;
     }
 
-    public subtrairForceY( forca:number ): void{
+    public subtrairForceY( forca:number ): void
+    {
         this.getForce().y -= forca;
     }
 
-    public subtrairForceZ( forca:number ): void{
+    public subtrairForceZ( forca:number ): void
+    {
         this.getForce().z -= forca;
     }
 
-    public somarForceEixo(eixo:string, valor:number): void{
+    public somarForceEixo(eixo:string, valor:number): void
+    {
         switch( eixo ){
             case 'x':
                 this.somarForceX( valor );
@@ -563,7 +600,8 @@ export default class ObjectBase extends AbstractObjectBase
         }
     }
 
-    public subtrairForceEixo(eixo:string, valor:number): void{
+    public subtrairForceEixo(eixo:string, valor:number): void
+    {
         switch( eixo ){
             case 'x':
                 this.subtrairForceX( valor );
@@ -577,47 +615,57 @@ export default class ObjectBase extends AbstractObjectBase
         }
     }
 
-    public setForce( forca:ObjectForce ): void{
+    public setForce( forca:ObjectForce ): void
+    {
         this.getForce().x = forca.x;
         this.getForce().y = forca.y;
         this.getForce().z = forca.z;
     }
 
-    public getAcceleration(): ObjectAcceleration{
+    public getAcceleration(): ObjectAcceleration
+    {
         return this.physicsState.acceleration;
     }
 
-    public somarAcceleration( velocidade:ObjectAcceleration ): void{
+    public somarAcceleration( velocidade:ObjectAcceleration ): void
+    {
         this.getAcceleration().x += velocidade.x;
         this.getAcceleration().y += velocidade.y;
         this.getAcceleration().z += velocidade.z;
     }
 
-    public somarAccelerationX( acceleration:number ): void{
+    public somarAccelerationX( acceleration:number ): void
+    {
         this.getAcceleration().x += acceleration;
     }
 
-    public somarAccelerationY( acceleration:number ): void{
+    public somarAccelerationY( acceleration:number ): void
+    {
         this.getAcceleration().y += acceleration;
     }
 
-    public somarAccelerationZ( acceleration:number ): void{
+    public somarAccelerationZ( acceleration:number ): void
+    {
         this.getAcceleration().z += acceleration;
     }
 
-    public subtrairAccelerationX( acceleration:number ): void{
+    public subtrairAccelerationX( acceleration:number ): void
+    {
         this.getAcceleration().x -= acceleration;
     }
 
-    public subtrairAccelerationY( acceleration:number ): void{
+    public subtrairAccelerationY( acceleration:number ): void
+    {
         this.getAcceleration().y -= acceleration;
     }
 
-    public subtrairAccelerationZ( acceleration:number ): void{
+    public subtrairAccelerationZ( acceleration:number ): void
+    {
         this.getAcceleration().z -= acceleration;
     }
 
-    public somarAccelerationEixo(eixo:string, valor:number): void{
+    public somarAccelerationEixo(eixo:string, valor:number): void
+    {
         switch( eixo ){
             case 'x':
                 this.somarAccelerationX( valor );
@@ -631,7 +679,8 @@ export default class ObjectBase extends AbstractObjectBase
         }
     }
 
-    public subtrairAccelerationEixo(eixo:string, valor:number): void{
+    public subtrairAccelerationEixo(eixo:string, valor:number): void
+    {
         switch( eixo ){
             case 'x':
                 this.subtrairAccelerationX( valor );
@@ -645,13 +694,15 @@ export default class ObjectBase extends AbstractObjectBase
         }
     }
 
-    public setAcceleration( acceleration:ObjectAcceleration ): void{
+    public setAcceleration( acceleration:ObjectAcceleration ): void
+    {
         this.getAcceleration().x = acceleration.x;
         this.getAcceleration().y = acceleration.y;
         this.getAcceleration().z = acceleration.z;
     }
 
-    public getVelocity(): ObjectVelocity{
+    public getVelocity(): ObjectVelocity
+    {
         return this.physicsState.velocity;
     }
 
@@ -659,7 +710,8 @@ export default class ObjectBase extends AbstractObjectBase
     * Acrescenta uma velocidade ao objeto
     * @param velocidade 
     */
-    public somarVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void{
+    public somarVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void
+    {
 
         // Em X
         this.getVelocity().x += velocidade.x;
@@ -672,35 +724,42 @@ export default class ObjectBase extends AbstractObjectBase
         this.getVelocity().z += velocidade.z;
     }
 
-    public somarVelocityX( velocidade:number ): void{
+    public somarVelocityX( velocidade:number ): void
+    {
         this.getVelocity().x += velocidade
     }
 
-    public somarVelocityY( velocidade:number, isExternal:boolean = true ): void{
+    public somarVelocityY( velocidade:number, isExternal:boolean = true ): void
+    {
         // Diz pra Engine que o objeto recebeu uma velocidade externa
         this.isReceiving_Y_Velocity = isExternal;
         this.getVelocity().y += velocidade
     }
 
-    public somarVelocityZ( velocidade:number ): void{
+    public somarVelocityZ( velocidade:number ): void
+    {
         this.getVelocity().z += velocidade
     }
 
-    public subtrairVelocityX( velocidade:number ): void{
+    public subtrairVelocityX( velocidade:number ): void
+    {
         this.getVelocity().x -= velocidade
     }
 
-    public subtrairVelocityY( velocidade:number, isExternal:boolean = true ): void{
+    public subtrairVelocityY( velocidade:number, isExternal:boolean = true ): void
+    {
         // Diz pra Engine que o objeto recebeu uma velocidade externa
         this.isReceiving_Y_Velocity = isExternal;
         this.getVelocity().y -= velocidade
     }
 
-    public subtrairVelocityZ( velocidade:number ): void{
+    public subtrairVelocityZ( velocidade:number ): void
+    {
         this.getVelocity().z -= velocidade
     }
 
-    public somarVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void{
+    public somarVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void
+    {
         switch( eixo ){
             case 'x':
                 this.somarVelocityX( valor );
@@ -717,7 +776,8 @@ export default class ObjectBase extends AbstractObjectBase
         }
     }
 
-    public subtrairVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void{
+    public subtrairVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void
+    {
         switch( eixo ){
             case 'x':
                 this.subtrairVelocityX( valor );
@@ -734,7 +794,8 @@ export default class ObjectBase extends AbstractObjectBase
         }
     }
 
-    public setVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void{
+    public setVelocity( velocidade:ObjectVelocity, isExternal:boolean = true ): void
+    {
         // Em X
         this.getVelocity().x = velocidade.x;
         
@@ -746,21 +807,25 @@ export default class ObjectBase extends AbstractObjectBase
         this.getVelocity().z = velocidade.z;
     }
 
-    public setVelocityX( velocidade:number ): void{
+    public setVelocityX( velocidade:number ): void
+    {
         this.getVelocity().x = velocidade;
     }
 
-    public setVelocityY( velocidade:number, isExternal:boolean = true ): void{
+    public setVelocityY( velocidade:number, isExternal:boolean = true ): void
+    {
         // Diz pra Engine que o objeto recebeu uma velocidade externa
         this.isReceiving_Y_Velocity = isExternal;
         this.getVelocity().y = velocidade;
     }
 
-    public setVelocityZ( velocidade:number ): void{
+    public setVelocityZ( velocidade:number ): void
+    {
         this.getVelocity().z = velocidade;
     }
 
-    public setVelocityEixo( eixo:string, velocidade:number, isExternal:boolean = true ): void{
+    public setVelocityEixo( eixo:string, velocidade:number, isExternal:boolean = true ): void
+    {
         switch( eixo ){
             case 'x':
                 this.setVelocityX( velocidade );
@@ -780,7 +845,8 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Calcula o momento linear do objeto
     */
-    public getMomentoLinear(): Position3D{
+    public getMomentoLinear(): Position3D
+    {
         const massa     = this.objProps.mass;
         const momento_x = massa * this.getVelocity().x;
         const momento_y = massa * this.getVelocity().y;
@@ -796,32 +862,38 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Calcula a massa invertida
     */
-    public getMassaInvertida(): number{
+    public getMassaInvertida(): number
+    {
         const massa     = this.objProps.mass;
         return 1 / massa;
     }
 
-    public getRotation(): ObjectRotation{
-        return this.getMesh().rotation;
+    public getRotation(): ObjectRotation
+    {
+        return this.getRepresentacaoMesh().rotation;
     }
 
-    public setRotation( rotation: ObjectRotation ): void{
-        const mesh: MeshRepresentation = this.getMesh();
+    public setRotation( rotation: ObjectRotation ): void
+    {
+        const mesh : MeshRepresentation = this.getRepresentacaoMesh();
 
         mesh.rotation.x = rotation.x;
         mesh.rotation.y = rotation.y;
         mesh.rotation.z = rotation.z;
     }
 
-    public somarRotationX( x:number ): void{
+    public somarRotationX( x:number ): void
+    {
         this.getRotation().x += x;
     }
     
-    public somarRotationY( y:number ): void{
+    public somarRotationY( y:number ): void
+    {
         this.getRotation().y += y;
     }
 
-    public somarRotationZ( z:number ): void{
+    public somarRotationZ( z:number ): void
+    {
         this.getRotation().z += z;
     }
 
@@ -829,7 +901,8 @@ export default class ObjectBase extends AbstractObjectBase
     * Acrescenta uma rotação ao objeto
     * @param rotation 
     */
-    public somarRotation( rotation:ObjectRotation ): void{
+    public somarRotation( rotation:ObjectRotation ): void
+    {
         this.getRotation().x += rotation.x;
         this.getRotation().y += rotation.y;
         this.getRotation().z += rotation.z;
@@ -838,84 +911,101 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Obtem a força de rotação 
     */
-    public getRotationForce(): ObjectForce{
+    public getRotationForce(): ObjectForce
+    {
         return this.physicsState.rotationForce;
     }
 
     /**
     * Obtem a aceleração de rotação 
     */
-    public getRotationAcceleration(): ObjectForce{
+    public getRotationAcceleration(): ObjectForce
+    {
         return this.physicsState.rotationAcceleration;
     }
 
     /**
     * Obtem a aceleração de rotação 
     */
-    public getRotationVelocity(): ObjectForce{
+    public getRotationVelocity(): ObjectForce
+    {
         return this.physicsState.rotationVelocity;
     }
 
-    public somarRotationVelocityX( velocidadeRotacao:number ){
+    public somarRotationVelocityX( velocidadeRotacao:number )
+    {
         this.getRotationVelocity().x += velocidadeRotacao;
     }
 
-    public somarRotationVelocityY( velocidadeRotacao:number ){
+    public somarRotationVelocityY( velocidadeRotacao:number )
+    {
         this.getRotationVelocity().y += velocidadeRotacao;
     }
 
-    public somarRotationVelocityZ( velocidadeRotacao:number ){
+    public somarRotationVelocityZ( velocidadeRotacao:number )
+    {
         this.getRotationVelocity().z += velocidadeRotacao;
     }
 
-    public subtrairRotationVelocityX( velocidadeRotacao:number ){
+    public subtrairRotationVelocityX( velocidadeRotacao:number )
+    {
         this.getRotationVelocity().x -= velocidadeRotacao;
     }
 
-    public subtrairRotationVelocityY( velocidadeRotacao:number ){
+    public subtrairRotationVelocityY( velocidadeRotacao:number )
+    {
         this.getRotationVelocity().y -= velocidadeRotacao;
     }
 
-    public subtrairRotationVelocityZ( velocidadeRotacao:number ){
+    public subtrairRotationVelocityZ( velocidadeRotacao:number )
+    {
         this.getRotationVelocity().z -= velocidadeRotacao;
     }
 
-    public somarRotationForceX( velocidadeRotacao:number ){
+    public somarRotationForceX( velocidadeRotacao:number )
+    {
         this.getRotationForce().x += velocidadeRotacao;
     }
 
-    public somarRotationForceY( velocidadeRotacao:number ){
+    public somarRotationForceY( velocidadeRotacao:number )
+    {
         this.getRotationForce().y += velocidadeRotacao;
     }
 
-    public somarRotationForceZ( velocidadeRotacao:number ){
+    public somarRotationForceZ( velocidadeRotacao:number )
+    {
         this.getRotationForce().z += velocidadeRotacao;
     }
 
-    public setRotationVelocityX( velocidadeRotacaoX:number ){
+    public setRotationVelocityX( velocidadeRotacaoX:number )
+    {
         this.getRotationVelocity().x += velocidadeRotacaoX;
     }
 
-    public setRotationVelocityY( velocidadeRotacaoY:number ){
+    public setRotationVelocityY( velocidadeRotacaoY:number )
+    {
         this.getRotationVelocity().y += velocidadeRotacaoY;
     }
 
-    public setRotationVelocityZ( velocidadeRotacaoZ:number ){
+    public setRotationVelocityZ( velocidadeRotacaoZ:number )
+    {
         this.getRotationVelocity().z += velocidadeRotacaoZ;
     }
 
     /**
     * Deleta o objeto da cena 
     */
-    public destroy(): void{
-        removeObject( this, this.scene );
+    public destroy(): void
+    {
+        // TODO
     }
 
     /**
     * Calcula o voluma do objeto 
     * @returns {number}
     */
-    public getVolume(): number {
+    public getVolume(): number 
+    {
         const escala = this.getScale();
         return escala.x * escala.y * escala.z;
     }
@@ -923,8 +1013,8 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Atualiza status de colisão e proximidade com outros objetos 
     */
-    public updateCollisionState( frameDelta:number ): void{
-
+    public updateCollisionState( frameDelta:number ): void
+    {
         const scene       : Ponteiro<Scene>              = this.getScene();
         const esteObjeto  : Ponteiro<AbstractObjectBase> = this;
 
@@ -953,7 +1043,7 @@ export default class ObjectBase extends AbstractObjectBase
             // ou se for um std:array pode usar .fill(nullptr) direto
 
             //Se este objeto pode colidir
-            if( (this.objProps.traverse != true) &&
+            if( (this.objProps.podeAtravessar != true) &&
                 (this.objProps.collide == true) && 
                 this.physicsState.havePhysics == true 
             ){
@@ -976,7 +1066,7 @@ export default class ObjectBase extends AbstractObjectBase
                     * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO
                     */
                     if( (objetoAtualCena != null) &&
-                        (objetoAtualCena.objProps.traverse != true) &&
+                        (objetoAtualCena.objProps.podeAtravessar != true) &&
                         (objetoAtualCena.objProps.collide == true) && 
                         objetoAtualCena.id != esteObjeto.id 
                     ){
@@ -1121,13 +1211,16 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Atualiza a fisica do objeto 
     */
-    public updatePhysics( frameDelta:number ): void{
-
+    public updatePhysics( frameDelta:number ): void
+    {
         const esteObjeto  : Ponteiro<AbstractObjectBase>  = this;
         const scene       : Ponteiro<Scene>               = esteObjeto.scene;
 
         // Ignora se a cena se nao existir
-        if( scene == null ){ return; }
+        if( scene == null )
+        { 
+            return; 
+        }
 
         const objetosCena               : Array<Ponteiro<AbstractObjectBase>> = scene.getObjects();
         const gravity                   : Position3D                          = scene.getGravity();
@@ -1137,7 +1230,7 @@ export default class ObjectBase extends AbstractObjectBase
         this.isFalling = true;
 
         //If this object have physics
-        if( (this.objProps.traverse != true) &&
+        if( (this.objProps.podeAtravessar != true) &&
             (this.objProps.collide == true || this.objProps.collide == undefined ) && 
             this.scene != null && 
             this.scene.gravity && 
@@ -1154,7 +1247,7 @@ export default class ObjectBase extends AbstractObjectBase
                 * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
                 */
                 if(  objetoAtualCena != null &&
-                    (objetoAtualCena.objProps.traverse != true) &&
+                    (objetoAtualCena.objProps.podeAtravessar != true) &&
                     (objetoAtualCena.objProps.collide == true ) && 
                      objetoAtualCena.id != this.id && 
                      
@@ -1246,7 +1339,6 @@ export default class ObjectBase extends AbstractObjectBase
 
 
                     break;
-                    //Engine.get('CuboRef').somarVelocity({y:80})
                 }
             }
 
@@ -1258,7 +1350,7 @@ export default class ObjectBase extends AbstractObjectBase
             /*
             for( let objetoAtualCena of objetosCena )
             {
-                if( (objetoAtualCena.objProps.traverse != true) &&
+                if( (objetoAtualCena.objProps.podeAtravessar != true) &&
                     (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collide == undefined ) && 
                      objetoAtualCena.id != this.id && 
                      isProximity( this, objetoAtualCena, 0, true, false ) === true
@@ -1381,7 +1473,6 @@ export default class ObjectBase extends AbstractObjectBase
                     * Faz o object decrementar a posição Y com a gravidade
                     */
                     this.getVelocity().y -= this.scene.gravity.y;
-                    //this.isReceiving_Y_Velocity = false; //Aqui tambem é algo interno da Engine
 
                     /**
                     * Executa os eventos de queda 
@@ -1458,13 +1549,14 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Atualiza a rotação do objeto, e do objeto em relação aos outros objetos na cena
     */
-    public updateRotation( frameDelta:number ): void{
-
+    public updateRotation( frameDelta:number ): void
+    {
         const objeto : Ponteiro<AbstractObjectBase>  = this;
         const scene  : Ponteiro<Scene>               = objeto.getScene();
 
         // Ignora se a cena nao existir
-        if( scene == null ){
+        if( scene == null )
+        {
             return;
         }
 
@@ -1511,8 +1603,6 @@ export default class ObjectBase extends AbstractObjectBase
         const sinalY              = Math.sign(velocidadeRotacao.y);
         const sinalZ              = Math.sign(velocidadeRotacao.z);
 
-        //Engine.get('CuboRef').somarRotationForceX(1500)
-
         /**
         * Para a rotação gradualmente 
         */
@@ -1543,20 +1633,19 @@ export default class ObjectBase extends AbstractObjectBase
                 objeto.somarRotationVelocityZ( gravity.y );
             }
         }
-
-        //Engine.get('CuboRef').somarRotationForceX(400)
     }
 
     /**
     * Atualiza a movimentação do objeto, e do objeto em relação aos outros objetos na cena, como por exemplo objetos que podem carregar ele
     */
-    public updateMovement( frameDelta:number ): void{
-
+    public updateMovement( frameDelta:number ): void
+    {
         const objeto           : Ponteiro<AbstractObjectBase> = this;
         const scene            : Ponteiro<Scene>              = objeto.scene;
 
         // Ignora se a cena nao existir
-        if( scene == null ){
+        if( scene == null )
+        {
             return;
         }
 
@@ -1571,7 +1660,7 @@ export default class ObjectBase extends AbstractObjectBase
         const objectPhysicsUpdateRate              : number          = scene.objectPhysicsUpdateRate;
         const objectPhysicsDesaceleracaoUpdateRate : number          = scene.objectPhysicsDesaceleracaoUpdateRate;
         const movimentState    : MovementState                       = objeto.movimentState;
-        const objetosCena      : Array<Ponteiro<AbstractObjectBase>> =  scene.objects;
+        const objetosCena      : Array<Ponteiro<AbstractObjectBase>> = scene.objects;
 
         /**
         * Salva posição atual do objeto ANTES DE QUALQUER MOVIMENTO OCORRER, como sendo a posição anterior dele,
@@ -1700,7 +1789,6 @@ export default class ObjectBase extends AbstractObjectBase
 
         }
         
-        //globalContext.get('CuboRef').somarVelocity({x:5})
         if( velocidadeZ != 0 )
         {   
             objeto.somarPosicaoZ( velocidadeZ * frameDelta * frameDeltaIntensification * objectPhysicsUpdateRate );
@@ -1728,11 +1816,6 @@ export default class ObjectBase extends AbstractObjectBase
                 objeto.movimentSinalyzer.left = true;
             }
         }  
-
-        //Engine.get('CuboRef').getPosition().x = Engine.get('CaixaRef').getPosition().x
-        //Engine.get('CuboRef').getPosition().y = Engine.get('CaixaRef').getPosition().y + 50
-        //Engine.get('CaixaRef').somarVelocity({x: 10});
-        //Engine.get('CaixaRef').somarVelocity({x: 120});
 
         /**
         * Se o objeto atual estiver em cima de outro objeto, este objeto o carrega junto ao ser mover
@@ -1785,9 +1868,6 @@ export default class ObjectBase extends AbstractObjectBase
         * Em outras palavras: 
         * Esse código faz com que, se um determinado objeto estiver em cima de outro objeto que está se movendo, Então, esse objeto que está em cima dele se move junto
         */
-        //Engine.get('CaixaRef').movimentState.forward = true;
-        //Engine.get('Cubo2Ref').movimentState.forward = true;
-        //Engine.get('Cubo2Ref').somarX(45);
         if( objeto.objectBelow != undefined && 
             objeto.objectBelow != null &&
             //O objeto abaixo NÂO PODE TER fisica
@@ -1815,12 +1895,15 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Atualize objetos anexados/grudados 
     */
-    public updateAttachments( frameDelta:number ): void{
-
+    public updateAttachments( frameDelta:number ): void
+    {
         const objeto  : AbstractObjectBase = this;
         const scene   : Ponteiro<Scene>    = objeto.getScene();
 
-        if(!scene){ return; }
+        if( scene == null )
+        {
+            return; 
+        }
 
         if( objeto.objProps.attachments )
         {                                                
@@ -1872,14 +1955,14 @@ export default class ObjectBase extends AbstractObjectBase
                     objetoAnexar.somarRotation( anexo.rotationIncrement );
 
                     //Se tem outras coisas
-                    objetoAnexar.objProps.traverse = anexo.traverse;
-                    objetoAnexar.objProps.collide = anexo.collide;
+                    objetoAnexar.objProps.podeAtravessar = anexo.podeAtravessar;
+                    objetoAnexar.objProps.collide        = anexo.collide;
                     
-                    objetoAnexar.objProps.havePhysics = anexo.havePhysics;
+                    objetoAnexar.objProps.havePhysics     = anexo.havePhysics;
                     objetoAnexar.physicsState.havePhysics = anexo.havePhysics;
 
                     objetoAnexar.objProps.collisionEvents = anexo.collisionEvents;
-                    objetoAnexar.objProps.invisible = anexo.invisible;
+                    objetoAnexar.objProps.isInvisible     = anexo.isInvisible;
                 }
             }        
         }                                               
@@ -1889,7 +1972,8 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Chama um evento 
     */
-    public callEvent( funcaoEvento:Function, parametros:any ): void{
+    public callEvent( funcaoEvento:Function, parametros:any ): void
+    {
         const objeto  = this;
         funcaoEvento.bind(objeto)( parametros );
     }
@@ -1897,12 +1981,16 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Atualiza os eventos internos do objeto 
     */
-    public updateEvents( frameDelta:number ): void{
+    public updateEvents( frameDelta:number ): void
+    {
         const scene   : Ponteiro<Scene>               = this.getScene();
         const objeto  : Ponteiro<AbstractObjectBase>  = this;
         const eventos : ObjectEventLayer              = objeto.objEvents;
 
-        if(!scene){ return; }
+        if( scene == null )
+        {
+           return; 
+        }
 
         //Se tem eventos
         if( eventos )
@@ -1918,8 +2006,8 @@ export default class ObjectBase extends AbstractObjectBase
                 ){
                     
                     // Para cada objeto na cena, verifica se colidiu com este objeto
-                    for( let objetoAtualCena of objetosCena ){
-            
+                    for( let objetoAtualCena of objetosCena )
+                    {
                         //Se ESTE objeto COLIDIR com o objeto atual da cena 
                         if( 
                             objetoAtualCena != null &&
@@ -1965,7 +2053,8 @@ export default class ObjectBase extends AbstractObjectBase
                 if( eventosObjeto.whenProximity != null )
                 {
                     // Para cada objeto na cena, verifica se colidiu com este objeto
-                    for( let objetoAtualCena of objetosCena ){
+                    for( let objetoAtualCena of objetosCena )
+                    {
                         if( 
                             objetoAtualCena != null &&
                             // Se não for ele mesmo
@@ -1997,8 +2086,8 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Reseta algumas coisas após cada frame terminar
     */
-    public reset_loop_afterframe(): void{
-
+    public reset_loop_afterframe(): void
+    {
         /**
         * Zera o vetor de força deste ObjectBase 
         * Isso pra evitar que a força seja infinita, e para fazer com que a força seja algo momentaneo e não se acumule de forma indevida
@@ -2017,7 +2106,11 @@ export default class ObjectBase extends AbstractObjectBase
 
     }
 
-    public updateObject( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void{
+    public updateObject( firstRender: boolean, 
+                         renderizadorPronto: boolean, 
+                         frameDelta:number, 
+                         frameNumber: number 
+    ): void{
         if( renderizadorPronto == true )
         {
             /**
@@ -2072,13 +2165,15 @@ export default class ObjectBase extends AbstractObjectBase
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean
-    {
+    isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, 
+                   limites:ProximityBounds 
+
+    ): boolean{
         let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = new Array();
         let esteObjeto       : Ponteiro<AbstractObjectBase>        = this;
         let scene            : Ponteiro<Scene>                     = esteObjeto.getScene();
 
-        if(scene)
+        if( scene != null )
         {
             return scene.queryIfObjectIsCollisionOf( this, outroObjeto, limites );
         }
@@ -2104,7 +2199,7 @@ export default class ObjectBase extends AbstractObjectBase
 
         //Se tem limites de zona de colisão personalizado
         }else{
-            if(scene)
+            if( scene != null )
             {
                 //Traz só os objetos que estão colidindo dentro da zona definida no "limites"
                 for( let i = 0 ; i < scene.objects.length ; i++ )
@@ -2145,7 +2240,7 @@ export default class ObjectBase extends AbstractObjectBase
 
         //Se tem limites de zona de colisão personalizado
         }else{
-            if(scene)
+            if( scene != null )
             {
                 //Traz só os objetos que estão proximos dentro da zona definida no "limites"
                 for( let i = 0 ; i < scene.objects.length ; i++ )
@@ -2173,12 +2268,15 @@ export default class ObjectBase extends AbstractObjectBase
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean{
+    isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, 
+                   limites:ProximityBounds 
+
+    ): boolean{
         const esteObjeto       : Ponteiro<AbstractObjectBase>        = this;
         const objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = new Array();
         const scene            : Ponteiro<Scene>                     = this.getScene();
 
-        if(scene)
+        if( scene != null )
         {
             return scene.queryIfObjectIsProximityOf( this, outroObjeto, limites );
         }

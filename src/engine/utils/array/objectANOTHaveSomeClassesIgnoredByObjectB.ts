@@ -8,12 +8,13 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 
-import AbstractObjectBase from "../../core/AbstractObjectBase";
-import ObjectBase from "../../core/ObjectBase";
-import { Ponteiro } from "../../types/types-cpp-like";
+import AbstractObjectBase  from "../../core/AbstractObjectBase";
+import ObjectBase          from "../../core/ObjectBase";
 import objectAHaveSomeClassesIgnoredByObjectB from "./objectAHaveSomeClassesIgnoredByObjectB";
+import { Ponteiro }        from "../../types/types-cpp-like";
 
-export default function objectANOTHaveSomeClassesIgnoredByObjectB( objeto: Ponteiro<AbstractObjectBase>, outroObjeto: Ponteiro<AbstractObjectBase> )
-{
+export default function objectANOTHaveSomeClassesIgnoredByObjectB( objeto: Ponteiro<AbstractObjectBase>, 
+                                                                   outroObjeto: Ponteiro<AbstractObjectBase> 
+){
     return objectAHaveSomeClassesIgnoredByObjectB( objeto, outroObjeto ) == false;
 }

@@ -7,14 +7,12 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import ObjectPosition from "../../interfaces/ObjectPosition";
-import ObjectScale from "../../interfaces/ObjectScale";
-import ObjectVelocity from "../../interfaces/ObjectVelocity";
-import { Ponteiro } from "../../types/types-cpp-like";
-import AbstractObjectBase from "../AbstractObjectBase";
-import ObjectBase from "../ObjectBase";
-import Scene from "../Scene";
+import ObjectPosition      from "../../interfaces/ObjectPosition";
+import ObjectScale         from "../../interfaces/ObjectScale";
+import ObjectVelocity      from "../../interfaces/ObjectVelocity";
+import AbstractObjectBase  from "../AbstractObjectBase";
 import ObjectFrameData, { FrameDataOrder } from "./ObjectFrameData";
+import { Ponteiro }        from "../../types/types-cpp-like";
 
 /**
 * Vai guardar todas as informações relevantes do objeto dentro do array frameData, após cada frame 

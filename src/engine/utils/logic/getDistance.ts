@@ -8,9 +8,9 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 import AbstractObjectBase from "../../core/AbstractObjectBase";
-import ObjectPosition from "../../interfaces/ObjectPosition";
-import { Ponteiro } from "../../types/types-cpp-like";
-import DistanciaEixos from "../interfaces/DistanciaEixos";
+import ObjectPosition     from "../../interfaces/ObjectPosition";
+import DistanciaEixos     from "../interfaces/DistanciaEixos";
+import { Ponteiro }       from "../../types/types-cpp-like";
 
 /**
 * Calcula a distancia entre dois objetos:
@@ -34,12 +34,12 @@ export default function getDistance( objA:Ponteiro<AbstractObjectBase>,
        * Informações do objeto 1
        * Coordenadas e escala
        */
-      const object1_position : ObjectPosition  = objA.getMesh().position,
+      const object1_position : ObjectPosition  = objA.getRepresentacaoMesh().position,
             X_object1        : number          = object1_position.x,
             Y_object1        : number          = object1_position.y,
             Z_object1        : number          = object1_position.z;
 
-      const object1_scale    : ObjectPosition  = objA.getMesh().scale,
+      const object1_scale    : ObjectPosition  = objA.getRepresentacaoMesh().scale,
             scaleX_object1   : number          = object1_scale.x,
             scaleY_object1   : number          = object1_scale.y,
             scaleZ_object1   : number          = object1_scale.z;
@@ -49,12 +49,12 @@ export default function getDistance( objA:Ponteiro<AbstractObjectBase>,
        * Informações do objeto 2 
        * Coordenadas e escala
        */
-      const object2_position : ObjectPosition  = objB.getMesh().position,
+      const object2_position : ObjectPosition  = objB.getRepresentacaoMesh().position,
             X_object2        : number          = object2_position.x,
             Y_object2        : number          = object2_position.y,
             Z_object2        : number          = object2_position.z;
 
-      const object2_scale    : ObjectPosition  = objB.getMesh().scale,
+      const object2_scale    : ObjectPosition  = objB.getRepresentacaoMesh().scale,
             scaleX_object2   : number          = object2_scale.x,
             scaleY_object2   : number          = object2_scale.y,
             scaleZ_object2   : number          = object2_scale.z;
@@ -62,9 +62,9 @@ export default function getDistance( objA:Ponteiro<AbstractObjectBase>,
       /**
        * Calculando a distancia para cada eixo 
        */
-      const distX:number = (X_object1 + (consideraEscala ? scaleX_object1 : 0) ) - (X_object2 + (consideraEscala ? scaleX_object2 : 0) );
-      const distY:number = (Y_object1 + (consideraEscala ? scaleY_object1 : 0) ) - (Y_object2 + (consideraEscala ? scaleY_object2 : 0) );
-      const distZ:number = (Z_object1 + (consideraEscala ? scaleZ_object1 : 0) ) - (Z_object2 + (consideraEscala ? scaleZ_object2 : 0) );
+      const distX : number = (X_object1 + (consideraEscala ? scaleX_object1 : 0) ) - (X_object2 + (consideraEscala ? scaleX_object2 : 0) );
+      const distY : number = (Y_object1 + (consideraEscala ? scaleY_object1 : 0) ) - (Y_object2 + (consideraEscala ? scaleY_object2 : 0) );
+      const distZ : number = (Z_object1 + (consideraEscala ? scaleZ_object1 : 0) ) - (Z_object2 + (consideraEscala ? scaleZ_object2 : 0) );
 
       /**
        * Retorna a distancia dos tres eixos: X, Y e Z 

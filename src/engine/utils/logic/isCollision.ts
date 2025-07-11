@@ -7,12 +7,12 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import ObjectBase from "../../core/ObjectBase";
-import ProximityBounds from '../interfaces/ProximityBounds';
-import ObjectPosition from '../../interfaces/ObjectPosition';
-import ObjectScale from '../../interfaces/ObjectScale';
-import { Ponteiro } from "../../types/types-cpp-like";
-import AbstractObjectBase from "../../core/AbstractObjectBase";
+import ObjectBase          from "../../core/ObjectBase";
+import ProximityBounds     from '../interfaces/ProximityBounds';
+import ObjectPosition      from '../../interfaces/ObjectPosition';
+import ObjectScale         from '../../interfaces/ObjectScale';
+import { Ponteiro }        from "../../types/types-cpp-like";
+import AbstractObjectBase  from "../../core/AbstractObjectBase";
 
 /**
 * Verifica se dois objetos estão colidindo:
@@ -72,9 +72,9 @@ export default function isCollision(objA:Ponteiro<AbstractObjectBase>,
                     z: posB.z! + scaleB.z / 2
                   };
 
-      const sobreposicaoX:number = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);
-      const sobreposicaoY:number = Math.min(maxA.y, maxB.y) - Math.max(minA.y, minB.y);
-      const sobreposicaoZ:number = Math.min(maxA.z, maxB.z) - Math.max(minA.z, minB.z);
+      const sobreposicaoX : number = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);
+      const sobreposicaoY : number = Math.min(maxA.y, maxB.y) - Math.max(minA.y, minB.y);
+      const sobreposicaoZ : number = Math.min(maxA.z, maxB.z) - Math.max(minA.z, minB.z);
 
       // Se houver sobreposição em algum dos eixos então houve colisão
       if (sobreposicaoX > 0 && sobreposicaoY > 0 && sobreposicaoZ > 0) 

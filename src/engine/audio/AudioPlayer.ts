@@ -21,21 +21,21 @@ export default class AudioPlayer
 
     constructor()
     {
-        this.audioRef  = new Audio();   
-        this.lastTime  = 0;
-        this.isTocando = false;
-        this.begin     = 0;
-        this.end       = -1;
-        this.firstPlayed = false;
-        this.neverPlayed = true;
+        this.audioRef       = new Audio();   
+        this.lastTime       = 0;
+        this.isTocando      = false;
+        this.begin          = 0;
+        this.end            = -1;
+        this.firstPlayed    = false;
+        this.neverPlayed    = true;
         this.lastPlayedTime = -1;
         this.lastEndedTime  = -1;
     }
 
     initialize()
     {
-        this.lastTime  = 0;
-        this.isTocando = false;
+        this.lastTime    = 0;
+        this.isTocando   = false;
         this.neverPlayed = true;
 
         // Mais coisas se eu quiser
@@ -77,9 +77,9 @@ export default class AudioPlayer
         }
 
         this.audioRef.play();
-        this.isTocando = true;
-        this.firstPlayed = true;
-        this.neverPlayed = false;
+        this.isTocando      = true;
+        this.firstPlayed    = true;
+        this.neverPlayed    = false;
         this.lastPlayedTime = new Date().getTime();
     }
 
@@ -87,7 +87,7 @@ export default class AudioPlayer
     {
         this.audioRef.pause();
         this.audioRef.currentTime = 0;
-        this.isTocando = false;
+        this.isTocando     = false;
         this.lastEndedTime = new Date().getTime();
     }
 
@@ -111,8 +111,9 @@ export default class AudioPlayer
         this.lastTime = this.audioRef.currentTime;
         this.audioRef.currentTime = this.lastTime + secounds;
         this.audioRef.play();
-        this.isTocando = true;
-        this.neverPlayed = false;
+
+        this.isTocando      = true;
+        this.neverPlayed    = false;
         this.lastPlayedTime = new Date().getTime();
 
         // Se ultrapassou o limite do propio audio
@@ -135,9 +136,10 @@ export default class AudioPlayer
     {
         this.firstPlayed = true;
         this.neverPlayed = false;
-        this.lastTime = this.audioRef.currentTime;
+        
+        this.lastTime             = this.audioRef.currentTime;
         this.audioRef.currentTime = this.lastTime - secounds;
-        this.lastPlayedTime = new Date().getTime();
+        this.lastPlayedTime       = new Date().getTime();
 
         // If is minor that zero
         if( this.audioRef.currentTime < 0 )

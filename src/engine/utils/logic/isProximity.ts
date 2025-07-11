@@ -7,12 +7,12 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import AbstractObjectBase from "../../core/AbstractObjectBase";
-import ObjectBase from "../../core/ObjectBase";
-import { Ponteiro } from "../../types/types-cpp-like";
-import DistanciaEixos from "../interfaces/DistanciaEixos";
-import ProximityBounds from "../interfaces/ProximityBounds";
-import getDistance from "./getDistance";
+import AbstractObjectBase  from "../../core/AbstractObjectBase";
+import ObjectBase          from "../../core/ObjectBase";
+import DistanciaEixos      from "../interfaces/DistanciaEixos";
+import ProximityBounds     from "../interfaces/ProximityBounds";
+import getDistance         from "./getDistance";
+import { Ponteiro }        from "../../types/types-cpp-like";
 
 /**
 * Verifica se dois objetos estão proximos dentro de uma faixa de coordenadas:
@@ -23,19 +23,19 @@ import getDistance from "./getDistance";
 * @returns {boolean} - Se está colidindo ou não
 */
 export default function isProximity(
-    objA: Ponteiro<AbstractObjectBase>,
-    objB: Ponteiro<AbstractObjectBase>,
-    limites: ProximityBounds,
-    consideraEscala: boolean = true,
-    usaValorAbsoluto: boolean = true
+    objA              : Ponteiro<AbstractObjectBase>,
+    objB              : Ponteiro<AbstractObjectBase>,
+    limites           : ProximityBounds,
+    consideraEscala   : boolean = true,
+    usaValorAbsoluto  : boolean = true
     
 ): boolean {
 
     //Se os ponteiros não forem nulos
     if( objA != null && objB != null )
     {
-        const posA = objA.getPosition?.() ?? { x: 0, y: 0, z: 0 };
-        const posB = objB.getPosition?.() ?? { x: 0, y: 0, z: 0 };
+        const posA    = objA.getPosition?.() ?? { x: 0, y: 0, z: 0 };
+        const posB    = objB.getPosition?.() ?? { x: 0, y: 0, z: 0 };
 
         const escalaA = objA.getScale?.() ?? { x: 0, y: 0, z: 0 };
         const escalaB = objB.getScale?.() ?? { x: 0, y: 0, z: 0 };
@@ -55,7 +55,7 @@ export default function isProximity(
 
             const metadeEscalaA = escalaA[eixo] / 2;
             const metadeEscalaB = escalaB[eixo] / 2;
-            const limiteExtra = getLimite(eixo);
+            const limiteExtra   = getLimite(eixo);
 
             const minA = centroA - metadeEscalaA - limiteExtra;
             const maxA = centroA + metadeEscalaA + limiteExtra;

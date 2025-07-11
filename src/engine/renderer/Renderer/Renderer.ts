@@ -82,7 +82,7 @@ export class Renderer
     public objetos : Array<any>;
     public luzes   : Array<any>;
 
-    public programs:Mapa<string, Ponteiro<WebGLProgram>>;
+    public programs:Mapa<string, WebGLProgram>;
     
     public tipoPerspectiva:string;
     public anguloVisaoY: number;
@@ -182,23 +182,23 @@ export class Renderer
         this.updateCamera( this.lastFrameDelta );
 
         // Armazena os programs( um para cada tipo de objeto )
-        this.programs = new Mapa<string, Ponteiro<WebGLProgram>>({
+        this.programs = new Mapa<string, WebGLProgram>({
 
             "skyboxProgram"           : createProgram(this.gl, 
-                                          skyboxPlaneShaders.vertexScript, 
-                                          skyboxPlaneShaders.fragmentScript),
+                                                    skyboxPlaneShaders.vertexScript, 
+                                                    skyboxPlaneShaders.fragmentScript),
 
             "basicProgram"            : createProgram(this.gl, 
-                                          baseShaders.vertexScript, 
-                                          baseShaders.fragmentScript),
+                                                    baseShaders.vertexScript, 
+                                                    baseShaders.fragmentScript),
 
             "onduladoProgram"         : createProgram(this.gl, 
-                                          baseShaders.vertexScript, 
-                                          baseShaders.fragmentScript),
+                                                    baseShaders.vertexScript, 
+                                                    baseShaders.fragmentScript),
 
             "textureProgram"          : createProgram(this.gl, 
-                                          baseShaders.vertexScript, 
-                                          baseShaders.fragmentScript)            
+                                                    baseShaders.vertexScript, 
+                                                    baseShaders.fragmentScript)            
         });
 
         // Armazena os objetos visuais que serão desenhados

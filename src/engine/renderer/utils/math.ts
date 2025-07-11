@@ -325,7 +325,7 @@ export function DefinirTranslacao(matrixVisualizacao:Float32Array, vetorTranslac
 }
 
 // Define a escala nos eixos X, Y e Z na matriz 4x4
-export function DefinirEscala(matrixVisualizacao:Float32Array, escalaDesejada:Float32Array) 
+export function DefinirEscala(matrixVisualizacao:Float32Array, escalaDesejada:Array<float>) 
 {
     const escalaX = escalaDesejada[0];
     const escalaY = escalaDesejada[1];

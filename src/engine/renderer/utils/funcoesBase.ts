@@ -56,23 +56,17 @@ export function criarGL( canvas:HTMLCanvasElement, version:string="auto" ): any
     };
 }
 
-export function createShader(gl:WebGL2RenderingContext, type:GLenum, source:string) : Ponteiro<WebGLShader> 
+export function createShader(gl:WebGL2RenderingContext, type:GLenum, source:string) : WebGLShader 
 {
-    const shader : Ponteiro<WebGLShader> = gl.createShader(type);
+    const shader:WebGLShader = gl.createShader(type)!; //forçei apenas pra nao dar erro
     
-    if( shader != null )
-    {
-        gl.shaderSource(shader, source);
-        gl.compileShader(shader);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
 
-        if ( gl.getShaderParameter(shader, gl.COMPILE_STATUS) == null ) 
-        {
-            console.error('An error occurred compiling the shaders:', gl.getShaderInfoLog(shader));
-            gl.deleteShader(shader);
-            return null;
-        }
-    }else{
-        console.error('The shader pointer is null');
+    if ( gl.getShaderParameter(shader, gl.COMPILE_STATUS) == null ) 
+    {
+        console.error('An error occurred compiling the shaders:', gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
     }
 
     return shader;
@@ -86,22 +80,19 @@ export function createBuffer(gl:WebGL2RenderingContext, data:Array<any>, target:
     return buffer;
 }
 
-export function createProgram(gl:WebGL2RenderingContext, vertexScript:string, fragmentScript:string) : Ponteiro<WebGLProgram>
+export function createProgram(gl:WebGL2RenderingContext, vertexScript:string, fragmentScript:string) : WebGLProgram
 {
     const vertexShader   = createShader(gl, gl.VERTEX_SHADER, vertexScript);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentScript);
 
-    // Se nao tem os shaders, retorna null
-    if (!vertexShader || !fragmentShader) return null;
+    const program        = gl.createProgram();
 
-    const program = gl.createProgram();
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
         console.error('Unable to initialize the shader program:', gl.getProgramInfoLog(program));
-        return null;
     }
 
     return program;

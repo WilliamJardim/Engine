@@ -31,10 +31,15 @@ import {
     DefinirY, 
     DefinirZ
 } from '../../utils/math.js';
+import { Renderer } from "../../Renderer/Renderer.js";
+import { float, Ponteiro } from "../../../types/types-cpp-like.js";
 
 export class TexturedFacesCuboMesh extends VisualMesh
 {
-    constructor( renderer, propriedadesMesh )
+    public texturasFaces : Array<WebGLTexture>;
+    public bufferUV      : Ponteiro<WebGLBuffer>;
+
+    constructor( renderer:Renderer, propriedadesMesh:any )
     {
         super(renderer, 
               propriedadesMesh);
@@ -51,10 +56,11 @@ export class TexturedFacesCuboMesh extends VisualMesh
         this.bufferPosicao = null;
         this.bufferCor     = null;
         this.bufferIndices = null;
+        this.bufferUV      = null;
 
         // Pega a textura UV como atributo do objeto
-        this.useColors     = propriedadesMesh.useColors || false;
-        this.texturasFaces = propriedadesMesh.texturasFaces; // Array de 6 texturas WebGLTexture
+        this.useColors      = propriedadesMesh.useColors || false;
+        this.texturasFaces  = propriedadesMesh.texturasFaces; // Array de 6 texturas WebGLTexture
 
         this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
         this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights;       // Se os objetos vai receber uma acumulação de luzes ao seu redor
@@ -180,7 +186,7 @@ export class TexturedFacesCuboMesh extends VisualMesh
     {
         const faceColors = this.getFaceColors();
 
-        let cores = [];
+        let cores : Array<float> = [];
         for ( let c = 0 ; c < faceColors.length ; c++ ) {
             const cor = faceColors[c];
             cores = cores.concat(cor, cor, cor, cor);
@@ -200,24 +206,24 @@ export class TexturedFacesCuboMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao   : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
-                cor       : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                posicao   : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
+                cor       : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
                 // Iluminação
-                brilho     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
-                ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
-                diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
-                specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
-                corLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
-                intensidadeLuz : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
+                brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
+                ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),
+                diffuse    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                specular   : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelSpecular),
+                corLuz     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelCorLuz),
+                intensidadeLuz : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
             },
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
-                modeloObjetoVisual : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
+                matrixVisualizacao : gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
+                modeloObjetoVisual : gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
             },
             uniformsCustomizados: {
-                usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),
-                opacidade  : gl.getUniformLocation(programUsado, "uOpacidade"),
-                sampler    : gl.getUniformLocation(programUsado, "uSampler")
+                usarTextura: gl.getUniformLocation(programUsado!, "uUsarTextura"),
+                opacidade  : gl.getUniformLocation(programUsado!, "uOpacidade"),
+                sampler    : gl.getUniformLocation(programUsado!, "uSampler")
             }
         }
     }
@@ -320,10 +326,10 @@ export class TexturedFacesCuboMesh extends VisualMesh
 
         // Ativa o atributo UV
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferUV);
-        gl.vertexAttribPointer(gl.getAttribLocation(programUsado, "aUV"), 2, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(gl.getAttribLocation(programUsado, "aUV"));
+        gl.vertexAttribPointer(gl.getAttribLocation(programUsado!, "aUV"), 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(gl.getAttribLocation(programUsado!, "aUV"));
 
-        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, true );
+        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );
 
         if( isTransparente )
         {
@@ -343,7 +349,7 @@ export class TexturedFacesCuboMesh extends VisualMesh
             // Inverte verticalmente a imagem ao carregar
             gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
             
-            gl.uniform1i(gl.getUniformLocation(programUsado, "u_textura"), 0);
+            gl.uniform1i(gl.getUniformLocation(programUsado!, "u_textura"), 0);
 
             // Desenha só os índices daquela face (passa o offset correto)
             // O offset do drawElements é em bytes. Cada índice é um UNSIGNED_SHORT (2 bytes).

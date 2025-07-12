@@ -1,8 +1,8 @@
 /* src/styles/MyEngineScene.css */
 .canvas-container {
     display: flex;
-    width: 800px;  /* Largura ocupando 100% da viewport */
-    height: 800px; /* Altura ocupando 100% da viewport */
+    width: 99.8%;  /* Largura ocupando 100% da viewport */
+    height: 95%; /* Altura ocupando 100% da viewport */
     display: flex;
     justify-content: center;
     align-items: center;

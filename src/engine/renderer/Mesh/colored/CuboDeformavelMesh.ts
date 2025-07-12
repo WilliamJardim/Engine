@@ -25,34 +25,44 @@ import {
     DefinirY, 
     DefinirZ
 } from '../../utils/math.js';
+import { Renderer } from "../../Renderer/Renderer.js";
+import { float } from "../../../types/types-cpp-like.js";
 
-export class PlanoOnduladoMesh extends VisualMesh
+export class CuboDeformavelMesh extends VisualMesh
 {
-    constructor( renderer, propriedadesMesh )
+    public positionsBase     : Array<float>;
+    public verticesOriginais : Array<float>;
+    public verticesAtuais    : Array<float>;
+
+    constructor( renderer:Renderer, propriedadesMesh:any )
     {
         super(renderer, 
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
-        this.tipo = 'PlanoOndulado';
+        this.tipo = 'Cubo';
 
         // Diz se o objeto é uma superficie plana ou não
-        this.isPlano       = true;
-
-        this.setProgram( renderer.getOnduladoProgram() );
+        this.isPlano       = false;
+        
+        this.setProgram( renderer.getCubeProgram() );
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
         this.bufferPosicao = null;
         this.bufferCor     = null;
         this.bufferIndices = null;
 
-        // Sem textura sempre vai usar cores
+        this.positionsBase     = this.getPositions();
+        this.verticesOriginais = this.positionsBase.slice();
+        this.verticesAtuais    = this.positionsBase.slice();
+
+        // Um cubo sem textura sempre vai usar cores
         this.useColors     = true;
 
         this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
         this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights;       // Se os objetos vai receber uma acumulação de luzes ao seu redor
         this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;    // Se ativado, a acumulação das luzes ao redor dos objetos só vai ocorrer uma unica vez
-
+        
         this.criar();
 
     }
@@ -60,28 +70,22 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Obtem as posições de renderização do cubo 
     */
-    getPositions() 
+    getPositions()
     {
-        const positions = [];
-        const largura = 10;
-        const altura = 10;
-        const subdivisoes = 100;
-
-        for (let y = 0; y <= subdivisoes; y++) 
-        {
-            for (let x = 0; x <= subdivisoes; x++) 
-            {
-                const posX = (x / subdivisoes - 0.5) * largura;
-                const posZ = (y / subdivisoes - 0.5) * altura;
-                const posY = 0;
-
-                positions.push(posX, posY, posZ);
-            }
-        }
-
-        this.vertices = positions;
-
-        return positions;
+        return [
+            // Front
+            -1, -1,  1,   1, -1,  1,   1,  1,  1,  -1,  1,  1,
+            // Back
+            -1, -1, -1,  -1,  1, -1,   1,  1, -1,   1, -1, -1,
+            // Top
+            -1,  1, -1,  -1,  1,  1,   1,  1,  1,   1,  1, -1,
+            // Bottom
+            -1, -1, -1,   1, -1, -1,   1, -1,  1,  -1, -1,  1,
+            // Right
+            1, -1, -1,   1,  1, -1,   1,  1,  1,   1, -1,  1,
+            // Left
+            -1, -1, -1,  -1, -1,  1,  -1,  1,  1,  -1,  1, -1,
+        ];
     }
 
     /**
@@ -89,20 +93,14 @@ export class PlanoOnduladoMesh extends VisualMesh
     */
     getIndices()
     {
-        const indices = [];
-        const subdivisoes = 100;
-
-        for (let y = 0; y < subdivisoes; y++) 
-        {
-            for (let x = 0; x < subdivisoes; x++) 
-            {
-                const i = y * (subdivisoes + 1) + x;
-                indices.push(i, i + 1, i + subdivisoes + 1);
-                indices.push(i + 1, i + subdivisoes + 2, i + subdivisoes + 1);
-            }
-        }
-
-        return indices;
+        return [
+            0, 1, 2,    0, 2, 3,     // front
+            4, 5, 6,    4, 6, 7,     // back
+            8, 9,10,    8,10,11,     // top
+            12,13,14,   12,14,15,    // bottom
+            16,17,18,   16,18,19,    // right
+            20,21,22,   20,22,23,    // left
+        ];
     }
 
     /**
@@ -110,7 +108,17 @@ export class PlanoOnduladoMesh extends VisualMesh
     */
     getFaceColors()
     {
-        return [];
+        // A implantação em C++ seria diferente
+        const nivelTransparencia = this.getTransparencia();
+
+        return [
+            [1, 0, 0, nivelTransparencia],    // red
+            [0, 1, 0, nivelTransparencia],    // green
+            [0, 0, 1, nivelTransparencia],    // blue
+            [1, 1, 0, nivelTransparencia],    // yellow
+            [1, 0, 1, nivelTransparencia],    // magenta
+            [0, 1, 1, nivelTransparencia],    // cyan
+        ];
     }
 
     /**
@@ -118,14 +126,13 @@ export class PlanoOnduladoMesh extends VisualMesh
     */
     getColors()
     {
-        const cores = [];
-        const vertices = this.getPositions();
-        const nivelTransparencia = this.getTransparencia();
+        const faceColors = this.getFaceColors();
 
-        const totalVertices = vertices.length / 3; // 3 por vértice
-        for (let i = 0; i < totalVertices; i++) 
+        let cores : Array<float> = [];
+        for ( let c = 0 ; c < faceColors.length ; c++ ) 
         {
-            cores.push(1, 0, 0, nivelTransparencia);
+            const cor = faceColors[c];
+            cores = cores.concat(cor, cor, cor, cor);
         }
 
         return cores;
@@ -142,24 +149,24 @@ export class PlanoOnduladoMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao   : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
-                cor       : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                posicao   : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
+                cor       : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
                 // Iluminação
-                brilho     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
-                ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
-                diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
-                specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
-                corLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
-                intensidadeLuz : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
+                brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
+                ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),
+                diffuse    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                specular   : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelSpecular),
+                corLuz     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelCorLuz),
+                intensidadeLuz : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
             },
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
-                modeloObjetoVisual : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
+                matrixVisualizacao : gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
+                modeloObjetoVisual : gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
             },
             uniformsCustomizados: {
-                usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),
-                opacidade  : gl.getUniformLocation(programUsado, "uOpacidade"),
-                sampler    : gl.getUniformLocation(programUsado, "uSampler")
+                usarTextura: gl.getUniformLocation(programUsado!, "uUsarTextura"),
+                opacidade  : gl.getUniformLocation(programUsado!, "uOpacidade"),
+                sampler    : gl.getUniformLocation(programUsado!, "uSampler")
             }
         }
     }
@@ -177,9 +184,9 @@ export class PlanoOnduladoMesh extends VisualMesh
         const gl                  = renderer.gl;
 
         // Cria os buffers, ou apenas obtem eles se eles ja existem na malha
-        if( this.bufferPosicao == null )
+        if (this.bufferPosicao == null) 
         {
-            this.bufferPosicao   = createBuffer(gl, this.getPositions(), gl.ARRAY_BUFFER,         gl.STATIC_DRAW);
+            this.bufferPosicao = createBuffer(gl, this.verticesAtuais, gl.ARRAY_BUFFER, gl.DYNAMIC_DRAW);
         }
 
         if( this.bufferCor == null )
@@ -234,9 +241,7 @@ export class PlanoOnduladoMesh extends VisualMesh
         this.modeloObjetoVisual     = RotacionarY(this.modeloObjetoVisual,  rotation.y);
         this.modeloObjetoVisual     = RotacionarZ(this.modeloObjetoVisual,  rotation.z);
 
-        this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
-
-        gl.disable(gl.CULL_FACE);
+        this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z] );
 
         // Atualiza os buffers do objeto 3d com os dados calculados
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
@@ -258,13 +263,8 @@ export class PlanoOnduladoMesh extends VisualMesh
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
 
-        // Usa ondulação
-        gl.uniform1f(gl.getUniformLocation(programUsado, "uTime"), performance.now() / 1000.0);
-        gl.uniform1i(gl.getUniformLocation(programUsado, "uUsarOndulacaoSimples"),    meshConfig.usarOndulacaoSimples);
-        gl.uniform1i(gl.getUniformLocation(programUsado, "uAplicarOndulacao"),        meshConfig.usarOndulacao);
-
         // Não usa textura
-        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, false );
+        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );
 
         if( isTransparente )
         {
@@ -276,8 +276,6 @@ export class PlanoOnduladoMesh extends VisualMesh
 
         // Desenha o cubo
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-
-        gl.enable(gl.CULL_FACE);
 
         // FIM DESSA LOGICA
     }
@@ -292,52 +290,42 @@ export class PlanoOnduladoMesh extends VisualMesh
     }
 
     /**
-    * Pode subir ou afundar os pontos deste plano
+    * Causa uma deformação no cubo em torno de um ponto de origem
     */
-    elevarPico(xAlvo, zAlvo, raio, intensidade) {
-        const vertices = this.getPositions();
+    deformarVerticePorProximidade(xAlvo:number, yAlvo:number, zAlvo:number, raio:number, intensidade:number) 
+    {
+        const vertices = this.verticesAtuais;
+
         for (let i = 0; i < vertices.length; i += 3) 
         {
             const dx = vertices[i]     - xAlvo;
+            const dy = vertices[i + 1] - yAlvo;
             const dz = vertices[i + 2] - zAlvo;
-            const dist = Math.sqrt(dx * dx + dz * dz);
+            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-            if (dist < raio) 
+            if (dist < raio && dist > 0.00001) 
             {
                 const fator = Math.cos((dist / raio) * Math.PI) * intensidade;
-                vertices[i + 1] += fator;
+                vertices[i]     += (dx / dist) * fator;
+                vertices[i + 1] += (dy / dist) * fator;
+                vertices[i + 2] += (dz / dist) * fator;
             }
         }
 
-        // Atualiza o buffer no WebGL
         const gl = this.getRenderer().gl;
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
     }
 
     /**
-    * Pode subir ou afundar os pontos deste plano
-    * Versão melhorada para criar animações
+    * Volta o cubo em seu estado original sem as deformações 
     */
-    elevarPicoParaAnimacao(xAlvo, zAlvo, raio, intensidade, tempo) 
+    restaurarFormaOriginal() 
     {
-        const vertices = this.vertices;
-        for (let i = 0; i < vertices.length; i += 3) 
-        {
-            const dx = vertices[i] - xAlvo;
-            const dz = vertices[i + 2] - zAlvo;
-            const dist = Math.sqrt(dx * dx + dz * dz);
+        this.verticesAtuais = this.verticesOriginais.slice();
 
-            if (dist < raio) 
-            {
-                const onda = Math.cos((dist / raio) * Math.PI - tempo * 5); // senóide que se move
-                vertices[i + 1] += onda * intensidade;
-            }
-        }
-
-        // Atualiza buffer
         const gl = this.getRenderer().gl;
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(this.verticesAtuais));
     }
 }

@@ -25,26 +25,32 @@ import {
     DefinirY, 
     DefinirZ
 } from '../../utils/math.js';
+import { Renderer } from "../../Renderer/Renderer.js";
+import { float } from "../../../types/types-cpp-like.js";
 
-export class EsferaMesh extends VisualMesh
+export class PlanoOnduladoMesh extends VisualMesh
 {
-    constructor( renderer, propriedadesMesh )
+    public vertices : Array<float>;
+
+    constructor( renderer:Renderer, propriedadesMesh:any )
     {
         super(renderer, 
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
-        this.tipo = 'Esfera';
+        this.tipo = 'PlanoOndulado';
 
         // Diz se o objeto é uma superficie plana ou não
-        this.isPlano       = false;
-        
-        this.setProgram( renderer.getEsferaProgram() );
+        this.isPlano       = true;
+
+        this.setProgram( renderer.getOnduladoProgram() );
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
         this.bufferPosicao = null;
         this.bufferCor     = null;
         this.bufferIndices = null;
+        
+        this.vertices      = new Array();
 
         // Sem textura sempre vai usar cores
         this.useColors     = true;
@@ -60,32 +66,26 @@ export class EsferaMesh extends VisualMesh
     /**
     * Obtem as posições de renderização do cubo 
     */
-    getPositions()
+    getPositions() 
     {
-        const positions   = [];
-        const latitudes   = 30;
-        const longitudes  = 30;
-        const raio        = 1;
+        const positions = [];
+        const largura = 10;
+        const altura = 10;
+        const subdivisoes = 100;
 
-        for (let lat = 0; lat <= latitudes; lat++) 
+        for (let y = 0; y <= subdivisoes; y++) 
         {
-            const theta = lat * Math.PI / latitudes;
-            const sinTheta = Math.sin(theta);
-            const cosTheta = Math.cos(theta);
-
-            for (let lon = 0; lon <= longitudes; lon++) 
+            for (let x = 0; x <= subdivisoes; x++) 
             {
-                const phi = lon * 2 * Math.PI / longitudes;
-                const sinPhi = Math.sin(phi);
-                const cosPhi = Math.cos(phi);
+                const posX = (x / subdivisoes - 0.5) * largura;
+                const posZ = (y / subdivisoes - 0.5) * altura;
+                const posY = 0;
 
-                const x = raio * cosPhi * sinTheta;
-                const y = raio * cosTheta;
-                const z = raio * sinPhi * sinTheta;
-
-                positions.push(x, y, z);
+                positions.push(posX, posY, posZ);
             }
         }
+
+        this.vertices = positions;
 
         return positions;
     }
@@ -96,18 +96,15 @@ export class EsferaMesh extends VisualMesh
     getIndices()
     {
         const indices = [];
-        const latitudes = 30;
-        const longitudes = 30;
+        const subdivisoes = 100;
 
-        for (let lat = 0; lat < latitudes; lat++) 
+        for (let y = 0; y < subdivisoes; y++) 
         {
-            for (let lon = 0; lon < longitudes; lon++) 
+            for (let x = 0; x < subdivisoes; x++) 
             {
-                const first = (lat * (longitudes + 1)) + lon;
-                const second = first + longitudes + 1;
-
-                indices.push(first, second, first + 1);
-                indices.push(second, second + 1, first + 1);
+                const i = y * (subdivisoes + 1) + x;
+                indices.push(i, i + 1, i + subdivisoes + 1);
+                indices.push(i + 1, i + subdivisoes + 2, i + subdivisoes + 1);
             }
         }
 
@@ -128,15 +125,13 @@ export class EsferaMesh extends VisualMesh
     getColors()
     {
         const cores = [];
-        const latitudes = 30;
-        const longitudes = 30;
+        const vertices = this.getPositions();
         const nivelTransparencia = this.getTransparencia();
 
-        for (let lat = 0; lat <= latitudes; lat++) {
-            for (let lon = 0; lon <= longitudes; lon++) {
-                // Aqui, cada vértice recebe uma cor RGBA
-                cores.push(1, 0, 0, nivelTransparencia); // vermelho como exemplo
-            }
+        const totalVertices = vertices.length / 3; // 3 por vértice
+        for (let i = 0; i < totalVertices; i++) 
+        {
+            cores.push(1, 0, 0, nivelTransparencia);
         }
 
         return cores;
@@ -153,24 +148,24 @@ export class EsferaMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao   : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
-                cor       : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                posicao   : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
+                cor       : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
                 // Iluminação
-                brilho     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
-                ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
-                diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
-                specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
-                corLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
-                intensidadeLuz : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
+                brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
+                ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),
+                diffuse    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                specular   : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelSpecular),
+                corLuz     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelCorLuz),
+                intensidadeLuz : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
             },
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
-                modeloObjetoVisual : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
+                matrixVisualizacao : gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
+                modeloObjetoVisual : gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
             },
             uniformsCustomizados: {
-                usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),
-                opacidade  : gl.getUniformLocation(programUsado, "uOpacidade"),
-                sampler    : gl.getUniformLocation(programUsado, "uSampler")
+                usarTextura: gl.getUniformLocation(programUsado!, "uUsarTextura"),
+                opacidade  : gl.getUniformLocation(programUsado!, "uOpacidade"),
+                sampler    : gl.getUniformLocation(programUsado!, "uSampler")
             }
         }
     }
@@ -245,7 +240,9 @@ export class EsferaMesh extends VisualMesh
         this.modeloObjetoVisual     = RotacionarY(this.modeloObjetoVisual,  rotation.y);
         this.modeloObjetoVisual     = RotacionarZ(this.modeloObjetoVisual,  rotation.z);
 
-        this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z] );
+        this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
+
+        gl.disable(gl.CULL_FACE);
 
         // Atualiza os buffers do objeto 3d com os dados calculados
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
@@ -263,8 +260,17 @@ export class EsferaMesh extends VisualMesh
         // Usa o programa criado
         gl.useProgram( programUsado );
 
+        // Usa as informações do cubo(que criamos e calculamos acima)
+        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
+        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
+
+        // Usa ondulação
+        gl.uniform1f(gl.getUniformLocation(programUsado!, "uTime"), performance.now() / 1000.0);
+        gl.uniform1i(gl.getUniformLocation(programUsado!, "uUsarOndulacaoSimples"),    meshConfig.usarOndulacaoSimples);
+        gl.uniform1i(gl.getUniformLocation(programUsado!, "uAplicarOndulacao"),        meshConfig.usarOndulacao);
+
         // Não usa textura
-        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, false );
+        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );
 
         if( isTransparente )
         {
@@ -274,12 +280,10 @@ export class EsferaMesh extends VisualMesh
 
         this.aplicarIluminacao( gl, informacoesPrograma );
 
-        // Usa as informações do cubo(que criamos e calculamos acima)
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
-
         // Desenha o cubo
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+
+        gl.enable(gl.CULL_FACE);
 
         // FIM DESSA LOGICA
     }
@@ -291,5 +295,55 @@ export class EsferaMesh extends VisualMesh
     criar()
     {
         this.desenhar();
+    }
+
+    /**
+    * Pode subir ou afundar os pontos deste plano
+    */
+    elevarPico(xAlvo:number, zAlvo:number, raio:number, intensidade:number) {
+        const vertices = this.getPositions();
+        for (let i = 0; i < vertices.length; i += 3) 
+        {
+            const dx = vertices[i]     - xAlvo;
+            const dz = vertices[i + 2] - zAlvo;
+            const dist = Math.sqrt(dx * dx + dz * dz);
+
+            if (dist < raio) 
+            {
+                const fator = Math.cos((dist / raio) * Math.PI) * intensidade;
+                vertices[i + 1] += fator;
+            }
+        }
+
+        // Atualiza o buffer no WebGL
+        const gl = this.getRenderer().gl;
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
+    }
+
+    /**
+    * Pode subir ou afundar os pontos deste plano
+    * Versão melhorada para criar animações
+    */
+    elevarPicoParaAnimacao(xAlvo:number, zAlvo:number, raio:number, intensidade:number, tempo:number) 
+    {
+        const vertices = this.vertices;
+        for (let i = 0; i < vertices.length; i += 3) 
+        {
+            const dx = vertices[i] - xAlvo;
+            const dz = vertices[i + 2] - zAlvo;
+            const dist = Math.sqrt(dx * dx + dz * dz);
+
+            if (dist < raio) 
+            {
+                const onda = Math.cos((dist / raio) * Math.PI - tempo * 5); // senóide que se move
+                vertices[i + 1] += onda * intensidade;
+            }
+        }
+
+        // Atualiza buffer
+        const gl = this.getRenderer().gl;
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
     }
 }

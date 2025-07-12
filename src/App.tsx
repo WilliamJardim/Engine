@@ -28,8 +28,7 @@ const App: React.FC = () => {
 
   return (
     <div className='div-principal'>
-      <h1> Game Engine em TypeScript e React </h1>
-
+      
       <div className='div-abas'>
         <button className={ sceneEnabled    ? 'enabled' : 'disabled' } onClick={ onSceneClick }    > Scene    </button>
         <button className={ terminalEnabled ? 'enabled' : 'disabled' } onClick={ onTerminalClick } > Terminal </button>

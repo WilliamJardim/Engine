@@ -23,96 +23,132 @@ import {
     DefinirRotacao, 
     DefinirX, 
     DefinirY, 
-    DefinirZ
-} from '../../utils/math.js';
+    DefinirZ} from '../../utils/math.js';
+import { Renderer } from "../../Renderer/Renderer.js";
 
-export class CuboDeformavelMesh extends VisualMesh
+export class CilindroMesh extends VisualMesh
 {
-    constructor( renderer, propriedadesMesh )
+    constructor( renderer:Renderer, propriedadesMesh:any )
     {
         super(renderer, 
               propriedadesMesh);
 
-        // Usa o programa para desenhar cubos
-        this.tipo = 'Cubo';
+        // Usa o programa para desenhar cilindros
+        this.tipo = 'Cilindro';
 
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;
         
-        this.setProgram( renderer.getCubeProgram() );
+        this.setProgram( renderer.getCilindroProgram() );
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
         this.bufferPosicao = null;
         this.bufferCor     = null;
         this.bufferIndices = null;
 
-        this.positionsBase     = this.getPositions();
-        this.verticesOriginais = this.positionsBase.slice();
-        this.verticesAtuais    = this.positionsBase.slice();
-
-        // Um cubo sem textura sempre vai usar cores
+        // Um cilindro sem textura sempre vai usar cores
         this.useColors     = true;
 
         this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
         this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights;       // Se os objetos vai receber uma acumulação de luzes ao seu redor
         this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;    // Se ativado, a acumulação das luzes ao redor dos objetos só vai ocorrer uma unica vez
-        
+
         this.criar();
 
     }
 
     /**
-    * Obtem as posições de renderização do cubo 
+    * Obtem as posições de renderização do cilindro 
     */
     getPositions()
     {
-        return [
-            // Front
-            -1, -1,  1,   1, -1,  1,   1,  1,  1,  -1,  1,  1,
-            // Back
-            -1, -1, -1,  -1,  1, -1,   1,  1, -1,   1, -1, -1,
-            // Top
-            -1,  1, -1,  -1,  1,  1,   1,  1,  1,   1,  1, -1,
-            // Bottom
-            -1, -1, -1,   1, -1, -1,   1, -1,  1,  -1, -1,  1,
-            // Right
-            1, -1, -1,   1,  1, -1,   1,  1,  1,   1, -1,  1,
-            // Left
-            -1, -1, -1,  -1, -1,  1,  -1,  1,  1,  -1,  1, -1,
-        ];
+        const N = 32; // Mais pontos = mais suave
+        const altura = 2;
+        const raio = 1;
+
+        const positions = [];
+
+        // Topo do cilindro
+        for (let i = 0; i < N; i++) 
+        {
+            const ang = (i / N) * 2 * Math.PI;
+            const x = Math.cos(ang) * raio;
+            const z = Math.sin(ang) * raio;
+            positions.push(x, altura / 2, z);
+        }
+
+        // Base do cilindro
+        for (let i = 0; i < N; i++) 
+        {
+            const ang = (i / N) * 2 * Math.PI;
+            const x = Math.cos(ang) * raio;
+            const z = Math.sin(ang) * raio;
+            positions.push(x, -altura / 2, z);
+        }
+
+        // Adiciona centro do topo e base
+        positions.push(0, altura / 2, 0);    // Centro do topo (índice = N*2)
+        positions.push(0, -altura / 2, 0);   // Centro da base (índice = N*2 + 1)
+
+        // Lateral do cilindro (duplicando os pontos de topo e base)
+        for (let i = 0; i < N; i++) 
+        {
+            const ang = (i / N) * 2 * Math.PI;
+            const x = Math.cos(ang) * raio;
+            const z = Math.sin(ang) * raio;
+            positions.push(x, altura / 2, z);   // topo
+            positions.push(x, -altura / 2, z);  // base
+        }
+
+        return positions;
     }
 
     /**
-    * Obtem os indices de renderização do cubo 
+    * Obtem os indices de renderização do cilindro 
     */
     getIndices()
     {
-        return [
-            0, 1, 2,    0, 2, 3,     // front
-            4, 5, 6,    4, 6, 7,     // back
-            8, 9,10,    8,10,11,     // top
-            12,13,14,   12,14,15,    // bottom
-            16,17,18,   16,18,19,    // right
-            20,21,22,   20,22,23,    // left
-        ];
+        const N = 32;
+        const indices = [];
+
+        // Topo
+        for (let i = 0; i < N; i++) 
+        {
+            const next = (i + 1) % N;
+            indices.push(i, next, N * 2); // Centro fictício ainda não criado, falamos disso abaixo
+        }
+
+        // Base
+        for (let i = 0; i < N; i++) 
+        {
+            const next = (i + 1) % N;
+            indices.push(i + N, N + next, N * 2 + 1); // Centro fictício da base
+        }
+
+        // Laterais
+        const baseOffset = N * 2 + 2; // Lateral começa depois do centro do topo e base
+
+        for (let i = 0; i < N; i++) 
+        {
+            const next = (i + 1) % N;
+            const top1 = baseOffset + i * 2;
+            const bot1 = top1 + 1;
+            const top2 = baseOffset + next * 2;
+            const bot2 = top2 + 1;
+
+            indices.push(top1, bot1, top2);
+            indices.push(top2, bot1, bot2);
+        }
+
+        return indices;
     }
 
     /**
-    * Obtem as cores das faces do cubo, usados na renderização do cubo 
+    * Obtem as cores das faces do cilindro, usados na renderização do cilindro 
     */
     getFaceColors()
     {
-        // A implantação em C++ seria diferente
-        const nivelTransparencia = this.getTransparencia();
-
-        return [
-            [1, 0, 0, nivelTransparencia],    // red
-            [0, 1, 0, nivelTransparencia],    // green
-            [0, 0, 1, nivelTransparencia],    // blue
-            [1, 1, 0, nivelTransparencia],    // yellow
-            [1, 0, 1, nivelTransparencia],    // magenta
-            [0, 1, 1, nivelTransparencia],    // cyan
-        ];
+       // NAO USADO 
     }
 
     /**
@@ -120,20 +156,23 @@ export class CuboDeformavelMesh extends VisualMesh
     */
     getColors()
     {
-        const faceColors = this.getFaceColors();
+        const N = 32;
+        const nivelTransparencia = this.getTransparencia();
+        const cor = [1.0, 0.6, 0.2, nivelTransparencia]; // Laranja
 
-        let cores = [];
-        for ( let c = 0 ; c < faceColors.length ; c++ ) 
+        const totalVertices = N * 2 + 2 + N * 2; // topo + base + centros + laterais
+        const cores = [];
+
+        for (let i = 0; i < totalVertices; i++) 
         {
-            const cor = faceColors[c];
-            cores = cores.concat(cor, cor, cor, cor);
+            cores.push(...cor);
         }
 
         return cores;
     }
 
     /**
-    * Obtem as informações do programa, que vão ser usadas na renderização deste cubo 
+    * Obtem as informações do programa, que vão ser usadas na renderização deste cilindro 
     */
     getInformacoesPrograma()
     {
@@ -143,24 +182,24 @@ export class CuboDeformavelMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao   : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
-                cor       : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                posicao   : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
+                cor       : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
                 // Iluminação
-                brilho     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
-                ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
-                diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
-                specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
-                corLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
-                intensidadeLuz : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
+                brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
+                ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),
+                diffuse    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                specular   : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelSpecular),
+                corLuz     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelCorLuz),
+                intensidadeLuz : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
             },
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
-                modeloObjetoVisual : gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
+                matrixVisualizacao : gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
+                modeloObjetoVisual : gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
             },
             uniformsCustomizados: {
-                usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),
-                opacidade  : gl.getUniformLocation(programUsado, "uOpacidade"),
-                sampler    : gl.getUniformLocation(programUsado, "uSampler")
+                usarTextura: gl.getUniformLocation(programUsado!, "uUsarTextura"),
+                opacidade  : gl.getUniformLocation(programUsado!, "uOpacidade"),
+                sampler    : gl.getUniformLocation(programUsado!, "uSampler")
             }
         }
     }
@@ -178,9 +217,9 @@ export class CuboDeformavelMesh extends VisualMesh
         const gl                  = renderer.gl;
 
         // Cria os buffers, ou apenas obtem eles se eles ja existem na malha
-        if (this.bufferPosicao == null) 
+        if( this.bufferPosicao == null )
         {
-            this.bufferPosicao = createBuffer(gl, this.verticesAtuais, gl.ARRAY_BUFFER, gl.DYNAMIC_DRAW);
+            this.bufferPosicao   = createBuffer(gl, this.getPositions(), gl.ARRAY_BUFFER,         gl.STATIC_DRAW);
         }
 
         if( this.bufferCor == null )
@@ -198,7 +237,7 @@ export class CuboDeformavelMesh extends VisualMesh
 
     /**
     * @implementation 
-    * Implementação do método desenhar para especificamente desenhar um cubo
+    * Implementação do método desenhar para especificamente desenhar um cilindro
     * Converte a representação desse Mesh para desenhos com WebGL
     */
     desenhar()
@@ -237,6 +276,8 @@ export class CuboDeformavelMesh extends VisualMesh
 
         this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z] );
 
+        gl.disable(gl.CULL_FACE);
+
         // Atualiza os buffers do objeto 3d com os dados calculados
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
@@ -253,12 +294,12 @@ export class CuboDeformavelMesh extends VisualMesh
         // Usa o programa criado
         gl.useProgram( programUsado );
 
-        // Usa as informações do cubo(que criamos e calculamos acima)
+        // Usa as informações do cilindro(que criamos e calculamos acima)
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
 
         // Não usa textura
-        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, false );
+        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );
 
         if( isTransparente )
         {
@@ -268,58 +309,20 @@ export class CuboDeformavelMesh extends VisualMesh
 
         this.aplicarIluminacao( gl, informacoesPrograma );
 
-        // Desenha o cubo
+        // Desenha o cilindro
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+
+        gl.enable(gl.CULL_FACE);
 
         // FIM DESSA LOGICA
     }
 
     /**
     * Metodo chamado logo após o fim do construtor, quanto todos os parametros necessários já foram atribudos
-    * Cria o cubo em si, usando o WebGL 
+    * Cria o cilindro em si, usando o WebGL 
     */
     criar()
     {
         this.desenhar();
-    }
-
-    /**
-    * Causa uma deformação no cubo em torno de um ponto de origem
-    */
-    deformarVerticePorProximidade(xAlvo, yAlvo, zAlvo, raio, intensidade) 
-    {
-        const vertices = this.verticesAtuais;
-
-        for (let i = 0; i < vertices.length; i += 3) 
-        {
-            const dx = vertices[i]     - xAlvo;
-            const dy = vertices[i + 1] - yAlvo;
-            const dz = vertices[i + 2] - zAlvo;
-            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-            if (dist < raio && dist > 0.00001) 
-            {
-                const fator = Math.cos((dist / raio) * Math.PI) * intensidade;
-                vertices[i]     += (dx / dist) * fator;
-                vertices[i + 1] += (dy / dist) * fator;
-                vertices[i + 2] += (dz / dist) * fator;
-            }
-        }
-
-        const gl = this.getRenderer().gl;
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
-    }
-
-    /**
-    * Volta o cubo em seu estado original sem as deformações 
-    */
-    restaurarFormaOriginal() 
-    {
-        this.verticesAtuais = this.verticesOriginais.slice();
-
-        const gl = this.getRenderer().gl;
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(this.verticesAtuais));
     }
 }

@@ -19,6 +19,8 @@ import ObjectProps    from '../interfaces/ObjectProps';
 import InputListener  from '../input/InputListener';
 import SceneConfig    from '../interfaces/SceneConfig';
 import { Ponteiro }   from '../types/types-cpp-like';
+import { Renderer } from './Renderer/Renderer';
+import { calcularDirecaoCamera, calcularDireitaCamera } from './utils/math';
 
 export default class RenderizadorCena
 {
@@ -27,11 +29,11 @@ export default class RenderizadorCena
     public toRenderAssociation  : Map<string, any>;
     public scene                : any;
     public renderizador         : any;
-    public canvasRef            : React.RefObject<HTMLDivElement>;
+    public canvasRef            : React.RefObject<HTMLCanvasElement>;
     public firstRender          : boolean = true;
     public provavelmentePronto  : boolean = false; //Sinaliza se os objetos iniciais foram carregados
 
-    constructor( canvasRef:any )
+    constructor( canvasRef:React.RefObject<HTMLCanvasElement> )
     {
         const contexto = this;
 
@@ -52,15 +54,233 @@ export default class RenderizadorCena
         //Obtem o canvas
         this.canvasRef = canvasRef;
         
-        // Configurar cena, câmera e renderizador
-        
-        // CRIA A CENA
-        this.scene = ;
-
-        // Define luz ambiente para iluminar a cena de forma geral
-
         // CRIA O RENDERIZADOR
-        this.renderizador = ;
+        this.renderizador = new Renderer( this.canvasRef, "perspectiva" );
+    
+        // Inicia o loop de renderização
+        this.renderizador.inicializar();
+
+        this.renderizador.miraCamera[0] = 0;
+        this.renderizador.miraCamera[1] = 0;
+        this.renderizador.miraCamera[2] = 0;
+
+        // Configurar cena, câmera e renderizador
+        // Cria um cubo
+        this.renderizador.criarObjeto({
+            tipo: 'Cubo',
+            nome: 'Cubo',
+            invisivel: false,
+            transparencia: 0.5, // 100 opaco
+
+            // Iluminação
+            alwaysUpdateLights: true,
+            brilho: 32,
+            ambient: 0.6,
+            diffuse: 0.8,
+            specular: 0.8,
+
+            childrenIndividualLights: true,
+            useAccumulatedLights: true,
+            staticAccumulatedLights: false,
+
+            /**
+            * Posição do objeto 
+            */
+            position: {
+                x: 0,
+                y: 8,
+                z: 0
+            },
+
+            /**
+            * Escala do objeto 
+            */
+            scale: {
+                x: 1,
+                y: 1,
+                z: 1
+            },
+
+            /**
+            * Rotação do objeto 
+            */
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+        });
+
+        const sensibilidade = 0.03;
+        const limiteX       = 10; 
+        const limiteY       = 10; 
+        let passos          = 0.5;
+
+        const contextoPlayer = {
+            mousePosition: {
+                x: 0,
+                y: 0
+            },
+            keyDetection: {
+                SHIFT: false,
+                A: false,
+                W: false,
+                S: false,
+                D: false,
+                ArrowLeft: false,
+                ArrowRight: false,
+                ArrowUp: false,
+                ArrowDown: false
+            }
+        }
+
+        // Atualiza a posição do mouse
+        function onMouseMove(event:any) 
+        {
+            const viradaEsquerdaOrigem = contexto.renderizador.miraCamera[0] >= 1.4918051575931215  ? true : false;
+            const viradaDireitaOrigem  = contexto.renderizador.miraCamera[0] <= -1.4918051575931215 ? true : false;
+        
+            // Normaliza a posição do mouse para o intervalo de -1 a 1
+            contextoPlayer.mousePosition.x =  (event.clientX / window.innerWidth)  * 2 - 1;
+            contextoPlayer.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        
+            contexto.renderizador.miraCamera[0] -= sensibilidade * contextoPlayer.mousePosition.y;
+            contexto.renderizador.miraCamera[1] += sensibilidade * contextoPlayer.mousePosition.x;
+        }
+        
+        // Adiciona o evento de movimento do mouse
+        window.addEventListener('mousemove', onMouseMove, false);
+        
+        function onAndar()
+        {
+            if( contextoPlayer.keyDetection.SHIFT )
+            {
+                passos = 3.5;
+            }else{
+                passos = 0.9;
+            }
+        
+            const frameDelta = contexto.renderizador.lastFrameDelta;
+           
+            // Calcula a direção da câmera com base na rotação
+            const direcao = calcularDirecaoCamera(contexto.renderizador.miraCamera);
+        
+            // Calcula o vetor "direita" (eixo X local)
+            const direita = calcularDireitaCamera(direcao);
+        
+            // Aplica movimentação com base em eixos locais
+            const velocidadeFinal = passos * frameDelta;
+        
+            if (contextoPlayer.keyDetection.W) {
+                contexto.renderizador.posicaoCamera[0] += direcao[0] * velocidadeFinal;
+                contexto.renderizador.posicaoCamera[1] += direcao[1] * velocidadeFinal;
+                contexto.renderizador.posicaoCamera[2] += direcao[2] * velocidadeFinal;
+            }
+            if (contextoPlayer.keyDetection.S) {
+                contexto.renderizador.posicaoCamera[0] -= direcao[0] * velocidadeFinal;
+                contexto.renderizador.posicaoCamera[1] -= direcao[1] * velocidadeFinal;
+                contexto.renderizador.posicaoCamera[2] -= direcao[2] * velocidadeFinal;
+            }
+            if (contextoPlayer.keyDetection.A) {
+                contexto.renderizador.posicaoCamera[0] += direita[0] * velocidadeFinal;
+                contexto.renderizador.posicaoCamera[1] += direita[1] * velocidadeFinal;
+                contexto.renderizador.posicaoCamera[2] += direita[2] * velocidadeFinal;
+            }
+            if (contextoPlayer.keyDetection.D) {
+                contexto.renderizador.posicaoCamera[0] -= direita[0] * velocidadeFinal;
+                contexto.renderizador.posicaoCamera[1] -= direita[1] * velocidadeFinal;
+                contexto.renderizador.posicaoCamera[2] -= direita[2] * velocidadeFinal;
+            }
+        }
+        
+        const onKeyDown = (event:any) => {
+                    
+            switch (event.code) {
+                case 'ArrowUp':
+                    contextoPlayer.keyDetection.ArrowUp = true;
+                    break;
+                case 'KeyW':
+                    contextoPlayer.keyDetection.W = true;
+                    break;
+                case 'ArrowDown':
+                    contextoPlayer.keyDetection.ArrowDown = true;
+                    break;
+                case 'KeyS':
+                    contextoPlayer.keyDetection.S = true;
+                    break;
+                case 'ArrowLeft':
+                    contextoPlayer.keyDetection.ArrowLeft = true;
+                    break;
+                case 'KeyA':
+                    contextoPlayer.keyDetection.A = true;
+                    break;
+                case 'ArrowRight':
+                    contextoPlayer.keyDetection.ArrowRight = true;
+                    break;
+                case 'KeyD':
+                    contextoPlayer.keyDetection.D = true;
+                    break;
+            }
+        
+            if( event.shiftKey ){
+                contextoPlayer.keyDetection.SHIFT = true;
+            }
+        
+            onAndar();
+        };
+        
+        const onKeyUp = (event:any) => {
+        
+            switch (event.code) {
+                case 'ArrowUp':
+                    contextoPlayer.keyDetection.ArrowUp = false;
+                    break;
+                case 'KeyW':
+                    contextoPlayer.keyDetection.W = false;
+                    break;
+                case 'ArrowDown':
+                    contextoPlayer.keyDetection.ArrowDown = false;
+                    break;
+                case 'KeyS':
+                    contextoPlayer.keyDetection.S = false;
+                    break;
+                case 'ArrowLeft':
+                    contextoPlayer.keyDetection.ArrowLeft = false;
+                    break;
+                case 'KeyA':
+                    contextoPlayer.keyDetection.A = false;
+                    break;
+                case 'ArrowRight':
+                    contextoPlayer.keyDetection.ArrowRight = false;
+                    break;
+                case 'KeyD':
+                    contextoPlayer.keyDetection.D = false;
+                    break;
+            }
+        
+            if( event.shiftKey ){
+                contextoPlayer.keyDetection.SHIFT = false;
+            }
+        
+            onAndar();
+        };
+        
+        document.addEventListener('keydown', onKeyDown);
+        document.addEventListener('keyup',   onKeyUp);
+        
+        function loopTeste(){
+            requestAnimationFrame(loopTeste)
+        
+            // Mantem a rotação Y da camera estavel
+            if( contexto.renderizador.miraCamera[0] > 1.6183333333333352 ){
+                contexto.renderizador.miraCamera[0] = 1.6183333333333352;
+            }
+            if( contexto.renderizador.miraCamera[0] < -1.6183333333333352 ){
+                contexto.renderizador.miraCamera[0] = -1.6183333333333352;
+            }
+        
+        }
+        loopTeste();
     }
 
     /**
@@ -205,7 +425,7 @@ export default class RenderizadorCena
         return this.renderizador;
     }
 
-    public getCanvas(): React.RefObject<HTMLDivElement>
+    public getCanvas(): React.RefObject<HTMLCanvasElement>
     {
         return this.canvasRef;
     }

@@ -37,23 +37,23 @@ import { skyboxPlaneShaders } from '../Shaders/planeskybox.js';
 /**
 * Importando Meshes 
 */
-import { CuboMesh } from '../Mesh/colored/CuboMesh.js';
-import { CuboDeformavelMesh } from '../Mesh/colored/CuboDeformavelMesh.js';
-import { PlanoOnduladoMesh } from '../Mesh/colored/PlanoOnduladoMesh.js';
-import { TexturedUVCuboMesh } from '../Mesh/textured/TexturedUVCubeMesh.js';
-import { TexturedFacesCuboMesh } from '../Mesh/textured/TexturedFacesCubeMesh.js';
-import { EsferaMesh } from '../Mesh/colored/EsferaMesh.js';
-import { CilindroMesh } from '../Mesh/colored/CilindroMesh.js';
-import { Triangulo2DMesh } from '../Mesh/colored/Triangulo2DMesh.js';
-import { Triangulo3DMesh } from '../Mesh/colored/Triangulo3DMesh.js';
-import { OBJMesh } from '../Mesh/OBJMesh.js';
+import { CuboMesh } from '../Mesh/colored/CuboMesh.ts';
+import { CuboDeformavelMesh } from '../Mesh/colored/CuboDeformavelMesh.ts';
+import { PlanoOnduladoMesh } from '../Mesh/colored/PlanoOnduladoMesh.ts';
+import { TexturedUVCuboMesh } from '../Mesh/textured/TexturedUVCubeMesh.ts';
+import { TexturedFacesCuboMesh } from '../Mesh/textured/TexturedFacesCubeMesh.ts';
+import { EsferaMesh } from '../Mesh/colored/EsferaMesh.ts';
+import { CilindroMesh } from '../Mesh/colored/CilindroMesh.ts';
+import { Triangulo2DMesh } from '../Mesh/colored/Triangulo2DMesh.ts';
+import { Triangulo3DMesh } from '../Mesh/colored/Triangulo3DMesh.ts';
+import { OBJMesh } from '../Mesh/OBJMesh.ts';
 import { Light } from '../Mesh/Light.js';
 import { float, Ponteiro } from '../../types/types-cpp-like.js';
 import Mapa from '../../utils/dicionarios/Mapa.js';
 
 export class Renderer
 {
-    public canvas:HTMLCanvasElement;
+    public canvas:React.RefObject<HTMLCanvasElement>;
     public skyTexture:any;
     public skyQuadBuffer:any;
     public ambient:number;
@@ -90,7 +90,7 @@ export class Renderer
     public pPerto: number;
     public pLonge: number;
     
-    constructor( canvasRef:HTMLCanvasElement, tipoPerspectiva:string="perspectiva", renderConfig:any={} ){
+    constructor( canvasRef:React.RefObject<HTMLCanvasElement>, tipoPerspectiva:string="perspectiva", renderConfig:any={} ){
         this.canvas = canvasRef;
 
         this.lastFrameDelta = 0;

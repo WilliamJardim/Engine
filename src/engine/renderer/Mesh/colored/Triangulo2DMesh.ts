@@ -18,10 +18,11 @@ import {
     RotacionarZ, 
     DefinirEscala 
 } from "../../utils/math.js";
+import { Renderer } from "../../Renderer/Renderer.js";
 
 export class Triangulo2DMesh extends VisualMesh 
 {
-    constructor(renderer, propriedadesMesh) 
+    constructor(renderer:Renderer, propriedadesMesh:any) 
     {
         super(renderer, 
               propriedadesMesh);
@@ -76,24 +77,24 @@ export class Triangulo2DMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao: gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
-                cor:     gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),
+                posicao: gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
+                cor:     gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),
                 // Iluminação
-                brilho     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
-                ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
-                diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
-                specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
-                corLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
-                intensidadeLuz : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
+                brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
+                ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),
+                diffuse    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                specular   : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelSpecular),
+                corLuz     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelCorLuz),
+                intensidadeLuz : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
             },
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
-                modeloObjetoVisual: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelModeloObjeto)
+                matrixVisualizacao: gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
+                modeloObjetoVisual: gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelModeloObjeto)
             },
             uniformsCustomizados: {
-                usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),
-                opacidade  : gl.getUniformLocation(programUsado, "uOpacidade"),
-                sampler    : gl.getUniformLocation(programUsado, "uSampler")
+                usarTextura: gl.getUniformLocation(programUsado!, "uUsarTextura"),
+                opacidade  : gl.getUniformLocation(programUsado!, "uOpacidade"),
+                sampler    : gl.getUniformLocation(programUsado!, "uSampler")
             }
         };
     }
@@ -156,7 +157,7 @@ export class Triangulo2DMesh extends VisualMesh
         gl.useProgram(programUsado);
 
         // Não usa textura
-        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, false );
+        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );
 
         if( isTransparente )
         {

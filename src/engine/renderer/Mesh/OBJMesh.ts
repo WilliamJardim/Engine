@@ -20,6 +20,9 @@ import {
     RotacionarY,
     RotacionarZ
 } from '../utils/math.js';
+import { Renderer } from "../Renderer/Renderer.js";
+import { float, Ponteiro } from "../../types/types-cpp-like.js";
+import Mapa from "../../utils/dicionarios/Mapa.js";
 
 /**
 * PORTABILIDADE PRA C++:
@@ -45,7 +48,37 @@ import {
 
 export class OBJMesh extends VisualMesh 
 {
-    constructor(renderer, propriedadesMesh) 
+    public _isTransparente    : boolean;
+    public mtlString          : string;
+    public objString          : string;
+    public vertices           : Array<Array<float>>;
+    
+    public bufferUV           : Ponteiro<WebGLBuffer>;
+    public uvs                : Array<Array<float>>;
+    public uvArray            : Array<float>;
+
+    public normals            : Array<Array<float>>;
+    public positions          : Array<float>;
+    public indices            : Array<float>;
+    public cores              : Array<float>;
+    public allBuffersCriated  : boolean;
+
+    public materiais          : Mapa<string, any>;
+    public materialAtivo      : any;
+
+    public objetos            : Mapa<string, any>;
+    public objetoAtivo        : any;
+    public nomesObjetos       : Array<string>;
+
+    public objetosInfo                   : Mapa<string, any>;
+    public verticesObjetos               : Mapa<string, any>;
+    public verticesObjetosOnlyNomeParte  : Mapa<string, any>; 
+    public verticesComecaObjetos         : Mapa<string, any>;
+
+    public iluminationInfo               : Mapa<string, any>;
+    public iluminationAcumuladaInfo      : Mapa<string, any>;
+
+    constructor(renderer:Renderer, propriedadesMesh:any) 
     {
         super(renderer, propriedadesMesh);
 
@@ -60,6 +93,7 @@ export class OBJMesh extends VisualMesh
 
         this.vertices          = new Array();
         this.uvs               = new Array();
+        this.uvArray           = new Array<float>();
         this.normals           = new Array();
         this.positions         = new Array();
         this.indices           = new Array();
@@ -68,18 +102,19 @@ export class OBJMesh extends VisualMesh
         this.bufferPosicao     = null;
         this.bufferCor         = null;
         this.bufferIndices     = null;
+        this.bufferUV          = null;
         this.allBuffersCriated = false;
 
-        this.materiais         = new Map();
+        this.materiais         = new Mapa<string, any>();
         this.materialAtivo     = null;
 
-        this.objetos                       = new Map();
+        this.objetos                       = new Mapa<string, any>();
         this.nomesObjetos                  = new Array(); 
         this.objetoAtivo                   = null;
-        this.objetosInfo                   = new Map();
-        this.verticesObjetos               = new Map();   // Vertices por partes
-        this.verticesObjetosOnlyNomeParte  = new Map();   // Vertices por partes (somente o nome da parte sem usar material na chave)
-        this.verticesComecaObjetos         = new Map();   // Length que começa os vertices de cada objeto no vetor geral vertices
+        this.objetosInfo                   = new Mapa<string, any>();
+        this.verticesObjetos               = new Mapa<string, any>();   // Vertices por partes
+        this.verticesObjetosOnlyNomeParte  = new Mapa<string, any>();   // Vertices por partes (somente o nome da parte sem usar material na chave)
+        this.verticesComecaObjetos         = new Mapa<string, any>();   // Length que começa os vertices de cada objeto no vetor geral vertices
 
         this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
 
@@ -87,8 +122,8 @@ export class OBJMesh extends VisualMesh
         this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;  // Se ativado, a acumulação das luzes ao redor das partes só vai ocorrer uma unica vez
         this._jaAcumulouLuzes         = false;                                     // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
 
-        this.iluminationInfo          = new Map();  // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
-        this.iluminationAcumuladaInfo = new Map();  // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
+        this.iluminationInfo          = new Mapa<string, any>();  // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
+        this.iluminationAcumuladaInfo = new Mapa<string, any>();  // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
 
         // Variaveis de renderização
         this.modeloObjetoVisual = CriarMatrix4x4();
@@ -138,7 +173,7 @@ export class OBJMesh extends VisualMesh
     * Serve para interpretar os comandos de um arquivo MTL
     * como "newmtl" = novo material, "d" = opacidade, etc....
     */
-    carregarMTL(mtlString) 
+    carregarMTL(mtlString:String) 
     {
         let linhas = mtlString.split('\n');
 
@@ -203,7 +238,7 @@ export class OBJMesh extends VisualMesh
     * Função auxiliar que serve para interpretar os comandos de um arquivo OBJ
     * como "o" = objeto, "f" = faces, etc.... 
     */
-    _interpretarInstrucaoOBJ( comando=String(), partesLinha=[] )
+    _interpretarInstrucaoOBJ( comando=String(), partesLinha:Array<any>=[] )
     {
         // Se nao tem objeto ativo
         if (this.objetoAtivo === null) 
@@ -223,11 +258,11 @@ export class OBJMesh extends VisualMesh
         
         // Se for um Vertice
         if (comando === 'v') {
-            const v = [ 
-                        parseFloat(partesLinha[1]), 
-                        parseFloat(partesLinha[2]), 
-                        parseFloat(partesLinha[3]) 
-                      ];
+            const v : Array<float> = [ 
+                                        parseFloat(partesLinha[1]), 
+                                        parseFloat(partesLinha[2]), 
+                                        parseFloat(partesLinha[3]) 
+                                    ];
 
             this.vertices.push(v);
 
@@ -238,20 +273,20 @@ export class OBJMesh extends VisualMesh
 
         // Se for uma Textura de Vertice
         } else if (comando === 'vt') {
-            const vt = [ 
-                         parseFloat(partesLinha[1]), 
-                         parseFloat(partesLinha[2]) 
-                       ];
+            const vt : Array<float> = [ 
+                                        parseFloat(partesLinha[1]), 
+                                        parseFloat(partesLinha[2]) 
+                                    ];
 
             this.uvs.push(vt);
 
         // Se for uma Normal do Vertice
         } else if (comando === 'vn') {
-            const vn = [ 
-                         parseFloat(partesLinha[1]), 
-                         parseFloat(partesLinha[2]), 
-                         parseFloat(partesLinha[3]) 
-                       ];
+            const vn : Array<float> = [ 
+                                        parseFloat(partesLinha[1]), 
+                                        parseFloat(partesLinha[2]), 
+                                        parseFloat(partesLinha[3]) 
+                                    ];
 
             this.normals.push(vn);
 
@@ -263,10 +298,10 @@ export class OBJMesh extends VisualMesh
                 this.objetos[ grupoObjeto ] = [];
             }
 
-            const face = [];
+            const face : Array<any> = [];
             for (let j = 1; j < partesLinha.length; j++)
             {
-                const itemLinha = partesLinha[j].split('/');
+                const itemLinha:string = partesLinha[j].split('/');
 
                 face.push({
                     vi : parseInt(itemLinha[0], 10) - 1,
@@ -316,7 +351,7 @@ export class OBJMesh extends VisualMesh
     /**
     * Função que carrega um arquivo .OBJ
     */
-    carregarOBJ(objString) 
+    carregarOBJ(objString:string) 
     {
         const linhas = objString.split('\n');
 
@@ -342,7 +377,7 @@ export class OBJMesh extends VisualMesh
         // Obtem os nomes dos objetos
         this.nomesObjetos = objectKeys;
 
-        let keyToIndex  = {};
+        let keyToIndex  = new Mapa<string, any>();
         let indiceAtual = 0;
 
         for (let i = 0; i < objectKeys.length; i++) 
@@ -410,13 +445,13 @@ export class OBJMesh extends VisualMesh
         * Mapeia os indices para cada objeto a ser desenhado,
         * Organiza os buffers de posições, cores, UVs e indices.
         */
-        keyToIndex = {};
+        keyToIndex = new Mapa<string, any>();
         indiceAtual = 0;
 
         this.indices = []; // reseta para montar os índices gerais
 
-        this.objetosInfo = {}; // objeto para guardar offset/count por objeto
-        this.iluminationInfo = {} // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
+        this.objetosInfo = new Mapa<string, any>();     // objeto para guardar offset/count por objeto
+        this.iluminationInfo = new Mapa<string, any>(); // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
 
         let globalIndexCount = 0; // para contar índice total gerado
 
@@ -546,28 +581,28 @@ export class OBJMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao    : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
-                cor        : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),
-                uv         : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelUV),
+                posicao    : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
+                cor        : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),
+                uv         : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelUV),
 
                 // Iluminação
-                brilho     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
-                ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
-                diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
-                specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
-                corLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
-                intensidadeLuz : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
+                brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
+                ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),
+                diffuse    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                specular   : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelSpecular),
+                corLuz     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelCorLuz),
+                intensidadeLuz : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
                 //posicaoLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelPosicaoLuz),
 
             },
             atributosVisualizacaoObjeto: {
-                matrixVisualizacao: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
-                modeloObjetoVisual: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelModeloObjeto)
+                matrixVisualizacao: gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
+                modeloObjetoVisual: gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelModeloObjeto)
             },
             uniformsCustomizados: {
-                usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),
-                opacidade  : gl.getUniformLocation(programUsado, "uOpacidade"),
-                sampler    : gl.getUniformLocation(programUsado, "uSampler")
+                usarTextura: gl.getUniformLocation(programUsado!, "uUsarTextura"),
+                opacidade  : gl.getUniformLocation(programUsado!, "uOpacidade"),
+                sampler    : gl.getUniformLocation(programUsado!, "uSampler")
             }
         };
     }
@@ -612,7 +647,7 @@ export class OBJMesh extends VisualMesh
     /**
     * Define a iluminação de uma parte do modelo
     */
-    atualizarIluminacaoParte(gl, informacoesPrograma, iluminacaoParte={}, iluminacaoAcumuladaParte={} )
+    atualizarIluminacaoParte(gl:WebGL2RenderingContext, informacoesPrograma:any, iluminacaoParte:any={}, iluminacaoAcumuladaParte:any={} )
     {
         // OBS: AQUI NESSE PONTO, A ILUMINAÇÂO DAS PARTES JA FOI CALCULADA NO LOOP PRINCIPAL, ANTES DE CHAMAR ESSA FUNÇÂO
         // OBS: Se this.useAccumulatedLights for false, aqui nada muda, as variaveis de acumulação só vão estar sempre zeradas
@@ -657,7 +692,7 @@ export class OBJMesh extends VisualMesh
     * Define a iluminação do objeto como um todo 
     * @override
     */
-    setIntireIlumination( iluminationDefinition={} )
+    setIntireIlumination( iluminationDefinition:any={} )
     {
         this.brilhoObjeto   = iluminationDefinition.brilhoObjeto;
         this.ambientObjeto  = iluminationDefinition.ambientObjeto;
@@ -719,7 +754,7 @@ export class OBJMesh extends VisualMesh
         return this.objetos[ this.nomesObjetos[ index ] ];
     }
 
-    getParteByName( nomeParte )
+    getParteByName( nomeParte:string )
     {
         return this.objetos[ nomeParte ];
     }
@@ -787,7 +822,7 @@ export class OBJMesh extends VisualMesh
     /**
     * Obtem todos so vertices de uma parte especifica, extraidos do vetor de vertices do OBJ
     */
-    getVerticesParte( nomeParte )
+    getVerticesParte( nomeParte:string )
     {
         return {
             inicio   : this.verticesComecaObjetos[nomeParte],
@@ -803,29 +838,33 @@ export class OBJMesh extends VisualMesh
     *  (1) Somar X, Y e Z de todos os vertices, fazendo uma acumulação
     *  (2) Dividir pela quantidade de vertices
     */
-    calcularCentroideParte( nomeParte )
+    calcularCentroideParte( nomeParte:string )
     {
-        let verticesParte       = 0;
+        let qtdeVerticesParte       = 0;
+        let verticesParte           = new Array<Array<any>>;
 
         // Se for apenas um vertice
         if( this.nomesObjetos.length == 1 )
         {
             verticesParte = this.verticesObjetos[ Object.keys(this.verticesObjetos)[0] ];
+            qtdeVerticesParte = verticesParte.length;
 
         }else{
 
             // se existe literalmente NOME__MATERIAL
             if( this.verticesObjetos[ nomeParte ] != null ) {
                 verticesParte = this.verticesObjetos[ nomeParte ];
+                qtdeVerticesParte = verticesParte.length;
 
             // Se não existe literamente NOME__GRUPO, então despreza o material e pega só o nome
             }else{
                 const apenasNomeObjetoSemMaterial = nomeParte.split('__')[0];
                 verticesParte = this.verticesObjetosOnlyNomeParte[ apenasNomeObjetoSemMaterial ];
+                qtdeVerticesParte = verticesParte.length;
             }
         }
 
-        let totalVertices = verticesParte.length;
+        let totalVertices = qtdeVerticesParte;
         let xSomado       = 0;
         let ySomado       = 0;
         let zSomado       = 0; 
@@ -852,7 +891,7 @@ export class OBJMesh extends VisualMesh
     * FORMULA MATEMATICA:
     *    posicaoGlobalParte = matrixModeloObjetoVisual * posicaoLocalParte
     */
-    calcularCentroideGlobalParte( nomeParte )
+    calcularCentroideGlobalParte( nomeParte:string )
     {
         const matrixModeloObjetoVisual = this.modeloObjetoVisual;
         const centroLocalParte         = this.calcularCentroideParte( nomeParte );
@@ -864,7 +903,7 @@ export class OBJMesh extends VisualMesh
                                            1 
                                          ]; // o 1 é constante para posições
     
-        const posicaoGlobalParte       = MultiplicarMatrix4x4PorVetor4( matrixModeloObjetoVisual, centroLocalParte4 );
+        const posicaoGlobalParte       = MultiplicarMatrix4x4PorVetor4( matrixModeloObjetoVisual!, centroLocalParte4 );
 
         return posicaoGlobalParte;
     }
@@ -1060,7 +1099,7 @@ export class OBJMesh extends VisualMesh
     /**
     * Causa uma deformação em alguma parte do modelo, igual no CuboDeformavelMesh.js
     */
-    deformarVerticePorProximidade(xAlvo, yAlvo, zAlvo, raio, intensidade) 
+    deformarVerticePorProximidade(xAlvo:number, yAlvo:number, zAlvo:number, raio:number, intensidade:number) 
     {
         const vertices = this.getPositions();
 

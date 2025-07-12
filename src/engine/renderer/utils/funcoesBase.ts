@@ -9,10 +9,16 @@
 */
 import { Ponteiro } from "../../types/types-cpp-like";
 
-export function criarGL( canvas:HTMLCanvasElement, version:string="auto" ): any
+export function criarGL( canvas:React.RefObject<HTMLCanvasElement>, version:string="auto" ): any
 {
     let gl;
     let v = 'N';
+    
+    let elementoCanvas = canvas.current;
+    if ( !elementoCanvas ) 
+    {
+        throw new Error("Canvas ainda é null.");
+    }
 
     if( version != '1' && version != '2' && version != 'auto' )
     {
@@ -22,7 +28,7 @@ export function criarGL( canvas:HTMLCanvasElement, version:string="auto" ): any
     if( version == 'auto' )
     {
         // Tenta WebGL 2
-        gl = canvas.getContext('webgl2');
+        gl = elementoCanvas!.getContext('webgl2');
 
         if (gl) {
             console.log('WebGL 2 está disponível!');
@@ -30,7 +36,7 @@ export function criarGL( canvas:HTMLCanvasElement, version:string="auto" ): any
 
         } else {
             // Tenta WebGL 1
-            gl = canvas.getContext('webgl');
+            gl = elementoCanvas!.getContext('webgl');
 
             if (gl) {
                 console.log('WebGL 1 está disponível!');
@@ -43,12 +49,12 @@ export function criarGL( canvas:HTMLCanvasElement, version:string="auto" ): any
         }
 
     }else{
-        gl = canvas.getContext('webgl' + (version == "1" ? '' : version) );
+        gl = elementoCanvas!.getContext('webgl' + (version == "1" ? '' : version) );
         v = version;
     }
 
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+    elementoCanvas!.width  = window.innerWidth;
+    elementoCanvas!.height = window.innerHeight;
     
     return {
         gl      : gl as WebGL2RenderingContext,

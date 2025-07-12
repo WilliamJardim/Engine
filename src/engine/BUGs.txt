@@ -1,11 +1,21 @@
-12/07/2025
+12/07/2025 - 15:23 PM (RESOLVIDO)
 positions dos objetos ficando NaN
-A cena cria o objeto da engine de fisica normalmente, com as posicoes certinho
-Ao chamar meu mini renderizador webgl pra criar os objeto VisualMesh tambem vai certinho
+    A cena cria o objeto da engine de fisica normalmente, com as posicoes certinho
+    Ao chamar meu mini renderizador webgl pra criar os objeto VisualMesh tambem vai certinho
 
-No primeiro frame, e até no segundo, fica tudo normal, com a position igual eu defini no EngineMain
+    No primeiro frame, e até no segundo, fica tudo normal, com a position igual eu defini no EngineMain
 
-Porém, depois do terceiro frame, aproximadamente, positions dos objetos da engine de fisica ficando NaN
+    Porém, depois do terceiro frame, aproximadamente, positions dos objetos da engine de fisica ficando NaN
 
-E o efeito visual que tem é que, aparece um cubo no meu mini renderizador webgl, e menos de um segundo depois ele some.
+    E o efeito visual que tem é que, aparece um cubo no meu mini renderizador webgl, e menos de um segundo depois ele some.
+
+    ESSE BUG acontece na função "updateObjects"
+    na verdade, dentro da função updateObject do ObjectBase
+
+    dentro da função "updateMovement" e tambem da função "updateRotation" do ObjectBase
+
+
+
+
+
 

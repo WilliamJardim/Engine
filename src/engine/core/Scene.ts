@@ -39,7 +39,7 @@ export default class Scene
     public sceneCounter   : FrameCounter;
 
     public gravity                              : Position3D;
-    public normalSpeed                          : number = 1;
+    public normalSpeed                          : number = 0.05;
     public slowSpeed                            : number = 0.05;
     public frameDeltaIntensification            : number = this.normalSpeed;
     public objectPhysicsUpdateRate              : number = 1; //Permite intensificar os efeitos da fisica nos objetos
@@ -71,9 +71,9 @@ export default class Scene
                             y: -0.1, 
                             z: 0.3},
 
-            deslocationTrend: { x: 0.08, 
+            deslocationTrend: { x: 0.06, 
                                 y: 0.01, 
-                                z: 0.05},
+                                z: 0.03},
 
             intensity   : { x: 1, 
                             y: 1, 

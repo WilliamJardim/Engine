@@ -1574,19 +1574,23 @@ export default class ObjectBase extends AbstractObjectBase
         const forcaVelocidadeObjeto   : ObjectForce          = objeto.getRotationForce();
         const aceleracaoRotacaoObjeto : ObjectAcceleration   = objeto.getRotationAcceleration();
         
-        /**
-        * Calcula a aceleração da velocidade do objeto 
-        */
-        aceleracaoRotacaoObjeto.x = forcaVelocidadeObjeto.x / massaObjeto;
-        aceleracaoRotacaoObjeto.y = forcaVelocidadeObjeto.y / massaObjeto;
-        aceleracaoRotacaoObjeto.z = forcaVelocidadeObjeto.z / massaObjeto;
+        // Se a massaObjeto for zero, não faz nada pra não dar divisão por zero
+        if( massaObjeto != 0 )
+        {
+            /**
+            * Calcula a aceleração da velocidade do objeto 
+            */
+            aceleracaoRotacaoObjeto.x = forcaVelocidadeObjeto.x / massaObjeto;
+            aceleracaoRotacaoObjeto.y = forcaVelocidadeObjeto.y / massaObjeto;
+            aceleracaoRotacaoObjeto.z = forcaVelocidadeObjeto.z / massaObjeto;
 
-        /**
-        * Aplica aceleração da velocidade nos seus eixos
-        */
-        objeto.somarRotationVelocityX( aceleracaoRotacaoObjeto.x );
-        objeto.somarRotationVelocityY( aceleracaoRotacaoObjeto.y );
-        objeto.somarRotationVelocityZ( aceleracaoRotacaoObjeto.z );
+            /**
+            * Aplica aceleração da velocidade nos seus eixos
+            */
+            objeto.somarRotationVelocityX( aceleracaoRotacaoObjeto.x );
+            objeto.somarRotationVelocityY( aceleracaoRotacaoObjeto.y );
+            objeto.somarRotationVelocityZ( aceleracaoRotacaoObjeto.z );
+        }
 
         /**
         * Atualiza a rotação do objeto
@@ -1697,12 +1701,16 @@ export default class ObjectBase extends AbstractObjectBase
         * Fisica da aceleração do objeto que afeta a velocidade do objeto 
         */
 
-        /**
-        * Calcula a aceleração do objeto 
-        */
-        aceleracaoObjeto.x = forcaObjeto.x / massaObjeto;
-        aceleracaoObjeto.y = forcaObjeto.y / massaObjeto;
-        aceleracaoObjeto.z = forcaObjeto.z / massaObjeto;
+        // Se a massa for zero vai dar problema de divisão por zero, então preciso verificar primeiro
+        if( massaObjeto != 0 )
+        {
+            /**
+            * Calcula a aceleração do objeto 
+            */
+            aceleracaoObjeto.x = forcaObjeto.x / massaObjeto;
+            aceleracaoObjeto.y = forcaObjeto.y / massaObjeto;
+            aceleracaoObjeto.z = forcaObjeto.z / massaObjeto;
+        }
 
         /**
         * Calcula o peso do objeto 

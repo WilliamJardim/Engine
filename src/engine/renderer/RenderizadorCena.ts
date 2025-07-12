@@ -65,46 +65,6 @@ export default class RenderizadorCena
         this.renderizador.miraCamera[1] = 0;
         this.renderizador.miraCamera[2] = 0;
 
-        // Configurar cena, câmera e renderizador
-        // Cria um cubo
-        /*
-        this.renderizador.criarObjeto({
-            tipo: 'Cubo',
-            nome: 'Cubo',
-            invisivel: false,
-            transparencia: 0.5, // 100 opaco
-
-            // Iluminação
-            alwaysUpdateLights: true,
-            brilho: 32,
-            ambient: 0.6,
-            diffuse: 0.8,
-            specular: 0.8,
-
-            childrenIndividualLights: true,
-            useAccumulatedLights: true,
-            staticAccumulatedLights: false,
-
-            position: {
-                x: 0,
-                y: 8,
-                z: 0
-            },
-
-            scale: {
-                x: 1,
-                y: 1,
-                z: 1
-            },
-
-            rotation: {
-                x: 0,
-                y: 0,
-                z: 0
-            }
-        });
-        */
-
         const sensibilidade = 0.03;
         const limiteX       = 10; 
         const limiteY       = 10; 
@@ -308,7 +268,7 @@ export default class RenderizadorCena
                         scale: objProps.scale,
                         rotation: objProps.rotation,
                         invisivel: false,
-                        transparencia: 0.5, // 100 opaco
+                        transparencia: 1, // 100 opaco
 
                         // Iluminação
                         alwaysUpdateLights: true,

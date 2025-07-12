@@ -39,11 +39,11 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         }
 
     }, {
-        mass: 0,
+        mass: 1,
         name: "Cubo",
         type: "Cubo",
         classes: [],
-        havePhysics: false,
+        havePhysics: true,
         position: {
             x: 0,
             y: 8,
@@ -64,8 +64,200 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             y: 0,
             z: 0
         },
-        collide: false,
-        collisionEvents: false,
+        collide: true,
+        collisionEvents: true,
+        podeAtravessar: false,
+        ignoreCollisions: [],
+        proximityConfig: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        isInvisible: false,
+        opacity: 1,
+        events: [],
+        kick_rate: 4,
+        enable_advanced_frame_tracking: false,
+        attachments: [],
+        onCreate: function(){
+
+        }
+    }) );
+
+    // Cria um objeto na Engine de fisica
+    scene.criarObjeto( new ObjectBase({
+        position: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        }
+
+    }, {
+        mass: 1,
+        name: "Cubo1",
+        type: "Cubo",
+        classes: [],
+        havePhysics: true,
+        position: {
+            x: -10,
+            y: 0,
+            z: 0
+        },
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        },
+        scaleReduce: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        collide: true,
+        collisionEvents: true,
+        podeAtravessar: false,
+        ignoreCollisions: [],
+        proximityConfig: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        isInvisible: false,
+        opacity: 1,
+        events: [],
+        kick_rate: 4,
+        enable_advanced_frame_tracking: false,
+        attachments: [],
+        onCreate: function(){
+
+        }
+    }) );
+
+    // Cria um objeto na Engine de fisica
+    scene.criarObjeto( new ObjectBase({
+        position: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        }
+
+    }, {
+        mass: 1,
+        name: "Cubo2",
+        type: "Cubo",
+        classes: [],
+        havePhysics: true,
+        position: {
+            x: 0,
+            y: 0,
+            z: -5
+        },
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        },
+        scaleReduce: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        collide: true,
+        collisionEvents: true,
+        podeAtravessar: false,
+        ignoreCollisions: [],
+        proximityConfig: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        isInvisible: false,
+        opacity: 1,
+        events: [],
+        kick_rate: 4,
+        enable_advanced_frame_tracking: false,
+        attachments: [],
+        onCreate: function(){
+
+        }
+    }) );
+
+    // Chão
+    scene.criarObjeto( new ObjectBase({
+        position: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        scale: {
+            x: 0,
+            y: 0,
+            z: 0
+        }
+
+    }, {
+        mass: 1,
+        name: "Chao",
+        type: "Cubo",
+        classes: [],
+        havePhysics: false,
+        position: {
+            x: 0,
+            y: -16,
+            z: 0
+        },
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        scale: {
+            x: 2000,
+            y: 0.1,
+            z: 2000
+        },
+        scaleReduce: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        collide: true,
+        collisionEvents: true,
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
@@ -83,8 +275,6 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 
         }
     }) );
-
-    debugger
 
     globalContext.set("scene", scene);
 }

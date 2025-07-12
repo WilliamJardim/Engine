@@ -1,0 +1,11 @@
+12/07/2025
+positions dos objetos ficando NaN
+A cena cria o objeto da engine de fisica normalmente, com as posicoes certinho
+Ao chamar meu mini renderizador webgl pra criar os objeto VisualMesh tambem vai certinho
+
+No primeiro frame, e até no segundo, fica tudo normal, com a position igual eu defini no EngineMain
+
+Porém, depois do terceiro frame, aproximadamente, positions dos objetos da engine de fisica ficando NaN
+
+E o efeito visual que tem é que, aparece um cubo no meu mini renderizador webgl, e menos de um segundo depois ele some.
+

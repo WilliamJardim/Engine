@@ -50,6 +50,7 @@ import { OBJMesh } from '../Mesh/OBJMesh.ts';
 import { Light } from '../Mesh/Light.js';
 import { float, Ponteiro } from '../../types/types-cpp-like.js';
 import Mapa from '../../utils/dicionarios/Mapa.js';
+import { VisualMesh } from '../Mesh/VisualMesh.ts';
 
 export class Renderer
 {
@@ -374,7 +375,7 @@ export class Renderer
     /**
     * Cria um novo objeto na cena( adicionando ele na lista de renderização )
     */
-    criarObjeto( propriedadesObjeto:any )
+    criarObjeto( propriedadesObjeto:any ): Ponteiro<VisualMesh>
     {
         const contextoRenderizador = this;
 
@@ -447,6 +448,9 @@ export class Renderer
                                  );
                 break;
         }
+
+        // Retorna o ultimo objeto criado
+        return this.objetos[ this.objetos.length-1 ];
     }   
 
     /**

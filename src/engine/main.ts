@@ -18,18 +18,87 @@ import LocalSound    from './core/LocalSound';
 export const globalContext = new GlobalContext({});
 
 /** Função que vai ser executada quanto a Engine for iniciada */
-export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: number, frameNumber: number ): void{
-    
+export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: number, frameNumber: number ): void
+{
+    // Cria um objeto na Engine de fisica
+    scene.criarObjeto( new ObjectBase({
+        position: {
+            x: 0,
+            y: 8,
+            z: 0
+        },
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        }
+
+    }, {
+        mass: 0,
+        name: "Cubo",
+        type: "Cubo",
+        classes: [],
+        havePhysics: false,
+        position: {
+            x: 0,
+            y: 8,
+            z: 0
+        },
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        },
+        scaleReduce: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        collide: false,
+        collisionEvents: false,
+        podeAtravessar: false,
+        ignoreCollisions: [],
+        proximityConfig: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        isInvisible: false,
+        opacity: 1,
+        events: [],
+        kick_rate: 1,
+        enable_advanced_frame_tracking: false,
+        attachments: [],
+        onCreate: function(){
+
+        }
+    }) );
+
+    debugger
+
+    globalContext.set("scene", scene);
 }
 
 
 /** Loop que vai ser executado ANTES da função de atualização */
-export function EngineBeforeLoop( scene: Scene, frameDelta: number, frameNumber: number, firstRender: boolean, renderizadorPronto: boolean ): void{
+export function EngineBeforeLoop( scene: Scene, frameDelta: number, frameNumber: number, firstRender: boolean, renderizadorPronto: boolean ): void
+{
 
 }
 
 /** Loop que vai ser executado a todo momento depois que a função de atualização rodar */
-export function EngineLoop( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: number, frameNumber: number ): void{
+export function EngineLoop( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: number, frameNumber: number ): void
+{
 
     const htmlCanvas = globalContext.get('htmlCanvas');
 
@@ -51,3 +120,5 @@ export function EngineLoop( scene: Scene, firstRender: boolean, renderizadorPron
     }
 
 }
+
+window.engineContext = globalContext;

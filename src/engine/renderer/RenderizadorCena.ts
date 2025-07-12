@@ -21,6 +21,7 @@ import SceneConfig    from '../interfaces/SceneConfig';
 import { Ponteiro }   from '../types/types-cpp-like';
 import { Renderer } from './Renderer/Renderer';
 import { calcularDirecaoCamera, calcularDireitaCamera } from './utils/math';
+import { VisualMesh } from './Mesh/VisualMesh';
 
 export default class RenderizadorCena
 {
@@ -66,6 +67,7 @@ export default class RenderizadorCena
 
         // Configurar cena, câmera e renderizador
         // Cria um cubo
+        /*
         this.renderizador.criarObjeto({
             tipo: 'Cubo',
             nome: 'Cubo',
@@ -83,33 +85,25 @@ export default class RenderizadorCena
             useAccumulatedLights: true,
             staticAccumulatedLights: false,
 
-            /**
-            * Posição do objeto 
-            */
             position: {
                 x: 0,
                 y: 8,
                 z: 0
             },
 
-            /**
-            * Escala do objeto 
-            */
             scale: {
                 x: 1,
                 y: 1,
                 z: 1
             },
 
-            /**
-            * Rotação do objeto 
-            */
             rotation: {
                 x: 0,
                 y: 0,
                 z: 0
             }
         });
+        */
 
         const sensibilidade = 0.03;
         const limiteX       = 10; 
@@ -283,17 +277,6 @@ export default class RenderizadorCena
         loopTeste();
     }
 
-    /**
-    * Adiciona um objeto na cena que o meu mini renderizador webgl está renderizando para que este objeto seja renderizado visualmente
-    */
-    public addToRender( objeto:any ): void
-    {
-        if( objeto != null && objeto != undefined )
-        {
-            this.scene.criarObjeto( objeto );
-        }
-    }
-
     /** 
     * Atualiza os objetos visualmente
     */
@@ -318,11 +301,28 @@ export default class RenderizadorCena
                 //Se o objeto já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
                 if ( !this.toRenderAssociation.has(objetoAtual.id) ) 
                 {
-                    // TODO: Cria o novo objeto visual
-                    const novoObjetoVisual = null;
+                    
+                    const novoObjetoVisual = this.renderizador.criarObjeto({
+                        tipo: objProps.type,
+                        position: objProps.position,
+                        scale: objProps.scale,
+                        rotation: objProps.rotation,
+                        invisivel: false,
+                        transparencia: 0.5, // 100 opaco
 
-                    this.addToRender( novoObjetoVisual );
+                        // Iluminação
+                        alwaysUpdateLights: true,
+                        brilho: 32,
+                        ambient: 0.6,
+                        diffuse: 0.8,
+                        specular: 0.8,
+
+                        childrenIndividualLights: true,
+                        useAccumulatedLights: true,
+                        staticAccumulatedLights: false,
+                    });
                     this.toRenderAssociation.set(objetoAtual.id, novoObjetoVisual);
+                    
                 }   
 
                 /**
@@ -363,7 +363,7 @@ export default class RenderizadorCena
                         objetoVisual.scale.z = scale.z;
                     }
 
-                    objetoVisual.isInvisible = true;
+                    objetoVisual.isInvisible = false;
                 }
             }
         }

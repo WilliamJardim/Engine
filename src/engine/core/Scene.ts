@@ -75,9 +75,9 @@ export default class Scene
                                 y: 0.01, 
                                 z: 0.03},
 
-            intensity   : { x: 1, 
-                            y: 1, 
-                            z: 1 }
+            intensity   : { x: 0.5, 
+                            y: 0.5, 
+                            z: 0.5 }
         };
 
         this.haveWind  = sceneConfig.haveWind;

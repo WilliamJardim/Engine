@@ -48,10 +48,8 @@ export default class ObjectBase extends AbstractObjectBase
     * Para que o polimorfismo funcione bem, NÂO SE DEVE REDECLARAR ATRIBUTOS QUE A CLASSE MAE JA TEM
     */
    
-    constructor(mesh     : MeshRepresentation, 
-                objProps : ObjectProps
-            
-    ){
+    constructor( objProps : ObjectProps )
+    {
         super( objProps );
     
         this.objProps     = objProps;
@@ -182,8 +180,7 @@ export default class ObjectBase extends AbstractObjectBase
         /**
         * Final do construtor do ObjectBase
         */
-        this.setMesh( mesh );
-
+        
         //Se tem posição
         this.setPosition( this.objProps.position );
 

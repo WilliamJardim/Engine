@@ -74,7 +74,7 @@ export default abstract class AbstractObjectBase
     /** OUTROS ATRIBUTOS **/
     public lastPosition : ObjectPosition = {x: 0, y: 0, z: 0};
 
-    constructor(objProps:ObjectProps)
+    constructor( objProps:ObjectProps )
     {    
         // Inicialização obrigatória dos valores da classe
         this.tipo             = "AbstractObjectBase";

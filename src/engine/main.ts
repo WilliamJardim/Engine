@@ -22,23 +22,6 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 {
     // Cria um objeto na Engine de fisica
     scene.criarObjeto( new ObjectBase({
-        position: {
-            x: 0,
-            y: 8,
-            z: 0
-        },
-        rotation: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
-        scale: {
-            x: 1,
-            y: 1,
-            z: 1
-        }
-
-    }, {
         mass: 1,
         name: "Cubo",
         type: "Cubo",
@@ -86,23 +69,6 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 
     // Cria um objeto na Engine de fisica
     scene.criarObjeto( new ObjectBase({
-        position: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
-        rotation: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
-        scale: {
-            x: 1,
-            y: 1,
-            z: 1
-        }
-
-    }, {
         mass: 1,
         name: "Cubo1",
         type: "Cubo",
@@ -150,23 +116,6 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 
     // Cria um objeto na Engine de fisica
     scene.criarObjeto( new ObjectBase({
-        position: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
-        rotation: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
-        scale: {
-            x: 1,
-            y: 1,
-            z: 1
-        }
-
-    }, {
         mass: 1,
         name: "Cubo2",
         type: "Cubo",
@@ -210,27 +159,10 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         onCreate: function(){
 
         }
-    }) );
+    } ) );
 
     // Chão
     scene.criarObjeto( new ObjectBase({
-        position: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
-        rotation: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
-        scale: {
-            x: 0,
-            y: 0,
-            z: 0
-        }
-
-    }, {
         mass: 1,
         name: "Chao",
         type: "Cubo",

@@ -175,7 +175,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         */
         position: {
             x: 0,
-            y: 8,
+            y: -10,
             z: 0
         },
 
@@ -183,9 +183,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         * Escala do objeto 
         */
         scale: {
-            x: 1,
-            y: 1,
-            z: 1
+            x: 2,
+            y: 2,
+            z: 2
         },
 
         /**
@@ -199,14 +199,14 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 
         mass: 1,
         classes: [],
-        havePhysics: false,
+        havePhysics: true,
         scaleReduce: {
             x: 0,
             y: 0,
             z: 0
         },
-        collide: false,
-        collisionEvents: false,
+        collide: true,
+        collisionEvents: true,
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {

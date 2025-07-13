@@ -37,6 +37,16 @@ export default class Mapa<
         // Retorna um Proxy para permitir acesso direto com colchetes
         // SIMPLISMENTE PERMITE FAZER: dicionario["CHAVE"] pra acessar os dados
         return new Proxy(this, {
+            // Fazer o Object.keys retornar as keys do internal_map
+            ownKeys(target) {
+                return Reflect.ownKeys(target.internal_map);
+            },
+            getOwnPropertyDescriptor(target, prop) {
+                return {
+                    enumerable: true,
+                    configurable: true
+                };
+            },
             get: (target, prop) => {
                 if (typeof prop === "string") {
                     // Permite acesso direto tipo mapa["chave"]

@@ -78,7 +78,9 @@ export default class RenderizadorCena
         const limiteY       = 10; 
         let passos          = 0.5;
 
-        window.objLidos = this.objLidos;
+        // Lista de objetos lidos pelo meu mini renderizador webgl
+        window.renderizador = this.renderizador;
+        window.objLidos     = this.objLidos;
 
         const contextoPlayer = {
             mousePosition: {
@@ -367,8 +369,8 @@ export default class RenderizadorCena
 
                     const atributosObjetos = {
                         tipo: objProps.type,
-                        obj : "",
-                        mtl : "",
+                        objString : "",
+                        mtlString : "",
                         position: objProps.position,
                         scale: objProps.scale,
                         rotation: objProps.rotation,
@@ -402,8 +404,8 @@ export default class RenderizadorCena
                     if( tipoObjeto == "OBJ" && podeInserirOBJ == true )
                     {
                         // Se for um OBJ e ele ja foi carregado, e ainda não foi inserido no objeto, o faz
-                        atributosObjetos.obj = stringsOBJ.obj_string;
-                        atributosObjetos.mtl = stringsOBJ.mtl_string;
+                        atributosObjetos.objString = stringsOBJ.obj_string;
+                        atributosObjetos.mtlString = stringsOBJ.mtl_string;
 
                         // Marca que ja foi inserido
                         stringsOBJ.foi_lido = true;

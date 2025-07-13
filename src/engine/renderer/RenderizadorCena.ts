@@ -25,12 +25,14 @@ import { VisualMesh } from './Mesh/VisualMesh';
 import { carregarTxt } from './utils/funcoesBase';
 import ObjString from './interfaces/ObjString';
 import Mapa from '../utils/dicionarios/Mapa';
+import { Light } from '../core/Light';
 
 export default class RenderizadorCena
 {
     public engineScene          : Scene;
     public inputListener        : InputListener;
     public toRenderAssociation  : Map<string, any>;
+    public toRenderLightsAssociation  : Map<string, any>;
     public scene                : any;
     public renderizador         : any;
     public canvasRef            : React.RefObject<HTMLCanvasElement>;
@@ -55,8 +57,11 @@ export default class RenderizadorCena
             enable_advanced_frame_tracking : true
         });
 
-        // Cria um mapa que associa o id dos objetos da minha engine com o que o meu mini renderizador webgl vai desenhar
+        // Cria um mapa que associa o id dos objetos da minha engine de logica com o que o meu mini renderizador webgl vai desenhar
         this.toRenderAssociation = new Map<string, any>();
+
+        // Cria um mapa que associa o id das luzes da minha engine de logica com o que o meu mini renderizador webgl vai desenhar
+        this.toRenderLightsAssociation = new Map<string, any>();
 
         this.objLidos            = new Mapa<string, ObjString>();
 
@@ -442,6 +447,8 @@ export default class RenderizadorCena
                     const rotation : any = objetoAtual.getRepresentacaoMesh().rotation;
                     const scale    : any = objetoAtual.getRepresentacaoMesh().scale;
 
+                    objetoVisual.nome = objetoAtual.name;
+
                     if(position != undefined && position != null)
                     {
                         objetoVisual.position.x = position.x;
@@ -468,6 +475,52 @@ export default class RenderizadorCena
             }
         }
 
+    }
+
+    /** 
+    * Atualiza as luzes visualmente
+    */
+    public updateLightsVisually(): void
+    {
+        const engineScene         = this.engineScene;
+        const engineSceneLights   = engineScene.lights;
+
+        /**
+        * Para cada objeto da cena da minha engine 
+        */
+        for( let i = 0 ; i < engineSceneLights.length ; i++ )
+        {
+            const luzAtual : Ponteiro<Light> = engineSceneLights[i];
+            
+            if( luzAtual != null )
+            {
+                const propriedadesLuz : any      = luzAtual.getPropriedadesLuz();
+
+                //Se a luz já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
+                if ( !this.toRenderLightsAssociation.has(luzAtual.id) ) 
+                {
+                    // Cria a luz no meu mini renderizador webgl
+                    const novaLuzVisual = this.renderizador.criarObjeto( propriedadesLuz );
+                    this.toRenderLightsAssociation.set(luzAtual.id, novaLuzVisual);
+                }
+
+                /**
+                * Atualiza visualmente a luz
+                */
+                let luzVisual = this.toRenderLightsAssociation.get( luzAtual.id );
+
+                // Copiando os atributos da luz da minha engine de logica para meu mini renderizador webgl
+                luzVisual.ambient     = propriedadesLuz.ambient;
+                luzVisual.position    = propriedadesLuz.position;
+                luzVisual.raio        = propriedadesLuz.raio;
+                luzVisual.brilho      = propriedadesLuz.brilho;
+                luzVisual.ambient     = propriedadesLuz.ambient;
+                luzVisual.diffuse     = propriedadesLuz.diffuse;
+                luzVisual.specular    = propriedadesLuz.specular;
+                luzVisual.cor         = propriedadesLuz.cor;
+                luzVisual.intensidade = propriedadesLuz.intensidade;
+            }
+        }
     }
 
     //Função que chama o loop "animate"
@@ -497,6 +550,9 @@ export default class RenderizadorCena
 
             // Atualiza a visualização dos objetos
             context.updateObjectsVisually();
+
+            // Atualiza as luzes
+            context.updateLightsVisually();
 
             // TODO: Atualiza os movimentos da camera
             

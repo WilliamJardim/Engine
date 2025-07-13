@@ -14,6 +14,7 @@ import ObjectBase    from './core/ObjectBase';
 import Scene         from './core/Scene';
 import LocalSound    from './core/LocalSound';
 import { carregarTxt } from './renderer/utils/funcoesBase';
+import { Light } from './core/Light';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
 export const globalContext = new GlobalContext({});
@@ -434,6 +435,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         useAccumulatedLights: true,
         staticAccumulatedLights: false
     }) );
+
+    // Ponto de luz
+    scene.criarLuz( new Light({ tipo: "Light", position: {x: 1.556491508391181, y: 29.92973285780118, z: -16.441060668107095 }, ambient: 0.5, raio: 0.1 , cor: [255,0,0]}) )
 
     globalContext.set("scene", scene);
 }

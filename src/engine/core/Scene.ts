@@ -31,6 +31,7 @@ import { EngineMain }        from '../main'; // Importa a função EngineMain
 import { EngineLoop }        from '../main'; // Importa a função EngineLoop
 import { EngineBeforeLoop }  from '../main' //Importa a função EngineBeforeLoop
 import { Ponteiro }          from "../types/types-cpp-like.ts";
+import { Light }             from '../core/Light.ts';
 
 export default class Scene
 {
@@ -48,6 +49,7 @@ export default class Scene
     public arrastoAr                            : number = 1;
 
     public objects               : Array<Ponteiro<AbstractObjectBase>>;
+    public lights                : Array<Ponteiro<Light>>;
     public sounds                : Array<Ponteiro<LocalSound>>;
     
     public objectTableById       : Mapa<string, Ponteiro<AbstractObjectBase>>;
@@ -93,6 +95,9 @@ export default class Scene
 
         // Objetos
         this.objects = new Array<Ponteiro<AbstractObjectBase>>();
+
+        // Luzes
+        this.lights  = new Array<Ponteiro<Light>>();
 
         // Sons locais
         this.sounds  = new Array<Ponteiro<LocalSound>>();
@@ -392,6 +397,14 @@ export default class Scene
     */
     public criarObjeto( objeto:Ponteiro<AbstractObjectBase> ): void{
         this.objects.push( objeto );
+    }
+
+    /**
+    * Adiciona uma luz na cena 
+    */
+    public criarLuz( luz:Ponteiro<Light> ): void
+    {
+        this.lights.push( luz );
     }
 
     /**

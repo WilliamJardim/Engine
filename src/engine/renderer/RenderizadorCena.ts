@@ -23,6 +23,8 @@ import { Renderer } from './Renderer/Renderer';
 import { calcularDirecaoCamera, calcularDireitaCamera } from './utils/math';
 import { VisualMesh } from './Mesh/VisualMesh';
 import { carregarTxt } from './utils/funcoesBase';
+import ObjString from './interfaces/ObjString';
+import Mapa from '../utils/dicionarios/Mapa';
 
 export default class RenderizadorCena
 {
@@ -34,6 +36,9 @@ export default class RenderizadorCena
     public canvasRef            : React.RefObject<HTMLCanvasElement>;
     public firstRender          : boolean = true;
     public provavelmentePronto  : boolean = false; //Sinaliza se os objetos iniciais foram carregados
+
+    // Armazena todos os OBJ lidos por essa Engine gráfica
+    public objLidos             : Mapa<string, ObjString>;
 
     constructor( canvasRef:React.RefObject<HTMLCanvasElement> )
     {
@@ -53,6 +58,8 @@ export default class RenderizadorCena
         // Cria um mapa que associa o id dos objetos da minha engine com o que o meu mini renderizador webgl vai desenhar
         this.toRenderAssociation = new Map<string, any>();
 
+        this.objLidos            = new Mapa<string, ObjString>();
+
         //Obtem o canvas
         this.canvasRef = canvasRef;
         
@@ -70,6 +77,8 @@ export default class RenderizadorCena
         const limiteX       = 10; 
         const limiteY       = 10; 
         let passos          = 0.5;
+
+        window.objLidos = this.objLidos;
 
         const contextoPlayer = {
             mousePosition: {
@@ -238,6 +247,61 @@ export default class RenderizadorCena
         loopTeste();
     }
 
+    // Armazena o OBJ lido atualmente
+    public salvarOBJMemoria( idObjeto:string, objString:ObjString ): void
+    {
+        this.objLidos[ idObjeto ] = objString;
+    }
+    
+    /**
+    * Função especifica para ler o OBJ associado ao objeto, consultando ele
+    */
+    public getOBJMemoria( idObjeto:string ): ObjString
+    {
+        return this.objLidos[ idObjeto ];
+    }
+
+    /**
+    * Função que lê o objeto e diz que ja foi carregado 
+    */
+    public async carregarOBJ_seNaoCarregado( idObjeto:string, tipoObjeto:string, caminho_obj:string, caminho_mtl:string ): Promise<boolean>
+    {
+        const context = this;
+
+        // Se o objeto não está presente no Mapa de OBJs
+        if( tipoObjeto == "OBJ" && this.getOBJMemoria( idObjeto ) == null )
+        {   
+            this.objLidos[ idObjeto ] = {
+                obj_string : "",
+                mtl_string : "",
+                foi_lido   : false,
+                concluido  : false,
+                carregando : false
+            }
+        }
+
+        // O carregamento do OBJ ainda não terminou
+        if( this.getOBJMemoria( idObjeto ).carregando == false )
+        {
+            // Diz que o objeto está sendo carregado
+            this.objLidos[ idObjeto ].carregando  = true;
+
+            // Cria uma Thread pra fazer o carregamento de forma asincrona
+            setTimeout(async function(){
+                const idObjetoCarregando : string  = idObjeto;
+                const objString          : string  = await carregarTxt( caminho_obj );
+                const mtlString          : string  = await carregarTxt( caminho_mtl );
+
+                // Salva e diz que ja terminou de carregar
+                context.objLidos[ idObjetoCarregando ].obj_string = objString;
+                context.objLidos[ idObjetoCarregando ].mtl_string = mtlString;
+                context.objLidos[ idObjetoCarregando ].concluido  = true;
+            }, 1);
+        }
+
+        return true;
+    }
+
     /** 
     * Atualiza os objetos visualmente
     */
@@ -256,8 +320,45 @@ export default class RenderizadorCena
 
             if( objetoAtual != null )
             {
-                const objProps   : ObjectProps     = objetoAtual.objProps;
-                const tipoObjeto : string          = objProps.type;
+                const objProps        : ObjectProps     = objetoAtual.objProps;
+                const tipoObjeto      : string          = objProps.type;
+                const stringsOBJ      : ObjString       = this.getOBJMemoria( objetoAtual.id );
+                const isOBJCarregado  : boolean         = stringsOBJ != null;
+
+                // Se for um OBJ
+                if( tipoObjeto == "OBJ" )
+                {
+                    // Se não está carregando o OBJ
+                    if( isOBJCarregado == false )
+                    {
+                        // Inicia o carregamento
+                        this.carregarOBJ_seNaoCarregado( objetoAtual.id, 
+                                                         tipoObjeto,
+                                                         objProps.obj, 
+                                                         objProps.mtl );
+
+                        // NOTA: Vai sinalizar que está carregando
+                    }
+                }
+
+                let podeInserirOBJ   : boolean         = false;
+                let jaFoiInserido    : boolean         = false;
+
+                // Se o OBJ ja foi carregado
+                if( tipoObjeto == "OBJ" && isOBJCarregado == true)
+                {
+                    // Se le ja terminou de carregar porém ainda não foi inserido
+                    if( stringsOBJ.concluido == true && stringsOBJ.foi_lido == false )
+                    {
+                        podeInserirOBJ = true;
+                    }
+
+                    // Detecta quanto o OBJ ja foi inserido
+                    if( stringsOBJ.concluido == true && stringsOBJ.foi_lido == true )
+                    {
+                        jaFoiInserido = true;
+                    }
+                }
 
                 //Se o objeto já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
                 if ( !this.toRenderAssociation.has(objetoAtual.id) ) 
@@ -287,43 +388,38 @@ export default class RenderizadorCena
                     };
 
                     // Avisa se tiver erros bobos
-                    if( objProps.type != "OBJ" && (objProps.obj != "" || objProps.mtl != "") )
+                    if( tipoObjeto != "OBJ" && (objProps.obj != "" || objProps.mtl != "") )
                     {
                         console.warn(`Parece que voce está tentando importar um objeto .OBJ, pra isso altere o 'type' do objeto '${objProps.name}' para 'OBJ'.`);
                     }
 
-                    if( objProps.type == "OBJ" && (objProps.obj == "" || objProps.mtl == "") )
+                    if( tipoObjeto == "OBJ" && (objProps.obj == "" || objProps.mtl == "") )
                     {
                         console.warn(`O mtl ou obj do objeto '${objProps.name}' não foi preenchido. Isso impossibilita a Engine de carregar esses modelos.`);
                     }
 
-                    // Se for um objeto pode carregar o modelo
-                    /*
-                    IDEIA DE COMO CARREGAR O OBJETO 
-                    MAIS EU PRECISO TOMAR CUIDADO PRA ELE NÂO CARREGAR TODA HORA
-                    PRA ELE CARREGAR SÒ UMA VEZ, E PRA DEPOIS ATUALIZAR A POSICAO, ROTACAO E ESCALA NO LOOP
-                    if( objProps.type == "OBJ" )
+                    // Se o tipo for OBJ, ele só cria ele quando o carregamento terminar
+                    if( tipoObjeto == "OBJ" && podeInserirOBJ == true )
                     {
-                        async function carregarModelo() 
-                        {
-                            atributosObjetos.obj = await carregarTxt(objProps.obj);
-                            atributosObjetos.mtl = await carregarTxt(objProps.mtl);
-                            
-                            // Cria com o modelo carregado
-                            const novoObjetoVisual = context.renderizador.criarObjeto(atributosObjetos);
-                            context.toRenderAssociation.set(objetoAtual!.id, novoObjetoVisual);
-                        }
-                        carregarModelo();
+                        // Se for um OBJ e ele ja foi carregado, e ainda não foi inserido no objeto, o faz
+                        atributosObjetos.obj = stringsOBJ.obj_string;
+                        atributosObjetos.mtl = stringsOBJ.mtl_string;
 
-                    // Cria assim
-                    }else{
+                        // Marca que ja foi inserido
+                        stringsOBJ.foi_lido = true;
+
+                        // Cria o OBJ no meu mini renderizador
+                        const novoObjetoVisual = this.renderizador.criarObjeto(atributosObjetos);
+                        this.toRenderAssociation.set(objetoAtual.id, novoObjetoVisual);
+
+                        // ERRO: Mesmo assim, ele ainda continua dando erro na hora de criar o OBJMesh, umas 4 vezes, dos primeiros frames
+                        // DEPOIS O ERRO PARA, PORÈM, O OBJETO CONTINUA NÂO SENDO DESENHADO
+                        
+
+                    }else if( tipoObjeto != "OBJ" ){
                         const novoObjetoVisual = this.renderizador.criarObjeto(atributosObjetos);
                         this.toRenderAssociation.set(objetoAtual.id, novoObjetoVisual);
                     }
-                    */
-
-                    const novoObjetoVisual = this.renderizador.criarObjeto(atributosObjetos);
-                    this.toRenderAssociation.set(objetoAtual.id, novoObjetoVisual);
                     
                 }   
 

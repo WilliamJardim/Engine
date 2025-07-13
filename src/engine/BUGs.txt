@@ -15,6 +15,24 @@ positions dos objetos ficando NaN
     dentro da função "updateMovement" e tambem da função "updateRotation" do ObjectBase
 
 
+13/07/2025 - 11:22 AM (RESOLVER)
+Meu sistema de carregamento de OBJs está em partes funcionando
+ele já le os .obj e .mtl apenas uma vez, e consegue controlar quais ja foram carregados e quais precisam carregar
+PORÈM, POR ALGUM MOTIVO DESCONHECIDO, MESMO COM AS VERIFICAÇÔES, o erro ainda persiste nos primeiros frames:
+
+    OBJMesh.ts:178 Uncaught TypeError: Cannot read properties of undefined (reading 'split')
+        at OBJMesh.carregarMTL (OBJMesh.ts:178:32)
+        at new OBJMesh (OBJMesh.ts:134:14)
+        at Renderer.criarObjeto (Renderer.ts:385:36)
+        at RenderizadorCena.updateObjectsVisually (RenderizadorCena.ts:412:68)
+        at animate (RenderizadorCena.ts:497:21)
+
+Quanto mais objetos OBJ eu instancio na cena, mais esse erro acontece nos primeiros frames.
+No momento São 6 erros.
+Esses erros param nos proximos frames.
+
+porém indicam algo de errado. E também, o OBJ NÂO È CARREGADO.
+
 
 
 

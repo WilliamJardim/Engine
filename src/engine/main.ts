@@ -24,10 +24,10 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     // Importa o modelo do meu quarto 1
     // Cria um plano que pode se deformar
     scene.criarObjeto(new ObjectBase({
-        type : 'Cubo',
+        type : 'OBJ',
         name : 'Mapa antigo',
-        obj  : './MAPS/theroom/map.obj',
-        mtl  : './MAPS/theroom/map.mtl',
+        obj  : 'public/MAPS/theroom/map.obj',
+        mtl  : 'public/MAPS/theroom/map.mtl',
         
         isInvisible: false,
         opacity: 1, 
@@ -40,7 +40,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         * Posição do objeto 
         */
         position: {
-            x: -200,
+            x: 0,
             y: 8,
             z: 0
         },
@@ -65,14 +65,14 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 
         mass: 1,
         classes: [],
-        havePhysics: true,
+        havePhysics: false,
         scaleReduce: {
             x: 0,
             y: 0,
             z: 0
         },
-        collide: true,
-        collisionEvents: true,
+        collide: false,
+        collisionEvents: false,
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
@@ -91,10 +91,10 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     
     // Cria um plano que pode se deformar
     scene.criarObjeto( new ObjectBase({
-        type : 'Cubo',
+        type : 'OBJ',
         name : 'Mapa novo 2',
-        obj  : './MAPS/theroom2/map.obj',
-        mtl  : './MAPS/theroom2/map.mtl',
+        obj  : 'public/MAPS/theroom2/map.obj',
+        mtl  : 'public/MAPS/theroom2/map.mtl',
         
         isInvisible: false,
         opacity: 1, 
@@ -107,7 +107,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         * Posição do objeto 
         */
         position: {
-            x: -300,
+            x: 0,
             y: 8,
             z: 0
         },
@@ -132,14 +132,81 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 
         mass: 1,
         classes: [],
-        havePhysics: true,
+        havePhysics: false,
         scaleReduce: {
             x: 0,
             y: 0,
             z: 0
         },
-        collide: true,
-        collisionEvents: true,
+        collide: false,
+        collisionEvents: false,
+        podeAtravessar: false,
+        ignoreCollisions: [],
+        proximityConfig: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        events: [],
+        kick_rate: 4,
+        enable_advanced_frame_tracking: false,
+        attachments: [],
+        onCreate: function(){
+
+        },
+    }));
+
+    // Cria um carro
+    scene.criarObjeto( new ObjectBase({
+        type : 'OBJ',
+        name : 'Carro',
+        obj  : 'public/objs/carros/classic-car.obj',
+        mtl  : 'public/objs/carros/classic-car.mtl',
+        
+        isInvisible: false,
+        opacity: 1, 
+
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false,
+
+        /**
+        * Posição do objeto 
+        */
+        position: {
+            x: 0,
+            y: 8,
+            z: 0
+        },
+
+        /**
+        * Escala do objeto 
+        */
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        },
+
+        /**
+        * Rotação do objeto 
+        */
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+
+        mass: 1,
+        classes: [],
+        havePhysics: false,
+        scaleReduce: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        collide: false,
+        collisionEvents: false,
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {

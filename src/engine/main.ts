@@ -26,8 +26,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     scene.criarObjeto(new ObjectBase({
         type : 'OBJ',
         name : 'Mapa antigo',
-        obj  : 'public/MAPS/theroom/map.obj',
-        mtl  : 'public/MAPS/theroom/map.mtl',
+        obj  : '/MAPS/theroom/map.obj',
+        mtl  : '/MAPS/theroom/map.mtl',
         
         isInvisible: false,
         opacity: 1, 
@@ -93,8 +93,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     scene.criarObjeto( new ObjectBase({
         type : 'OBJ',
         name : 'Mapa novo 2',
-        obj  : 'public/MAPS/theroom2/map.obj',
-        mtl  : 'public/MAPS/theroom2/map.mtl',
+        obj  : '/MAPS/theroom2/map.obj',
+        mtl  : '/MAPS/theroom2/map.mtl',
         
         isInvisible: false,
         opacity: 1, 
@@ -160,8 +160,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     scene.criarObjeto( new ObjectBase({
         type : 'OBJ',
         name : 'Carro',
-        obj  : 'public/objs/carros/classic-car.obj',
-        mtl  : 'public/objs/carros/classic-car.mtl',
+        obj  : '/objs/carros/classic-car.obj',
+        mtl  : '/objs/carros/classic-car.mtl',
         
         isInvisible: false,
         opacity: 1, 

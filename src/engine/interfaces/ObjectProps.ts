@@ -19,6 +19,8 @@ export default interface ObjectProps
 {
     mass             : number; //A massa do objeto
     type             : string, //Se é cubo, plano, esfera, ou modelo personalizado
+    obj              : string,  // Se for um objeto OBJ vai ter o caminho dele
+    mtl              : string,  // Se for um objeto OBJ vai ter o caminho do mtl dele
     name             : string,
     classes          : Array<string>,
     havePhysics      : boolean,
@@ -32,6 +34,12 @@ export default interface ObjectProps
     ignoreCollisions : Array<string>,
     proximityConfig  : ProximityBounds,
     isInvisible      : boolean,
+
+    // Iluminação do mini renderizador webgl
+    childrenIndividualLights : boolean,
+    useAccumulatedLights     : boolean,
+    staticAccumulatedLights  : boolean,
+
     opacity          : number,
     events           : Array<ObjectEvents>,
     kick_rate        : number,

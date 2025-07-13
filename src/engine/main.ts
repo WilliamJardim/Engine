@@ -13,6 +13,7 @@ import GlobalContext from './core/GlobalContext';
 import ObjectBase    from './core/ObjectBase';
 import Scene         from './core/Scene';
 import LocalSound    from './core/LocalSound';
+import { carregarTxt } from './renderer/utils/funcoesBase';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
 export const globalContext = new GlobalContext({});
@@ -20,11 +21,148 @@ export const globalContext = new GlobalContext({});
 /** Função que vai ser executada quanto a Engine for iniciada */
 export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: number, frameNumber: number ): void
 {
+    // Importa o modelo do meu quarto 1
+    // Cria um plano que pode se deformar
+    scene.criarObjeto(new ObjectBase({
+        type : 'Cubo',
+        name : 'Mapa antigo',
+        obj  : './MAPS/theroom/map.obj',
+        mtl  : './MAPS/theroom/map.mtl',
+        
+        isInvisible: false,
+        opacity: 1, 
+
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false,
+
+        /**
+        * Posição do objeto 
+        */
+        position: {
+            x: -200,
+            y: 8,
+            z: 0
+        },
+
+        /**
+        * Escala do objeto 
+        */
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        },
+
+        /**
+        * Rotação do objeto 
+        */
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+
+        mass: 1,
+        classes: [],
+        havePhysics: true,
+        scaleReduce: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        collide: true,
+        collisionEvents: true,
+        podeAtravessar: false,
+        ignoreCollisions: [],
+        proximityConfig: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        events: [],
+        kick_rate: 4,
+        enable_advanced_frame_tracking: false,
+        attachments: [],
+        onCreate: function(){
+
+        },
+    }));
+    
+    // Cria um plano que pode se deformar
+    scene.criarObjeto( new ObjectBase({
+        type : 'Cubo',
+        name : 'Mapa novo 2',
+        obj  : './MAPS/theroom2/map.obj',
+        mtl  : './MAPS/theroom2/map.mtl',
+        
+        isInvisible: false,
+        opacity: 1, 
+
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false,
+
+        /**
+        * Posição do objeto 
+        */
+        position: {
+            x: -300,
+            y: 8,
+            z: 0
+        },
+
+        /**
+        * Escala do objeto 
+        */
+        scale: {
+            x: 1,
+            y: 1,
+            z: 1
+        },
+
+        /**
+        * Rotação do objeto 
+        */
+        rotation: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+
+        mass: 1,
+        classes: [],
+        havePhysics: true,
+        scaleReduce: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        collide: true,
+        collisionEvents: true,
+        podeAtravessar: false,
+        ignoreCollisions: [],
+        proximityConfig: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        events: [],
+        kick_rate: 4,
+        enable_advanced_frame_tracking: false,
+        attachments: [],
+        onCreate: function(){
+
+        },
+    }));
+
     // Cria um objeto na Engine de fisica
     scene.criarObjeto( new ObjectBase({
         mass: 1,
         name: "Cubo",
         type: "Cubo",
+        obj  : '',
+        mtl  : '',
         classes: [],
         havePhysics: true,
         position: {
@@ -64,7 +202,11 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         attachments: [],
         onCreate: function(){
 
-        }
+        },
+        //Iluminação
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false
     }) );
 
     // Cria um objeto na Engine de fisica
@@ -72,6 +214,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         mass: 1,
         name: "Cubo1",
         type: "Cubo",
+        obj  : '',
+        mtl  : '',
         classes: [],
         havePhysics: true,
         position: {
@@ -111,7 +255,11 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         attachments: [],
         onCreate: function(){
 
-        }
+        },
+        //Iluminação
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false
     }) );
 
     // Cria um objeto na Engine de fisica
@@ -119,6 +267,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         mass: 1,
         name: "Cubo2",
         type: "Cubo",
+        obj  : '',
+        mtl  : '',
         classes: [],
         havePhysics: true,
         position: {
@@ -158,7 +308,11 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         attachments: [],
         onCreate: function(){
 
-        }
+        },
+        //Iluminação
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false
     } ) );
 
     // Chão
@@ -166,6 +320,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         mass: 1,
         name: "Chao",
         type: "Cubo",
+        obj  : '',
+        mtl  : '',
         classes: [],
         havePhysics: false,
         position: {
@@ -205,7 +361,11 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         attachments: [],
         onCreate: function(){
 
-        }
+        },
+        //Iluminação
+        childrenIndividualLights: true,
+        useAccumulatedLights: true,
+        staticAccumulatedLights: false
     }) );
 
     globalContext.set("scene", scene);

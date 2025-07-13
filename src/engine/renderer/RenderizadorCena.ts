@@ -22,6 +22,7 @@ import { Ponteiro }   from '../types/types-cpp-like';
 import { Renderer } from './Renderer/Renderer';
 import { calcularDirecaoCamera, calcularDireitaCamera } from './utils/math';
 import { VisualMesh } from './Mesh/VisualMesh';
+import { carregarTxt } from './utils/funcoesBase';
 
 export default class RenderizadorCena
 {
@@ -261,9 +262,12 @@ export default class RenderizadorCena
                 //Se o objeto já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
                 if ( !this.toRenderAssociation.has(objetoAtual.id) ) 
                 {
-                    
-                    const novoObjetoVisual = this.renderizador.criarObjeto({
+                    const context = this;
+
+                    const atributosObjetos = {
                         tipo: objProps.type,
+                        obj : "",
+                        mtl : "",
                         position: objProps.position,
                         scale: objProps.scale,
                         rotation: objProps.rotation,
@@ -280,7 +284,45 @@ export default class RenderizadorCena
                         childrenIndividualLights: true,
                         useAccumulatedLights: true,
                         staticAccumulatedLights: false,
-                    });
+                    };
+
+                    // Avisa se tiver erros bobos
+                    if( objProps.type != "OBJ" && (objProps.obj != "" || objProps.mtl != "") )
+                    {
+                        console.warn(`Parece que voce está tentando importar um objeto .OBJ, pra isso altere o 'type' do objeto '${objProps.name}' para 'OBJ'.`);
+                    }
+
+                    if( objProps.type == "OBJ" && (objProps.obj == "" || objProps.mtl == "") )
+                    {
+                        console.warn(`O mtl ou obj do objeto '${objProps.name}' não foi preenchido. Isso impossibilita a Engine de carregar esses modelos.`);
+                    }
+
+                    // Se for um objeto pode carregar o modelo
+                    /*
+                    IDEIA DE COMO CARREGAR O OBJETO 
+                    MAIS EU PRECISO TOMAR CUIDADO PRA ELE NÂO CARREGAR TODA HORA
+                    PRA ELE CARREGAR SÒ UMA VEZ, E PRA DEPOIS ATUALIZAR A POSICAO, ROTACAO E ESCALA NO LOOP
+                    if( objProps.type == "OBJ" )
+                    {
+                        async function carregarModelo() 
+                        {
+                            atributosObjetos.obj = await carregarTxt(objProps.obj);
+                            atributosObjetos.mtl = await carregarTxt(objProps.mtl);
+                            
+                            // Cria com o modelo carregado
+                            const novoObjetoVisual = context.renderizador.criarObjeto(atributosObjetos);
+                            context.toRenderAssociation.set(objetoAtual!.id, novoObjetoVisual);
+                        }
+                        carregarModelo();
+
+                    // Cria assim
+                    }else{
+                        const novoObjetoVisual = this.renderizador.criarObjeto(atributosObjetos);
+                        this.toRenderAssociation.set(objetoAtual.id, novoObjetoVisual);
+                    }
+                    */
+
+                    const novoObjetoVisual = this.renderizador.criarObjeto(atributosObjetos);
                     this.toRenderAssociation.set(objetoAtual.id, novoObjetoVisual);
                     
                 }   

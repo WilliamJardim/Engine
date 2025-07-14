@@ -27,10 +27,12 @@ import {
 } from '../../utils/math.js';
 import { Renderer } from "../../Renderer/Renderer.js";
 import { Ponteiro } from "../../../types/types-cpp-like.js";
+import VisualMeshConfig from "../../interfaces/VisualMeshConfig.js";
+import InformacoesPrograma from "../../interfaces/InformacoesPrograma.js";
 
 export class EsferaMesh extends VisualMesh
 {
-    constructor( renderer:Renderer, propriedadesMesh:any )
+    constructor( renderer:Renderer, propriedadesMesh:VisualMeshConfig )
     {
         super(renderer, 
               propriedadesMesh);
@@ -147,7 +149,7 @@ export class EsferaMesh extends VisualMesh
     /**
     * Obtem as informações do programa, que vão ser usadas na renderização deste cubo 
     */
-    getInformacoesPrograma()
+    getInformacoesPrograma() : InformacoesPrograma
     {
         const renderer:Renderer                     = this.getRenderer();
         const gl:WebGL2RenderingContext             = renderer.gl;
@@ -157,6 +159,8 @@ export class EsferaMesh extends VisualMesh
             atributosObjeto: {
                 posicao   : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
                 cor       : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                uv        : 0, // NAO USA MAIS PODE SER ZERO PRA NAO DAR ERRO DE TIPO
+                
                 // Iluminação
                 brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
                 ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),

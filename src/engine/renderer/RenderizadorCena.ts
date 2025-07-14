@@ -29,18 +29,17 @@ import { Light } from '../core/Light';
 
 export default class RenderizadorCena
 {
-    public engineScene          : Scene;
-    public inputListener        : InputListener;
-    public toRenderAssociation  : Map<string, any>;
+    public engineScene                : Scene;
+    public inputListener              : InputListener;
+    public toRenderAssociation        : Map<string, any>;
     public toRenderLightsAssociation  : Map<string, any>;
-    public scene                : any;
-    public renderizador         : any;
-    public canvasRef            : React.RefObject<HTMLCanvasElement>;
-    public firstRender          : boolean = true;
-    public provavelmentePronto  : boolean = false; //Sinaliza se os objetos iniciais foram carregados
+    public renderizador               : Renderer;
+    public canvasRef                  : React.RefObject<HTMLCanvasElement>;
+    public firstRender                : boolean = true;
+    public provavelmentePronto        : boolean = false; //Sinaliza se os objetos iniciais foram carregados
 
     // Armazena todos os OBJ lidos por essa Engine gráfica
-    public objLidos             : Mapa<string, ObjString>;
+    public objLidos                   : Mapa<string, ObjString>;
 
     constructor( canvasRef:React.RefObject<HTMLCanvasElement> )
     {
@@ -58,12 +57,13 @@ export default class RenderizadorCena
         });
 
         // Cria um mapa que associa o id dos objetos da minha engine de logica com o que o meu mini renderizador webgl vai desenhar
-        this.toRenderAssociation = new Map<string, any>();
+        this.toRenderAssociation       = new Map<string, any>();
 
         // Cria um mapa que associa o id das luzes da minha engine de logica com o que o meu mini renderizador webgl vai desenhar
         this.toRenderLightsAssociation = new Map<string, any>();
 
-        this.objLidos            = new Mapa<string, ObjString>();
+        // Armazena todos os OBJ lidos por essa Engine gráfica
+        this.objLidos                  = new Mapa<string, ObjString>();
 
         //Obtem o canvas
         this.canvasRef = canvasRef;
@@ -84,9 +84,9 @@ export default class RenderizadorCena
         let passos          = 0.5;
 
         // Lista de objetos lidos pelo meu mini renderizador webgl
-        window.renderizador = this.renderizador;
-        window.objLidos     = this.objLidos;
-        window.luzesAssociadas = this.toRenderLightsAssociation;
+        window.renderizador     = this.renderizador;
+        window.objLidos         = this.objLidos;
+        window.luzesAssociadas  = this.toRenderLightsAssociation;
 
         const contextoPlayer = {
             mousePosition: {
@@ -587,7 +587,7 @@ export default class RenderizadorCena
         
     }
 
-    public getRenderizador(): any
+    public getRenderizador(): Renderer
     {
         return this.renderizador;
     }

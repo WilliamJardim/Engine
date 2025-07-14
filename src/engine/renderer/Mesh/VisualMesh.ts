@@ -10,6 +10,8 @@
 
 import Position3D from "../../interfaces/Position3D";
 import { float, Ponteiro } from "../../types/types-cpp-like";
+import InformacoesPrograma from "../interfaces/InformacoesPrograma";
+import VisualMeshConfig from "../interfaces/VisualMeshConfig";
 import { Renderer } from "../Renderer/Renderer";
 
 /**
@@ -35,59 +37,56 @@ import { Renderer } from "../Renderer/Renderer";
 
 export class VisualMesh
 {
-    public renderer:Renderer;
-    public meshConfig:any;
-    public programUsado:Ponteiro<WebGLProgram>;
-    public vertexScript:string;
-    public fragmentScript:string;
-    public isPlano:boolean;
-    public nome:string;
-    public id:string;
-    public classe:string;
-    public tipo:string;
+    public renderer       : Renderer;
+    public meshConfig     : VisualMeshConfig;
+    public programUsado   : Ponteiro<WebGLProgram>;
+    public vertexScript   : string;
+    public fragmentScript : string;
+    public isPlano        : boolean;
+    public nome           : string;
+    public id             : string;
+    public classe         : string;
+    public tipo           : string;
 
-    public position:Position3D;
-    public scale:Position3D;
-    public rotation:Position3D;
+    public position       : Position3D;
+    public scale          : Position3D;
+    public rotation       : Position3D;
 
-    public invisivel:boolean;
-    public transparencia:number;
-    public alwaysUpdateLights:boolean;
-    public childrenIndividualLights:boolean;
-    public useAccumulatedLights:boolean;
-    public staticAccumulatedLights:boolean;
-    public _jaAcumulouLuzes:boolean;
+    public invisivel                 : boolean;
+    public transparencia             : number;
+    public alwaysUpdateLights        : boolean;
+    public childrenIndividualLights  : boolean;
+    public useAccumulatedLights      : boolean;
+    public staticAccumulatedLights   : boolean;
+    public _jaAcumulouLuzes          : boolean;
 
-    public brilhoObjeto: number;
-    public ambientObjeto:number;
-    public diffuseObjeto:number;
-    public specularObjeto:number;
+    public brilhoObjeto   : number;
+    public ambientObjeto  : number;
+    public diffuseObjeto  : number;
+    public specularObjeto : number;
+    public corLuz         : Array<float>;
+    public corLuzObjeto   : Array<float>;
+    public ambient        : number;
+    public diffuse        : number;
+    public specular       : number;
+    public brilho         : number;
+    public intensidadeLuz : number;
 
-    public corLuz:Array<float>;
-    public corLuzObjeto:Array<float>;
+    public intensidadeLuzObjeto      : number;
+    public brilhoLocalAcumulado      : number;
+    public ambientLocalAcumulado     : number;
+    public diffuseLocalAcumulado     : number;
+    public specularLocalAcumulado    : number;
+    public corLocalAcumulado         : Array<float>;
+    public intensidadeLocalAcumulado : number;
+    public useColors                 : boolean;
 
-    public ambient:number;
-    public diffuse:number;
-    public specular:number;
-    public brilho:number;
-    public intensidadeLuz:number;
+    public bufferPosicao      : Ponteiro<WebGLBuffer>;
+    public bufferCor          : Ponteiro<WebGLBuffer>;
+    public bufferIndices      : Ponteiro<WebGLBuffer>;
+    public modeloObjetoVisual : Ponteiro<Float32Array>;
 
-    public intensidadeLuzObjeto:number;
-
-    public brilhoLocalAcumulado:number;
-    public ambientLocalAcumulado:number;
-    public diffuseLocalAcumulado:number;
-    public specularLocalAcumulado:number;
-    public corLocalAcumulado:Array<float>;
-    public intensidadeLocalAcumulado:number;
-    public useColors:boolean;
-
-    public bufferPosicao:Ponteiro<WebGLBuffer>;
-    public bufferCor:Ponteiro<WebGLBuffer>;
-    public bufferIndices:Ponteiro<WebGLBuffer>;
-    public modeloObjetoVisual:Ponteiro<Float32Array>;
-
-    constructor( renderer:Renderer, meshConfig:any )
+    constructor( renderer:Renderer, meshConfig:VisualMeshConfig )
     {
         this.renderer   = renderer;
         this.meshConfig = meshConfig;
@@ -114,12 +113,12 @@ export class VisualMesh
         this.transparencia = meshConfig.transparencia;
 
         // Luzes do objeto
-        this.alwaysUpdateLights          = meshConfig.alwaysUpdateLights || true;         // Se a todo momento vai atualizar luzes ou não
+        this.alwaysUpdateLights       = meshConfig.alwaysUpdateLights || true;         // Se a todo momento vai atualizar luzes ou não
         // NOTA: Cada objeto pode atualizar a iluminação apenas levando em conta suas configuracoes fixas e do ambiente, OU TAMBEM PODE LEVAR EM CONTA CADA PONTO DE LUZ PELO CENARIO
 
-        this.childrenIndividualLights = true;   // Usado por alguns objetos da minha engine, como o OBJ
-        this.useAccumulatedLights     = true;   // Se esse objeto vai receber uma acumulação de luzes ao seu redor (posso desativar se eu achar pesado)
-        this.staticAccumulatedLights  = false;  // Se ativado, a acumulação das luzes ao redor do objeto só vai ocorrer uma unica vez
+        this.childrenIndividualLights = meshConfig.childrenIndividualLights || true;   // Usado por alguns objetos da minha engine, como o OBJ
+        this.useAccumulatedLights     = meshConfig.useAccumulatedLights     || true;   // Se esse objeto vai receber uma acumulação de luzes ao seu redor (posso desativar se eu achar pesado)
+        this.staticAccumulatedLights  = meshConfig.staticAccumulatedLights  || false;  // Se ativado, a acumulação das luzes ao redor do objeto só vai ocorrer uma unica vez
         
         this._jaAcumulouLuzes         = false;  // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
 
@@ -178,6 +177,33 @@ export class VisualMesh
         {
             this.staticAccumulatedLights = renderer.staticAccumulatedLights;
         }
+    }
+
+    getInformacoesPrograma(): InformacoesPrograma
+    {
+        // APENAS UM TEMPLATE PRA INDICAR QUE TIPO DE RETORNO O getInformacoesPrograma de um objeto retorna
+        return {
+            atributosObjeto: {
+                posicao: 0,
+                cor: 0,
+                uv : 0,
+                brilho: new WebGLUniformLocation(),
+                ambient: new WebGLUniformLocation(),
+                diffuse: new WebGLUniformLocation(),
+                specular: new WebGLUniformLocation(),
+                corLuz: new WebGLUniformLocation(),
+                intensidadeLuz: new WebGLUniformLocation()
+            },
+            atributosVisualizacaoObjeto: {
+                matrixVisualizacao: new WebGLUniformLocation(),
+                modeloObjetoVisual: new WebGLUniformLocation()
+            },
+            uniformsCustomizados: {
+                usarTextura: new WebGLUniformLocation(),
+                opacidade: new WebGLUniformLocation(),
+                sampler: new WebGLUniformLocation()
+            }
+        };
     }
 
     // ATIVAR EM TODOS: renderizador.getObjetos().forEach((o)=>{ o.enableStaticAccumulatedLights() })
@@ -658,7 +684,7 @@ export class VisualMesh
     * Função que desenha o objeto 
     * Se implementa ela em cada objeto
     */
-    desenhar()
+    desenhar( frameDelta:number )
     {
         
     }

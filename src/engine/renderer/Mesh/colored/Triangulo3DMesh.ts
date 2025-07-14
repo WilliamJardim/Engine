@@ -20,10 +20,12 @@ import {
 } from "../../utils/math.js";
 import { Renderer } from "../../Renderer/Renderer.js";
 import { float } from "../../../types/types-cpp-like.js";
+import VisualMeshConfig from "../../interfaces/VisualMeshConfig.js";
+import InformacoesPrograma from "../../interfaces/InformacoesPrograma.js";
 
 export class Triangulo3DMesh extends VisualMesh 
 {
-    constructor(renderer:Renderer, propriedadesMesh:any) 
+    constructor(renderer:Renderer, propriedadesMesh:VisualMeshConfig) 
     {
         super(renderer, 
               propriedadesMesh);
@@ -103,7 +105,7 @@ export class Triangulo3DMesh extends VisualMesh
         return cores;
     }
 
-    getInformacoesPrograma() 
+    getInformacoesPrograma() : InformacoesPrograma
     {
         const renderer            = this.getRenderer();
         const gl                  = renderer.gl;
@@ -111,8 +113,10 @@ export class Triangulo3DMesh extends VisualMesh
 
         return {
             atributosObjeto: {
-                posicao: gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
-                cor:     gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),
+                posicao  : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
+                cor      : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),
+                uv       : 0, // NAO USA MAIS PODE SER ZERO PRA NAO DAR ERRO DE TIPO
+
                 // Iluminação
                 brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
                 ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),

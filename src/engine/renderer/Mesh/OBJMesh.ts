@@ -23,6 +23,8 @@ import {
 import { Renderer } from "../Renderer/Renderer.js";
 import { float, Ponteiro } from "../../types/types-cpp-like.js";
 import Mapa from "../../utils/dicionarios/Mapa.js";
+import OBJMeshConfig from "../interfaces/OBJMeshConfig.js";
+import InformacoesPrograma from "../interfaces/InformacoesPrograma.js";
 
 /**
 * PORTABILIDADE PRA C++:
@@ -78,7 +80,7 @@ export class OBJMesh extends VisualMesh
     public iluminationInfo               : Mapa<string, any>;
     public iluminationAcumuladaInfo      : Mapa<string, any>;
 
-    constructor(renderer:Renderer, propriedadesMesh:any) 
+    constructor(renderer:Renderer, propriedadesMesh:OBJMeshConfig) 
     {
         super(renderer, propriedadesMesh);
 
@@ -86,7 +88,7 @@ export class OBJMesh extends VisualMesh
         this._isTransparente   = false;
         
         // Diz se o objeto é uma superficie plana ou não
-        this.isPlano       = false;
+        this.isPlano           = false;
 
         this.mtlString         = propriedadesMesh.mtlString;
         this.objString         = propriedadesMesh.objString; 
@@ -117,7 +119,6 @@ export class OBJMesh extends VisualMesh
         this.verticesComecaObjetos         = new Mapa<string, any>();   // Length que começa os vertices de cada objeto no vetor geral vertices
 
         this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
-
         this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights;     // Se cada parte vai receber uma acumulação de luzes ao seu redor
         this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;  // Se ativado, a acumulação das luzes ao redor das partes só vai ocorrer uma unica vez
         this._jaAcumulouLuzes         = false;                                     // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
@@ -573,7 +574,7 @@ export class OBJMesh extends VisualMesh
         return this.uvArray || [];
     }
 
-    getInformacoesPrograma() 
+    getInformacoesPrograma() : InformacoesPrograma
     {
         const renderer           = this.getRenderer();
         const gl                 = renderer.gl;

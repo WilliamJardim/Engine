@@ -23,22 +23,29 @@ import {
     DefinirRotacao, 
     DefinirX, 
     DefinirY, 
-    DefinirZ
+    DefinirZ,
+    booleanToNumber
 } from '../../utils/math.js';
 import { Renderer } from "../../Renderer/Renderer.js";
 import { float } from "../../../types/types-cpp-like.js";
+import PlanoOnduladoMeshConfig from "../../interfaces/PlanoOnduladoMeshConfig.js";
+import InformacoesPrograma from "../../interfaces/InformacoesPrograma.js";
 
 export class PlanoOnduladoMesh extends VisualMesh
 {
-    public vertices : Array<float>;
+    public meshConfig : PlanoOnduladoMeshConfig; // Apenas pra dizer pro TypeScript que esse objeto usa um Mesh config diferente
 
-    constructor( renderer:Renderer, propriedadesMesh:any )
+    public vertices   : Array<float>;
+
+    constructor( renderer:Renderer, propriedadesMesh:PlanoOnduladoMeshConfig )
     {
         super(renderer, 
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
         this.tipo = 'PlanoOndulado';
+
+        this.meshConfig    = propriedadesMesh;
 
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = true;
@@ -140,7 +147,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Obtem as informações do programa, que vão ser usadas na renderização deste cubo 
     */
-    getInformacoesPrograma()
+    getInformacoesPrograma(): InformacoesPrograma
     {
         const renderer           = this.getRenderer();
         const gl                 = renderer.gl;
@@ -150,6 +157,8 @@ export class PlanoOnduladoMesh extends VisualMesh
             atributosObjeto: {
                 posicao   : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
                 cor       : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
+                uv        : 0, // NAO USA MAIS PODE SER ZERO PRA NAO DAR ERRO DE TIPO
+
                 // Iluminação
                 brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
                 ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),
@@ -266,8 +275,8 @@ export class PlanoOnduladoMesh extends VisualMesh
 
         // Usa ondulação
         gl.uniform1f(gl.getUniformLocation(programUsado!, "uTime"), performance.now() / 1000.0);
-        gl.uniform1i(gl.getUniformLocation(programUsado!, "uUsarOndulacaoSimples"),    meshConfig.usarOndulacaoSimples);
-        gl.uniform1i(gl.getUniformLocation(programUsado!, "uAplicarOndulacao"),        meshConfig.usarOndulacao);
+        gl.uniform1i(gl.getUniformLocation(programUsado!, "uUsarOndulacaoSimples"),    booleanToNumber(meshConfig.usarOndulacaoSimples) );
+        gl.uniform1i(gl.getUniformLocation(programUsado!, "uAplicarOndulacao"),        booleanToNumber(meshConfig.usarOndulacao)        );
 
         // Não usa textura
         gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );

@@ -21,23 +21,26 @@ import {
 } from '../utils/math.js';
 
 import { float } from "../../types/types-cpp-like.js";
+import Position3D from "../../interfaces/Position3D.js";
+import { Renderer } from "../Renderer/Renderer.js";
+import LightConfig from "../interfaces/LightConfig.js";
 
 // renderizador.criarObjeto( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 0.5, raio: 0.1 , cor: [255,0,0]} )
 export class Light
 {
-    public renderer:any;
-    public meshConfig:any;
-    public tipo:string;
-    public position:any;
-    public raio:any;
-    public brilho:any;
-    public ambient:any;
-    public diffuse:any;
-    public specular:any;
-    public cor:any;
-    public intensidade:any;
+    public renderer    : Renderer;
+    public meshConfig  : LightConfig;
+    public tipo        : string;
+    public position    : Position3D;
+    public raio        : number;
+    public brilho      : number;
+    public ambient     : number;
+    public diffuse     : number;
+    public specular    : number;
+    public cor         : Array<number>;
+    public intensidade : number;
 
-    constructor(renderer:any, propriedadesMesh:any) 
+    constructor(renderer:Renderer, propriedadesMesh:LightConfig) 
     {
         this.renderer   = renderer;
         this.meshConfig = propriedadesMesh;

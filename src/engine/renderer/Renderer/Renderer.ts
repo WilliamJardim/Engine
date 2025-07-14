@@ -51,45 +51,48 @@ import { Light } from '../Mesh/Light.js';
 import { float, Ponteiro } from '../../types/types-cpp-like.js';
 import Mapa from '../../utils/dicionarios/Mapa.js';
 import { VisualMesh } from '../Mesh/VisualMesh.ts';
+import InformacoesPrograma from '../interfaces/InformacoesPrograma.ts';
 
 export class Renderer
 {
-    public canvas:React.RefObject<HTMLCanvasElement>;
-    public skyTexture:any;
-    public skyQuadBuffer:any;
-    public ambient:number;
-    public diffuse:number;
-    public specular:number;
-    public brilho:number;
-    public corAmbient:Array<number>;
-    public intensidadeLuz:number;
-    public childrenIndividualLights:boolean;
-    public useAccumulatedLights:boolean;
-    public staticAccumulatedLights:boolean;
-    public frameCounter:FrameCounter;
-    public lastFrameDelta:number;
-    public width:number;
-    public height:number;
-    public gl:WebGL2RenderingContext;
-    public glVersion:string;
+    public canvas        : React.RefObject<HTMLCanvasElement>;
+    public skyTexture    : Ponteiro<WebGLTexture>;
+    public skyQuadBuffer : Ponteiro<WebGLBuffer>;
+    public ambient       : number;
+    public diffuse       : number;
+    public specular      : number;
+    public brilho        : number;
+    public corAmbient    : Array<number>;
 
-    public matrixCamera:any;
-    public matrixPontoVista:any;
-    public matrixVisualizacao:any;
-    public sentidoCamera:Array<float>;
-    public posicaoCamera:Array<float>;
-    public miraCamera:Array<float>;
+    public intensidadeLuz           : number;
+    public childrenIndividualLights : boolean;
+    public useAccumulatedLights     : boolean;
+    public staticAccumulatedLights  : boolean;
 
-    public objetos : Array<any>;
-    public luzes   : Array<any>;
+    public frameCounter   : FrameCounter;
+    public lastFrameDelta : number;
+    public width          : number;
+    public height         : number;
+    public gl             : WebGL2RenderingContext;
+    public glVersion      : string;
 
-    public programs:Mapa<string, WebGLProgram>;
+    public matrixCamera       : Float32Array<ArrayBufferLike>;
+    public matrixPontoVista   : Float32Array<ArrayBufferLike>;
+    public matrixVisualizacao : Float32Array<ArrayBufferLike>;
+    public sentidoCamera      : Array<float>;
+    public posicaoCamera      : Array<float>;
+    public miraCamera         : Array<float>;
+
+    public objetos  : Array<VisualMesh>;
+    public luzes    : Array<Light>;
+
+    public programs : Mapa<string, WebGLProgram>;
     
-    public tipoPerspectiva:string;
-    public anguloVisaoY: number;
-    public aspectoCamera: number;
-    public pPerto: number;
-    public pLonge: number;
+    public tipoPerspectiva  : string;
+    public anguloVisaoY     : number;
+    public aspectoCamera    : number;
+    public pPerto           : number;
+    public pLonge           : number;
     
     constructor( canvasRef:React.RefObject<HTMLCanvasElement>, tipoPerspectiva:string="perspectiva", renderConfig:any={} ){
         this.canvas = canvasRef;
@@ -149,6 +152,11 @@ export class Renderer
         this.aspectoCamera   = this.width / this.height;
         this.pPerto          = 0.1;
         this.pLonge          = 100;
+
+        // Inicializa as matrizes com valores padrão
+        this.matrixCamera       = new Float32Array<ArrayBufferLike>( new Float32Array(16) );
+        this.matrixPontoVista   = new Float32Array<ArrayBufferLike>( new Float32Array(16) );
+        this.matrixVisualizacao = new Float32Array<ArrayBufferLike>( new Float32Array(16) );
 
         // Cria uma matrix que vai ser usada pra projetar o cubo no espaço 3d
         if( this.tipoPerspectiva == "perspectiva" ) 
@@ -273,11 +281,15 @@ export class Renderer
     /**
     * Atualiza a iluminação de todos os objetos da cena
     */
-    atualizarIluminacao()
+    atualizarIluminacao() : void
     {
         for( let i = 0 ; i < this.objetos.length ; i++ )
         {
-            this.objetos[i].atualizarIluminacao();
+            const objetoAtual               : VisualMesh           = this.objetos[i];
+            const informacoesProgramaObjeto : InformacoesPrograma  = objetoAtual.getInformacoesPrograma();
+
+            objetoAtual.atualizarIluminacao( this.gl, 
+                                             informacoesProgramaObjeto );
         }
     }
 
@@ -350,24 +362,24 @@ export class Renderer
 
     // chamada sempre que vão haver mudanças de camera, como no loop de renderização dos objetos, etc.
     // OBS: a matrixVisualizacao ja inclui o ponto de vista da camera, já está embutido
-    updateCamera( frameDelta:number )
+    updateCamera( frameDelta:number ) : void
     {
         this.matrixPontoVista   = CriarMatrixPontoVista( frameDelta, "FPS", this.posicaoCamera, this.miraCamera, this.sentidoCamera );
         this.matrixVisualizacao = MultiplicarMatrix4x4( new Float32Array(16), this.matrixCamera, this.matrixPontoVista );
     }
 
     /*** OBTEM VISUALIZACAO ATUALIZADA */
-    getMatrixVisualizacao()
+    getMatrixVisualizacao() : Float32Array<ArrayBufferLike>
     {
         return this.matrixVisualizacao;
     }
 
-    getObjetos()
+    getObjetos() : Array<VisualMesh>
     {
         return this.objetos;
     }
 
-    getLuzes()
+    getLuzes()   : Array<Light>
     {
         return this.luzes;
     }
@@ -375,7 +387,7 @@ export class Renderer
     /**
     * Cria um novo objeto na cena( adicionando ele na lista de renderização )
     */
-    criarObjeto( propriedadesObjeto:any ): Ponteiro<VisualMesh>
+    criarObjeto( propriedadesObjeto:any ): Ponteiro<Light|VisualMesh>
     {
         const contextoRenderizador = this;
 
@@ -466,7 +478,7 @@ export class Renderer
     * Desenha os objetos na tela
     * Converte a representação de Meshs para desenhos com WebGL
     */
-    desenharObjetos()
+    desenharObjetos() : void
     {
         const gl             = this.gl;
         const objetosVisuais = this.getObjetos();
@@ -523,7 +535,7 @@ export class Renderer
     }
 
     // Desenha tudo
-    desenharTudo()
+    desenharTudo() : void
     {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         this.desenharSkyboxFundo();
@@ -531,7 +543,8 @@ export class Renderer
     }
 
     // SERIA NECESSARIO ADAPTAR NO C++ POR CAUSA DE CONTEXTO DE BIND
-    render(now:number) {
+    render(now:number) : void
+    {
         requestAnimationFrame(this.render);
 
         now *= 0.001;
@@ -545,7 +558,9 @@ export class Renderer
     queryObjetos( criterio:string="nome", 
                   operador:string="like", 
                   valorPesquisar:string="" 
-    ){
+
+    ) : Array<VisualMesh> 
+    {
         const objetos      = []; // Com referencia(Array de ponteiros)
         const nomesObjetos = []; // Se precisar 
 
@@ -618,7 +633,7 @@ export class Renderer
     }
 
     // Traz o primeiro que encontrar
-    queryObjeto( criterio:string, operador:string, valorPesquisar:string )
+    queryObjeto( criterio:string, operador:string, valorPesquisar:string ) : VisualMesh
     {
         return this.queryObjetos(criterio, operador, valorPesquisar)[0];
     }
@@ -626,7 +641,7 @@ export class Renderer
     /**
     * Inicia o loop de renderização 
     */
-    inicializar()
+    inicializar(): void
     {
         this.carregarImagemSkybox("/sky/sky.jpg");
         this.render(0);    

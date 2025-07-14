@@ -118,7 +118,7 @@ export function CriarMatrixOrtografica(ladoEsquerdo:number, ladoDireito:number, 
     const cimaMaisBaixo        = cima + baixo;
     const longeMaisPerto       = longe + perto;
 
-    return [
+    return new Float32Array([
         2 / (direitaMenosEsquerda), 0, 0, 0,
         0, 2 / diferencaCimaBaixo,  0, 0,
         0, 0, -2 / diferencaLongePerto, 0,
@@ -128,7 +128,7 @@ export function CriarMatrixOrtografica(ladoEsquerdo:number, ladoDireito:number, 
         -(longeMaisPerto)      / diferencaLongePerto,
         1
         
-    ];
+    ]);
 }
 
 /**
@@ -241,7 +241,7 @@ export function calcularDireitaCamera(direcao:Array<float>)
 /**
 * Cria o ponto de vista desejado para a camera: FPS ou Orbital
 */
-export function CriarMatrixPontoVista( frameDelta:number, tipo:string = "FPS", posicaoCamera:Array<float>, rotacaoCamera:Array<float>, sentidoCamera:Array<float> ) : Ponteiro<Float32Array>
+export function CriarMatrixPontoVista( frameDelta:number, tipo:string = "FPS", posicaoCamera:Array<float>, rotacaoCamera:Array<float>, sentidoCamera:Array<float> ) : Float32Array<ArrayBufferLike>
 {
     if( tipo == "FPS" ){
         return CriarMatrixFPSLivre(frameDelta, rotacaoCamera, posicaoCamera, sentidoCamera);
@@ -251,7 +251,8 @@ export function CriarMatrixPontoVista( frameDelta:number, tipo:string = "FPS", p
         return CriarMatrixLookAt(frameDelta, posicaoCamera, rotacaoCamera, sentidoCamera);
     }
 
-    return null;
+    // Retorna uma matrix invalida pra representar um erro
+    return new Float32Array();
 }
 
 // Cria uma matriz de rotação de camera em X para girar ao redor do eixo X
@@ -489,4 +490,18 @@ export class FrameCounter
 
         return Math.min(currentFrameDelta, this.frameLimit) / this.norm;
     }
+}
+
+export function booleanToNumber( valorBooleano: boolean ) : number
+{
+    let valorResultado = 0;
+
+    if( valorBooleano == true )
+    {
+        valorResultado = 1;
+    }else{
+        valorResultado = 0;
+    }
+
+    return valorResultado;
 }

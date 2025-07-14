@@ -58,3 +58,81 @@ BUG: No código do Light, a cor não está funcionando ainda quando eu passo uma
 em: renderizador.criarObjeto( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 10, raio: 1 , cor: [0,255,0]} )
 
 
+
+
+12/07/2025 - 15:23 PM (RESOLVIDO)
+positions dos objetos ficando NaN
+    A cena cria o objeto da engine de fisica normalmente, com as posicoes certinho
+    Ao chamar meu mini renderizador webgl pra criar os objeto VisualMesh tambem vai certinho
+
+    No primeiro frame, e até no segundo, fica tudo normal, com a position igual eu defini no EngineMain
+
+    Porém, depois do terceiro frame, aproximadamente, positions dos objetos da engine de fisica ficando NaN
+
+    E o efeito visual que tem é que, aparece um cubo no meu mini renderizador webgl, e menos de um segundo depois ele some.
+
+    ESSE BUG acontece na função "updateObjects"
+    na verdade, dentro da função updateObject do ObjectBase
+
+    dentro da função "updateMovement" e tambem da função "updateRotation" do ObjectBase
+
+
+13/07/2025 - 13:32 AM (RESOLVIDO)
+Meu sistema de carregamento de OBJs está em partes funcionando
+ele já le os .obj e .mtl apenas uma vez, e consegue controlar quais ja foram carregados e quais precisam carregar
+PORÈM, POR ALGUM MOTIVO DESCONHECIDO, MESMO COM AS VERIFICAÇÔES, o erro ainda persiste nos primeiros frames:
+
+    OBJMesh.ts:178 Uncaught TypeError: Cannot read properties of undefined (reading 'split')
+        at OBJMesh.carregarMTL (OBJMesh.ts:178:32)
+        at new OBJMesh (OBJMesh.ts:134:14)
+        at Renderer.criarObjeto (Renderer.ts:385:36)
+        at RenderizadorCena.updateObjectsVisually (RenderizadorCena.ts:412:68)
+        at animate (RenderizadorCena.ts:497:21)
+
+Quanto mais objetos OBJ eu instancio na cena, mais esse erro acontece nos primeiros frames.
+No momento São 6 erros.
+Esses erros param nos proximos frames.
+
+porém indicam algo de errado. E também, o OBJ NÂO È CARREGADO.
+
+
+
+13/07/2025 14:20 PM (FALTA RESOLVER)
+    Quando eu crio a luz usando meu método: scene.criarLuz, funciona como eu queria, PORÈM
+    PORÈM O CHAO FICA PRETO, SOMENTE AO CRIAR A LUZ
+    SE EU NAO CRIAR A LUZ O CHÂO NAO FICA PRETO
+
+    mais isso não acontece quando eu crio a luz diretamente pelo contexto do meu mini renderizador:
+    renderizador.criarObjeto( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 0.5, raio: 0.1 , cor: [255,0,0]} )
+
+    acontece somente quando eu crio pela minha engine de logica, que usa a minha camada de comunicação entre minhas duas engines(a minha engine de logica e minha engine de renderização: ou seja, meu mini renderizador webgl)
+
+    E esse BUG só acontece por que, por algum motivo, ao criar a luz com a função criarLuz da minha engine de logica
+    as variaveis de acumulaçã de luz ficam Infinity:
+
+        ambientLocalAcumulado fica Infinty
+        brilhoLocalAcumulado fica Infinty
+        brilho fica 16 (OK)
+        brilhoObjeto fica 32 (OK)
+        ambient fica 0.5(OK)
+        ambientObjeto fica 0.6 (OK)
+        corLocalAcumulado fica [Infinity, NaN, NaN]
+        corLuz fica [Infinity, NaN, NaN]
+        corLuzObjeto fica [0,0,0]
+        diffuseLocalAcumulado fica Infinity
+        intensidadeLocalAcumulado fica NaN
+        intensidadeLuz fica NaN
+        intensidadeLuzObjeto fica 0
+        specularLocalAcumulado fica Infinity
+
+        e ele não está usando luzes estaticas: staticAccumulatedLights está false, OK ISSO È ESPERADO
+
+    PRECISO ENTENDER ESSE BUG
+
+13/07/2025 14:33 RELACIONADO AO BUG ANTERIOR: (FALTA RESOLVER)
+Ao usar: engineContext.dados.scene.lights[0].cor, não afeta em nada a cor da luz do renderizador
+o mesmo vale para ambient, e todos os outros parametros da luz....
+Isso significa que existe um problema com minha função updateLightsVisually, que faz com que as luzes só sejam atualizadas uma unica vez, e depois as minhas duas engines(a minha engine de logica e minha engine de renderização: ou seja, meu mini renderizador webgl) param de sincronizar as luzes.
+
+
+

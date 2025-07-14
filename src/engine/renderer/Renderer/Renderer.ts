@@ -619,7 +619,7 @@ export class Renderer
     */
     inicializar()
     {
-        this.carregarImagemSkybox("./images/sky.jpg");
+        this.carregarImagemSkybox("/sky/sky.jpg");
         this.render(0);    
     }
 }

@@ -449,8 +449,17 @@ export class Renderer
                 break;
         }
 
-        // Retorna o ultimo objeto criado
-        return this.objetos[ this.objetos.length-1 ];
+        if( propriedadesObjeto.tipo != "Light" )
+        {
+            // Retorna o ultimo objeto criado
+            return this.objetos[ this.objetos.length-1 ];
+
+        // Se o tipo for luz
+        }else if( propriedadesObjeto.tipo == "Light" ){
+            
+             // Retorna a ultima luz criada
+            return this.luzes[ this.luzes.length-1 ];
+        }
     }   
 
     /**

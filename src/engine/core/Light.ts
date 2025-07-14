@@ -30,32 +30,43 @@ export class Light
 
         this.name        = propriedadesLuz.name || 'luz';
         this.id          = (this.name) + String(new Date().getTime());
-        this.position    = propriedadesLuz.position;
+        this.position    = propriedadesLuz.position    || [0,0,0];
         this.raio        = propriedadesLuz.raio        || 1; // Raio de alcance da luz
         this.brilho      = propriedadesLuz.brilho      || 16;
         this.ambient     = propriedadesLuz.ambient     || 0.2; 
         this.diffuse     = propriedadesLuz.diffuse     || 0.2;
         this.specular    = propriedadesLuz.specular    || 0.2;
-        this.cor         = propriedadesLuz.cor         || [0, 0, 0];
+        this.cor         = propriedadesLuz.cor         || [1, 1, 1];
         this.intensidade = propriedadesLuz.intensidade || 0;
     }
 
     // Converte o objeto para um objeto mais simples, pra poder usar no meu mini renderizador webgl
     getPropriedadesLuz()
     {
+        const tipo        = this.tipo;
+        const name        = this.name;
+        const id          = this.id;
+        const position    = this.position;
+        const raio        = this.raio;
+        const brilho      = this.brilho;
+        const ambient     = this.ambient;
+        const diffuse     = this.diffuse;
+        const specular    = this.specular;
+        const cor         = this.cor;
+        const intensidade = this.intensidade;
+
         return {
-            tipo: this.tipo,
-            propriedadesLuz: this.propriedadesLuz,
-            name: this.name,
-            id: this.id,
-            position: this.position,
-            raio: this.raio,
-            brilho: this.brilho,
-            ambient: this.ambient,
-            diffuse: this.diffuse,
-            specular: this.specular,
-            cor: this.cor,
-            intensidade: this.intensidade
+            tipo        : tipo,
+            name        : name,
+            id          : id,
+            position    : position,
+            raio        : raio,
+            brilho      : brilho,
+            ambient     : ambient,
+            diffuse     : diffuse,
+            specular    : specular,
+            cor         : cor,
+            intensidade : intensidade
         }
     }
 }

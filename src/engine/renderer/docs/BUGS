@@ -97,7 +97,7 @@ porém indicam algo de errado. E também, o OBJ NÂO È CARREGADO.
 
 
 
-13/07/2025 14:20 PM (FALTA RESOLVER)
+13/07/2025 14:20 PM (RESOLVIDO)
     Quando eu crio a luz usando meu método: scene.criarLuz, funciona como eu queria, PORÈM
     PORÈM O CHAO FICA PRETO, SOMENTE AO CRIAR A LUZ
     SE EU NAO CRIAR A LUZ O CHÂO NAO FICA PRETO
@@ -129,10 +129,28 @@ porém indicam algo de errado. E também, o OBJ NÂO È CARREGADO.
 
     PRECISO ENTENDER ESSE BUG
 
-13/07/2025 14:33 RELACIONADO AO BUG ANTERIOR: (FALTA RESOLVER)
+    Eu analisei mais um pouco
+
+    [22:04 PM]
+        e descobri que isso é um bug no meu mini renderizador webgl
+        Onde a posição X,Y e Z da luz altera a posição do Chão
+        E isso ocorre por que o Chão é o ultimo objeto a ser desenhado.
+        Esse na verdade é bem parecido com um bug antigo que eu tinha ignorado faz um tempo atraz, onde o ultimo objeto poderia ser afetado ou iriar afetar os outros...
+        MAIS O PONTO È: ALTERAR A POSIÇÂO DA LUZ NO  no meu mini renderizador webgl AFETA O ULTIMO OBJETO dentro de "objetos" do meu mini renderizador webgl
+
+        COMO TESTAR?
+        acesse: renderizador.objetos e renderizador.luzes, altere a luz e a posição do Chão(o ultimo objeto) também vai mudar... vai ser igual a ela....
+
+        OU SEJA: O chão sempre vai ser igual a posição da luz
+    
+
+13/07/2025 14:33 RELACIONADO AO BUG ANTERIOR: (RESOLVIDO)
 Ao usar: engineContext.dados.scene.lights[0].cor, não afeta em nada a cor da luz do renderizador
 o mesmo vale para ambient, e todos os outros parametros da luz....
 Isso significa que existe um problema com minha função updateLightsVisually, que faz com que as luzes só sejam atualizadas uma unica vez, e depois as minhas duas engines(a minha engine de logica e minha engine de renderização: ou seja, meu mini renderizador webgl) param de sincronizar as luzes.
 
+13/07/2025 22:07 (JA RESOLVIDO)
+ALTERAR O ambient da luz da minha engine de logica não altera o ambient da luz do meu mini renderizador web.
+PARECE QUE A COPIA DE VALORES NÂO ESTÀ ACONTECENDO
 
 

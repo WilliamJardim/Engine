@@ -86,6 +86,7 @@ export default class RenderizadorCena
         // Lista de objetos lidos pelo meu mini renderizador webgl
         window.renderizador = this.renderizador;
         window.objLidos     = this.objLidos;
+        window.luzesAssociadas = this.toRenderLightsAssociation;
 
         const contextoPlayer = {
             mousePosition: {
@@ -510,14 +511,24 @@ export default class RenderizadorCena
                 let luzVisual = this.toRenderLightsAssociation.get( luzAtual.id );
 
                 // Copiando os atributos da luz da minha engine de logica para meu mini renderizador webgl
+    
+                // Posicao 
+                luzVisual.position.x  = propriedadesLuz.position.x;
+                luzVisual.position.y  = propriedadesLuz.position.y;
+                luzVisual.position.z  = propriedadesLuz.position.z;
+        
                 luzVisual.ambient     = propriedadesLuz.ambient;
-                luzVisual.position    = propriedadesLuz.position;
                 luzVisual.raio        = propriedadesLuz.raio;
                 luzVisual.brilho      = propriedadesLuz.brilho;
                 luzVisual.ambient     = propriedadesLuz.ambient;
                 luzVisual.diffuse     = propriedadesLuz.diffuse;
                 luzVisual.specular    = propriedadesLuz.specular;
-                luzVisual.cor         = propriedadesLuz.cor;
+
+                // Cores
+                luzVisual.cor[0]      = propriedadesLuz.cor[0];
+                luzVisual.cor[1]      = propriedadesLuz.cor[1];
+                luzVisual.cor[2]      = propriedadesLuz.cor[2];
+
                 luzVisual.intensidade = propriedadesLuz.intensidade;
             }
         }

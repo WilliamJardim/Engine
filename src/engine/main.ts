@@ -403,9 +403,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             z: 0
         },
         scale: {
-            x: 2000,
+            x: 500,
             y: 0.1,
-            z: 2000
+            z: 500
         },
         scaleReduce: {
             x: 0,
@@ -437,7 +437,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     }) );
 
     // Ponto de luz
-    scene.criarLuz( new Light({ tipo: "Light", position: {x: 1.556491508391181, y: 29.92973285780118, z: -16.441060668107095 }, ambient: 0.5, raio: 0.1 , cor: [255,0,0]}) )
+    scene.criarLuz( new Light({ tipo: "Light", position: {x: 1.556491508391181, y: 29.92973285780118, z: -16.441060668107095 }, ambient: 0.9, raio: 0.1 , cor: [255,0,0]}) )
 
     globalContext.set("scene", scene);
 }

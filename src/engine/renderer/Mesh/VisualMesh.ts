@@ -8,10 +8,10 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 
-import Position3D from "../../interfaces/Position3D";
+import Position3D from "../../interfaces/main_engine/Position3D";
 import { float, Ponteiro } from "../../types/types-cpp-like";
-import InformacoesPrograma from "../interfaces/InformacoesPrograma";
-import VisualMeshConfig from "../interfaces/VisualMeshConfig";
+import InformacoesPrograma from "../../interfaces/render_engine/InformacoesPrograma";
+import VisualMeshConfig from "../../interfaces/render_engine/VisualMeshConfig";
 import { Renderer } from "../Renderer/Renderer";
 
 /**

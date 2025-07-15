@@ -15,15 +15,15 @@
 import React          from 'react';
 import ObjectBase     from '../core/ObjectBase';
 import Scene          from '../core/Scene';
-import ObjectProps    from '../interfaces/ObjectProps';
+import ObjectProps    from '../interfaces/main_engine/ObjectProps';
 import InputListener  from '../input/InputListener';
-import SceneConfig    from '../interfaces/SceneConfig';
+import SceneConfig    from '../interfaces/main_engine/SceneConfig';
 import { Ponteiro }   from '../types/types-cpp-like';
 import { Renderer } from './Renderer/Renderer';
-import { calcularDirecaoCamera, calcularDireitaCamera } from './utils/math';
+import { calcularDirecaoCamera, calcularDireitaCamera } from '../utils/render_engine/math';
 import { VisualMesh } from './Mesh/VisualMesh';
-import { carregarTxt } from './utils/funcoesBase';
-import ObjString from './interfaces/ObjString';
+import { carregarTxt } from '../utils/render_engine/funcoesBase';
+import ObjString from '../interfaces/render_engine/ObjString';
 import Mapa from '../utils/dicionarios/Mapa';
 import { Light } from '../core/Light';
 

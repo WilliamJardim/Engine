@@ -7,9 +7,9 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import Position3D from "../../interfaces/Position3D";
+import Position3D from "../main_engine/Position3D";
 
-export default interface TexturedFacesCuboMeshConfig
+export default interface TexturedUVCuboMeshConfig
 {
     nome                      : string;
     classe                    : string;
@@ -34,7 +34,7 @@ export default interface TexturedFacesCuboMeshConfig
     corLuzObjeto         : Array<number>;
     intensidadeLuzObjeto : number;
 
-    // Parametros do Mesh/TexturedFacesCuboMesh.ts
+    // Parametros do Mesh/TexturedUVCubeMesh.ts
     useColors            : boolean;
-    texturasFaces        : Array<WebGLTexture>;
+    texturaUV            : WebGLTexture;
 }

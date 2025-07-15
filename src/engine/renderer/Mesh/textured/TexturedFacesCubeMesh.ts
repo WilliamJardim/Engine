@@ -14,7 +14,7 @@
 */
 
 import { VisualMesh } from "../VisualMesh.js";
-import { createShader, createBuffer, createProgram} from '../../utils/funcoesBase.js';
+import { createShader, createBuffer, createProgram} from '../../../utils/render_engine/funcoesBase.js';
 import { baseShaders } from '../../Shaders/Base.js';
 
 import {
@@ -30,11 +30,11 @@ import {
     DefinirX, 
     DefinirY, 
     DefinirZ
-} from '../../utils/math.js';
+} from '../../../utils/render_engine/math.js';
 import { Renderer } from "../../Renderer/Renderer.js";
 import { float, Ponteiro } from "../../../types/types-cpp-like.js";
-import TexturedFacesCuboMeshConfig from "../../interfaces/TexturedFacesCuboMeshConfig.js";
-import InformacoesPrograma from "../../interfaces/InformacoesPrograma.js";
+import TexturedFacesCuboMeshConfig from "../../../interfaces/render_engine/TexturedFacesCuboMeshConfig.js";
+import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
 
 export class TexturedFacesCuboMesh extends VisualMesh
 {

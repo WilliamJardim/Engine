@@ -8,7 +8,7 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 import { VisualMesh } from "../VisualMesh.js";
-import { createShader, createBuffer, createProgram} from '../../utils/funcoesBase.js';
+import { createShader, createBuffer, createProgram} from '../../../utils/render_engine/funcoesBase.js';
 import { baseShaders } from '../../Shaders/Base.js';
 
 import {
@@ -24,11 +24,11 @@ import {
     DefinirX, 
     DefinirY, 
     DefinirZ
-} from '../../utils/math.js';
+} from '../../../utils/render_engine/math.js';
 import { Renderer } from "../../Renderer/Renderer.js";
 import { float, Ponteiro } from "../../../types/types-cpp-like.js";
-import TexturedUVCubeMeshConfig from '../../interfaces/TexturedUVCubeMeshConfig.js'
-import InformacoesPrograma from "../../interfaces/InformacoesPrograma.js";
+import TexturedUVCubeMeshConfig from '../../../interfaces/render_engine/TexturedUVCubeMeshConfig.js'
+import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
 
 export class TexturedUVCuboMesh extends VisualMesh
 {

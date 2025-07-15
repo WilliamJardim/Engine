@@ -1,4 +1,4 @@
-import { Ponteiro } from "../types/types-cpp-like";
+import { Ponteiro } from "../../types/types-cpp-like";
 
 /**
 * AUTHOR: William Alves Jardim

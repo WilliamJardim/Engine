@@ -14,16 +14,16 @@
 */
 
 import { VisualMesh } from "./VisualMesh.js";
-import { createBuffer, carregarTextura } from '../utils/funcoesBase.js';
+import { createBuffer, carregarTextura } from '../../utils/render_engine/funcoesBase.js';
 import { baseShaders } from '../Shaders/Base.js';
 import { 
    isDentroRaio
-} from '../utils/math.js';
+} from '../../utils/render_engine/math.js';
 
 import { float } from "../../types/types-cpp-like.js";
-import Position3D from "../../interfaces/Position3D.js";
+import Position3D from "../../interfaces/main_engine/Position3D.js";
 import { Renderer } from "../Renderer/Renderer.js";
-import LightConfig from "../interfaces/LightConfig.js";
+import LightConfig from "../../interfaces/render_engine/LightConfig.js";
 
 // renderizador.criarObjeto( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 0.5, raio: 0.1 , cor: [255,0,0]} )
 export class Light

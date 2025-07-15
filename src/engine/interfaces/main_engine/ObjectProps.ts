@@ -11,9 +11,9 @@ import ObjectPosition    from "./ObjectPosition";
 import ObjectRotation    from "./ObjectRotation";
 import ObjectScale       from "./ObjectScale";
 import ObjectEvents      from './ObjectEvents';
-import ProximityBounds   from '../utils/interfaces/ProximityBounds';
+import ProximityBounds   from './ProximityBounds';
 import ObjectAttachment  from './ObjectAttachment';
-import { Ponteiro }      from '../types/types-cpp-like';
+import { Ponteiro }      from '../../types/types-cpp-like';
 
 export default interface ObjectProps
 {

@@ -7,8 +7,8 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import ObjectBase  from "../core/ObjectBase";
-import Mapa        from "../utils/dicionarios/Mapa";
+import ObjectBase  from "../../core/ObjectBase";
+import Mapa        from "../../utils/dicionarios/Mapa";
 
 export default interface ProximityBinaryTable
 {

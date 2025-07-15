@@ -9,8 +9,8 @@
 */
 import AbstractObjectBase  from "../../core/AbstractObjectBase";
 import ObjectBase          from "../../core/ObjectBase";
-import DistanciaEixos      from "../interfaces/DistanciaEixos";
-import ProximityBounds     from "../interfaces/ProximityBounds";
+import DistanciaEixos      from "../../interfaces/main_engine/DistanciaEixos";
+import ProximityBounds     from "../../interfaces/main_engine/ProximityBounds";
 import getDistance         from "./getDistance";
 import { Ponteiro }        from "../../types/types-cpp-like";
 

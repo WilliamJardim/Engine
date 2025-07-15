@@ -7,11 +7,13 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import InputListener from "../input/InputListener";
+import AbstractObjectBase from "../../core/AbstractObjectBase";
+import { Ponteiro }       from "../../types/types-cpp-like";
 
-export default interface SceneConfig
+export default interface CollisionsData
 {
-    inputListener                  : InputListener;
-    haveWind                       : boolean;
-    enable_advanced_frame_tracking : boolean, //Se ativado, vai capturar os dados do objeto a cada frame. Por padrão é ativado
+    objectNames   : Array<string>;
+    objectIDs     : Array<string>;
+    objectClasses : Array<string>;
+    objects       : Array<Ponteiro<AbstractObjectBase>>;
 }

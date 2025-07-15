@@ -9,7 +9,7 @@
 */
 
 import { VisualMesh } from "./VisualMesh.js";
-import { createBuffer, carregarTextura } from '../utils/funcoesBase.js';
+import { createBuffer, carregarTextura } from '../../utils/render_engine/funcoesBase.js';
 import { baseShaders } from '../Shaders/Base.js';
 import { 
     CriarMatrix4x4,
@@ -19,12 +19,12 @@ import {
     RotacionarX,
     RotacionarY,
     RotacionarZ
-} from '../utils/math.js';
+} from '../../utils/render_engine/math.js';
 import { Renderer } from "../Renderer/Renderer.js";
 import { float, Ponteiro } from "../../types/types-cpp-like.js";
 import Mapa from "../../utils/dicionarios/Mapa.js";
-import OBJMeshConfig from "../interfaces/OBJMeshConfig.js";
-import InformacoesPrograma from "../interfaces/InformacoesPrograma.js";
+import OBJMeshConfig from "../../interfaces/render_engine/OBJMeshConfig.js";
+import InformacoesPrograma from "../../interfaces/render_engine/InformacoesPrograma.js";
 
 /**
 * PORTABILIDADE PRA C++:

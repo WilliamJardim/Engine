@@ -7,9 +7,9 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import ObjectPosition  from "../../interfaces/ObjectPosition";
-import ObjectScale     from "../../interfaces/ObjectScale";
-import ObjectVelocity  from "../../interfaces/ObjectVelocity";
+import ObjectPosition  from "../../interfaces/main_engine/ObjectPosition";
+import ObjectScale     from "../../interfaces/main_engine/ObjectScale";
+import ObjectVelocity  from "../../interfaces/main_engine/ObjectVelocity";
 
 export type FrameDataOrder = 'beforeUpdate' | 'afterUpdate';
 

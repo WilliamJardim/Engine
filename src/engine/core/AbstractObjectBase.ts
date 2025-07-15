@@ -7,25 +7,25 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import CollisionsData      from "../interfaces/CollisionsData";
-import MeshRepresentation  from "../interfaces/MeshRepresentation";
-import MovementState       from "../interfaces/MovementState";
-import ObjectAcceleration  from "../interfaces/ObjectAcceleration";
-import ObjectAttachment    from "../interfaces/ObjectAttachment";
-import ObjectEventLayer    from "../interfaces/ObjectEventBlock";
-import ObjectEvents        from "../interfaces/ObjectEvents";
-import ObjectForce         from "../interfaces/ObjectForce";
-import ObjectPosition      from "../interfaces/ObjectPosition";
-import ObjectProps         from "../interfaces/ObjectProps";
-import ObjectRotation      from "../interfaces/ObjectRotation";
-import ObjectScale         from "../interfaces/ObjectScale";
-import ObjectVelocity      from "../interfaces/ObjectVelocity";
-import PhysicsState        from "../interfaces/PhysicsState";
-import Position3D          from "../interfaces/Position3D";
-import RotationState       from "../interfaces/RotationState";
-import VelocityStatus      from "../interfaces/VelocityStatus";
+import CollisionsData      from "../interfaces/main_engine/CollisionsData";
+import MeshRepresentation  from "../interfaces/main_engine/MeshRepresentation";
+import MovementState       from "../interfaces/main_engine/MovementState";
+import ObjectAcceleration  from "../interfaces/main_engine/ObjectAcceleration";
+import ObjectAttachment    from "../interfaces/main_engine/ObjectAttachment";
+import ObjectEventLayer    from "../interfaces/main_engine/ObjectEventBlock";
+import ObjectEvents        from "../interfaces/main_engine/ObjectEvents";
+import ObjectForce         from "../interfaces/main_engine/ObjectForce";
+import ObjectPosition      from "../interfaces/main_engine/ObjectPosition";
+import ObjectProps         from "../interfaces/main_engine/ObjectProps";
+import ObjectRotation      from "../interfaces/main_engine/ObjectRotation";
+import ObjectScale         from "../interfaces/main_engine/ObjectScale";
+import ObjectVelocity      from "../interfaces/main_engine/ObjectVelocity";
+import PhysicsState        from "../interfaces/main_engine/PhysicsState";
+import Position3D          from "../interfaces/main_engine/Position3D";
+import RotationState       from "../interfaces/main_engine/RotationState";
+import VelocityStatus      from "../interfaces/main_engine/VelocityStatus";
 import { Ponteiro }        from "../types/types-cpp-like";
-import ProximityBounds     from "../utils/interfaces/ProximityBounds";
+import ProximityBounds     from "../interfaces/main_engine/ProximityBounds";
 import ObjectFrameTracker  from "./ObjectFrameTracker/ObjectFrameTracker";
 import Scene               from "./Scene";
 

@@ -13,7 +13,7 @@ import GlobalContext from './core/GlobalContext';
 import ObjectBase    from './core/ObjectBase';
 import Scene         from './core/Scene';
 import LocalSound    from './core/LocalSound';
-import { carregarTxt } from './renderer/utils/funcoesBase';
+import { carregarTxt } from './utils/render_engine/funcoesBase';
 import { Light } from './core/Light';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar

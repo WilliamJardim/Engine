@@ -8,7 +8,7 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 import { VisualMesh } from "../VisualMesh.js";
-import { createBuffer } from "../../utils/funcoesBase.js";
+import { createBuffer } from "../../../utils/render_engine/funcoesBase.js";
 import { baseShaders } from '../../Shaders/Base.js';
 import { 
     CriarMatrix4x4, 
@@ -17,10 +17,10 @@ import {
     RotacionarY, 
     RotacionarZ, 
     DefinirEscala 
-} from "../../utils/math.js";
+} from "../../../utils/render_engine/math.js";
 import { Renderer } from "../../Renderer/Renderer.js";
-import VisualMeshConfig from "../../interfaces/VisualMeshConfig.js";
-import InformacoesPrograma from "../../interfaces/InformacoesPrograma.js";
+import VisualMeshConfig from "../../../interfaces/render_engine/VisualMeshConfig.js";
+import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
 
 export class Triangulo2DMesh extends VisualMesh 
 {

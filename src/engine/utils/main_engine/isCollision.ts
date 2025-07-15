@@ -8,9 +8,9 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 import ObjectBase          from "../../core/ObjectBase";
-import ProximityBounds     from '../interfaces/ProximityBounds';
-import ObjectPosition      from '../../interfaces/ObjectPosition';
-import ObjectScale         from '../../interfaces/ObjectScale';
+import ProximityBounds     from '../../interfaces/main_engine/ProximityBounds';
+import ObjectPosition      from '../../interfaces/main_engine/ObjectPosition';
+import ObjectScale         from '../../interfaces/main_engine/ObjectScale';
 import { Ponteiro }        from "../../types/types-cpp-like";
 import AbstractObjectBase  from "../../core/AbstractObjectBase";
 

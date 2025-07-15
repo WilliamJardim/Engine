@@ -8,7 +8,7 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 
-import Position3D from "../../interfaces/Position3D";
+import Position3D from "../../interfaces/main_engine/Position3D";
 import { Matrix } from "../../types/matrix";
 import { float, Ponteiro } from "../../types/types-cpp-like";
 

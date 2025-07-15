@@ -8,10 +8,10 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 
-import AbstractObjectBase  from "../../core/AbstractObjectBase";
-import ObjectBase          from "../../core/ObjectBase";
-import includeString       from "./includeString";
-import { Ponteiro }        from "../../types/types-cpp-like";
+import AbstractObjectBase  from "../../../core/AbstractObjectBase";
+import ObjectBase          from "../../../core/ObjectBase";
+import includeString       from "../../array/includeString";
+import { Ponteiro }        from "../../../types/types-cpp-like";
 
 // para cada classe do objeto, verifica se o ignoreCollisions do outro objeto inclui a classe da iteração atual.
 // ou melhor dizendo: Queremos saber se o ignoreCollisions do outro objeto(o objeto B) inclui alguma classe que o objeto A tenha

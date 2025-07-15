@@ -8,8 +8,8 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 import AudioPlayer         from "../audio/AudioPlayer";
-import LocalSoundProps     from "../interfaces/LocalSoundProps";
-import ObjectPosition      from "../interfaces/ObjectPosition";
+import LocalSoundProps     from "../interfaces/main_engine/LocalSoundProps";
+import ObjectPosition      from "../interfaces/main_engine/ObjectPosition";
 import AbstractObjectBase  from "./AbstractObjectBase";
 import Scene               from "./Scene";
 import { Ponteiro }        from "../types/types-cpp-like";

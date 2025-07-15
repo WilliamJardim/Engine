@@ -11,8 +11,8 @@
 /**
 * Importando funções essenciais 
 */
-import { createShader, createBuffer, createProgram } from '../utils/funcoesBase.js';
-import { criarGL }    from '../utils/funcoesBase.js';
+import { createShader, createBuffer, createProgram } from '../../utils/render_engine/funcoesBase.js';
+import { criarGL }    from '../../utils/render_engine/funcoesBase.js';
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
         CriarMatrixPerspectiva, 
@@ -26,7 +26,7 @@ import {CriarMatrix4x4,
         DefinirX, 
         DefinirY, 
         DefinirZ,
-        FrameCounter} from '../utils/math.js';
+        FrameCounter} from '../../utils/render_engine/math.js';
         
 /**
 * Importando shaders 
@@ -51,7 +51,7 @@ import { Light } from '../Mesh/Light.js';
 import { float, Ponteiro } from '../../types/types-cpp-like.js';
 import Mapa from '../../utils/dicionarios/Mapa.js';
 import { VisualMesh } from '../Mesh/VisualMesh.ts';
-import InformacoesPrograma from '../interfaces/InformacoesPrograma.ts';
+import InformacoesPrograma from '../../interfaces/render_engine/InformacoesPrograma.ts';
 
 export class Renderer
 {

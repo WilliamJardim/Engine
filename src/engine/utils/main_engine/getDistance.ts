@@ -8,8 +8,8 @@
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
 import AbstractObjectBase from "../../core/AbstractObjectBase";
-import ObjectPosition     from "../../interfaces/ObjectPosition";
-import DistanciaEixos     from "../interfaces/DistanciaEixos";
+import ObjectPosition     from "../../interfaces/main_engine/ObjectPosition";
+import DistanciaEixos     from "../../interfaces/main_engine/DistanciaEixos";
 import { Ponteiro }       from "../../types/types-cpp-like";
 
 /**

@@ -7,8 +7,8 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import InputKeyMap  from "../interfaces/InputKeyMap";
-import Position2D   from "../interfaces/Position2D";
+import InputKeyMap  from "../interfaces/main_engine/InputKeyMap";
+import Position2D   from "../interfaces/main_engine/Position2D";
 
 export default class InputListener
 {

@@ -159,7 +159,12 @@ export default abstract class AbstractObjectBase
             kick_rate: 0,
             enable_advanced_frame_tracking: false,
             onCreate: null,
-            attachments: new Array<ObjectAttachment>()
+            attachments: new Array<ObjectAttachment>(),
+            obj: "",
+            mtl: "",
+            useAccumulatedLights     : true,
+            childrenIndividualLights : true,
+            staticAccumulatedLights  : false
         };
         this.movimentState = {
             forward   : false,
@@ -322,7 +327,12 @@ export default abstract class AbstractObjectBase
             kick_rate   : 0,
             enable_advanced_frame_tracking: false,
             onCreate    : null,
-            attachments : new Array<ObjectAttachment>()
+            attachments : new Array<ObjectAttachment>(),
+            obj: "",
+            mtl: "",
+            useAccumulatedLights     : true,
+            childrenIndividualLights : true,
+            staticAccumulatedLights  : false
         };
     }
 

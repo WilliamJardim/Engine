@@ -41,62 +41,90 @@ export default class InputListener
 
         const onKeyDown = (event: KeyboardEvent) => {
             
-            switch (event.code) {
-                case 'ArrowUp':
-                    contexto.keyDetection.ArrowUp = true;
-                    break;
-                case 'KeyW':
-                    contexto.keyDetection.W = true;
-                    break;
-                case 'ArrowDown':
-                    contexto.keyDetection.ArrowDown = true;
-                    break;
-                case 'KeyS':
-                    contexto.keyDetection.S = true;
-                    break;
-                case 'ArrowLeft':
-                    contexto.keyDetection.ArrowLeft = true;
-                    break;
-                case 'KeyA':
-                    contexto.keyDetection.A = true;
-                    break;
-                case 'ArrowRight':
-                    contexto.keyDetection.ArrowRight = true;
-                    break;
-                case 'KeyD':
-                    contexto.keyDetection.D = true;
-                    break;
+            if(event.code == "ArrowUp")
+            {
+                contexto.keyDetection.ArrowUp = true;
             }
+
+            if(event.code == "KeyW")
+            {
+                contexto.keyDetection.W = true;
+            }      
+        
+            if(event.code == "ArrowDown")
+            {
+                contexto.keyDetection.ArrowDown = true;
+            }
+
+            if(event.code == "KeyS")
+            {
+                contexto.keyDetection.S = true;
+            }
+
+            if(event.code == "ArrowLeft")
+            {
+                contexto.keyDetection.ArrowLeft = true;
+            }
+
+            if(event.code == "KeyA")
+            {
+                contexto.keyDetection.A = true;
+            }
+
+            if(event.code == "ArrowRight")
+            {
+                contexto.keyDetection.ArrowRight = true;
+            }
+
+            if(event.code == "KeyD")
+            {
+                contexto.keyDetection.D = true;
+            }
+            
         };
         
         const onKeyUp = (event: KeyboardEvent) => {
         
-            switch (event.code) {
-                case 'ArrowUp':
-                    contexto.keyDetection.ArrowUp = false;
-                    break;
-                case 'KeyW':
-                    contexto.keyDetection.W = false;
-                    break;
-                case 'ArrowDown':
-                    contexto.keyDetection.ArrowDown = false;
-                    break;
-                case 'KeyS':
-                    contexto.keyDetection.S = false;
-                    break;
-                case 'ArrowLeft':
-                    contexto.keyDetection.ArrowLeft = false;
-                    break;
-                case 'KeyA':
-                    contexto.keyDetection.A = false;
-                    break;
-                case 'ArrowRight':
-                    contexto.keyDetection.ArrowRight = false;
-                    break;
-                case 'KeyD':
-                    contexto.keyDetection.D = false;
-                    break;
+            if(event.code == "ArrowUp")
+            {
+                contexto.keyDetection.ArrowUp = false;
             }
+
+            if(event.code == "KeyW")
+            {
+                contexto.keyDetection.W = false;
+            }      
+        
+            if(event.code == "ArrowDown")
+            {
+                contexto.keyDetection.ArrowDown = false;
+            }
+
+            if(event.code == "KeyS")
+            {
+                contexto.keyDetection.S = false;
+            }
+
+            if(event.code == "ArrowLeft")
+            {
+                contexto.keyDetection.ArrowLeft = false;
+            }
+
+            if(event.code == "KeyA")
+            {
+                contexto.keyDetection.A = false;
+            }
+
+            if(event.code == "ArrowRight")
+            {
+                contexto.keyDetection.ArrowRight = false;
+            }
+
+            if(event.code == "KeyD")
+            {
+                contexto.keyDetection.D = false;
+            }
+            
         };
         
         document.addEventListener('keydown', onKeyDown);
@@ -110,33 +138,46 @@ export default class InputListener
     {
         let isPrecionada:boolean = false;
 
-        switch( keyName ){
-            case 'W':
-                isPrecionada = this.keyDetection.W == true;
-                break;
-            case 'A':
-                isPrecionada = this.keyDetection.A == true;
-                break;
-            case 'S':
-                isPrecionada = this.keyDetection.S == true;
-                break;
-            case 'D':
-                isPrecionada = this.keyDetection.D == true;
-                break;
-            case 'ArrowUp':
-                isPrecionada = this.keyDetection.ArrowUp == true;
-                break;
-            case 'ArrowDown':
-                isPrecionada = this.keyDetection.ArrowDown == true;
-                break;
-            case 'ArrowLeft':
-                isPrecionada = this.keyDetection.ArrowLeft == true;
-                break;
-            case 'ArrowRight':
-                isPrecionada = this.keyDetection.ArrowRight == true;
-                break;
+        if( keyName == "W" )
+        {
+            isPrecionada = this.keyDetection.W == true;
         }
 
+        if( keyName == "A" )
+        {
+            isPrecionada = this.keyDetection.A == true;
+        }
+            
+        if( keyName == "S" )
+        {
+            isPrecionada = this.keyDetection.S == true;
+        }
+            
+        if( keyName == "D" )
+        {
+            isPrecionada = this.keyDetection.D == true;
+        }
+            
+        if( keyName == "ArrowUp" )
+        {
+            isPrecionada = this.keyDetection.ArrowUp == true;
+        }
+            
+        if( keyName == "ArrowDown" )
+        {
+            isPrecionada = this.keyDetection.ArrowDown == true;
+        }
+            
+        if( keyName == "ArrowLeft" )
+        {
+            isPrecionada = this.keyDetection.ArrowLeft == true;
+        }
+
+        if( keyName == "ArrowRight" )
+        {
+            isPrecionada = this.keyDetection.ArrowRight == true;
+        }
+        
         return isPrecionada;
     }
 }

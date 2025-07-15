@@ -167,33 +167,46 @@ export default class RenderizadorCena
         
         const onKeyDown = (event:any) => {
                     
-            switch (event.code) {
-                case 'ArrowUp':
-                    contextoPlayer.keyDetection.ArrowUp = true;
-                    break;
-                case 'KeyW':
-                    contextoPlayer.keyDetection.W = true;
-                    break;
-                case 'ArrowDown':
-                    contextoPlayer.keyDetection.ArrowDown = true;
-                    break;
-                case 'KeyS':
-                    contextoPlayer.keyDetection.S = true;
-                    break;
-                case 'ArrowLeft':
-                    contextoPlayer.keyDetection.ArrowLeft = true;
-                    break;
-                case 'KeyA':
-                    contextoPlayer.keyDetection.A = true;
-                    break;
-                case 'ArrowRight':
-                    contextoPlayer.keyDetection.ArrowRight = true;
-                    break;
-                case 'KeyD':
-                    contextoPlayer.keyDetection.D = true;
-                    break;
+            if( event.code == "ArrowUp" )
+            {
+                contextoPlayer.keyDetection.ArrowUp = true;
             }
-        
+            
+            if( event.code == "KeyW" )
+            {
+                contextoPlayer.keyDetection.W = true;
+            }
+            
+            if( event.code == "ArrowDown" )
+            {
+                contextoPlayer.keyDetection.ArrowDown = true;
+            }
+            
+            if( event.code == "KeyS" )
+            {
+                contextoPlayer.keyDetection.S = true;
+            }
+            
+            if( event.code == "ArrowLeft" )
+            {
+                contextoPlayer.keyDetection.ArrowLeft = true;
+            }
+            
+            if( event.code == "KeyA" )
+            {
+                contextoPlayer.keyDetection.A = true;
+            }
+            
+            if( event.code == "ArrowRight" )
+            {
+                contextoPlayer.keyDetection.ArrowRight = true;
+            }
+            
+            if( event.code == "KeyD" )
+            {
+                contextoPlayer.keyDetection.D = true;
+            }
+            
             if( event.shiftKey ){
                 contextoPlayer.keyDetection.SHIFT = true;
             }
@@ -203,33 +216,46 @@ export default class RenderizadorCena
         
         const onKeyUp = (event:any) => {
         
-            switch (event.code) {
-                case 'ArrowUp':
-                    contextoPlayer.keyDetection.ArrowUp = false;
-                    break;
-                case 'KeyW':
-                    contextoPlayer.keyDetection.W = false;
-                    break;
-                case 'ArrowDown':
-                    contextoPlayer.keyDetection.ArrowDown = false;
-                    break;
-                case 'KeyS':
-                    contextoPlayer.keyDetection.S = false;
-                    break;
-                case 'ArrowLeft':
-                    contextoPlayer.keyDetection.ArrowLeft = false;
-                    break;
-                case 'KeyA':
-                    contextoPlayer.keyDetection.A = false;
-                    break;
-                case 'ArrowRight':
-                    contextoPlayer.keyDetection.ArrowRight = false;
-                    break;
-                case 'KeyD':
-                    contextoPlayer.keyDetection.D = false;
-                    break;
+            if(event.code == "ArrowUp")
+            {
+                contextoPlayer.keyDetection.ArrowUp = false;
+            }    
+            
+            if(event.code == "KeyW")
+            {
+                contextoPlayer.keyDetection.W = false;
             }
-        
+
+            if(event.code == "ArrowDown")
+            {
+                contextoPlayer.keyDetection.ArrowDown = false;
+            }
+
+            if(event.code == "KeyS")
+            {
+                contextoPlayer.keyDetection.S = false;
+            }    
+            
+            if(event.code == "ArrowLeft")
+            {
+                contextoPlayer.keyDetection.ArrowLeft = false;
+            }
+                
+            if(event.code == "KeyA")
+            {
+                contextoPlayer.keyDetection.A = false;
+            }
+                
+            if(event.code == "ArrowRight")
+            {
+                contextoPlayer.keyDetection.ArrowRight = false;
+            }
+                
+            if(event.code == "KeyD")
+            {
+                contextoPlayer.keyDetection.D = false;
+            }        
+            
             if( event.shiftKey ){
                 contextoPlayer.keyDetection.SHIFT = false;
             }

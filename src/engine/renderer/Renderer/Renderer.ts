@@ -391,76 +391,85 @@ export class Renderer
     {
         const contextoRenderizador = this;
 
-        switch( propriedadesObjeto.tipo )
+        if( propriedadesObjeto.tipo == "OBJ" )
         {
-            case "OBJ":
-                this.objetos.push( new OBJMesh( contextoRenderizador, 
-                                                propriedadesObjeto ) 
-                                 );
-                break;
-
-            case "Cubo":
-                this.objetos.push( new CuboMesh( contextoRenderizador, 
-                                                 propriedadesObjeto ) 
-                                 );
-                break;
-
-            case "CuboDeformavel":
-                this.objetos.push( new CuboDeformavelMesh( contextoRenderizador, 
-                                                           propriedadesObjeto ) 
-                                 );
-                break;
-
-            case "Cilindro":
-                this.objetos.push( new CilindroMesh( contextoRenderizador, 
-                                                     propriedadesObjeto ) 
-                                 );
-                break;
-
-            case "PlanoOndulado":
-                this.objetos.push( new PlanoOnduladoMesh( contextoRenderizador, 
-                                                          propriedadesObjeto ) 
-                                 );
-                break;
-
-            case "TexturedUVCubo":
-                this.objetos.push( new TexturedUVCuboMesh( contextoRenderizador, 
-                                                           propriedadesObjeto ) 
-                                 );
-                break;
-
-            case "TexturedFacesCubo":
-                this.objetos.push( new TexturedFacesCuboMesh( contextoRenderizador, 
-                                                              propriedadesObjeto ) 
-                                 );
-                
-                break;
-
-            case "Esfera":
-                this.objetos.push( new EsferaMesh( contextoRenderizador, 
-                                                   propriedadesObjeto ) 
-                                 );
-                break;
-
-            case "Triangulo2D":
-                this.objetos.push( new Triangulo2DMesh( contextoRenderizador, 
-                                                        propriedadesObjeto ) 
-                                 );
-                break;
-
-            case "Triangulo3D":
-                this.objetos.push( new Triangulo3DMesh( contextoRenderizador, 
-                                                        propriedadesObjeto ) 
-                                 );
-                break;
-
-            case "Light":
-                this.luzes.push( new Light( contextoRenderizador, 
+            this.objetos.push( new OBJMesh( contextoRenderizador, 
                                             propriedadesObjeto ) 
-                                 );
-                break;
+                                );
         }
 
+        if( propriedadesObjeto.tipo == "Cubo" )
+        {
+            this.objetos.push( new CuboMesh( contextoRenderizador, 
+                                                propriedadesObjeto ) 
+                                );
+        }
+
+        if( propriedadesObjeto.tipo == "CuboDeformavel" )
+        {
+            this.objetos.push( new CuboDeformavelMesh( contextoRenderizador, 
+                                                        propriedadesObjeto ) 
+                                );
+        }
+
+        if( propriedadesObjeto.tipo == "Cilindro" )
+        {
+            this.objetos.push( new CilindroMesh( contextoRenderizador, 
+                                                    propriedadesObjeto ) 
+                                );
+        }
+
+        if( propriedadesObjeto.tipo == "PlanoOndulado" )
+        {
+            this.objetos.push( new PlanoOnduladoMesh( contextoRenderizador, 
+                                                        propriedadesObjeto ) 
+                                );
+        }
+
+        if( propriedadesObjeto.tipo == "TexturedUVCubo" )
+        {
+            this.objetos.push( new TexturedUVCuboMesh( contextoRenderizador, 
+                                                        propriedadesObjeto ) 
+                                );
+        }
+
+        if( propriedadesObjeto.tipo == "TexturedFacesCubo" )
+        {
+            this.objetos.push( new TexturedFacesCuboMesh( contextoRenderizador, 
+                                                            propriedadesObjeto ) 
+                                );
+            
+        }
+
+        if( propriedadesObjeto.tipo == "Esfera" )
+        {
+            this.objetos.push( new EsferaMesh( contextoRenderizador, 
+                                                propriedadesObjeto ) 
+                                );
+        }
+
+        if( propriedadesObjeto.tipo == "Triangulo2D" )
+        {
+            this.objetos.push( new Triangulo2DMesh( contextoRenderizador, 
+                                                    propriedadesObjeto ) 
+                                );
+        }
+
+        if( propriedadesObjeto.tipo == "Triangulo3D" )
+        {
+            this.objetos.push( new Triangulo3DMesh( contextoRenderizador, 
+                                                    propriedadesObjeto ) 
+                                );
+        }
+
+        if( propriedadesObjeto.tipo == "Light" )
+        {
+            this.luzes.push( new Light( contextoRenderizador, 
+                                        propriedadesObjeto ) 
+                                );
+        }
+        
+        
         if( propriedadesObjeto.tipo != "Light" )
         {
             // Retorna o ultimo objeto criado

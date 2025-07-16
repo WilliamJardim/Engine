@@ -366,35 +366,6 @@ export class VisualMesh
         this.corLuz[2] = (iluminationDefinition.corLuzObjeto[2] || 0) + this.renderer.corAmbient[2];
     }
 
-    /*
-    atualizarIluminacao(gl, informacoesPrograma )
-    {
-        // Configurações gerais da luz no objeto
-        const brilho         = informacoesPrograma.atributosObjeto.brilho;
-        const ambient        = informacoesPrograma.atributosObjeto.ambient;
-        const diffuse        = informacoesPrograma.atributosObjeto.diffuse;
-        const specular       = informacoesPrograma.atributosObjeto.specular;
-
-        // Posição e detalhes das luzes
-        const posicaoLuz     = informacoesPrograma.atributosObjeto.posicaoLuz; // um ARRAY
-        const corLuz         = informacoesPrograma.atributosObjeto.corLuz; // um ARRAY
-        const intensidadeLuz = informacoesPrograma.atributosObjeto.intensidadeLuz; // um ARRAY
-
-        // Atualiza as configurações gerais 
-        gl.uniform1f(brilho,   this.brilho);
-        gl.uniform1f(ambient,  this.ambient);
-        gl.uniform1f(diffuse,  this.diffuse);
-        gl.uniform1f(specular, this.specular);
-
-        // Obtem as luzes que objeto está recebendo
-        const luzesCena = this.getLuzesConvertidas();
-
-        // Atualiza as luzes no shaders do objeto
-        gl.uniform3fv(posicaoLuz,     luzesCena.posicoes );
-        gl.uniform3fv(corLuz,         luzesCena.cores );
-        gl.uniform3fv(intensidadeLuz, luzesCena.intensidades);
-    }*/
-
     /**
     * Código base para aplicar iluminação, usado em todos os objetos
     */

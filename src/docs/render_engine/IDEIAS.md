@@ -216,6 +216,9 @@ Só mais um bloco de IF
         Uma só pra calcular as luzes e acumular elas.
         E a outra só pra pegar os resultados desses cálculos e enviar para o shader(que eu quero que esteja em harmonia com minha ideia de centralizar tudo)
 
+   ## 16/07/2025 16:30 PM
+        Tambem preciso levar em conta o aplicarIluminacao do VisualMesh, e as funções que ela chama, e tambem lidar com a aplicação das luzes no shader
+        
 
 # 16/07/2025 16:27 - Otimização da renderização WebGL 
 Reduzir ao máximo as chamadas do useProgram com regras:

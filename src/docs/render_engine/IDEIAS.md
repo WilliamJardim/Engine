@@ -141,3 +141,52 @@ Outra ideia mais simples que tive: adicionar uma nova variável booleana dentro 
 
 useLightAccumulation
 Só mais um bloco de IF
+
+# 16/07/2025 - EXCESÂO PARA OBJETOS CONTINUAREM ATUALIZANDO LUZES MESMO COM ILUMINAÇÂO ESTATICA
+    Ideia de iluminação dinâmica em objetos mesmo com static lights ativado:
+
+    Tive uma ideia pra usar iluminação dinâmica em objetos mesmo com static lights ativado:
+
+    Quando todos os objetos já tiverem tido a luz calculada,... A cena vai parar de atualização a iluminação, 
+    Porém, objetos que tiverem excessão por continuar usando luz dinâmica, vão continuar recebendo a interferência da luz normalmente. Só eles. Pois são excessão.
+
+    Mais eles podem fazer isso em harmonia com a iluminação pré calculada. Para não anular ela.
+    O que eu quero dizer é o seguinte: a iluminação padrão do objeto ainda vai ser a iluminação pré calculada, porém a luz pode aumentar ou diminuir essa iluminação, alterar cor, etc...
+    Porém, quando o objeto deixar de receber a interferência da luz, a iluminação dele automaticamente volta a ser o que já estava pré calculado, ao invés de voltar pra iluminação padrão definida no Renderizado
+
+    Eu pensei nisso. E pensei em outra ideia também sobre isso, nesse sentido.
+
+    Na prática a minha Engine já tem isso.
+    A única diferença do que já fiz pra minha nova ideia é a seguinte:
+    A iluminação da minha Engine já leva em conta a iluminação do Renderizador somada a iluminação local dos pontos de luz próximos ao objeto.
+
+    Porém, não existe excessão. Ou o objeto usa iluminação estática ou não.
+    Se ele usa, ele pré calcula a iluminação.
+    Porém, se ele não usa, ele calcula a todo momento. Simplesmente assim!
+
+    Agora com minha nova ideia, eu poderia adicionar uma nova variável no Objeto, que se ativado, ele vai calcular a iluminação apenas uma única vez, como já faz. *Porém, ele vai fazer mais do que isso: a iluminação desse objeto sempre vai respeitar a iluminação pré calculada. Porém, ainda sofrer alteração de pontos de iluminação próximos do objeto. Como eu falei*
+
+    A iluminação do objeto vai preservar a iluminação pré calculada(acumulada) dos pontos de iluminação perto do objeto, que foram pré calculados no primeiro frame. 
+
+    E ainda pode sofrer alterações das luzes locais
+
+    Então a única diferença é pequena:
+    Se um objeto usa iluminação estática e não usar excessão, a iluminação nunca muda.
+
+    Se um objeto não usa iluminação estática, é sempre dinâmica. Sempre se baseia na iluminação do Renderizador e das luzes locais e do próprio Objeto. 
+
+    Mais se ele usa iluminação estática e usar a minha nova excessão, a fórmula matemática vai mudar. Ela Vai ser: iluminaçaoObjeto = iluminação_pré_calculada + luzes_locais + luz_objeto
+    Posso até incluir a iluminação do Renderizador também.
+
+
+# 16/07/2025 - Isolar o WebGL e centralizer as chamadas WebGL
+    Ideia: Isolar o WebGL num adaptador simples, e com isso, tentar abstrair o máximo possível do uso o WebGL na Engine. Para que não seja necessário usar os tipos do WebGL diretamente nos objetos.... Apenas no Renderizador principal e em conformidade com minha outra ideia que tive, a seguir:
+
+    Ideia: ao invés de cada objeto ter um método desenhar com chamadas do WebGL,... Cada objeto vai ter um método que atualiza os parâmetros de desenho dele.(O método desenhar dos objetos vai fazer isso)
+    Que será chamado e depois lido pelo Renderizador numa função mestre que eu iria chamar de "desenharGeral". Lá vai ser um algoritmo padrão para todos e qualquer objetos da cena. Independente de ser OBJ, Cubo, ou outros...vai ter muitos IFs para determinar qual caminho seguir.....
+    Assim eu centralizo todas as chamadas do WebGL em uma única função mestre 
+
+
+
+
+

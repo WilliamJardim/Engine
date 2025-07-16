@@ -325,7 +325,13 @@ export class VisualMesh
         this.corLuz[0] = this.corLuzObjeto[0] + this.renderer.corAmbient[0] + this.corLocalAcumulado[0];
         this.corLuz[1] = this.corLuzObjeto[1] + this.renderer.corAmbient[1] + this.corLocalAcumulado[1];
         this.corLuz[2] = this.corLuzObjeto[2] + this.renderer.corAmbient[2] + this.corLocalAcumulado[2];
+    }
 
+    /**
+    * Envia a iluminação já calculada para o shader 
+    */
+    enviarIluminacaoShader(gl:WebGL2RenderingContext, informacoesPrograma:any): void
+    {
         /**
         * Aplica os valores 
         */
@@ -343,9 +349,6 @@ export class VisualMesh
         gl.uniform1f(specularShader, this.specular);
         gl.uniform3fv(corLuzShader,  new Float32Array(this.corLuz) );
         gl.uniform1f(intensidadeLuzShader, this.intensidadeLuz);
-
-        // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
-        this._jaAcumulouLuzes = true;
     }
     
     /**
@@ -374,7 +377,14 @@ export class VisualMesh
         // Se o objeto sempre for atualizar luzes
         if( this.alwaysUpdateLights == true )
         {
+            // Calcula a iluminação
             this.atualizarIluminacao(gl, informacoesPrograma);
+
+            // Envia a iluminaçao calculada para o shader
+            this.enviarIluminacaoShader(gl, informacoesPrograma);
+
+            // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
+            this._jaAcumulouLuzes = true;
         }
     }
 

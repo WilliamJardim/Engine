@@ -80,6 +80,14 @@ export class OBJMesh extends VisualMesh
     public iluminationInfo               : Mapa<string, any>;
     public iluminationAcumuladaInfo      : Mapa<string, any>;
 
+    // Mais variaveis para a acumulação de luzes
+    public brilhoParte       : number;
+    public ambientParte      : number;
+    public diffuseParte      : number;
+    public specularParte     : number;
+    public corLuzParte       : Array<float>;
+    public intensidadeParte  : number;
+
     constructor(renderer:Renderer, propriedadesMesh:OBJMeshConfig) 
     {
         super(renderer, propriedadesMesh);
@@ -125,6 +133,14 @@ export class OBJMesh extends VisualMesh
 
         this.iluminationInfo          = new Mapa<string, any>();  // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
         this.iluminationAcumuladaInfo = new Mapa<string, any>();  // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
+
+        // Mais variaveis para a acumulação de luzes
+        this.brilhoParte       = 0;
+        this.ambientParte      = 0;
+        this.diffuseParte      = 0;
+        this.specularParte     = 0;
+        this.corLuzParte       = [0, 0, 0];
+        this.intensidadeParte  = 0;
 
         // Variaveis de renderização
         this.modeloObjetoVisual = CriarMatrix4x4();
@@ -656,17 +672,26 @@ export class OBJMesh extends VisualMesh
         /**
         * Obtem o ambiente atualizado como a soma dos valores do objeto com os globais da cena
         */
-        const ambientParte     = iluminacaoParte.ambientObjeto         + this.renderer.ambient                + iluminacaoAcumuladaParte.ambientLocalAcumulado;
-        const diffuseParte     = iluminacaoParte.diffuseObjeto         + this.renderer.diffuse                + iluminacaoAcumuladaParte.diffuseLocalAcumulado;
-        const specularParte    = iluminacaoParte.specularObjeto        + this.renderer.specular               + iluminacaoAcumuladaParte.specularLocalAcumulado;
-        const brilhoParte      = iluminacaoParte.brilhoObjeto          + this.renderer.brilho                 + iluminacaoAcumuladaParte.brilhoLocalAcumulado;
-        const intensidadeParte = iluminacaoParte.intensidadeLuzObjeto  + this.renderer.intensidadeLuz         + iluminacaoAcumuladaParte.intensidadeLocalAcumulado;
+        this.ambientParte     = iluminacaoParte.ambientObjeto         + this.renderer.ambient                + iluminacaoAcumuladaParte.ambientLocalAcumulado;
+        this.diffuseParte     = iluminacaoParte.diffuseObjeto         + this.renderer.diffuse                + iluminacaoAcumuladaParte.diffuseLocalAcumulado;
+        this.specularParte    = iluminacaoParte.specularObjeto        + this.renderer.specular               + iluminacaoAcumuladaParte.specularLocalAcumulado;
+        this.brilhoParte      = iluminacaoParte.brilhoObjeto          + this.renderer.brilho                 + iluminacaoAcumuladaParte.brilhoLocalAcumulado;
+        this.intensidadeParte = iluminacaoParte.intensidadeLuzObjeto  + this.renderer.intensidadeLuz         + iluminacaoAcumuladaParte.intensidadeLocalAcumulado;
 
-        let corLuzParte     = [0, 0, 0];
-        corLuzParte[0]      = iluminacaoParte.corLuzObjeto[0] + this.renderer.corAmbient[0] + iluminacaoAcumuladaParte.corLocalAcumulado[0];
-        corLuzParte[1]      = iluminacaoParte.corLuzObjeto[1] + this.renderer.corAmbient[1] + iluminacaoAcumuladaParte.corLocalAcumulado[1];
-        corLuzParte[2]      = iluminacaoParte.corLuzObjeto[2] + this.renderer.corAmbient[2] + iluminacaoAcumuladaParte.corLocalAcumulado[2];
+        this.corLuzParte      = [0, 0, 0];
+        this.corLuzParte[0]   = iluminacaoParte.corLuzObjeto[0] + this.renderer.corAmbient[0] + iluminacaoAcumuladaParte.corLocalAcumulado[0];
+        this.corLuzParte[1]   = iluminacaoParte.corLuzObjeto[1] + this.renderer.corAmbient[1] + iluminacaoAcumuladaParte.corLocalAcumulado[1];
+        this.corLuzParte[2]   = iluminacaoParte.corLuzObjeto[2] + this.renderer.corAmbient[2] + iluminacaoAcumuladaParte.corLocalAcumulado[2];
 
+        // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
+        this._jaAcumulouLuzes = true;
+    }
+
+    /**
+    * Envia a iluminação já calculada para o shader 
+    */
+    enviarIluminacaoParteShader(gl:WebGL2RenderingContext, informacoesPrograma:any, iluminacaoParte:any={}, iluminacaoAcumuladaParte:any={}): void
+    {
         /**
         * Aplica os valores 
         */
@@ -678,15 +703,12 @@ export class OBJMesh extends VisualMesh
         const intensidadeLuzShader  = informacoesPrograma.atributosObjeto.intensidadeLuz;
 
         // Atualiza as configurações gerais 
-        gl.uniform1f(brilhoShader,   brilhoParte);
-        gl.uniform1f(ambientShader,  ambientParte);
-        gl.uniform1f(diffuseShader,  diffuseParte);
-        gl.uniform1f(specularShader, specularParte);
-        gl.uniform3fv(corLuzShader,   new Float32Array(corLuzParte) );
-        gl.uniform1f(intensidadeLuzShader, intensidadeParte);
-
-        // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
-        this._jaAcumulouLuzes = true;
+        gl.uniform1f(brilhoShader,         this.brilhoParte);
+        gl.uniform1f(ambientShader,        this.ambientParte);
+        gl.uniform1f(diffuseShader,        this.diffuseParte);
+        gl.uniform1f(specularShader,       this.specularParte);
+        gl.uniform3fv(corLuzShader,        new Float32Array(this.corLuzParte) );
+        gl.uniform1f(intensidadeLuzShader, this.intensidadeParte);
     }
 
     /**
@@ -1269,6 +1291,13 @@ export class OBJMesh extends VisualMesh
 
                 // Depois de calcular, atualiza a iluminação
                 this.atualizarIluminacaoParte( gl, 
+                                               informacoesPrograma, 
+                                               iluminacaoParte, 
+                                               iluminacaoAcumuladaParte 
+                                             );
+
+                // Depois envia a iluminação calculada para o shader
+                this.enviarIluminacaoParteShader( gl, 
                                                informacoesPrograma, 
                                                iluminacaoParte, 
                                                iluminacaoAcumuladaParte 

@@ -208,6 +208,15 @@ Só mais um bloco de IF
 
     Preciso encontrar a melhor forma que melhor me agrade e que cumpra minhas ideias
 
+    ## 16/07/2025 16:26 PM (UMA HIPOTESE QUE EU PENSEI EM FAZER)
+        Derrepente eu posso até separar a função atualizarIluminacaoParte em duas:
+            - calcularIluminacaoParte
+            - enviarIluminacaoParteShader
+
+        Uma só pra calcular as luzes e acumular elas.
+        E a outra só pra pegar os resultados desses cálculos e enviar para o shader(que eu quero que esteja em harmonia com minha ideia de centralizar tudo)
+
+
 
 
 

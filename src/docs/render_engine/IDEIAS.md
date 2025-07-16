@@ -230,3 +230,9 @@ Posso até tentar separar os objetos por tipo, e chamar o useProgram apenas uma�
 E tentar optimizar os glBindVertexArray e os outros binds, com a mesma ideia.
 
 
+# 16/07/2025 17:05 - Revisando minha ideia de centralização de lógica
+
+    Tive a ideia de manter algumas coisas dentro do método atualizarDesenho de cada objeto: como calculo de iluminação e envio de iluminação para o shader.
+
+    Mais eu sei que se eu seguir essa ideia que eu estou pensando aqui, sei que não vou estar me alinhando 100% com a minha outra ideia de centralizar o webgl em uma unica função.... Na realidade eu estaria centralizando boa parte sim, mais ainda restaria algumas coisas como atualizações de informações sendo enviadas como gl.uniform para o shader, tipos de dados, criação de buffers, e outras coisas..... Então ficaria mais organizado mais não totalmente centrado... Mais eu gostei disso tambem. Achei uma ideia muito legal que tive. Que faz sentido pra mim.
+

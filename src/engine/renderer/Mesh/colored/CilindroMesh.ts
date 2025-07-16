@@ -244,7 +244,7 @@ export class CilindroMesh extends VisualMesh
     * Implementação do método desenhar para especificamente desenhar um cilindro
     * Converte a representação desse Mesh para desenhos com WebGL
     */
-    desenhar()
+    atualizarDesenho()
     {
         const renderer            = this.getRenderer();
         const matrixVisualizacao  = renderer.getMatrixVisualizacao();
@@ -264,11 +264,6 @@ export class CilindroMesh extends VisualMesh
         // Copia os valores do renderer que o objeto acompanha
         this.copiarValoresRenderer();
 
-        /**
-        * Cria os buffers que vão ser usados na renderização
-        */
-        this.createBuffers();
-
         // Cria uma matrix para a representação visual do objeto 3d
         this.modeloObjetoVisual = CriarMatrix4x4();
         
@@ -280,7 +275,19 @@ export class CilindroMesh extends VisualMesh
 
         this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z] );
 
+        /**
+        * Cria os buffers que vão ser usados na renderização
+        */
+        this.createBuffers();
+
+        // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
+        // VEJA o arquivo Renderer/Renderer.ts
+
         gl.disable(gl.CULL_FACE);
+
+        // Usa o programa criado
+        gl.useProgram( programUsado );
+        
 
         // Atualiza os buffers do objeto 3d com os dados calculados
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
@@ -295,8 +302,9 @@ export class CilindroMesh extends VisualMesh
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 
-        // Usa o programa criado
-        gl.useProgram( programUsado );
+        // NAO TEM texturaUV
+
+        // NAO TEM bufferUV
 
         // Usa as informações do cilindro(que criamos e calculamos acima)
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
@@ -327,6 +335,6 @@ export class CilindroMesh extends VisualMesh
     */
     criar()
     {
-        this.desenhar();
+        this.atualizarDesenho();
     }
 }

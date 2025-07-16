@@ -1125,7 +1125,7 @@ export class OBJMesh extends VisualMesh
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
     }
 
-    desenhar() 
+    atualizarDesenho() 
     {
         const renderer            = this.getRenderer();
         const gl                  = renderer.gl;
@@ -1159,6 +1159,9 @@ export class OBJMesh extends VisualMesh
             this.createBuffers();
         }
 
+        // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
+        // VEJA o arquivo Renderer/Renderer.ts
+
         gl.useProgram(programUsado);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
@@ -1169,14 +1172,16 @@ export class OBJMesh extends VisualMesh
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.cor, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.cor);
 
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
+
+        // NAO TEM texturaUV
+
         if (this.bufferUV && informacoesPrograma.atributosObjeto.uv !== -1) 
         {
             gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferUV);
             gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.uv, 2, gl.FLOAT, false, 0, 0);
             gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.uv);
         }
-
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, renderer.getMatrixVisualizacao());
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
@@ -1313,6 +1318,6 @@ export class OBJMesh extends VisualMesh
 
     criar() 
     {
-        this.desenhar();
+        this.atualizarDesenho();
     }
 }

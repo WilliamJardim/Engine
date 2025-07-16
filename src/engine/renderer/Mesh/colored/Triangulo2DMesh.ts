@@ -117,7 +117,7 @@ export class Triangulo2DMesh extends VisualMesh
         }
     }
 
-    desenhar() 
+    atualizarDesenho() 
     {
         const renderer                       = this.getRenderer();
         const matrixVisualizacao             = renderer.getMatrixVisualizacao();
@@ -136,8 +136,6 @@ export class Triangulo2DMesh extends VisualMesh
         const rotation   = meshConfig.rotation;
         const scale      = meshConfig.scale;
 
-        this.createBuffers();
-
         this.modeloObjetoVisual = CriarMatrix4x4();
 
         this.modeloObjetoVisual = DefinirTranslacao(this.modeloObjetoVisual, [position.x, position.y, position.z]);
@@ -148,6 +146,17 @@ export class Triangulo2DMesh extends VisualMesh
 
         this.modeloObjetoVisual = DefinirEscala(this.modeloObjetoVisual, [scale.x, scale.y, scale.z]);
 
+        /**
+        * Cria os buffers que vão ser usados na renderização
+        */
+        this.createBuffers();
+
+        // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
+        // VEJA o arquivo Renderer/Renderer.ts
+
+        // Usa o programa criado
+        gl.useProgram(programUsado);
+
         // Atualiza os buffers do objeto 3d com os dados calculados
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
@@ -157,8 +166,11 @@ export class Triangulo2DMesh extends VisualMesh
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.cor, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.cor);
 
-        // Usa o programa criado
-        gl.useProgram(programUsado);
+        // NAO FEZ NOS INDICES POR QUE NÂO TEM bufferIndices
+
+        // NAO TEM texturaUV
+
+        // NAO TEM bufferUV
 
         // Não usa textura
         gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );
@@ -183,6 +195,6 @@ export class Triangulo2DMesh extends VisualMesh
 
     criar() 
     {
-        this.desenhar();
+        this.atualizarDesenho();
     }
 }

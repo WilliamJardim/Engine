@@ -206,6 +206,11 @@ export class VisualMesh
         };
     }
 
+    getIndices(): Array<float>
+    {
+        return [];
+    }
+
     // ATIVAR EM TODOS: renderizador.getObjetos().forEach((o)=>{ o.enableStaticAccumulatedLights() })
 
     // Ativa as luzes acumuladas estaticas
@@ -681,10 +686,10 @@ export class VisualMesh
     }
 
     /**
-    * Função que desenha o objeto 
+    * Função que atualize as informações de desenho do objeto 
     * Se implementa ela em cada objeto
     */
-    desenhar( frameDelta:number )
+    atualizarDesenho( frameDelta:number )
     {
         
     }

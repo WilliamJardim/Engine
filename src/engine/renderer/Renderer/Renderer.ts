@@ -484,6 +484,16 @@ export class Renderer
     }   
 
     /**
+    * Desenha um objeto(seja ele qual for)
+    * Uma função genérica, e que pode ser chamada aqui dentro, para qualquer objeto.
+    * Vou usar ela no método desenharObjetos abaixo
+    */
+    desenharUmObjeto( frameDelta:number ): void
+    {
+        
+    }
+
+    /**
     * Desenha os objetos na tela
     * Converte a representação de Meshs para desenhos com WebGL
     */
@@ -491,6 +501,7 @@ export class Renderer
     {
         const gl             = this.gl;
         const objetosVisuais = this.getObjetos();
+        const luzesCena      = this.getLuzes();
         const frameDelta     = this.frameCounter.calculateFrameDelta();
         this.lastFrameDelta  = frameDelta;
 
@@ -507,15 +518,26 @@ export class Renderer
 
         for( let i = 0 ; i < objetosVisuais.length ; i++ )
         {
-            const objetoAtual = objetosVisuais[i];
-            const tipoObjeto  = objetoAtual.tipo;
-            const isInvisivel = objetoAtual.invisivel;
-            const isOpaco     = objetoAtual.isOpaco();
+            const objetoAtual         = objetosVisuais[i];
+            const tipoObjeto          = objetoAtual.tipo;
+            const isInvisivel         = objetoAtual.invisivel;
+            const isOpaco             = objetoAtual.isOpaco();
+            const atributosObjeto     = objetoAtual.getAtributos();
+            const programUsado        = objetoAtual.getProgram();
+            const informacoesPrograma = objetoAtual.getInformacoesPrograma();
+            const indices             = objetoAtual.getIndices();
+            const isTransparente      = objetoAtual.isTransparente();
+
+            // Atributos visuais 
+            const meshConfigObjeto = objetoAtual.meshConfig;
+            const positionObjeto   = meshConfigObjeto.position;
+            const rotationObjeto   = meshConfigObjeto.rotation;
+            const scaleObjeto      = meshConfigObjeto.scale;
 
             // Se não está invisivel e SE ES OPACO, ENTAO desenha o objeto
             if( isInvisivel == false && isOpaco == true )
             {
-                objetoAtual.desenhar( frameDelta );
+                objetoAtual.atualizarDesenho( frameDelta );
             }
         }
 
@@ -535,7 +557,7 @@ export class Renderer
             // Se não está invisivel e SE ES TRANSPARENTE, ENTAO desenha o objeto
             if( isInvisivel == false && isTransparente == true )
             {
-                objetoAtual.desenhar( frameDelta );
+                objetoAtual.atualizarDesenho( frameDelta );
             }
         }
 

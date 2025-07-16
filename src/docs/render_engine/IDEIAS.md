@@ -236,3 +236,17 @@ E tentar optimizar os glBindVertexArray e os outros binds, com a mesma ideia.
 
     Mais eu sei que se eu seguir essa ideia que eu estou pensando aqui, sei que não vou estar me alinhando 100% com a minha outra ideia de centralizar o webgl em uma unica função.... Na realidade eu estaria centralizando boa parte sim, mais ainda restaria algumas coisas como atualizações de informações sendo enviadas como gl.uniform para o shader, tipos de dados, criação de buffers, e outras coisas..... Então ficaria mais organizado mais não totalmente centrado... Mais eu gostei disso tambem. Achei uma ideia muito legal que tive. Que faz sentido pra mim.
 
+# 16/07/2025 17:17 - Ideia pra eu prosseguir a refatoração para seguir minhas ideias:
+*DENTRO DO atualizarDesenho de cada objeto*
+   (1) Primeiro ele vai fazer tudo o que tem fazer: criar a matriz, atualizar posição, rotação, escala .. criar buffer se não existir, ... enviar valores para o shader, calcular a iluminação e enviar os valores de iluminação pro shader 
+
+*O que quero centralizado no Renderizador*
+  (2) Chamar o resto das funções WebGL para poder desenhar como o drawElements e outros. E claro respeitando a minha ideia de otimização também que eu já anotei
+
+ *Cuidado com o cullface*
+ Ao seguir meu passo 2, preciso me atentar a isso:
+
+    (3) Desativar cullface ou ativar o cullface se o objeto usa culling face, antes de chamar o método que atualiza o objeto. E depois quando terminar de desenhar, voltar para o valor padrão também
+
+    
+

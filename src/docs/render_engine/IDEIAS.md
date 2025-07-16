@@ -187,6 +187,29 @@ Só mais um bloco de IF
     Assim eu centralizo todas as chamadas do WebGL em uma única função mestre 
 
 
+# 16/07/2025 16:24 PM - Antes de eu fazer essa refatoração que eu tive ideia:
+    Atenção: Eu preciso pensar em como vou estruturar os métodos atualizarIluminacaoParte e o IF if( this.childrenIndividualLights == true && this.alwaysUpdateLights == true ) do loop de desenho do meu Renderer/Mesh/OBJBase.ts
+
+    E na função atualizarIluminacaoParte, como eu vou lidar com a aplicação das luzes no shader:
+        // Atualiza as configurações gerais 
+        gl.uniform1f(brilhoShader,   brilhoParte);
+        gl.uniform1f(ambientShader,  ambientParte);
+        gl.uniform1f(diffuseShader,  diffuseParte);
+        gl.uniform1f(specularShader, specularParte);
+        gl.uniform3fv(corLuzShader,   new Float32Array(corLuzParte) );
+        gl.uniform1f(intensidadeLuzShader, intensidadeParte);
+
+        [...]
+
+        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, usarTextura ? 1 : 0);
+        gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, opacidade);
+
+    Pois eu quero que fica bem claro, facil de ler, e simples.
+
+    Preciso encontrar a melhor forma que melhor me agrade e que cumpra minhas ideias
+
+
+
 
 
 

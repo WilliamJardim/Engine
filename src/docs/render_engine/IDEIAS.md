@@ -217,8 +217,13 @@ Só mais um bloco de IF
         E a outra só pra pegar os resultados desses cálculos e enviar para o shader(que eu quero que esteja em harmonia com minha ideia de centralizar tudo)
 
 
+# 16/07/2025 16:27 - Otimização da renderização WebGL 
+Reduzir ao máximo as chamadas do useProgram com regras:
+Não chamar o useProgram caso o programa que o objeto atual usa ainda for igual ao programa anterior
 
+Também, otimizar os glBindVertexArray e os outros binds, com a mesma ideia.
 
-
+Posso até tentar separar os objetos por tipo, e chamar o useProgram apenas uma vez, por tipo.
+E tentar optimizar os glBindVertexArray e os outros binds, com a mesma ideia.
 
 

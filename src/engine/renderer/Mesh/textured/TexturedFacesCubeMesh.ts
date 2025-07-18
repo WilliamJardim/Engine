@@ -233,44 +233,6 @@ export class TexturedFacesCuboMesh extends VisualMesh
     }
 
     /**
-    * @implementation
-    * Se implementa ela em cada objeto
-    * Cria os buffers que vão ser usados na renderização
-    * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
-    * lembrando que cada buffer é um ponteiro, então ele pode ser nulo
-    */
-    /*
-    TRANSFERIDO PARA VisualMesh
-    createBuffers()
-    {
-        const renderer            = this.getRenderer();
-        const gl                  = renderer.gl;
-
-        // Cria os buffers, ou apenas obtem eles se eles ja existem na malha
-        if( this.bufferPosicao == null )
-        {
-            this.bufferPosicao   = createBuffer(gl, this.getPositions(), gl.ARRAY_BUFFER,         gl.STATIC_DRAW);
-        }
-
-        if( this.bufferCor == null )
-        {
-            this.bufferCor       = createBuffer(gl, this.getColors(),    gl.ARRAY_BUFFER,         gl.STATIC_DRAW);
-        }
-
-        if( this.bufferIndices == null )
-        {
-            this.bufferIndices   = createBuffer(gl, this.getIndices(),   gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        if (this.bufferUV == null) 
-        {
-            this.bufferUV = createBuffer(gl, this.getUVs(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        //Se não é null é por que ja existe, então nao faz nada!
-    }*/
-
-    /**
     * @implementation 
     * Implementação do método desenhar para especificamente desenhar um cubo
     * Converte a representação desse Mesh para desenhos com WebGL
@@ -300,69 +262,49 @@ export class TexturedFacesCuboMesh extends VisualMesh
         // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
         // VEJA o arquivo Renderer/Renderer.ts
 
-        /*
-        TRANSFERIDO PARA A FUNÇÂO desenharUmObjeto em Renderer/Renderer.ts, na linha 490, para maior abstração e centralização de lógica, e redução de repetições
+        // PASSOS QUE O Renderer/Renderer.ts faz pra desenhar esse objeto:
 
-        // Cria os buffers que vão ser usados na renderização
-        this.createBuffers();
+            // Cria os buffers se não existirem
 
-        // Usa o programa criado
-        gl.useProgram( programUsado );
+            // Determina se vai usar CULL_FACE ou não
 
-        // Atualiza os buffers do objeto 3d com os dados calculados
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.posicao);
-        
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferCor);
-        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.cor, 4, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.cor);
+            // Define o program a ser usado
 
+            // Faz bind dos buffers usados pelo objeto
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
+            // Se tem texturaUV, aplica ela
 
-        // NAO TEM texturaUV
+            // Se tem bufferUV, faz bind dele
 
-        // Ativa o atributo UV
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferUV);
-        gl.vertexAttribPointer(gl.getAttribLocation(programUsado!, "aUV"), 2, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(gl.getAttribLocation(programUsado!, "aUV"));
+            // Usa as informações calculadas nesse objeto(como posição, rotação e escala) para enviar para o shader
 
-        // Usa as informações do cubo(que criamos e calculamos acima)
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
+            // Aplica transparencia se o objeto usa
 
+            // Aplica a iluminação geral do objeto como um todo
 
-        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );
+            // CONCLUSAO ALGORITMO:
 
-        if( isTransparente )
-        {
-            // Opacidade
-            gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, this.transparencia );
-        }
+                // Se for um cubo com 6 faces texturizadas
 
-        this.aplicarIluminacao( gl, informacoesPrograma );
+                    // Aplica nas 6 faces sua respectiva textura
 
-        // Desenha cada face com sua respectiva textura
-        for( let i=0; i < 6; i++ )
-        {
-            // Vincula a textura da face i
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, this.texturasFaces[i]);
+                    // Chama o drawElements para DESENHAR O OBJETO
 
-            // Inverte verticalmente a imagem ao carregar
-            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-            
-            gl.uniform1i(gl.getUniformLocation(programUsado!, "u_textura"), 0);
+                // Se for um OBJ
 
-            // Desenha só os índices daquela face (passa o offset correto)
-            // O offset do drawElements é em bytes. Cada índice é um UNSIGNED_SHORT (2 bytes).
-            const offset = 6 * i * 2; // 6 indices por face * i * 2 bytes por indice
-            gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, offset);
-        }
+                    // Calcula, Acumula a iluminação de cada uma das partes do objeto
 
-        // FIM DESSA LOGICA
-        */
+                    // Envia a iluminação das partes para o shader
+
+                    // Determina a opacidade da parte e se ela usa textura ou não
+
+                    // Se usa textura, aplica ela
+
+                    // Chama o drawElements para DESENHAR O OBJETO
+
+                // Se for qualquer outro tipo
+
+                    // Chama o drawElements para DESENHAR O OBJETO
     }
 
     /**

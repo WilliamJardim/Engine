@@ -248,5 +248,6 @@ E tentar optimizar os glBindVertexArray e os outros binds, com a mesma ideia.
 
     (3) Desativar cullface ou ativar o cullface se o objeto usa culling face, antes de chamar o método que atualiza o objeto. E depois quando terminar de desenhar, voltar para o valor padrão também
 
-    
+# 17/07/2025 17:04 PM
+Retirar o enviarIluminacaoParteShader e enviarIluminacaoShader do OBJBase e do VisualMesh, e deixar eles centralizados no renderizador tambem
 

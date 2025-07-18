@@ -773,41 +773,6 @@ export class VisualMesh
         
     }
 
-    /**
-    * @implementation
-    * Sempre o mesmo em cada objeto
-    * Cria os buffers que vão ser usados na renderização
-    * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
-    * lembrando que cada buffer é um ponteiro, então ele pode ser nulo
-    */
-    createBuffers()
-    {
-        const gl = this.getRenderer().gl;
-        
-        if ( this.bufferPosicao == null ) 
-        {
-            this.bufferPosicao = createBuffer(gl, this.getPositions(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        if ( this.bufferCor == null )
-        {
-            this.bufferCor     = createBuffer(gl, this.getColors(),    gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-        
-        if ( this.bufferIndices == null )
-        { 
-            this.bufferIndices = createBuffer(gl, this.getIndices(),   gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        if( this.bufferUV == null )
-        {
-            this.bufferUV = createBuffer(gl, this.getUVs(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        // Diz que ja criou todos os buffers para não chamar novamente
-        this.allBuffersCriated = true;
-    }
-
     // Muda o valor do ponteiro "this.programUsado"
     /*
     setProgram( programUsar:WebGLProgram )

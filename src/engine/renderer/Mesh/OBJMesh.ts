@@ -619,37 +619,6 @@ export class OBJMesh extends VisualMesh
         };
     }
 
-    /*
-    TRANSFERIDO Para VisualMesh
-    createBuffers() 
-    {
-        const gl = this.getRenderer().gl;
-
-        if ( this.bufferPosicao == null ) 
-        {
-            this.bufferPosicao = createBuffer(gl, this.getPositions(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        if ( this.bufferCor == null )
-        {
-            this.bufferCor     = createBuffer(gl, this.getColors(),    gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-        
-        if ( this.bufferIndices == null )
-        { 
-            this.bufferIndices = createBuffer(gl, this.getIndices(),   gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        if( this.bufferUV == null )
-        {
-            this.bufferUV = createBuffer(gl, this.getUVs(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        // Diz que ja criou todos os buffers para não chamar novamente
-        this.allBuffersCriated = true;
-    }
-    */
-
     /**
     * @override
     * @implementation
@@ -1169,161 +1138,49 @@ export class OBJMesh extends VisualMesh
         // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
         // VEJA o arquivo Renderer/Renderer.ts
 
-        /*
-        TRANSFERIDO PARA A FUNÇÂO desenharUmObjeto em Renderer/Renderer.ts, na linha 490, para maior abstração e centralização de lógica, e redução de repetições
-        
-        if( this.allBuffersCriated == false )
-        {
-            this.createBuffers();
-        }
-        
-        gl.useProgram(programUsado);
+        // PASSOS QUE O Renderer/Renderer.ts faz pra desenhar esse objeto:
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.posicao);
+            // Cria os buffers se não existirem
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferCor);
-        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.cor, 4, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.cor);
+            // Determina se vai usar CULL_FACE ou não
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
+            // Define o program a ser usado
 
-        // NAO TEM texturaUV
+            // Faz bind dos buffers usados pelo objeto
 
-        if (this.bufferUV && informacoesPrograma.atributosObjeto.uv !== -1) 
-        {
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferUV);
-            gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.uv, 2, gl.FLOAT, false, 0, 0);
-            gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.uv);
-        }
+            // Se tem texturaUV, aplica ela
 
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, renderer.getMatrixVisualizacao());
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
+            // Se tem bufferUV, faz bind dele
 
-        // Desenha cada objeto dentro deste OBJ 
-        for ( let i = 0 ; i < this.nomesObjetos.length ; i++ ) 
-        {
-            const nomeObjeto  = this.nomesObjetos[i];
-            const info        = this.objetosInfo[nomeObjeto];
-            const material    = this.materiais[this.objetos[nomeObjeto][0].material];
-            const usarTextura = material != null && material.map_Kd != null;
-            const opacidade   = material.opacity || 1.0;
+            // Usa as informações calculadas nesse objeto(como posição, rotação e escala) para enviar para o shader
 
-            // Se esse objeto usa iluminação por cada sub-objeto
-            // Ou seja, Calcula o recebimento de todas as luzes que afeta todas as partes desse objeto 
-            // Nesse caso, eu programei um código por parte. Ou seja, cada parte vai executar esse código abaixo:
-            if( this.childrenIndividualLights == true && this.alwaysUpdateLights == true )
-            {
-                const iluminacaoParte           = this.iluminationInfo[ nomeObjeto ];
-                const iluminacaoAcumuladaParte  = this.iluminationAcumuladaInfo[ nomeObjeto ];
+            // Aplica transparencia se o objeto usa
 
-                
-                //Calcula a iluminação dessa parte atual ( se esse OBJ usa acumulação de luzes )
-                if( this.useAccumulatedLights == true )
-                {
+            // Aplica a iluminação geral do objeto como um todo
 
-                    // NOVA REGRA: 
-                    // Se ele usa acumulação estatica(que acumula apenas uma unica vez), então essa condição não vai permitir que o loop continue
-                    // EXCETO, se staticAccumulatedLights for false, que ai ele passa direto e não interrompe nada por que o recurso está desativado
-                    if( 
-                        (this.staticAccumulatedLights == false) ||                                 // Se não usa o recurso passa direto
-                        (this.staticAccumulatedLights == true && this._jaAcumulouLuzes == false)   // se usa, e ja acumulou, então não faz mais
+            // CONCLUSAO ALGORITMO:
 
-                    ){
-                        const posicaoCentroParte        = this.calcularCentroideGlobalParte( nomeObjeto );
+                // Se for um cubo com 6 faces texturizadas
 
-                        iluminacaoAcumuladaParte.brilhoLocalAcumulado          = 0;
-                        iluminacaoAcumuladaParte.ambientLocalAcumulado         = 0;
-                        iluminacaoAcumuladaParte.diffuseLocalAcumulado         = 0;
-                        iluminacaoAcumuladaParte.specularLocalAcumulado        = 0;
-                        iluminacaoAcumuladaParte.corLocalAcumulado             = [0,0,0];
-                        iluminacaoAcumuladaParte.intensidadeLocalAcumulado     = 0;
+                    // Aplica nas 6 faces sua respectiva textura
 
-                        // Calcula o recebimento de todas as luzes que afeta essa parte 
-                        for( let j = 0 ; j < luzesCena.length ; j++ )
-                        {
-                            // Calcula a força da luz em relação a posição do objeto atual(do primeiro laço FOR)
-                            const luz               = luzesCena[j];
-                            const interferenciaLuz  = luz.calcularInterferencia( posicaoCentroParte );
+                    // Chama o drawElements para DESENHAR O OBJETO
 
-                            const forcaLuz               =  interferenciaLuz[0];
-                            const influenciaBrilho       =  interferenciaLuz[1];
-                            const influenciaAmbient      =  interferenciaLuz[2];
-                            const influenciaDiffuse      =  interferenciaLuz[3];
-                            const influenciaSpecular     =  interferenciaLuz[4];
-                            const influenciaIntensidade  =  interferenciaLuz[5];
+                // Se for um OBJ
 
-                            // Cores
-                            const influenciaVermelho     =  interferenciaLuz[6];
-                            const influenciaVerde        =  interferenciaLuz[7];
-                            const influenciaAzul         =  interferenciaLuz[8];
-                            
-                            // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
-                            iluminacaoAcumuladaParte.brilhoLocalAcumulado         += influenciaBrilho;
-                            iluminacaoAcumuladaParte.ambientLocalAcumulado        += influenciaAmbient;
-                            iluminacaoAcumuladaParte.diffuseLocalAcumulado        += influenciaDiffuse;
-                            iluminacaoAcumuladaParte.specularLocalAcumulado       += influenciaSpecular;
-                            iluminacaoAcumuladaParte.intensidadeLocalAcumulado    += influenciaIntensidade;
+                    // Calcula, Acumula a iluminação de cada uma das partes do objeto
 
-                            // As luzes mais proximas terão tambem mais influencia na cor
-                            iluminacaoAcumuladaParte.corLocalAcumulado[0]         += influenciaVermelho;
-                            iluminacaoAcumuladaParte.corLocalAcumulado[1]         += influenciaVerde;
-                            iluminacaoAcumuladaParte.corLocalAcumulado[2]         += influenciaAzul;
-                        }
-                    }
-                }
+                    // Envia a iluminação das partes para o shader
 
-                // Depois de calcular, atualiza a iluminação
-                this.atualizarIluminacaoParte( iluminacaoParte, 
-                                               iluminacaoAcumuladaParte 
-                                             );
+                    // Determina a opacidade da parte e se ela usa textura ou não
 
-                // Depois envia a iluminação calculada para o shader
-                this.enviarIluminacaoParteShader( gl, 
-                                                  informacoesPrograma, 
-                                                );
-            }
+                    // Se usa textura, aplica ela
 
-            gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, usarTextura ? 1 : 0);
-            gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, opacidade);
+                    // Chama o drawElements para DESENHAR O OBJETO
 
-            // Se tiver opacidade, ativa blending
-            if( opacidade < 1 )
-            {
-                gl.depthMask(false);
-                gl.enable(gl.BLEND);
-                gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-            }else {
-                gl.disable(gl.BLEND);
-            }
+                // Se for qualquer outro tipo
 
-            if (usarTextura) 
-            {
-                gl.activeTexture(gl.TEXTURE0);
-                gl.bindTexture(gl.TEXTURE_2D, material.map_Kd);
-                gl.uniform1i(informacoesPrograma.uniformsCustomizados.sampler, 0);
-            }
-
-            // Se este objeto usa iluminação por partes, ele não aplica a global(EM TODO), pois as partes ja controlam isso
-            if( this.childrenIndividualLights == false && this.alwaysUpdateLights == true )
-            {
-                this.aplicarIluminacao( gl, informacoesPrograma );
-            }
-
-            gl.drawElements(gl.TRIANGLES, info.count, gl.UNSIGNED_SHORT, info.offset);
-
-            //break; //Interrompe o loop pois todos os dados ja foram enviados
-
-            // Se foi usado transparencia, desliga a excessão, e volta ao padrão
-            if( opacidade < 1 )
-            {
-                gl.depthMask(true);
-                gl.disable(gl.BLEND);
-            }
-        }*/
-
-        
+                    // Chama o drawElements para DESENHAR O OBJETO
     }
 
     criar() 

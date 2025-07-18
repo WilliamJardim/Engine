@@ -137,27 +137,6 @@ export class Triangulo3DMesh extends VisualMesh
         };
     }
 
-    /* 
-    TRANSFERIDO PARA VISUAL MESH
-    createBuffers() 
-    {
-        const renderer            = this.getRenderer();
-        const gl                  = renderer.gl;
-
-        if (this.bufferPosicao == null) {
-            this.bufferPosicao = createBuffer(gl, this.getPositions(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        if (this.bufferCor == null) {
-            this.bufferCor = createBuffer(gl, this.getColors(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        if (this.bufferIndices == null) {
-            this.bufferIndices = createBuffer(gl, this.getIndices(), gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-    }
-    */
-
     atualizarDesenho() 
     {
         // Atributos visuais 
@@ -182,73 +161,49 @@ export class Triangulo3DMesh extends VisualMesh
         // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
         // VEJA o arquivo Renderer/Renderer.ts
 
-        /*
-        TRANSFERIDO PARA A FUNÇÂO desenharUmObjeto em Renderer/Renderer.ts, na linha 490, para maior abstração e centralização de lógica, e redução de repetições
-        
-        // Cria os buffers que vão ser usados na renderização
-        this.createBuffers();
-        
-        // Se for um objeto transparente
-        if (isTransparente)
-        {
-            gl.depthMask(false);
-        }
+        // PASSOS QUE O Renderer/Renderer.ts faz pra desenhar esse objeto:
 
-        // Usa o programa criado
-        gl.useProgram(programUsado);
-        
-        // Atualiza os buffers do objeto 3d com os dados calculados
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.posicao);
+            // Cria os buffers se não existirem
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferCor);
-        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.cor, 4, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.cor);
+            // Determina se vai usar CULL_FACE ou não
 
-        // NAO FEZ NOS INDICES POR QUE NÂO TEM bufferIndices
+            // Define o program a ser usado
 
-        // NAO TEM texturaUV
+            // Faz bind dos buffers usados pelo objeto
 
-        // NAO TEM bufferUV
+            // Se tem texturaUV, aplica ela
 
-        // Usa as informações do cubo(que criamos e calculamos acima)
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
+            // Se tem bufferUV, faz bind dele
 
-        // Desenha o tringulo
-        gl.drawArrays(gl.TRIANGLES, this.getIndices().length, gl.UNSIGNED_SHORT);
+            // Usa as informações calculadas nesse objeto(como posição, rotação e escala) para enviar para o shader
 
-        gl.useProgram(programUsado);
+            // Aplica transparencia se o objeto usa
 
-        // Não usa textura
-        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );
+            // Aplica a iluminação geral do objeto como um todo
 
-        if( isTransparente )
-        {
-            // Opacidade
-            gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, this.transparencia );
-        }
+            // CONCLUSAO ALGORITMO:
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.posicao);
+                // Se for um cubo com 6 faces texturizadas
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferCor);
-        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.cor, 4, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.cor);
+                    // Aplica nas 6 faces sua respectiva textura
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
+                    // Chama o drawElements para DESENHAR O OBJETO
 
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
+                // Se for um OBJ
 
-        this.aplicarIluminacao( gl, informacoesPrograma );
+                    // Calcula, Acumula a iluminação de cada uma das partes do objeto
 
-        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+                    // Envia a iluminação das partes para o shader
 
-        // FIM DESSA LOGICA
-        */
+                    // Determina a opacidade da parte e se ela usa textura ou não
+
+                    // Se usa textura, aplica ela
+
+                    // Chama o drawElements para DESENHAR O OBJETO
+
+                // Se for qualquer outro tipo
+
+                    // Chama o drawElements para DESENHAR O OBJETO
     }
 
     criar() 

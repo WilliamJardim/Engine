@@ -209,40 +209,6 @@ export class CilindroMesh extends VisualMesh
     }
 
     /**
-    * @implementation
-    * Se implementa ela em cada objeto
-    * Cria os buffers que vão ser usados na renderização
-    * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
-    * lembrando que cada buffer é um ponteiro, então ele pode ser nulo
-    */
-    /*
-    TRANSFERIDO PARA VisualMesh
-    createBuffers()
-    {
-        const renderer            = this.getRenderer();
-        const gl                  = renderer.gl;
-
-        // Cria os buffers, ou apenas obtem eles se eles ja existem na malha
-        if( this.bufferPosicao == null )
-        {
-            this.bufferPosicao   = createBuffer(gl, this.getPositions(), gl.ARRAY_BUFFER,         gl.STATIC_DRAW);
-        }
-
-        if( this.bufferCor == null )
-        {
-            this.bufferCor       = createBuffer(gl, this.getColors(),    gl.ARRAY_BUFFER,         gl.STATIC_DRAW);
-        }
-
-        if( this.bufferIndices == null )
-        {
-            this.bufferIndices   = createBuffer(gl, this.getIndices(),   gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        //Se não é null é por que ja existe, então nao faz nada!
-    }
-    */
-
-    /**
     * @implementation 
     * Implementação do método desenhar para especificamente desenhar um cilindro
     * Converte a representação desse Mesh para desenhos com WebGL
@@ -272,57 +238,49 @@ export class CilindroMesh extends VisualMesh
         // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
         // VEJA o arquivo Renderer/Renderer.ts
 
-        /*
-        TRANSFERIDO PARA A FUNÇÂO desenharUmObjeto em Renderer/Renderer.ts, na linha 490, para maior abstração e centralização de lógica, e redução de repetições
+        // PASSOS QUE O Renderer/Renderer.ts faz pra desenhar esse objeto:
 
-        // Cria os buffers que vão ser usados na renderização
-        this.createBuffers();
+            // Cria os buffers se não existirem
 
-        gl.disable(gl.CULL_FACE);
+            // Determina se vai usar CULL_FACE ou não
 
-        // Usa o programa criado
-        gl.useProgram( programUsado );
-        
+            // Define o program a ser usado
 
-        // Atualiza os buffers do objeto 3d com os dados calculados
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.posicao, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.posicao);
-        
+            // Faz bind dos buffers usados pelo objeto
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferCor);
-        gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.cor, 4, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.cor);
-        
+            // Se tem texturaUV, aplica ela
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
+            // Se tem bufferUV, faz bind dele
 
-        // NAO TEM texturaUV
+            // Usa as informações calculadas nesse objeto(como posição, rotação e escala) para enviar para o shader
 
-        // NAO TEM bufferUV
+            // Aplica transparencia se o objeto usa
 
-        // Usa as informações do cilindro(que criamos e calculamos acima)
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
+            // Aplica a iluminação geral do objeto como um todo
 
-        // Não usa textura
-        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );
+            // CONCLUSAO ALGORITMO:
 
-        if( isTransparente )
-        {
-            // Opacidade
-            gl.uniform1f(informacoesPrograma.uniformsCustomizados.opacidade, this.transparencia );
-        }
+                // Se for um cubo com 6 faces texturizadas
 
-        this.aplicarIluminacao( gl, informacoesPrograma );
+                    // Aplica nas 6 faces sua respectiva textura
 
-        // Desenha o cilindro
-        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+                    // Chama o drawElements para DESENHAR O OBJETO
 
-        gl.enable(gl.CULL_FACE);
+                // Se for um OBJ
 
-        // FIM DESSA LOGICA
-        */
+                    // Calcula, Acumula a iluminação de cada uma das partes do objeto
+
+                    // Envia a iluminação das partes para o shader
+
+                    // Determina a opacidade da parte e se ela usa textura ou não
+
+                    // Se usa textura, aplica ela
+
+                    // Chama o drawElements para DESENHAR O OBJETO
+
+                // Se for qualquer outro tipo
+
+                    // Chama o drawElements para DESENHAR O OBJETO
     }
 
     /**

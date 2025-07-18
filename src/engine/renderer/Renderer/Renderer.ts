@@ -524,6 +524,41 @@ export class Renderer
     }
 
     /**
+    * Sempre o mesmo em cada objeto
+    * Cria os buffers que vão ser usados na renderização
+    * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
+    * lembrando que cada buffer é um ponteiro, então ele pode ser nulo
+    */
+    createBuffersObjetoDesenhar( objetoAtual:Ponteiro<VisualMesh> ): void
+    {
+        const gl : WebGL2RenderingContext = this.gl;
+        
+        // Se o ponteiro não for nulo
+        if( objetoAtual != null )
+        {
+            if ( objetoAtual.bufferPosicao == null ) 
+            {
+                objetoAtual.bufferPosicao = createBuffer(gl, objetoAtual.getPositions(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+            }
+
+            if ( objetoAtual.bufferCor == null )
+            {
+                objetoAtual.bufferCor     = createBuffer(gl, objetoAtual.getColors(),    gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+            }
+            
+            if ( objetoAtual.bufferIndices == null )
+            { 
+                objetoAtual.bufferIndices = createBuffer(gl, objetoAtual.getIndices(),   gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
+            }
+
+            if( objetoAtual.bufferUV == null )
+            {
+                objetoAtual.bufferUV = createBuffer(gl, objetoAtual.getUVs(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+            }
+        }
+    }
+
+    /**
     * Desenha um objeto(seja ele qual for)
     * Uma função genérica, e que pode ser chamada aqui dentro, para qualquer objeto.
     * Vou usar ela no método desenharObjetos abaixo
@@ -568,7 +603,11 @@ export class Renderer
                 // Se for a primeira vez do objeto, cria os buffers que ele vai precisar na memoria
                 if( objetoAtual.allBuffersCriated == false )
                 {
-                    objetoAtual.createBuffers();
+                    // Cria os buffers do objeto que serão usados - se eles não existirem.
+                    this.createBuffersObjetoDesenhar( objetoAtual );
+
+                    // Diz que ja criou todos os buffers para não chamar novamente
+                    objetoAtual.allBuffersCriated = true;
                 }
 
                 // Usa o programa do objeto atual em questão

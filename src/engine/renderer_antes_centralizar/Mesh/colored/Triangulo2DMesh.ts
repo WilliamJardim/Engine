@@ -35,7 +35,7 @@ export class Triangulo2DMesh extends VisualMesh
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;
         
-        //this.setProgram(renderer.getTrianguloProgram()); 
+        this.setProgram(renderer.getTrianguloProgram()); 
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
         this.bufferPosicao = null;
@@ -103,8 +103,6 @@ export class Triangulo2DMesh extends VisualMesh
         };
     }
 
-    /*
-    TRANSFERIDO PARA VisualMesh
     createBuffers() 
     {
         const renderer            = this.getRenderer();
@@ -118,10 +116,17 @@ export class Triangulo2DMesh extends VisualMesh
             this.bufferCor = createBuffer(gl, this.getColors(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
         }
     }
-    */
 
     atualizarDesenho() 
     {
+        const renderer                       = this.getRenderer();
+        const matrixVisualizacao             = renderer.getMatrixVisualizacao();
+        const atributosTriangulo             = this.getAtributos();
+        const gl                             = renderer.gl;
+        const programUsado                   = this.getProgram();
+        const informacoesPrograma            = this.getInformacoesPrograma();
+        const isTransparente                 = this.isTransparente();
+
         // Copia os valores do renderer que o objeto acompanha
         this.copiarValoresRenderer();
 
@@ -141,14 +146,13 @@ export class Triangulo2DMesh extends VisualMesh
 
         this.modeloObjetoVisual = DefinirEscala(this.modeloObjetoVisual, [scale.x, scale.y, scale.z]);
 
+        /**
+        * Cria os buffers que vão ser usados na renderização
+        */
+        this.createBuffers();
+
         // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
         // VEJA o arquivo Renderer/Renderer.ts
-
-        /*
-        TRANSFERIDO PARA A FUNÇÂO desenharUmObjeto em Renderer/Renderer.ts, na linha 490, para maior abstração e centralização de lógica, e redução de repetições
-
-        // Cria os buffers que vão ser usados na renderização
-        this.createBuffers();
 
         // Usa o programa criado
         gl.useProgram(programUsado);
@@ -187,7 +191,6 @@ export class Triangulo2DMesh extends VisualMesh
         gl.drawArrays(gl.TRIANGLES, 0, 3);
 
         // FIM DESSA LOGICA
-        */
     }
 
     criar() 

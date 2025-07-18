@@ -288,7 +288,8 @@ export class Renderer
             const objetoAtual               : VisualMesh           = this.objetos[i];
             const informacoesProgramaObjeto : InformacoesPrograma  = objetoAtual.getInformacoesPrograma();
 
-            objetoAtual.atualizarIluminacao();
+            objetoAtual.atualizarIluminacao( this.gl, 
+                                             informacoesProgramaObjeto );
         }
     }
 
@@ -483,332 +484,13 @@ export class Renderer
     }   
 
     /**
-    * Retorna qual o program deve ser usado para desenhar um objeto, de acordo com o tipo dele 
-    */
-    getProgramObjetoDesenhar( tipoObjeto:string ) : Ponteiro<WebGLProgram>
-    {
-        if( tipoObjeto == "Cubo" )
-        {
-            return this.getCubeProgram();
-
-        }else if( tipoObjeto == "Cilindro" )
-        {
-            return this.getCilindroProgram();
-
-        }else if( tipoObjeto == "Esfera" )
-        {
-            return this.getEsferaProgram();
-
-        }else if( tipoObjeto == "PlanoOndulado" )
-        {
-            return this.getOnduladoProgram();
-            
-        }else if( tipoObjeto == "Triangulo2D" || tipoObjeto == "Triangulo3D" )
-        {
-            return this.getTrianguloProgram();
-
-        }else if( tipoObjeto == "CuboFacesTexturizadas" )
-        {
-            return this.getCubeTextureUVProgram();
-
-        }else if( tipoObjeto == "CuboTexturizadoUV" )
-        {
-            return this.getCubeTextureUVProgram();
-            
-        }else if( tipoObjeto == "OBJ" )
-        {
-            return this.getOBJProgram();
-        }
-
-        return null;
-    }
-
-    /**
     * Desenha um objeto(seja ele qual for)
     * Uma função genérica, e que pode ser chamada aqui dentro, para qualquer objeto.
     * Vou usar ela no método desenharObjetos abaixo
     */
-    desenharUmObjeto( frameDelta:number, 
-                      objetoAtual:Ponteiro<VisualMesh>
-    ): void
+    desenharUmObjeto( frameDelta:number ): void
     {
-        const gl                             : WebGL2RenderingContext         = this.gl;
-        const luzesCena                      : Array<Ponteiro<Light>>         = this.luzes;   
-        const matrixVisualizacaoRenderizador : Float32Array<ArrayBufferLike>  = this.getMatrixVisualizacao();
-
-        // Se o ponteiro não for nulo
-        if( objetoAtual != null )
-        {
-            /**
-            * Identificação do objeto e alguns de seus parametros 
-            */
-            const tipoObjeto                : string             = objetoAtual.tipo;
-            const isTransparente            : boolean            = objetoAtual.isTransparente();
-            const transparenciaObjeto       : number             = objetoAtual.transparencia;
-
-            /**
-            * Dados de desenho 
-            */
-            const programUsado              : Ponteiro<WebGLProgram>  = this.getProgramObjetoDesenhar( tipoObjeto );
-            const informacoesProgramaObjeto : InformacoesPrograma     = objetoAtual.getInformacoesPrograma();
-            const locationPosicaoObjeto     : GLint              = informacoesProgramaObjeto.atributosObjeto.posicao;
-            const locationCorObjeto         : GLint              = informacoesProgramaObjeto.atributosObjeto.cor;
-
-            // Se os ponteiros não forem nulos
-            if( objetoAtual.modeloObjetoVisual != null && programUsado != null )
-            {
-                // Se usa colling face ou não
-                if( objetoAtual.usaCollingFace == false )
-                {
-                    gl.disable(gl.CULL_FACE);
-                }else{
-                    gl.enable(gl.CULL_FACE);
-                }
-            
-                // Se for a primeira vez do objeto, cria os buffers que ele vai precisar na memoria
-                if( objetoAtual.allBuffersCriated == false )
-                {
-                    objetoAtual.createBuffers();
-                }
-
-                // Usa o programa do objeto atual em questão
-                gl.useProgram( programUsado );
-
-                /**
-                * Atualiza os buffers do objeto 3d com os dados calculados
-                */
-
-                // Se tem buffer posição
-                if( objetoAtual.bufferPosicao != null )
-                {
-                    gl.bindBuffer( gl.ARRAY_BUFFER, objetoAtual.bufferPosicao );
-                    gl.vertexAttribPointer(locationPosicaoObjeto, 3, gl.FLOAT, false, 0, 0);
-                    gl.enableVertexAttribArray(locationPosicaoObjeto);
-                }
-                
-                // Se tem buffer cor
-                if( objetoAtual.bufferCor != null )
-                {
-                    gl.bindBuffer(gl.ARRAY_BUFFER, objetoAtual.bufferCor );
-                    gl.vertexAttribPointer(locationCorObjeto, 4, gl.FLOAT, false, 0, 0);
-                    gl.enableVertexAttribArray(locationCorObjeto);
-                }
-                
-                // Se tem buffer indices
-                if( objetoAtual.bufferIndices != null )
-                {
-                    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, objetoAtual.bufferIndices );  
-                }
-
-                // SE TEM texturaUV
-                if( objetoAtual.texturaUV != null )
-                {
-                    // Aplica a textura UV(uma imagem para todas as faces do cubo)
-                    gl.activeTexture(gl.TEXTURE0);
-                    gl.bindTexture(gl.TEXTURE_2D, objetoAtual.texturaUV ); // o texturaUV precisa estar carregado!
-                    
-                    //TODO: gl.uniform1i(gl.getUniformLocation(programUsado!, "u_textura"), 0);
-
-                    gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.usarTextura, 0 ); //0 por que é false
-                }
-
-                // SE TEM bufferUV
-                if( objetoAtual.bufferUV != null )
-                {
-                    // Ativa o atributo UV
-                    gl.bindBuffer(gl.ARRAY_BUFFER, objetoAtual.bufferUV);
-                    gl.vertexAttribPointer(informacoesProgramaObjeto.atributosObjeto.uv, 2, gl.FLOAT, false, 0, 0);
-                    gl.enableVertexAttribArray(informacoesProgramaObjeto.atributosObjeto.uv);
-                }
-
-                // Usa as informações do cubo(que criamos e calculamos acima)
-                gl.uniformMatrix4fv(informacoesProgramaObjeto.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacaoRenderizador);
-                gl.uniformMatrix4fv(informacoesProgramaObjeto.atributosVisualizacaoObjeto.modeloObjetoVisual, false, objetoAtual.modeloObjetoVisual);
-
-                // Se não for um objeto, aplica transparencia e textura aqui
-                if( objetoAtual.tipo != "OBJ")
-                {
-                    // Se usa textura
-                    gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.usarTextura, 0); // 0 pois é false
-
-                    if( isTransparente == true )
-                    {
-                        // Opacidade
-                        gl.uniform1f(informacoesProgramaObjeto.uniformsCustomizados.opacidade, transparenciaObjeto );
-                    }
-                }
-
-                // Atualiza a iluminação geral do objeto
-                objetoAtual.aplicarIluminacao( gl, informacoesProgramaObjeto );
-
-                /**
-                * Desenha conforme o tipo do objeto em questão
-                */
-                if( objetoAtual.tipo == "CuboFacesTexturizadas" )
-                {
-                    /**
-                    * Desenha cada face com sua respectiva textura
-                    */
-                    for( let i=0; i < 6; i++ )
-                    {
-                        // Vincula a textura da face i
-                        gl.activeTexture(gl.TEXTURE0);
-                        gl.bindTexture(gl.TEXTURE_2D, objetoAtual.texturasFaces[i]);
-
-                        // Inverte verticalmente a imagem ao carregar
-                        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-                        
-                        gl.uniform1i(gl.getUniformLocation(programUsado!, "u_textura"), 0);
-
-                        // Desenha só os índices daquela face (passa o offset correto)
-                        // O offset do drawElements é em bytes. Cada índice é um UNSIGNED_SHORT (2 bytes).
-                        const offset = 6 * i * 2; // 6 indices por face * i * 2 bytes por indice
-                        gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, offset);
-                    }
-
-                }else if( objetoAtual.tipo == "OBJ"){
-                    /**
-                    * Desenha cada objeto dentro deste OBJ 
-                    */
-                    for ( let i = 0 ; i < objetoAtual.nomesObjetos.length ; i++ ) 
-                    {
-                        const nomeObjeto  = objetoAtual.nomesObjetos[i];
-                        const info        = objetoAtual.objetosInfo[ nomeObjeto ];
-                        const material    = objetoAtual.materiais[objetoAtual.objetos[ nomeObjeto ][0].material];
-                        const usarTextura = material != null && material.map_Kd != null;
-                        const opacidade   = material.opacity || 1.0;
-
-                        /**
-                        * Se esse objeto usa iluminação por cada sub-objeto
-                        * Ou seja, Calcula o recebimento de todas as luzes que afeta todas as partes desse objeto 
-                        * Nesse caso, eu programei um código por parte. Ou seja, cada parte vai executar esse código abaixo:
-                        */
-                        if( objetoAtual.childrenIndividualLights == true && objetoAtual.alwaysUpdateLights == true )
-                        {
-                            const iluminacaoParte           = objetoAtual.iluminationInfo[ nomeObjeto ];
-                            const iluminacaoAcumuladaParte  = objetoAtual.iluminationAcumuladaInfo[ nomeObjeto ];
-
-                            /**
-                            * Calcula a iluminação dessa parte atual ( se esse OBJ usa acumulação de luzes )
-                            */
-                            if( objetoAtual.useAccumulatedLights == true )
-                            {
-
-                                /** NOVA REGRA: 
-                                *      Se ele usa acumulação estatica(que acumula apenas uma unica vez), então essa condição não vai permitir que o loop continue
-                                *      EXCETO, se staticAccumulatedLights for false, que ai ele passa direto e não interrompe nada por que o recurso está desativado
-                                */
-                                if( 
-                                    (objetoAtual.staticAccumulatedLights == false) ||                                 // Se não usa o recurso passa direto
-                                    (objetoAtual.staticAccumulatedLights == true && objetoAtual._jaAcumulouLuzes == false)   // se usa, e ja acumulou, então não faz mais
-
-                                ){
-                                    const posicaoCentroParte        = objetoAtual.calcularCentroideGlobalParte( nomeObjeto );
-
-                                    iluminacaoAcumuladaParte.brilhoLocalAcumulado          = 0;
-                                    iluminacaoAcumuladaParte.ambientLocalAcumulado         = 0;
-                                    iluminacaoAcumuladaParte.diffuseLocalAcumulado         = 0;
-                                    iluminacaoAcumuladaParte.specularLocalAcumulado        = 0;
-                                    iluminacaoAcumuladaParte.corLocalAcumulado             = [0,0,0];
-                                    iluminacaoAcumuladaParte.intensidadeLocalAcumulado     = 0;
-
-                                    /**
-                                    * Calcula o recebimento de todas as luzes que afeta essa parte 
-                                    */
-                                    for( let j = 0 ; j < luzesCena.length ; j++ )
-                                    {
-                                        // Calcula a força da luz em relação a posição do objeto atual(do primeiro laço FOR)
-                                        const luz               = luzesCena[j];
-
-                                        // Se o ponteiro não é nulo
-                                        if( luz != null )
-                                        {
-                                            const interferenciaLuz  = luz.calcularInterferencia( posicaoCentroParte );
-
-                                            const forcaLuz               =  interferenciaLuz[0];
-                                            const influenciaBrilho       =  interferenciaLuz[1];
-                                            const influenciaAmbient      =  interferenciaLuz[2];
-                                            const influenciaDiffuse      =  interferenciaLuz[3];
-                                            const influenciaSpecular     =  interferenciaLuz[4];
-                                            const influenciaIntensidade  =  interferenciaLuz[5];
-
-                                            // Cores
-                                            const influenciaVermelho     =  interferenciaLuz[6];
-                                            const influenciaVerde        =  interferenciaLuz[7];
-                                            const influenciaAzul         =  interferenciaLuz[8];
-                                            
-                                            // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
-                                            iluminacaoAcumuladaParte.brilhoLocalAcumulado         += influenciaBrilho;
-                                            iluminacaoAcumuladaParte.ambientLocalAcumulado        += influenciaAmbient;
-                                            iluminacaoAcumuladaParte.diffuseLocalAcumulado        += influenciaDiffuse;
-                                            iluminacaoAcumuladaParte.specularLocalAcumulado       += influenciaSpecular;
-                                            iluminacaoAcumuladaParte.intensidadeLocalAcumulado    += influenciaIntensidade;
-
-                                            // As luzes mais proximas terão tambem mais influencia na cor
-                                            iluminacaoAcumuladaParte.corLocalAcumulado[0]         += influenciaVermelho;
-                                            iluminacaoAcumuladaParte.corLocalAcumulado[1]         += influenciaVerde;
-                                            iluminacaoAcumuladaParte.corLocalAcumulado[2]         += influenciaAzul;
-                                        }
-                                    }
-                                }
-                            }
-
-                            // Depois de calcular, atualiza a iluminação
-                            objetoAtual.atualizarIluminacaoParte( iluminacaoParte, 
-                                                                  iluminacaoAcumuladaParte 
-                                                        );
-
-                            // Depois envia a iluminação calculada para o shader
-                            objetoAtual.enviarIluminacaoParteShader( gl, 
-                                                                     informacoesProgramaObjeto, 
-                                                                   );
-                        }
-
-                        gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.usarTextura, usarTextura ? 1 : 0);
-                        gl.uniform1f(informacoesProgramaObjeto.uniformsCustomizados.opacidade, opacidade);
-
-                        // Se tiver opacidade, ativa blending
-                        if( opacidade < 1 )
-                        {
-                            gl.depthMask(false);
-                            gl.enable(gl.BLEND);
-                            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-                        }else {
-                            gl.disable(gl.BLEND);
-                        }
-
-                        if( informacoesProgramaObjeto.uniformsCustomizados.usarTextura != null ) 
-                        {
-                            gl.activeTexture(gl.TEXTURE0);
-                            gl.bindTexture(gl.TEXTURE_2D, material.map_Kd);
-                            gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.sampler, 0);
-                        }
-
-                        // Se este objeto usa iluminação por partes, ele não aplica a global(EM TODO), pois as partes ja controlam isso
-                        if( objetoAtual.childrenIndividualLights == false && objetoAtual.alwaysUpdateLights == true )
-                        {
-                            objetoAtual.aplicarIluminacao( gl, informacoesProgramaObjeto );
-                        }
-
-                        gl.drawElements(gl.TRIANGLES, info.count, gl.UNSIGNED_SHORT, info.offset);
-
-                        // Se foi usado transparencia, desliga a excessão, e volta ao padrão
-                        if( opacidade < 1 )
-                        {
-                            gl.depthMask(true);
-                            gl.disable(gl.BLEND);
-                        }
-                    }
-
-                }else{
-                    gl.drawElements(gl.TRIANGLES, objetoAtual.getIndices().length, gl.UNSIGNED_SHORT, 0);
-                }
-
-                // FIM DA LOGICA DE RENDERIZAÇÂO DE UM OBJETO   
-            }
-        }
-
-
+        
     }
 
     /**
@@ -837,18 +519,25 @@ export class Renderer
         for( let i = 0 ; i < objetosVisuais.length ; i++ )
         {
             const objetoAtual         = objetosVisuais[i];
+            const tipoObjeto          = objetoAtual.tipo;
             const isInvisivel         = objetoAtual.invisivel;
             const isOpaco             = objetoAtual.isOpaco();
-    
+            const atributosObjeto     = objetoAtual.getAtributos();
+            const programUsado        = objetoAtual.getProgram();
+            const informacoesPrograma = objetoAtual.getInformacoesPrograma();
+            const indices             = objetoAtual.getIndices();
+            const isTransparente      = objetoAtual.isTransparente();
+
+            // Atributos visuais 
+            const meshConfigObjeto = objetoAtual.meshConfig;
+            const positionObjeto   = meshConfigObjeto.position;
+            const rotationObjeto   = meshConfigObjeto.rotation;
+            const scaleObjeto      = meshConfigObjeto.scale;
+
             // Se não está invisivel e SE ES OPACO, ENTAO desenha o objeto
             if( isInvisivel == false && isOpaco == true )
             {
-                // Atualiza as informações do objeto, como posição, rotação, escala, e outras
                 objetoAtual.atualizarDesenho( frameDelta );
-
-                // Desenha o objeto, e aplica iluminação nele
-                this.desenharUmObjeto( frameDelta, 
-                                       objetoAtual );
             }
         }
 
@@ -868,12 +557,7 @@ export class Renderer
             // Se não está invisivel e SE ES TRANSPARENTE, ENTAO desenha o objeto
             if( isInvisivel == false && isTransparente == true )
             {
-                // Atualiza as informações do objeto, como posição, rotação, escala, e outras
                 objetoAtual.atualizarDesenho( frameDelta );
-
-                // Desenha o objeto, e aplica iluminação nele
-                this.desenharUmObjeto( frameDelta, 
-                                       objetoAtual );
             }
         }
 

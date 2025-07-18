@@ -26,11 +26,11 @@ import {
     DefinirZ
 } from '../../../utils/render_engine/math.js';
 import { Renderer } from "../../Renderer/Renderer.js";
-import { float, Ponteiro } from "../../../types/types-cpp-like.js";
+import { Ponteiro } from "../../../types/types-cpp-like.js";
 import VisualMeshConfig from "../../../interfaces/render_engine/VisualMeshConfig.js";
 import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
 
-export class CuboMesh extends VisualMesh
+export class EsferaMesh extends VisualMesh
 {
     constructor( renderer:Renderer, propriedadesMesh:VisualMeshConfig )
     {
@@ -38,25 +38,25 @@ export class CuboMesh extends VisualMesh
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
-        this.tipo = 'Cubo';
+        this.tipo = 'Esfera';
 
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;
         
-        //this.setProgram( renderer.getCubeProgram() );
+        this.setProgram( renderer.getEsferaProgram() );
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
         this.bufferPosicao = null;
         this.bufferCor     = null;
         this.bufferIndices = null;
 
-        // Um cubo sem textura sempre vai usar cores
+        // Sem textura sempre vai usar cores
         this.useColors     = true;
 
         this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
         this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights;       // Se os objetos vai receber uma acumulação de luzes ao seu redor
         this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;    // Se ativado, a acumulação das luzes ao redor dos objetos só vai ocorrer uma unica vez
-        
+
         this.criar();
 
     }
@@ -66,20 +66,32 @@ export class CuboMesh extends VisualMesh
     */
     getPositions()
     {
-        return [
-            // Front
-            -1, -1,  1,   1, -1,  1,   1,  1,  1,  -1,  1,  1,
-            // Back
-            -1, -1, -1,  -1,  1, -1,   1,  1, -1,   1, -1, -1,
-            // Top
-            -1,  1, -1,  -1,  1,  1,   1,  1,  1,   1,  1, -1,
-            // Bottom
-            -1, -1, -1,   1, -1, -1,   1, -1,  1,  -1, -1,  1,
-            // Right
-            1, -1, -1,   1,  1, -1,   1,  1,  1,   1, -1,  1,
-            // Left
-            -1, -1, -1,  -1, -1,  1,  -1,  1,  1,  -1,  1, -1,
-        ];
+        const positions   = [];
+        const latitudes   = 30;
+        const longitudes  = 30;
+        const raio        = 1;
+
+        for (let lat = 0; lat <= latitudes; lat++) 
+        {
+            const theta = lat * Math.PI / latitudes;
+            const sinTheta = Math.sin(theta);
+            const cosTheta = Math.cos(theta);
+
+            for (let lon = 0; lon <= longitudes; lon++) 
+            {
+                const phi = lon * 2 * Math.PI / longitudes;
+                const sinPhi = Math.sin(phi);
+                const cosPhi = Math.cos(phi);
+
+                const x = raio * cosPhi * sinTheta;
+                const y = raio * cosTheta;
+                const z = raio * sinPhi * sinTheta;
+
+                positions.push(x, y, z);
+            }
+        }
+
+        return positions;
     }
 
     /**
@@ -87,14 +99,23 @@ export class CuboMesh extends VisualMesh
     */
     getIndices()
     {
-        return [
-            0, 1, 2,    0, 2, 3,     // front
-            4, 5, 6,    4, 6, 7,     // back
-            8, 9,10,    8,10,11,     // top
-            12,13,14,   12,14,15,    // bottom
-            16,17,18,   16,18,19,    // right
-            20,21,22,   20,22,23,    // left
-        ];
+        const indices = [];
+        const latitudes = 30;
+        const longitudes = 30;
+
+        for (let lat = 0; lat < latitudes; lat++) 
+        {
+            for (let lon = 0; lon < longitudes; lon++) 
+            {
+                const first = (lat * (longitudes + 1)) + lon;
+                const second = first + longitudes + 1;
+
+                indices.push(first, second, first + 1);
+                indices.push(second, second + 1, first + 1);
+            }
+        }
+
+        return indices;
     }
 
     /**
@@ -102,17 +123,7 @@ export class CuboMesh extends VisualMesh
     */
     getFaceColors()
     {
-        // A implantação em C++ seria diferente
-        const nivelTransparencia = this.getTransparencia();
-
-        return [
-            [0.3, 0, 0, nivelTransparencia],    // red
-            [0, 0.3, 0, nivelTransparencia],    // green
-            [0, 0, 0.3, nivelTransparencia],    // blue
-            [0.3, 0.3, 0, nivelTransparencia],    // yellow
-            [0.3, 0, 0.3, nivelTransparencia],    // magenta
-            [0, 0.3, 0.3, nivelTransparencia],    // cyan
-        ];
+        return [];
     }
 
     /**
@@ -120,12 +131,16 @@ export class CuboMesh extends VisualMesh
     */
     getColors()
     {
-        const faceColors = this.getFaceColors();
+        const cores = [];
+        const latitudes = 30;
+        const longitudes = 30;
+        const nivelTransparencia = this.getTransparencia();
 
-        let cores:Array<float> = [];
-        for ( let c = 0 ; c < faceColors.length ; c++ ) {
-            const cor = faceColors[c];
-            cores = cores.concat(cor, cor, cor, cor);
+        for (let lat = 0; lat <= latitudes; lat++) {
+            for (let lon = 0; lon <= longitudes; lon++) {
+                // Aqui, cada vértice recebe uma cor RGBA
+                cores.push(1, 0, 0, nivelTransparencia); // vermelho como exemplo
+            }
         }
 
         return cores;
@@ -136,16 +151,16 @@ export class CuboMesh extends VisualMesh
     */
     getInformacoesPrograma() : InformacoesPrograma
     {
-        const renderer     : Renderer                = this.getRenderer();
-        const gl           : WebGL2RenderingContext  = renderer.gl;
-        const programUsado : Ponteiro<WebGLProgram>  = this.getProgram();
+        const renderer:Renderer                     = this.getRenderer();
+        const gl:WebGL2RenderingContext             = renderer.gl;
+        const programUsado:Ponteiro<WebGLProgram>   = this.getProgram();
 
         return {
             atributosObjeto: {
                 posicao   : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
                 cor       : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
                 uv        : 0, // NAO USA MAIS PODE SER ZERO PRA NAO DAR ERRO DE TIPO
-
+                
                 // Iluminação
                 brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
                 ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),
@@ -173,8 +188,6 @@ export class CuboMesh extends VisualMesh
     * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
     * lembrando que cada buffer é um ponteiro, então ele pode ser nulo
     */
-    /*
-    TRANSFERIDO PARA VisualMesh
     createBuffers()
     {
         const renderer            = this.getRenderer();
@@ -198,7 +211,6 @@ export class CuboMesh extends VisualMesh
 
         //Se não é null é por que ja existe, então nao faz nada!
     }
-    */
 
     /**
     * @implementation 
@@ -207,6 +219,15 @@ export class CuboMesh extends VisualMesh
     */
     atualizarDesenho()
     {
+        const renderer            = this.getRenderer();
+        const matrixVisualizacao  = renderer.getMatrixVisualizacao();
+        const atributosCubo       = this.getAtributos();
+        const gl                  = renderer.gl;
+        const programUsado        = this.getProgram();
+        const informacoesPrograma = this.getInformacoesPrograma();
+        const indices             = this.getIndices();
+        const isTransparente      = this.isTransparente();
+        
         // Atributos visuais 
         const meshConfig = this.meshConfig;
         const position   = meshConfig.position;
@@ -225,17 +246,16 @@ export class CuboMesh extends VisualMesh
         this.modeloObjetoVisual     = RotacionarY(this.modeloObjetoVisual,  rotation.y);
         this.modeloObjetoVisual     = RotacionarZ(this.modeloObjetoVisual,  rotation.z);
 
-        this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
+        this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z] );
+
+        /**
+        * Cria os buffers que vão ser usados na renderização
+        */
+        this.createBuffers();
 
         // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
         // VEJA o arquivo Renderer/Renderer.ts
 
-        /*
-        TRANSFERIDO PARA A FUNÇÂO desenharUmObjeto em Renderer/Renderer.ts, na linha 490, para maior abstração e centralização de lógica, e redução de repetições
-        
-        // Cria os buffers que vão ser usados na renderização
-        this.createBuffers();
-        
         // Usa o programa criado
         gl.useProgram( programUsado );
 
@@ -248,7 +268,7 @@ export class CuboMesh extends VisualMesh
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferCor);
         gl.vertexAttribPointer(informacoesPrograma.atributosObjeto.cor, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(informacoesPrograma.atributosObjeto.cor);
-        
+    
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 
@@ -256,12 +276,8 @@ export class CuboMesh extends VisualMesh
 
         // NAO TEM bufferUV
 
-        // Usa as informações do cubo(que criamos e calculamos acima)
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
-        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
-
         // Não usa textura
-        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 ); // 0 pois é false
+        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );
 
         if( isTransparente )
         {
@@ -271,11 +287,14 @@ export class CuboMesh extends VisualMesh
 
         this.aplicarIluminacao( gl, informacoesPrograma );
 
+        // Usa as informações do cubo(que criamos e calculamos acima)
+        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacao);
+        gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
+
         // Desenha o cubo
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
         // FIM DESSA LOGICA
-        */
     }
 
     /**

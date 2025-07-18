@@ -50,45 +50,50 @@ import InformacoesPrograma from "../../interfaces/render_engine/InformacoesProgr
 
 export class OBJMesh extends VisualMesh 
 {
+    public _isTransparente    : boolean;
     public mtlString          : string;
     public objString          : string;
+    public vertices           : Array<Array<float>>;
     
-    // ATRIBUTOS MOTIVOS PARA O VisualMesh, para melhor generalização de código
-        //public _isTransparente    : boolean;
-        //public vertices           : Array<Array<float>>;
-        //public bufferUV           : Ponteiro<WebGLBuffer>;
-        //public uvs                : Array<Array<float>>;
-        //public uvArray            : Array<float>;
-        //public normals            : Array<Array<float>>;
-        //public positions          : Array<float>;
-        //public indices            : Array<float>;
-        //public cores              : Array<float>;
-        //public allBuffersCriated  : boolean;
-        //public materiais          : Mapa<string, any>;
-        //public materialAtivo      : any;
-        //public objetos            : Mapa<string, any>;
-        //public objetoAtivo        : any;
-        //public nomesObjetos       : Array<string>;
-        //public objetosInfo                   : Mapa<string, any>;
-        //public iluminationInfo               : Mapa<string, any>;
-        //public iluminationAcumuladaInfo      : Mapa<string, any>;
-        // Mais variaveis para a acumulação de luzes
-        //public brilhoParte       : number;
-        //public ambientParte      : number;
-        //public diffuseParte      : number;
-        //public specularParte     : number;
-        //public corLuzParte       : Array<float>;
-        //public intensidadeParte  : number;
+    public bufferUV           : Ponteiro<WebGLBuffer>;
+    public uvs                : Array<Array<float>>;
+    public uvArray            : Array<float>;
 
-    public verticesObjetos               : Mapa<string, any>;   // Vertices por partes
-    public verticesObjetosOnlyNomeParte  : Mapa<string, any>;   // Vertices por partes (somente o nome da parte sem usar material na chave)
-    public verticesComecaObjetos         : Mapa<string, any>;   // Length que começa os vertices de cada objeto no vetor geral vertices(o vetor declarado no VisualMesh)
+    public normals            : Array<Array<float>>;
+    public positions          : Array<float>;
+    public indices            : Array<float>;
+    public cores              : Array<float>;
+    public allBuffersCriated  : boolean;
+
+    public materiais          : Mapa<string, any>;
+    public materialAtivo      : any;
+
+    public objetos            : Mapa<string, any>;
+    public objetoAtivo        : any;
+    public nomesObjetos       : Array<string>;
+
+    public objetosInfo                   : Mapa<string, any>;
+    public verticesObjetos               : Mapa<string, any>;
+    public verticesObjetosOnlyNomeParte  : Mapa<string, any>; 
+    public verticesComecaObjetos         : Mapa<string, any>;
+
+    public iluminationInfo               : Mapa<string, any>;
+    public iluminationAcumuladaInfo      : Mapa<string, any>;
+
+    // Mais variaveis para a acumulação de luzes
+    public brilhoParte       : number;
+    public ambientParte      : number;
+    public diffuseParte      : number;
+    public specularParte     : number;
+    public corLuzParte       : Array<float>;
+    public intensidadeParte  : number;
 
     constructor(renderer:Renderer, propriedadesMesh:OBJMeshConfig) 
     {
         super(renderer, propriedadesMesh);
 
-        this.tipo              = "OBJ";
+        this.tipo              = 'OBJ';
+        this._isTransparente   = false;
         
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano           = false;
@@ -96,51 +101,51 @@ export class OBJMesh extends VisualMesh
         this.mtlString         = propriedadesMesh.mtlString;
         this.objString         = propriedadesMesh.objString; 
 
-        // ATRIBUTOS MOTIVOS PARA O VisualMesh, para melhor generalização de código
-            //this._isTransparente   = false;
-            //this.vertices          = new Array();
-            //this.uvs               = new Array();
-            //this.uvArray           = new Array<float>();
-            //this.normals           = new Array();
-            //this.positions         = new Array();
-            //this.indices           = new Array();
-            //this.cores             = new Array();
-            //this.bufferPosicao     = null;
-            //this.bufferCor         = null;
-            //this.bufferIndices     = null;
-            //this.bufferUV          = null;
-            //this.allBuffersCriated = false;
-            //this.materiais         = new Mapa<string, any>();
-            //this.materialAtivo     = null;
-            //this.objetos                       = new Mapa<string, any>();
-            //this.nomesObjetos                  = new Array(); 
-            //this.objetoAtivo                   = null;
-            //this.objetosInfo                   = new Mapa<string, any>();
+        this.vertices          = new Array();
+        this.uvs               = new Array();
+        this.uvArray           = new Array<float>();
+        this.normals           = new Array();
+        this.positions         = new Array();
+        this.indices           = new Array();
+        this.cores             = new Array();
 
-            //this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
-            //this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights;       // Se cada parte vai receber uma acumulação de luzes ao seu redor
-            //this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;    // Se ativado, a acumulação das luzes ao redor das partes só vai ocorrer uma unica vez
-            //this._jaAcumulouLuzes         = false;                                       // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
+        this.bufferPosicao     = null;
+        this.bufferCor         = null;
+        this.bufferIndices     = null;
+        this.bufferUV          = null;
+        this.allBuffersCriated = false;
 
-            // Mais variaveis para a acumulação de luzes
-            //this.brilhoParte       = 0;
-            //this.ambientParte      = 0;
-            //this.diffuseParte      = 0;
-            //this.specularParte     = 0;
-            //this.corLuzParte       = [0, 0, 0];
-            //this.intensidadeParte  = 0;
+        this.materiais         = new Mapa<string, any>();
+        this.materialAtivo     = null;
 
-            //this.iluminationInfo          = new Mapa<string, any>();  // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
-            //this.iluminationAcumuladaInfo = new Mapa<string, any>();  // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
-
+        this.objetos                       = new Mapa<string, any>();
+        this.nomesObjetos                  = new Array(); 
+        this.objetoAtivo                   = null;
+        this.objetosInfo                   = new Mapa<string, any>();
         this.verticesObjetos               = new Mapa<string, any>();   // Vertices por partes
         this.verticesObjetosOnlyNomeParte  = new Mapa<string, any>();   // Vertices por partes (somente o nome da parte sem usar material na chave)
-        this.verticesComecaObjetos         = new Mapa<string, any>();   // Length que começa os vertices de cada objeto no vetor geral vertices(o vetor declarado no VisualMesh)
+        this.verticesComecaObjetos         = new Mapa<string, any>();   // Length que começa os vertices de cada objeto no vetor geral vertices
+
+        this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
+        this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights;     // Se cada parte vai receber uma acumulação de luzes ao seu redor
+        this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;  // Se ativado, a acumulação das luzes ao redor das partes só vai ocorrer uma unica vez
+        this._jaAcumulouLuzes         = false;                                     // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
+
+        this.iluminationInfo          = new Mapa<string, any>();  // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
+        this.iluminationAcumuladaInfo = new Mapa<string, any>();  // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
+
+        // Mais variaveis para a acumulação de luzes
+        this.brilhoParte       = 0;
+        this.ambientParte      = 0;
+        this.diffuseParte      = 0;
+        this.specularParte     = 0;
+        this.corLuzParte       = [0, 0, 0];
+        this.intensidadeParte  = 0;
 
         // Variaveis de renderização
         this.modeloObjetoVisual = CriarMatrix4x4();
 
-        //this.setProgram( renderer.getOBJProgram() );
+        this.setProgram( renderer.getOBJProgram() );
 
         // (1) - Ler o arquivo MTL que contém os materiais e links para as texturas usadas
         this.carregarMTL( this.mtlString );
@@ -619,8 +624,6 @@ export class OBJMesh extends VisualMesh
         };
     }
 
-    /*
-    TRANSFERIDO Para VisualMesh
     createBuffers() 
     {
         const gl = this.getRenderer().gl;
@@ -648,7 +651,6 @@ export class OBJMesh extends VisualMesh
         // Diz que ja criou todos os buffers para não chamar novamente
         this.allBuffersCriated = true;
     }
-    */
 
     /**
     * @override
@@ -662,13 +664,13 @@ export class OBJMesh extends VisualMesh
     /**
     * Define a iluminação de uma parte do modelo
     */
-    atualizarIluminacaoParte(iluminacaoParte:any={}, iluminacaoAcumuladaParte:any={} )
+    atualizarIluminacaoParte(gl:WebGL2RenderingContext, informacoesPrograma:any, iluminacaoParte:any={}, iluminacaoAcumuladaParte:any={} )
     {
         // OBS: AQUI NESSE PONTO, A ILUMINAÇÂO DAS PARTES JA FOI CALCULADA NO LOOP PRINCIPAL, ANTES DE CHAMAR ESSA FUNÇÂO
         // OBS: Se this.useAccumulatedLights for false, aqui nada muda, as variaveis de acumulação só vão estar sempre zeradas
 
         /**
-        * Obtem o ambiente da parte atual atualizado como a soma dos valores do objeto com os globais da cena
+        * Obtem o ambiente atualizado como a soma dos valores do objeto com os globais da cena
         */
         this.ambientParte     = iluminacaoParte.ambientObjeto         + this.renderer.ambient                + iluminacaoAcumuladaParte.ambientLocalAcumulado;
         this.diffuseParte     = iluminacaoParte.diffuseObjeto         + this.renderer.diffuse                + iluminacaoAcumuladaParte.diffuseLocalAcumulado;
@@ -688,7 +690,7 @@ export class OBJMesh extends VisualMesh
     /**
     * Envia a iluminação já calculada para o shader 
     */
-    enviarIluminacaoParteShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma): void
+    enviarIluminacaoParteShader(gl:WebGL2RenderingContext, informacoesPrograma:any, iluminacaoParte:any={}, iluminacaoAcumuladaParte:any={}): void
     {
         /**
         * Aplica os valores 
@@ -859,7 +861,7 @@ export class OBJMesh extends VisualMesh
     *  (1) Somar X, Y e Z de todos os vertices, fazendo uma acumulação
     *  (2) Dividir pela quantidade de vertices
     */
-    calcularCentroideParte( nomeParte:string ): number[]
+    calcularCentroideParte( nomeParte:string )
     {
         let qtdeVerticesParte       = 0;
         let verticesParte           = new Array<Array<any>>;
@@ -912,7 +914,7 @@ export class OBJMesh extends VisualMesh
     * FORMULA MATEMATICA:
     *    posicaoGlobalParte = matrixModeloObjetoVisual * posicaoLocalParte
     */
-    calcularCentroideGlobalParte( nomeParte:string ): number[]
+    calcularCentroideGlobalParte( nomeParte:string )
     {
         const matrixModeloObjetoVisual = this.modeloObjetoVisual;
         const centroLocalParte         = this.calcularCentroideParte( nomeParte );
@@ -1147,6 +1149,14 @@ export class OBJMesh extends VisualMesh
 
     atualizarDesenho() 
     {
+        const renderer            = this.getRenderer();
+        const gl                  = renderer.gl;
+        const programUsado        = this.getProgram();
+        const isTransparente      = this.isTransparente();
+        const indices             = this.getIndices();
+        const informacoesPrograma = this.getInformacoesPrograma();
+        const luzesCena            = renderer.getLuzes();
+
         // Atributos visuais 
         const meshConfig = this.meshConfig;
         const position   = meshConfig.position;
@@ -1166,17 +1176,14 @@ export class OBJMesh extends VisualMesh
 
         this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual, [scale.x, scale.y, scale.z]);
 
-        // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
-        // VEJA o arquivo Renderer/Renderer.ts
-
-        /*
-        TRANSFERIDO PARA A FUNÇÂO desenharUmObjeto em Renderer/Renderer.ts, na linha 490, para maior abstração e centralização de lógica, e redução de repetições
-        
         if( this.allBuffersCriated == false )
         {
             this.createBuffers();
         }
-        
+
+        // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
+        // VEJA o arquivo Renderer/Renderer.ts
+
         gl.useProgram(programUsado);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
@@ -1201,7 +1208,9 @@ export class OBJMesh extends VisualMesh
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.matrixVisualizacao, false, renderer.getMatrixVisualizacao());
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
 
-        // Desenha cada objeto dentro deste OBJ 
+        /**
+        * Desenha cada objeto dentro deste OBJ 
+        */
         for ( let i = 0 ; i < this.nomesObjetos.length ; i++ ) 
         {
             const nomeObjeto  = this.nomesObjetos[i];
@@ -1210,22 +1219,26 @@ export class OBJMesh extends VisualMesh
             const usarTextura = material != null && material.map_Kd != null;
             const opacidade   = material.opacity || 1.0;
 
-            // Se esse objeto usa iluminação por cada sub-objeto
-            // Ou seja, Calcula o recebimento de todas as luzes que afeta todas as partes desse objeto 
-            // Nesse caso, eu programei um código por parte. Ou seja, cada parte vai executar esse código abaixo:
+            /**
+            * Se esse objeto usa iluminação por cada sub-objeto
+            * Ou seja, Calcula o recebimento de todas as luzes que afeta todas as partes desse objeto 
+            * Nesse caso, eu programei um código por parte. Ou seja, cada parte vai executar esse código abaixo:
+            */
             if( this.childrenIndividualLights == true && this.alwaysUpdateLights == true )
             {
                 const iluminacaoParte           = this.iluminationInfo[ nomeObjeto ];
                 const iluminacaoAcumuladaParte  = this.iluminationAcumuladaInfo[ nomeObjeto ];
 
-                
-                //Calcula a iluminação dessa parte atual ( se esse OBJ usa acumulação de luzes )
+                /**
+                * Calcula a iluminação dessa parte atual ( se esse OBJ usa acumulação de luzes )
+                */
                 if( this.useAccumulatedLights == true )
                 {
 
-                    // NOVA REGRA: 
-                    // Se ele usa acumulação estatica(que acumula apenas uma unica vez), então essa condição não vai permitir que o loop continue
-                    // EXCETO, se staticAccumulatedLights for false, que ai ele passa direto e não interrompe nada por que o recurso está desativado
+                    /** NOVA REGRA: 
+                    *      Se ele usa acumulação estatica(que acumula apenas uma unica vez), então essa condição não vai permitir que o loop continue
+                    *      EXCETO, se staticAccumulatedLights for false, que ai ele passa direto e não interrompe nada por que o recurso está desativado
+                    */
                     if( 
                         (this.staticAccumulatedLights == false) ||                                 // Se não usa o recurso passa direto
                         (this.staticAccumulatedLights == true && this._jaAcumulouLuzes == false)   // se usa, e ja acumulou, então não faz mais
@@ -1240,7 +1253,9 @@ export class OBJMesh extends VisualMesh
                         iluminacaoAcumuladaParte.corLocalAcumulado             = [0,0,0];
                         iluminacaoAcumuladaParte.intensidadeLocalAcumulado     = 0;
 
-                        // Calcula o recebimento de todas as luzes que afeta essa parte 
+                        /**
+                        * Calcula o recebimento de todas as luzes que afeta essa parte 
+                        */
                         for( let j = 0 ; j < luzesCena.length ; j++ )
                         {
                             // Calcula a força da luz em relação a posição do objeto atual(do primeiro laço FOR)
@@ -1275,14 +1290,18 @@ export class OBJMesh extends VisualMesh
                 }
 
                 // Depois de calcular, atualiza a iluminação
-                this.atualizarIluminacaoParte( iluminacaoParte, 
+                this.atualizarIluminacaoParte( gl, 
+                                               informacoesPrograma, 
+                                               iluminacaoParte, 
                                                iluminacaoAcumuladaParte 
                                              );
 
                 // Depois envia a iluminação calculada para o shader
                 this.enviarIluminacaoParteShader( gl, 
-                                                  informacoesPrograma, 
-                                                );
+                                               informacoesPrograma, 
+                                               iluminacaoParte, 
+                                               iluminacaoAcumuladaParte 
+                                             );
             }
 
             gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, usarTextura ? 1 : 0);
@@ -1321,7 +1340,7 @@ export class OBJMesh extends VisualMesh
                 gl.depthMask(true);
                 gl.disable(gl.BLEND);
             }
-        }*/
+        }
 
         
     }

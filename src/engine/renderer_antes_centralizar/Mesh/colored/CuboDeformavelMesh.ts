@@ -26,12 +26,16 @@ import {
     DefinirZ
 } from '../../../utils/render_engine/math.js';
 import { Renderer } from "../../Renderer/Renderer.js";
-import { float, Ponteiro } from "../../../types/types-cpp-like.js";
+import { float } from "../../../types/types-cpp-like.js";
 import VisualMeshConfig from "../../../interfaces/render_engine/VisualMeshConfig.js";
 import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
 
-export class CuboMesh extends VisualMesh
+export class CuboDeformavelMesh extends VisualMesh
 {
+    public positionsBase     : Array<float>;
+    public verticesOriginais : Array<float>;
+    public verticesAtuais    : Array<float>;
+
     constructor( renderer:Renderer, propriedadesMesh:VisualMeshConfig )
     {
         super(renderer, 
@@ -43,12 +47,16 @@ export class CuboMesh extends VisualMesh
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;
         
-        //this.setProgram( renderer.getCubeProgram() );
+        this.setProgram( renderer.getCubeProgram() );
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
         this.bufferPosicao = null;
         this.bufferCor     = null;
         this.bufferIndices = null;
+
+        this.positionsBase     = this.getPositions();
+        this.verticesOriginais = this.positionsBase.slice();
+        this.verticesAtuais    = this.positionsBase.slice();
 
         // Um cubo sem textura sempre vai usar cores
         this.useColors     = true;
@@ -106,12 +114,12 @@ export class CuboMesh extends VisualMesh
         const nivelTransparencia = this.getTransparencia();
 
         return [
-            [0.3, 0, 0, nivelTransparencia],    // red
-            [0, 0.3, 0, nivelTransparencia],    // green
-            [0, 0, 0.3, nivelTransparencia],    // blue
-            [0.3, 0.3, 0, nivelTransparencia],    // yellow
-            [0.3, 0, 0.3, nivelTransparencia],    // magenta
-            [0, 0.3, 0.3, nivelTransparencia],    // cyan
+            [1, 0, 0, nivelTransparencia],    // red
+            [0, 1, 0, nivelTransparencia],    // green
+            [0, 0, 1, nivelTransparencia],    // blue
+            [1, 1, 0, nivelTransparencia],    // yellow
+            [1, 0, 1, nivelTransparencia],    // magenta
+            [0, 1, 1, nivelTransparencia],    // cyan
         ];
     }
 
@@ -122,8 +130,9 @@ export class CuboMesh extends VisualMesh
     {
         const faceColors = this.getFaceColors();
 
-        let cores:Array<float> = [];
-        for ( let c = 0 ; c < faceColors.length ; c++ ) {
+        let cores : Array<float> = [];
+        for ( let c = 0 ; c < faceColors.length ; c++ ) 
+        {
             const cor = faceColors[c];
             cores = cores.concat(cor, cor, cor, cor);
         }
@@ -136,9 +145,9 @@ export class CuboMesh extends VisualMesh
     */
     getInformacoesPrograma() : InformacoesPrograma
     {
-        const renderer     : Renderer                = this.getRenderer();
-        const gl           : WebGL2RenderingContext  = renderer.gl;
-        const programUsado : Ponteiro<WebGLProgram>  = this.getProgram();
+        const renderer           = this.getRenderer();
+        const gl                 = renderer.gl;
+        const programUsado       = this.getProgram();
 
         return {
             atributosObjeto: {
@@ -173,17 +182,15 @@ export class CuboMesh extends VisualMesh
     * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
     * lembrando que cada buffer é um ponteiro, então ele pode ser nulo
     */
-    /*
-    TRANSFERIDO PARA VisualMesh
     createBuffers()
     {
         const renderer            = this.getRenderer();
         const gl                  = renderer.gl;
 
         // Cria os buffers, ou apenas obtem eles se eles ja existem na malha
-        if( this.bufferPosicao == null )
+        if (this.bufferPosicao == null) 
         {
-            this.bufferPosicao   = createBuffer(gl, this.getPositions(), gl.ARRAY_BUFFER,         gl.STATIC_DRAW);
+            this.bufferPosicao = createBuffer(gl, this.verticesAtuais, gl.ARRAY_BUFFER, gl.DYNAMIC_DRAW);
         }
 
         if( this.bufferCor == null )
@@ -198,7 +205,6 @@ export class CuboMesh extends VisualMesh
 
         //Se não é null é por que ja existe, então nao faz nada!
     }
-    */
 
     /**
     * @implementation 
@@ -207,6 +213,15 @@ export class CuboMesh extends VisualMesh
     */
     atualizarDesenho()
     {
+        const renderer            = this.getRenderer();
+        const matrixVisualizacao  = renderer.getMatrixVisualizacao();
+        const atributosCubo       = this.getAtributos();
+        const gl                  = renderer.gl;
+        const programUsado        = this.getProgram();
+        const informacoesPrograma = this.getInformacoesPrograma();
+        const indices             = this.getIndices();
+        const isTransparente      = this.isTransparente();
+        
         // Atributos visuais 
         const meshConfig = this.meshConfig;
         const position   = meshConfig.position;
@@ -225,17 +240,16 @@ export class CuboMesh extends VisualMesh
         this.modeloObjetoVisual     = RotacionarY(this.modeloObjetoVisual,  rotation.y);
         this.modeloObjetoVisual     = RotacionarZ(this.modeloObjetoVisual,  rotation.z);
 
-        this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z]          );
+        this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z] );
+
+        /**
+        * Cria os buffers que vão ser usados na renderização
+        */
+        this.createBuffers();
 
         // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
         // VEJA o arquivo Renderer/Renderer.ts
 
-        /*
-        TRANSFERIDO PARA A FUNÇÂO desenharUmObjeto em Renderer/Renderer.ts, na linha 490, para maior abstração e centralização de lógica, e redução de repetições
-        
-        // Cria os buffers que vão ser usados na renderização
-        this.createBuffers();
-        
         // Usa o programa criado
         gl.useProgram( programUsado );
 
@@ -261,7 +275,7 @@ export class CuboMesh extends VisualMesh
         gl.uniformMatrix4fv(informacoesPrograma.atributosVisualizacaoObjeto.modeloObjetoVisual, false, this.modeloObjetoVisual);
 
         // Não usa textura
-        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 ); // 0 pois é false
+        gl.uniform1i(informacoesPrograma.uniformsCustomizados.usarTextura, 0 );
 
         if( isTransparente )
         {
@@ -275,7 +289,6 @@ export class CuboMesh extends VisualMesh
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
         // FIM DESSA LOGICA
-        */
     }
 
     /**
@@ -285,5 +298,45 @@ export class CuboMesh extends VisualMesh
     criar()
     {
         this.atualizarDesenho();
+    }
+
+    /**
+    * Causa uma deformação no cubo em torno de um ponto de origem
+    */
+    deformarVerticePorProximidade(xAlvo:number, yAlvo:number, zAlvo:number, raio:number, intensidade:number) 
+    {
+        const vertices = this.verticesAtuais;
+
+        for (let i = 0; i < vertices.length; i += 3) 
+        {
+            const dx = vertices[i]     - xAlvo;
+            const dy = vertices[i + 1] - yAlvo;
+            const dz = vertices[i + 2] - zAlvo;
+            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+            if (dist < raio && dist > 0.00001) 
+            {
+                const fator = Math.cos((dist / raio) * Math.PI) * intensidade;
+                vertices[i]     += (dx / dist) * fator;
+                vertices[i + 1] += (dy / dist) * fator;
+                vertices[i + 2] += (dz / dist) * fator;
+            }
+        }
+
+        const gl = this.getRenderer().gl;
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
+    }
+
+    /**
+    * Volta o cubo em seu estado original sem as deformações 
+    */
+    restaurarFormaOriginal() 
+    {
+        this.verticesAtuais = this.verticesOriginais.slice();
+
+        const gl = this.getRenderer().gl;
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(this.verticesAtuais));
     }
 }

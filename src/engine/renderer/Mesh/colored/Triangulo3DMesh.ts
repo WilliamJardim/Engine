@@ -36,7 +36,7 @@ export class Triangulo3DMesh extends VisualMesh
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;
         
-        this.setProgram(renderer.getTrianguloProgram()); 
+        //this.setProgram(renderer.getTrianguloProgram()); 
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
         this.bufferPosicao = null;
@@ -137,6 +137,8 @@ export class Triangulo3DMesh extends VisualMesh
         };
     }
 
+    /* 
+    TRANSFERIDO PARA VISUAL MESH
     createBuffers() 
     {
         const renderer            = this.getRenderer();
@@ -154,18 +156,10 @@ export class Triangulo3DMesh extends VisualMesh
             this.bufferIndices = createBuffer(gl, this.getIndices(), gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
         }
     }
+    */
 
     atualizarDesenho() 
     {
-        const renderer                       = this.getRenderer();
-        const matrixVisualizacao             = renderer.getMatrixVisualizacao();
-        const atributosTriangulo             = this.getAtributos();
-        const indices                        = this.getIndices();
-        const gl                             = renderer.gl;
-        const programUsado                   = this.getProgram();
-        const informacoesPrograma            = this.getInformacoesPrograma();
-        const isTransparente                 = this.isTransparente();
-
         // Atributos visuais 
         const meshConfig = this.meshConfig;
         const position   = meshConfig.position;
@@ -185,14 +179,15 @@ export class Triangulo3DMesh extends VisualMesh
 
         this.modeloObjetoVisual = DefinirEscala(this.modeloObjetoVisual, [scale.x, scale.y, scale.z]);
 
-        /**
-        * Cria os buffers que vão ser usados na renderização
-        */
-        this.createBuffers();
-
         // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
         // VEJA o arquivo Renderer/Renderer.ts
 
+        /*
+        TRANSFERIDO PARA A FUNÇÂO desenharUmObjeto em Renderer/Renderer.ts, na linha 490, para maior abstração e centralização de lógica, e redução de repetições
+        
+        // Cria os buffers que vão ser usados na renderização
+        this.createBuffers();
+        
         // Se for um objeto transparente
         if (isTransparente)
         {
@@ -253,6 +248,7 @@ export class Triangulo3DMesh extends VisualMesh
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
         // FIM DESSA LOGICA
+        */
     }
 
     criar() 

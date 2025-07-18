@@ -13,8 +13,6 @@ import { float, Ponteiro } from "../../types/types-cpp-like";
 import InformacoesPrograma from "../../interfaces/render_engine/InformacoesPrograma";
 import VisualMeshConfig from "../../interfaces/render_engine/VisualMeshConfig";
 import { Renderer } from "../Renderer/Renderer";
-import Mapa from "../../utils/dicionarios/Mapa";
-import { createBuffer } from "../../utils/render_engine/funcoesBase";
 
 /**
 * PORTABILIDADE PRA C++:
@@ -41,10 +39,7 @@ export class VisualMesh
 {
     public renderer       : Renderer;
     public meshConfig     : VisualMeshConfig;
-    
-    public _isTransparente : boolean;
-
-    //public programUsado   : Ponteiro<WebGLProgram>;
+    public programUsado   : Ponteiro<WebGLProgram>;
     public vertexScript   : string;
     public fragmentScript : string;
     public isPlano        : boolean;
@@ -88,52 +83,15 @@ export class VisualMesh
 
     public bufferPosicao      : Ponteiro<WebGLBuffer>;
     public bufferCor          : Ponteiro<WebGLBuffer>;
-    public bufferUV           : Ponteiro<WebGLBuffer>;
-    
     public bufferIndices      : Ponteiro<WebGLBuffer>;
     public modeloObjetoVisual : Ponteiro<Float32Array>;
 
-    public vertices           : Array<Array<float>>;
-    public uvs                : Array<Array<float>>;
-    public uvArray            : Array<float>;
-
-    // Normais, Posições, indices, cores e se criou todos os buffers
-    public normals            : Array<Array<float>>;
-    public positions          : Array<float>;
-    public indices            : Array<float>;
-    public cores              : Array<float>;
-    public allBuffersCriated  : boolean;
-
-    public usaCollingFace     : boolean;
-
-    // Para aplicação de texturas
-    public texturaUV          : Ponteiro<WebGLTexture>;
-    public texturasFaces      : Array<WebGLTexture>;
-
-    // Usado em instancias de objetos OBJMesh
-    public materiais          : Mapa<string, any>;
-    public materialAtivo      : any;
-    public objetos            : Mapa<string, any>;
-    public objetoAtivo        : any;
-    public nomesObjetos       : Array<string>;
-    public objetosInfo        : Mapa<string, any>;
-
-    // Iluminação de cada parte, usado em instancias de objetos OBJMesh
-    public iluminationInfo               : Mapa<string, any>;
-    public iluminationAcumuladaInfo      : Mapa<string, any>;
-    public brilhoParte       : number;
-    public ambientParte      : number;
-    public diffuseParte      : number;
-    public specularParte     : number;
-    public corLuzParte       : Array<float>;
-    public intensidadeParte  : number;
-
-    constructor( renderer:Renderer, propriedadesMesh:VisualMeshConfig )
+    constructor( renderer:Renderer, meshConfig:VisualMeshConfig )
     {
         this.renderer   = renderer;
-        this.meshConfig = propriedadesMesh;
+        this.meshConfig = meshConfig;
 
-        //this.programUsado = null; // Vai ser um ponteiro, eu vou definir em cada tipo de Mesh
+        this.programUsado = null; // Vai ser um ponteiro, eu vou definir em cada tipo de Mesh
 
         // Os shaders da renderização dele
         this.vertexScript   = '';
@@ -143,36 +101,31 @@ export class VisualMesh
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;
 
-        this.vertices          = new Array();
-        this.uvs               = new Array();
-        this.uvArray           = new Array<float>();
-
         // Atributos visuais
-        this.nome          = propriedadesMesh.nome || "SemNome";
+        this.nome          = meshConfig.nome || "SemNome";
         this.id            = this.nome + String(new Date().getTime());
-        this.classe        = propriedadesMesh.classe || "Geral";
-        this.tipo          = propriedadesMesh.tipo || 'Nenhum';
-        this._isTransparente = false;
-        this.position      = propriedadesMesh.position;
-        this.scale         = propriedadesMesh.scale;
-        this.rotation      = propriedadesMesh.rotation;
-        this.invisivel     = propriedadesMesh.invisivel || false; 
-        this.transparencia = propriedadesMesh.transparencia;
+        this.classe        = meshConfig.classe || "Geral";
+        this.tipo          = meshConfig.tipo || 'Nenhum';
+        this.position      = meshConfig.position;
+        this.scale         = meshConfig.scale;
+        this.rotation      = meshConfig.rotation;
+        this.invisivel     = meshConfig.invisivel || false; 
+        this.transparencia = meshConfig.transparencia;
 
         // Luzes do objeto
-        this.alwaysUpdateLights       = propriedadesMesh.alwaysUpdateLights || true;         // Se a todo momento vai atualizar luzes ou não
+        this.alwaysUpdateLights       = meshConfig.alwaysUpdateLights || true;         // Se a todo momento vai atualizar luzes ou não
         // NOTA: Cada objeto pode atualizar a iluminação apenas levando em conta suas configuracoes fixas e do ambiente, OU TAMBEM PODE LEVAR EM CONTA CADA PONTO DE LUZ PELO CENARIO
 
-        this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights || true;   // Usado por alguns objetos da minha engine, como o OBJ
-        this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights     || true;   // Se esse objeto vai receber uma acumulação de luzes ao seu redor (posso desativar se eu achar pesado)
-        this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights  || false;  // Se ativado, a acumulação das luzes ao redor do objeto só vai ocorrer uma unica vez
+        this.childrenIndividualLights = meshConfig.childrenIndividualLights || true;   // Usado por alguns objetos da minha engine, como o OBJ
+        this.useAccumulatedLights     = meshConfig.useAccumulatedLights     || true;   // Se esse objeto vai receber uma acumulação de luzes ao seu redor (posso desativar se eu achar pesado)
+        this.staticAccumulatedLights  = meshConfig.staticAccumulatedLights  || false;  // Se ativado, a acumulação das luzes ao redor do objeto só vai ocorrer uma unica vez
         
         this._jaAcumulouLuzes         = false;  // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
 
-        this.brilhoObjeto                = propriedadesMesh.brilho   || 0;
-        this.ambientObjeto               = propriedadesMesh.ambient  || 0; // Um acrescimento a luz ambiente
-        this.diffuseObjeto               = propriedadesMesh.diffuse  || 0;
-        this.specularObjeto              = propriedadesMesh.specular || 0;
+        this.brilhoObjeto                = meshConfig.brilho   || 0;
+        this.ambientObjeto               = meshConfig.ambient  || 0; // Um acrescimento a luz ambiente
+        this.diffuseObjeto               = meshConfig.diffuse  || 0;
+        this.specularObjeto              = meshConfig.specular || 0;
 
         this.corLuz                      = [0, 0, 0];
         this.ambient                     = 0;
@@ -181,8 +134,8 @@ export class VisualMesh
         this.brilho                      = 0;
         this.intensidadeLuz              = 0;
 
-        this.corLuzObjeto                = propriedadesMesh.corLuzObjeto || [0, 0, 0];
-        this.intensidadeLuzObjeto        = propriedadesMesh.intensidadeLuzObjeto || 0;
+        this.corLuzObjeto                = meshConfig.corLuzObjeto || [0, 0, 0];
+        this.intensidadeLuzObjeto        = meshConfig.intensidadeLuzObjeto || 0;
 
         // Iluminação acumulada do objeto (soma de todas as luzes que afetam ele)
         this.brilhoLocalAcumulado          = 0;
@@ -197,47 +150,11 @@ export class VisualMesh
 
         this.bufferPosicao      = null;
         this.bufferCor          = null;
-        this.bufferUV           = null;
-        this.bufferIndices      = null; 
-        this.allBuffersCriated  = false; // Diz que ele ainda não criou os buffers do objeto
+        this.bufferIndices      = null;
 
-        this.normals           = new Array();
-        this.positions         = new Array();
-        this.indices           = new Array();
-        this.cores             = new Array();
+        this.modeloObjetoVisual = null;
 
-        this.modeloObjetoVisual = null; 
-
-        this.usaCollingFace     = false;
-
-        this.texturaUV          = null;
-        this.texturasFaces      = new Array<WebGLTexture>(); // Se ele usa texturas de faces
-
-        // Usado em instancias de OBJMesh
-        this.materiais         = new Mapa<string, any>();
-        this.materialAtivo     = null;
-
-        this.objetos                       = new Mapa<string, any>();
-        this.nomesObjetos                  = new Array(); 
-        this.objetoAtivo                   = null;
-        this.objetosInfo                   = new Mapa<string, any>(); // objeto para guardar offset/count por objeto
-
-        // Usado na iluminação de instancias de OBJMesh
-        this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
-        this.useAccumulatedLights     = propriedadesMesh.useAccumulatedLights;       // Se cada parte vai receber uma acumulação de luzes ao seu redor
-        this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;    // Se ativado, a acumulação das luzes ao redor das partes só vai ocorrer uma unica vez
-        this._jaAcumulouLuzes         = false;                                       // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
-
-        this.iluminationInfo = new Mapa<string, any>();               // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
-        this.iluminationAcumuladaInfo = new Mapa<string, any>();      // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
-
-        // Mais variaveis para a acumulação de luzes
-        this.brilhoParte       = 0;
-        this.ambientParte      = 0;
-        this.diffuseParte      = 0;
-        this.specularParte     = 0;
-        this.corLuzParte       = [0, 0, 0];
-        this.intensidadeParte  = 0;
+        
     }
 
     // Copia os valores do renderer que o objeto acompanha
@@ -289,6 +206,11 @@ export class VisualMesh
         };
     }
 
+    getIndices(): Array<float>
+    {
+        return [];
+    }
+
     // ATIVAR EM TODOS: renderizador.getObjetos().forEach((o)=>{ o.enableStaticAccumulatedLights() })
 
     // Ativa as luzes acumuladas estaticas
@@ -315,7 +237,7 @@ export class VisualMesh
     *    (3) Ou então, eu poderia criar uma outra classe VisualMesh que vai herdar o ObjectBase, no final das definições raizes, e ai como todos os objetos herdam o VisualMesh, iria seguir o fluxo normal(visto que nesse ponto Cena, ObjectBase e outras classes raiz vão estar totalmente definidas)
     *        Mais pode ser um pouco mais complicado por causa de conversões de objetos que podem ser necessarias ser feitas
     */
-    atualizarIluminacao()
+    atualizarIluminacao(gl:WebGL2RenderingContext, informacoesPrograma:any )
     {
         const renderer  : Renderer     = this.renderer;
         const luzesCena : Array<any>   = renderer.getLuzes();
@@ -456,7 +378,7 @@ export class VisualMesh
         if( this.alwaysUpdateLights == true )
         {
             // Calcula a iluminação
-            this.atualizarIluminacao();
+            this.atualizarIluminacao(gl, informacoesPrograma);
 
             // Envia a iluminaçao calculada para o shader
             this.enviarIluminacaoShader(gl, informacoesPrograma);
@@ -744,26 +666,6 @@ export class VisualMesh
         return this.meshConfig;
     }
 
-    getPositions() 
-    {
-        return this.positions;
-    }
-
-    getColors() 
-    {
-        return this.cores;
-    }
-
-    getIndices() 
-    {
-        return this.indices;
-    }
-
-    getUVs() 
-    {
-        return this.uvArray || [];
-    }
-
     /**
     * Função que atualize as informações de desenho do objeto 
     * Se implementa ela em cada objeto
@@ -774,52 +676,23 @@ export class VisualMesh
     }
 
     /**
-    * @implementation
-    * Sempre o mesmo em cada objeto
+    * Se implementa ela em cada objeto
     * Cria os buffers que vão ser usados na renderização
-    * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
-    * lembrando que cada buffer é um ponteiro, então ele pode ser nulo
     */
     createBuffers()
     {
-        const gl = this.getRenderer().gl;
         
-        if ( this.bufferPosicao == null ) 
-        {
-            this.bufferPosicao = createBuffer(gl, this.getPositions(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        if ( this.bufferCor == null )
-        {
-            this.bufferCor     = createBuffer(gl, this.getColors(),    gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-        
-        if ( this.bufferIndices == null )
-        { 
-            this.bufferIndices = createBuffer(gl, this.getIndices(),   gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        if( this.bufferUV == null )
-        {
-            this.bufferUV = createBuffer(gl, this.getUVs(), gl.ARRAY_BUFFER, gl.STATIC_DRAW);
-        }
-
-        // Diz que ja criou todos os buffers para não chamar novamente
-        this.allBuffersCriated = true;
     }
 
     // Muda o valor do ponteiro "this.programUsado"
-    /*
     setProgram( programUsar:WebGLProgram )
     {
         this.programUsado = programUsar;
     }
-    */
 
-    // Obtem o program usado por ele no meu mini renderizador webgl
     getProgram(): Ponteiro<WebGLProgram>
     {
-        return this.renderer.getProgramObjetoDesenhar(this.tipo);
+        return this.programUsado;
     }
 
     getVertex()
@@ -830,30 +703,5 @@ export class VisualMesh
     getFragment()
     {
         return this.fragmentScript;
-    }
-
-    /**
-    * Declaração de funções que só serão implementadas dentro do OBJMesh 
-    */
-    calcularCentroideParte( nomeParte:string ): number[]
-    {
-        // ESTA IMPLEMENTADO NO OBJMesh
-        return [];
-    }
-
-    calcularCentroideGlobalParte( nomeParte:string ): number[]
-    {
-        // ESTA IMPLEMENTADO NO OBJMesh
-        return [];
-    }
-
-    atualizarIluminacaoParte(iluminacaoParte:any={}, iluminacaoAcumuladaParte:any={}): void
-    {
-
-    }
-
-    enviarIluminacaoParteShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma): void
-    {
-        
     }
 }

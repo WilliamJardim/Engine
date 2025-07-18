@@ -41,7 +41,7 @@ export class CilindroMesh extends VisualMesh
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;
         
-        this.setProgram( renderer.getCilindroProgram() );
+        //this.setProgram( renderer.getCilindroProgram() );
 
         // Atributos de renderização SÂO PONTEIROS INICIALMENTE NULO, MAIS QUE SERÂO ATRIBUIDOS LOGO NA EXECUCAO DESTE CODIGO
         this.bufferPosicao = null;
@@ -215,6 +215,8 @@ export class CilindroMesh extends VisualMesh
     * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
     * lembrando que cada buffer é um ponteiro, então ele pode ser nulo
     */
+    /*
+    TRANSFERIDO PARA VisualMesh
     createBuffers()
     {
         const renderer            = this.getRenderer();
@@ -238,6 +240,7 @@ export class CilindroMesh extends VisualMesh
 
         //Se não é null é por que ja existe, então nao faz nada!
     }
+    */
 
     /**
     * @implementation 
@@ -246,15 +249,6 @@ export class CilindroMesh extends VisualMesh
     */
     atualizarDesenho()
     {
-        const renderer            = this.getRenderer();
-        const matrixVisualizacao  = renderer.getMatrixVisualizacao();
-        const atributosCubo       = this.getAtributos();
-        const gl                  = renderer.gl;
-        const programUsado        = this.getProgram();
-        const informacoesPrograma = this.getInformacoesPrograma();
-        const indices             = this.getIndices();
-        const isTransparente      = this.isTransparente();
-        
         // Atributos visuais 
         const meshConfig = this.meshConfig;
         const position   = meshConfig.position;
@@ -275,13 +269,14 @@ export class CilindroMesh extends VisualMesh
 
         this.modeloObjetoVisual     = DefinirEscala(this.modeloObjetoVisual,     [scale.x, scale.y, scale.z] );
 
-        /**
-        * Cria os buffers que vão ser usados na renderização
-        */
-        this.createBuffers();
-
         // PRONTO AGORA O MEU MINI RENDERIZADOR WEBGL JA TEM TUDO O QUE PRECISA PRA DESENHAR ELE
         // VEJA o arquivo Renderer/Renderer.ts
+
+        /*
+        TRANSFERIDO PARA A FUNÇÂO desenharUmObjeto em Renderer/Renderer.ts, na linha 490, para maior abstração e centralização de lógica, e redução de repetições
+
+        // Cria os buffers que vão ser usados na renderização
+        this.createBuffers();
 
         gl.disable(gl.CULL_FACE);
 
@@ -327,6 +322,7 @@ export class CilindroMesh extends VisualMesh
         gl.enable(gl.CULL_FACE);
 
         // FIM DESSA LOGICA
+        */
     }
 
     /**

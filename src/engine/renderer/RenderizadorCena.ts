@@ -411,10 +411,10 @@ export default class RenderizadorCena
 
                         // Iluminação
                         alwaysUpdateLights: true,
-                        brilho: 32,
-                        ambient: 0.6,
-                        diffuse: 0.8,
-                        specular: 0.8,
+                        brilho: 0,
+                        ambient: 0,
+                        diffuse: 0,
+                        specular: 0,
 
                         childrenIndividualLights: true,
                         useAccumulatedLights: true,

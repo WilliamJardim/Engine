@@ -640,34 +640,31 @@ export class Renderer
                 }
 
                 // SE TEM texturaUV
-                if( objetoAtual.texturaUV != null )
+                if( objetoAtual.usaTexturas == true )
                 {
-                    // Aplica a textura UV(uma imagem para todas as faces do cubo)
-                    gl.activeTexture(gl.TEXTURE0);
-                    gl.bindTexture(gl.TEXTURE_2D, objetoAtual.texturaUV ); // o texturaUV precisa estar carregado!
-                    
-                    //TODO: gl.uniform1i(gl.getUniformLocation(programUsado!, "u_textura"), 0);
+                    if( objetoAtual.texturaUV != null )
+                    {
+                        // Aplica a textura UV(uma imagem para todas as faces do cubo)
+                        gl.activeTexture(gl.TEXTURE0);
+                        gl.bindTexture(gl.TEXTURE_2D, objetoAtual.texturaUV ); // o texturaUV precisa estar carregado!
+                        
+                        //TODO: gl.uniform1i(gl.getUniformLocation(programUsado!, "u_textura"), 0);
 
-                    gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.usarTextura, 0 ); //0 por que é false
-                }
+                        gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.usarTextura, 0 ); //0 por que é false
+                    }
 
-                // SE TEM bufferUV
-                if( objetoAtual.bufferUV != null )
-                {
-                    // Ativa o atributo UV
-                    gl.bindBuffer(gl.ARRAY_BUFFER, objetoAtual.bufferUV);
-                    gl.vertexAttribPointer(informacoesProgramaObjeto.atributosObjeto.uv, 2, gl.FLOAT, false, 0, 0);
-                    gl.enableVertexAttribArray(informacoesProgramaObjeto.atributosObjeto.uv);
-                }
+                    // SE TEM bufferUV
+                    if( objetoAtual.bufferUV != null )
+                    {
+                        // Ativa o atributo UV
+                        gl.bindBuffer(gl.ARRAY_BUFFER, objetoAtual.bufferUV);
+                        gl.vertexAttribPointer(informacoesProgramaObjeto.atributosObjeto.uv, 2, gl.FLOAT, false, 0, 0);
+                        gl.enableVertexAttribArray(informacoesProgramaObjeto.atributosObjeto.uv);
+                    }
 
-                // Usa as informações do cubo(que criamos e calculamos acima)
-                gl.uniformMatrix4fv(informacoesProgramaObjeto.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacaoRenderizador);
-                gl.uniformMatrix4fv(informacoesProgramaObjeto.atributosVisualizacaoObjeto.modeloObjetoVisual, false, objetoAtual.modeloObjetoVisual);
-
-                // Se não for um objeto, aplica transparencia e textura aqui
-                if( objetoAtual.tipo != "OBJ")
-                {
-                    // Se usa textura
+                // Se não usa textura
+                }else{
+                    // Diz que não usa textura
                     gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.usarTextura, 0); // 0 pois é false
 
                     if( isTransparente == true )
@@ -675,6 +672,16 @@ export class Renderer
                         // Opacidade
                         gl.uniform1f(informacoesProgramaObjeto.uniformsCustomizados.opacidade, transparenciaObjeto );
                     }
+                }
+
+                // Usa as informações do cubo(que criamos e calculamos acima)
+                gl.uniformMatrix4fv(informacoesProgramaObjeto.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacaoRenderizador);
+                gl.uniformMatrix4fv(informacoesProgramaObjeto.atributosVisualizacaoObjeto.modeloObjetoVisual, false, objetoAtual.modeloObjetoVisual);
+
+                // Se não for um objeto, aplica transparencia
+                if( objetoAtual.tipo != "OBJ")
+                {
+                    
                 }
 
                 // Atualiza a iluminação geral do objeto
@@ -793,7 +800,9 @@ export class Renderer
                             }
 
                             // Depois de calcular, atualiza a iluminação
-                            objetoAtual.atualizarIluminacaoParte( iluminacaoParte, 
+                            objetoAtual.atualizarIluminacaoParte( gl,
+                                                                  informacoesProgramaObjeto, 
+                                                                  iluminacaoParte, 
                                                                   iluminacaoAcumuladaParte 
                                                         );
 

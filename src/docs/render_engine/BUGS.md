@@ -154,7 +154,9 @@ ALTERAR O ambient da luz da minha engine de logica não altera o ambient da luz 
 PARECE QUE A COPIA DE VALORES NÂO ESTÀ ACONTECENDO
 
 
-# 18/07/2025 17:05 PM - OBJETOS QUE NÂO APARECEM 
+# 18/07/2025 17:05 PM - OBJETOS QUE NÂO APARECEM (RESOLVIDO)
 BUG: Os OBJs renderizam certo
 porém o Cubo(e com certeza os outros) não renderizam. Eles não aparecem na renderização
 (testei e já estava deis do meu ultimo commit)
+
+

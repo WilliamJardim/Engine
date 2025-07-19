@@ -56,6 +56,7 @@ export class TexturedUVCuboMesh extends VisualMesh
         this.texturaUV     = null;
 
         // Pega a textura UV como atributo do objeto
+        this.usaTexturas   = true; // Obrigaório para que tenha textura
         this.useColors     = propriedadesMesh.useColors || false;
         this.texturaUV     = propriedadesMesh.texturaUV;
 

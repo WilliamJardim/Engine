@@ -107,6 +107,7 @@ export class VisualMesh
     public usaCollingFace     : boolean;
 
     // Para aplicação de texturas
+    public usaTexturas        : boolean;      
     public texturaUV          : Ponteiro<WebGLTexture>;
     public texturasFaces      : Array<WebGLTexture>;
 
@@ -210,6 +211,7 @@ export class VisualMesh
 
         this.usaCollingFace     = false;
 
+        this.usaTexturas        = false;
         this.texturaUV          = null;
         this.texturasFaces      = new Array<WebGLTexture>(); // Se ele usa texturas de faces
 
@@ -812,7 +814,7 @@ export class VisualMesh
         return [];
     }
 
-    atualizarIluminacaoParte(iluminacaoParte:any={}, iluminacaoAcumuladaParte:any={}): void
+    atualizarIluminacaoParte(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, iluminacaoParte:any={}, iluminacaoAcumuladaParte:any={}): void
     {
 
     }

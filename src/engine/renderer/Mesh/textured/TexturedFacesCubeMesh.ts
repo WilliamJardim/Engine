@@ -61,6 +61,7 @@ export class TexturedFacesCuboMesh extends VisualMesh
         this.bufferUV      = null;
 
         // Pega a textura UV como atributo do objeto
+        this.usaTexturas    = true; // Obrigaório para que tenha textura
         this.useColors      = propriedadesMesh.useColors || false;
         this.texturasFaces  = propriedadesMesh.texturasFaces; // Array de 6 texturas WebGLTexture
 

@@ -251,3 +251,15 @@ E tentar optimizar os glBindVertexArray e os outros binds, com a mesma ideia.
 # 17/07/2025 17:04 PM
 Retirar o enviarIluminacaoParteShader e enviarIluminacaoShader do OBJBase e do VisualMesh, e deixar eles centralizados no renderizador tambem
 
+
+# 19/07/2025 12:49 PM, sabado
+Novas ideias 
+Voltar as variáveis de acumulação de iluminação da parte para serem atributos internos do próprio Objeto, e também, pra ser separado a função que calcula a iluminação da função que envia a iluminação pro shaders, ..... pois isso não interfere em nada na iluminação, pois só é calculado de uma parte por vez mesmo, uma por uma, em sequência sincrona.
+
+E também, tentar centralizar o cálculo da iluminação e o envio da iluminação para o shader. 
+Ou pelo menos centralizar o envio para o shader apenas , e deixar o próprio objeto calcular a iluminação dele e de duas partes
+
+Depois criar meu sistema de Players, 
+e meu sistema de Câmeras na Engine de lógica, que vão conversar com o meu mini renderizador.
+E ajustar o LocalSound.ts para entender qual é o jogador que está perto do som
+

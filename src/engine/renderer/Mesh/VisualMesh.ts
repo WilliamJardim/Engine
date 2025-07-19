@@ -122,6 +122,7 @@ export class VisualMesh
     // Iluminação de cada parte, usado em instancias de objetos OBJMesh
     public iluminationInfo               : Mapa<string, any>;
     public iluminationAcumuladaInfo      : Mapa<string, any>;
+    public iluminationTotal              : Mapa<string, any>;
     public brilhoParte       : number;
     public ambientParte      : number;
     public diffuseParte      : number;
@@ -230,8 +231,9 @@ export class VisualMesh
         this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;    // Se ativado, a acumulação das luzes ao redor das partes só vai ocorrer uma unica vez
         this._jaAcumulouLuzes         = false;                                       // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
 
-        this.iluminationInfo = new Mapa<string, any>();               // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
+        this.iluminationInfo          = new Mapa<string, any>();      // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
         this.iluminationAcumuladaInfo = new Mapa<string, any>();      // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
+        this.iluminationTotal         = new Mapa<string, any>();      // A iluminação total de cada objeto individualmente(ou seja, que a soma da iluminação do propio objeto em si, com a iluminação global do meu mini renderizador, e com a iluminação local acumulada de todas as luzes proximas ao objeto, e com isso temos o que chamei de iluminação total da parte/objeto)
 
         // Mais variaveis para a acumulação de luzes
         this.brilhoParte       = 0;
@@ -812,15 +814,5 @@ export class VisualMesh
     {
         // ESTA IMPLEMENTADO NO OBJMesh
         return [];
-    }
-
-    atualizarIluminacaoParte(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, iluminacaoParte:any={}, iluminacaoAcumuladaParte:any={}): void
-    {
-
-    }
-
-    enviarIluminacaoParteShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma): void
-    {
-        
     }
 }

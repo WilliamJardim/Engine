@@ -559,6 +559,41 @@ export class Renderer
     }
 
     /**
+    * Envia a iluminação já calculada para o shader 
+    * Para isso, precisa do arrayIluminacaoParte, que é na verdade o array retornado pela função acima
+    * O pipeline do meu mini renderizador no arquivo Renderer/Renderer.ts na linha 803 deixará isso bem claro.
+    */
+    enviarIluminacaoParteShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, mapaIluminacaoTotalParte:Mapa<string, any> ): void
+    {
+        /**
+        * Aplica os valores 
+        */
+        const ambientShader         = informacoesPrograma.atributosObjeto.ambient;
+        const diffuseShader         = informacoesPrograma.atributosObjeto.diffuse;
+        const specularShader        = informacoesPrograma.atributosObjeto.specular;
+        const brilhoShader          = informacoesPrograma.atributosObjeto.brilho;
+        const intensidadeLuzShader  = informacoesPrograma.atributosObjeto.intensidadeLuz;
+        const corLuzShader          = informacoesPrograma.atributosObjeto.corLuz;
+
+        // Atualiza as configurações gerais 
+        gl.uniform1f(ambientShader,        mapaIluminacaoTotalParte.ambientTotal ); // o ambient
+        gl.uniform1f(diffuseShader,        mapaIluminacaoTotalParte.diffuseTotal ); // o diffuse
+        gl.uniform1f(specularShader,       mapaIluminacaoTotalParte.specularTotal ); // o specular
+        gl.uniform1f(brilhoShader,         mapaIluminacaoTotalParte.brilhoTotal ); // O brilho
+        gl.uniform1f(intensidadeLuzShader, mapaIluminacaoTotalParte.intensidadeTotal ); // a intensidade da luz
+
+        // Cores RGB
+        gl.uniform3fv(corLuzShader,        new Float32Array( 
+                                                             [ 
+                                                               mapaIluminacaoTotalParte.corLuzTotal[0],  // Vermelho
+                                                               mapaIluminacaoTotalParte.corLuzTotal[1],  // Verde
+                                                               mapaIluminacaoTotalParte.corLuzTotal[2]   // Azul
+                                                             ] )
+                                           );
+
+    }
+
+    /**
     * Desenha um objeto(seja ele qual for)
     * Uma função genérica, e que pode ser chamada aqui dentro, para qualquer objeto.
     * Vou usar ela no método desenharObjetos abaixo
@@ -733,6 +768,7 @@ export class Renderer
                         {
                             const iluminacaoParte           = objetoAtual.iluminationInfo[ nomeObjeto ];
                             const iluminacaoAcumuladaParte  = objetoAtual.iluminationAcumuladaInfo[ nomeObjeto ];
+                            const iluminacaoTotalParte      = objetoAtual.iluminationTotal[ nomeObjeto ];
 
                             /**
                             * Calcula a iluminação dessa parte atual ( se esse OBJ usa acumulação de luzes )
@@ -796,20 +832,39 @@ export class Renderer
                                             iluminacaoAcumuladaParte.corLocalAcumulado[2]         += influenciaAzul;
                                         }
                                     }
+
+                                    /**
+                                    * Obtem o ambiente da parte atual atualizado como a soma dos valores do objeto com os globais da cena
+                                    */
+                                    const ambientTotalParte     = iluminacaoParte.ambientObjeto         + this.ambient                + iluminacaoAcumuladaParte.ambientLocalAcumulado;
+                                    const diffuseTotalParte     = iluminacaoParte.diffuseObjeto         + this.diffuse                + iluminacaoAcumuladaParte.diffuseLocalAcumulado;
+                                    const specularTotalParte    = iluminacaoParte.specularObjeto        + this.specular               + iluminacaoAcumuladaParte.specularLocalAcumulado;
+                                    const brilhoTotalParte      = iluminacaoParte.brilhoObjeto          + this.brilho                 + iluminacaoAcumuladaParte.brilhoLocalAcumulado;
+                                    const intensidadeTotalParte = iluminacaoParte.intensidadeLuzObjeto  + this.intensidadeLuz         + iluminacaoAcumuladaParte.intensidadeLocalAcumulado;
+
+                                    const corLuzTotalParte   = [0, 0, 0];
+                                    corLuzTotalParte[0]      = iluminacaoParte.corLuzObjeto[0] + this.corAmbient[0] + iluminacaoAcumuladaParte.corLocalAcumulado[0];
+                                    corLuzTotalParte[1]      = iluminacaoParte.corLuzObjeto[1] + this.corAmbient[1] + iluminacaoAcumuladaParte.corLocalAcumulado[1];
+                                    corLuzTotalParte[2]      = iluminacaoParte.corLuzObjeto[2] + this.corAmbient[2] + iluminacaoAcumuladaParte.corLocalAcumulado[2];
+
+                                    // Salva no mapa que contém a iluminação total da parte(ja levendo em conta essas somas acima)
+                                    iluminacaoTotalParte.ambientTotal         = ambientTotalParte;
+                                    iluminacaoTotalParte.diffuseTotal         = diffuseTotalParte;
+                                    iluminacaoTotalParte.specularTotal        = specularTotalParte;
+                                    iluminacaoTotalParte.brilhoTotal          = brilhoTotalParte;
+                                    iluminacaoTotalParte.intensidadeTotal     = intensidadeTotalParte;
+                                    iluminacaoTotalParte.corLuzTotal          = corLuzTotalParte;
+
+                                    // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
+                                    objetoAtual._jaAcumulouLuzes = true;
                                 }
                             }
-
-                            // Depois de calcular, atualiza a iluminação
-                            objetoAtual.atualizarIluminacaoParte( gl,
-                                                                  informacoesProgramaObjeto, 
-                                                                  iluminacaoParte, 
-                                                                  iluminacaoAcumuladaParte 
-                                                        );
-
+                                                                                  
                             // Depois envia a iluminação calculada para o shader
-                            objetoAtual.enviarIluminacaoParteShader( gl, 
-                                                                     informacoesProgramaObjeto, 
-                                                                   );
+                            this.enviarIluminacaoParteShader( gl, 
+                                                              informacoesProgramaObjeto, 
+                                                              iluminacaoTotalParte
+                                                            );
                         }
 
                         gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.usarTextura, usarTextura ? 1 : 0);

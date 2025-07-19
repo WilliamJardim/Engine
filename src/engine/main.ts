@@ -24,7 +24,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 {
     // Importa o modelo do meu quarto 1
     // Cria um plano que pode se deformar
-    /*
+    
     scene.criarObjeto(new ObjectBase({
         type : 'OBJ',
         name : 'Mapa antigo',
@@ -81,7 +81,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 
         },
     }));
-    */
+    
     
     // Cria um plano que pode se deformar
     scene.criarObjeto( new ObjectBase({

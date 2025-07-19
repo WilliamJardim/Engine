@@ -463,8 +463,9 @@ export class OBJMesh extends VisualMesh
 
         this.indices = []; // reseta para montar os índices gerais
 
-        this.objetosInfo = new Mapa<string, any>();     // objeto para guardar offset/count por objeto
-        this.iluminationInfo = new Mapa<string, any>(); // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
+        this.objetosInfo       = new Mapa<string, any>();   // objeto para guardar offset/count por objeto
+        this.iluminationInfo   = new Mapa<string, any>();   // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
+        this.iluminationTotal  = new Mapa<string, any>();   // A iluminação total de cada objeto individualmente(ou seja, que a soma da iluminação do propio objeto em si, com a iluminação global do meu mini renderizador, e com a iluminação local acumulada de todas as luzes proximas ao objeto, e com isso temos o que chamei de iluminação total da parte/objeto)
 
         let globalIndexCount = 0; // para contar índice total gerado
 
@@ -499,6 +500,18 @@ export class OBJMesh extends VisualMesh
                 corLocalAcumulado         : [0, 0, 0], //RGB
                 intensidadeLocalAcumulado : 0
             };  
+
+            /**
+            * Define a iluminação total do objeto( vai sempre a soma de iluminationAcumuladaInfo do objeto com a iluminação global do meu mini renderizador e com a iluminação definida no objeto em si )
+            */
+            this.iluminationTotal[nomeObjeto] = {
+                brilhoObjeto         : 0,
+                ambientObjeto        : 0,
+                diffuseObjeto        : 0,
+                specularObjeto       : 0,
+                corLuzObjeto         : [0, 0, 0], //RGB
+                intensidadeLuzObjeto : 0
+            };
 
             for (let j = 0; j < faces.length; j++) 
             {
@@ -627,58 +640,6 @@ export class OBJMesh extends VisualMesh
     isTransparente()
     {
         return this.transparencia < 1 || this._isTransparente == true;
-    }
-
-    /**
-    * Define a iluminação de uma parte do modelo
-    */
-    atualizarIluminacaoParte(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, iluminacaoParte:any={}, iluminacaoAcumuladaParte:any={} )
-    {
-        // OBS: AQUI NESSE PONTO, A ILUMINAÇÂO DAS PARTES JA FOI CALCULADA NO LOOP PRINCIPAL, ANTES DE CHAMAR ESSA FUNÇÂO
-        // OBS: Se this.useAccumulatedLights for false, aqui nada muda, as variaveis de acumulação só vão estar sempre zeradas
-
-        /**
-        * Obtem o ambiente da parte atual atualizado como a soma dos valores do objeto com os globais da cena
-        */
-        const ambientParte     = iluminacaoParte.ambientObjeto         + this.renderer.ambient                + iluminacaoAcumuladaParte.ambientLocalAcumulado;
-        const diffuseParte     = iluminacaoParte.diffuseObjeto         + this.renderer.diffuse                + iluminacaoAcumuladaParte.diffuseLocalAcumulado;
-        const specularParte    = iluminacaoParte.specularObjeto        + this.renderer.specular               + iluminacaoAcumuladaParte.specularLocalAcumulado;
-        const brilhoParte      = iluminacaoParte.brilhoObjeto          + this.renderer.brilho                 + iluminacaoAcumuladaParte.brilhoLocalAcumulado;
-        const intensidadeParte = iluminacaoParte.intensidadeLuzObjeto  + this.renderer.intensidadeLuz         + iluminacaoAcumuladaParte.intensidadeLocalAcumulado;
-
-        const corLuzParte      = [0, 0, 0];
-        corLuzParte[0]   = iluminacaoParte.corLuzObjeto[0] + this.renderer.corAmbient[0] + iluminacaoAcumuladaParte.corLocalAcumulado[0];
-        corLuzParte[1]   = iluminacaoParte.corLuzObjeto[1] + this.renderer.corAmbient[1] + iluminacaoAcumuladaParte.corLocalAcumulado[1];
-        corLuzParte[2]   = iluminacaoParte.corLuzObjeto[2] + this.renderer.corAmbient[2] + iluminacaoAcumuladaParte.corLocalAcumulado[2];
-
-        /**
-        * Aplica os valores 
-        */
-        const brilhoShader          = informacoesPrograma.atributosObjeto.brilho;
-        const ambientShader         = informacoesPrograma.atributosObjeto.ambient;
-        const diffuseShader         = informacoesPrograma.atributosObjeto.diffuse;
-        const specularShader        = informacoesPrograma.atributosObjeto.specular;
-        const corLuzShader          = informacoesPrograma.atributosObjeto.corLuz;
-        const intensidadeLuzShader  = informacoesPrograma.atributosObjeto.intensidadeLuz;
-
-        // Atualiza as configurações gerais 
-        gl.uniform1f(brilhoShader,         brilhoParte);
-        gl.uniform1f(ambientShader,        ambientParte);
-        gl.uniform1f(diffuseShader,        diffuseParte);
-        gl.uniform1f(specularShader,       specularParte);
-        gl.uniform3fv(corLuzShader,        new Float32Array(corLuzParte) );
-        gl.uniform1f(intensidadeLuzShader, intensidadeParte);
-
-        // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
-        this._jaAcumulouLuzes = true;
-    }
-
-    /**
-    * Envia a iluminação já calculada para o shader 
-    */
-    enviarIluminacaoParteShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma): void
-    {
-        // TODO: Ajustar
     }
 
     /**

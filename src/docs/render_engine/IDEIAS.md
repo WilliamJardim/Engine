@@ -254,7 +254,7 @@ Retirar o enviarIluminacaoParteShader e enviarIluminacaoShader do OBJBase e do V
 
 # 19/07/2025 12:49 PM, sabado
 Novas ideias 
-Voltar as variáveis de acumulação de iluminação da parte para serem atributos internos do próprio Objeto, e também, pra ser separado a função que calcula a iluminação da função que envia a iluminação pro shaders, ..... pois isso não interfere em nada na iluminação, pois só é calculado de uma parte por vez mesmo, uma por uma, em sequência sincrona.
+Voltar as variáveis de acumulação de iluminação da parte para serem atributos internos do próprio Objeto, e também, pra ser separado a função que calcula a iluminação da função que envia a iluminação pro shaders, ..... pois isso não interfere em nada na iluminação, pois só é calculado de uma parte por vez mesmo, uma por uma, em sequência sincrona. (FEITO)
 
 E também, tentar centralizar o cálculo da iluminação e o envio da iluminação para o shader. 
 Ou pelo menos centralizar o envio para o shader apenas , e deixar o próprio objeto calcular a iluminação dele e de duas partes
@@ -263,3 +263,10 @@ Depois criar meu sistema de Players,
 e meu sistema de Câmeras na Engine de lógica, que vão conversar com o meu mini renderizador.
 E ajustar o LocalSound.ts para entender qual é o jogador que está perto do som
 
+# 19/07/2025 19:36 PM, sabado (FEITO)
+Novas ideias
+Juntar a parte que leva em conta a iluminação do próprio Objeto e a iluminação global do Renderizador para retornar a iluminação total da parte 
+Em vez disso, colocar no loop for do próprio atualizar desenho do objeto
+
+# 19/07/2025 19:50, sabado 
+Centralizar tambem o método "atualizarIluminacao" e "enviarIluminacaoShader" do meu VisualMesh.ts

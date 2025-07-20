@@ -369,7 +369,6 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     } ) );
 
     // Chão
-    /*
     scene.criarObjeto( new ObjectBase({
         mass: 1,
         name: "Chao",
@@ -421,10 +420,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         useAccumulatedLights: true,
         staticAccumulatedLights: false
     }) );
-    */
 
     // Ponto de luz
-    //scene.criarLuz( new Light({ tipo: "Light", position: {x: 1.556491508391181, y: 29.92973285780118, z: -16.441060668107095 }, ambient: 0.9, raio: 0.1 , cor: [255,0,0]}) )
+    scene.criarLuz( new Light({ tipo: "Light", position: {x: 1.556491508391181, y: 29.92973285780118, z: -16.441060668107095 }, ambient: 0.9, raio: 0.1 , cor: [255,0,0]}) )
 
     globalContext.set("scene", scene);
 }

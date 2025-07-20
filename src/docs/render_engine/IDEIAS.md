@@ -268,5 +268,5 @@ Novas ideias
 Juntar a parte que leva em conta a iluminação do próprio Objeto e a iluminação global do Renderizador para retornar a iluminação total da parte 
 Em vez disso, colocar no loop for do próprio atualizar desenho do objeto
 
-# 19/07/2025 19:50, sabado 
+# 19/07/2025 19:50, sabado (FEITO)
 Centralizar tambem o método "atualizarIluminacao" e "enviarIluminacaoShader" do meu VisualMesh.ts

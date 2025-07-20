@@ -278,18 +278,10 @@ export class Renderer
         return this.programs.textureProgram;
     }
 
-    /**
-    * Atualiza a iluminação de todos os objetos da cena
-    */
-    atualizarIluminacao() : void
+    // Força atualizar a iluminação de todos os objetos
+    atualizarIluminacaoObjetos(): void
     {
-        for( let i = 0 ; i < this.objetos.length ; i++ )
-        {
-            const objetoAtual               : VisualMesh           = this.objetos[i];
-            const informacoesProgramaObjeto : InformacoesPrograma  = objetoAtual.getInformacoesPrograma();
-
-            objetoAtual.atualizarIluminacao();
-        }
+        // TODO refatorar pra eu poder chamar a função de atualizar iluminação e envio pro shader denovo
     }
 
     /**
@@ -524,6 +516,148 @@ export class Renderer
     }
 
     /**
+    * Código base para aplicar iluminação geral em um objeto, usado em todos os objetos
+    * A iluminação geral é uma iluminação aplicada a todas as partes de um objeto
+    * 
+    * Pra isso implementar em C++ eu teria 3 opções:
+    *    (1) Declarar ele só no final(pois ele depende da Cena com todos os métodos dela)
+    *    
+    *    (2) Ou então, ele tambem poderia ser virtual, e eu implemento em cada objeto(vai ter que duplicar código)
+    * 
+    *    (3) Ou então, eu poderia criar uma outra classe VisualMesh que vai herdar o ObjectBase, no final das definições raizes, e ai como todos os objetos herdam o VisualMesh, iria seguir o fluxo normal(visto que nesse ponto Cena, ObjectBase e outras classes raiz vão estar totalmente definidas)
+    *        Mais pode ser um pouco mais complicado por causa de conversões de objetos que podem ser necessarias ser feitas
+    */
+    atualizarIluminacaoGeralObjeto( objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:any )
+    {
+        const luzesCena : Array<Ponteiro<Light>>   = this.getLuzes();
+
+        // Se o ponteiro não for nulo
+        if( objetoAtual != null )
+        {
+            /**
+            * Calcula o recebimento de todas as luzes que afeta esse objeto 
+            */
+            objetoAtual.brilhoLocalAcumulado          = 0;
+            objetoAtual.ambientLocalAcumulado         = 0;
+            objetoAtual.diffuseLocalAcumulado         = 0;
+            objetoAtual.specularLocalAcumulado        = 0;
+            objetoAtual.corLocalAcumulado             = [0,0,0];
+            objetoAtual.intensidadeLocalAcumulado     = 0;
+
+            // Se esse recurso está ativado
+            if( objetoAtual.useAccumulatedLights == true )
+            {
+                /** NOVA REGRA: 
+                *      Se ele usa acumulação estatica(que acumula apenas uma unica vez), então essa condição não vai permitir que o loop continue
+                *      EXCETO, se staticAccumulatedLights for false, que ai ele passa direto e não interrompe nada por que o recurso está desativado
+                */
+                if( 
+                    (objetoAtual.staticAccumulatedLights == false) ||                                 // Se não usa o recurso passa direto
+                    (objetoAtual.staticAccumulatedLights == true && objetoAtual._jaAcumulouLuzes == false)   // se usa, e ja acumulou, então não faz mais
+
+                ){
+                    /**
+                    * Calcula o recebimento de todas as luzes que afeta esse objeto 
+                    */
+                    objetoAtual.brilhoLocalAcumulado          = 0;
+                    objetoAtual.ambientLocalAcumulado         = 0;
+                    objetoAtual.diffuseLocalAcumulado         = 0;
+                    objetoAtual.specularLocalAcumulado        = 0;
+                    objetoAtual.corLocalAcumulado             = [0,0,0];
+                    objetoAtual.intensidadeLocalAcumulado     = 0;
+
+                    for( let i = 0 ; i < luzesCena.length ; i++ )
+                    {
+                        const luz                = luzesCena[i];
+
+                        // Se o ponteiro não for nulo
+                        if( luz != null )
+                        {
+                            const posicaoObjetoArray = [objetoAtual.position.x, objetoAtual.position.y, objetoAtual.position.z];
+
+                            const interferenciaLuz  = luz.calcularInterferencia( posicaoObjetoArray );
+
+                            /**
+                            * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto atual(do primeiro laço FOR)
+                            */
+                            const forcaLuz               =  interferenciaLuz[0];
+                            const influenciaBrilho       =  interferenciaLuz[1];
+                            const influenciaAmbient      =  interferenciaLuz[2];
+                            const influenciaDiffuse      =  interferenciaLuz[3];
+                            const influenciaSpecular     =  interferenciaLuz[4];
+                            const influenciaIntensidade  =  interferenciaLuz[5];
+
+                            // Cores
+                            const influenciaVermelho     =  interferenciaLuz[6];
+                            const influenciaVerde        =  interferenciaLuz[7];
+                            const influenciaAzul         =  interferenciaLuz[8];
+
+                            // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
+                            objetoAtual.brilhoLocalAcumulado         += influenciaBrilho;
+                            objetoAtual.ambientLocalAcumulado        += influenciaAmbient;
+                            objetoAtual.diffuseLocalAcumulado        += influenciaDiffuse;
+                            objetoAtual.specularLocalAcumulado       += influenciaSpecular;
+                            objetoAtual.intensidadeLocalAcumulado    += influenciaIntensidade;
+
+                            // As luzes mais proximas terão tambem mais influencia na cor
+                            objetoAtual.corLocalAcumulado[0]         += influenciaVermelho;
+                            objetoAtual.corLocalAcumulado[1]         += influenciaVerde;
+                            objetoAtual.corLocalAcumulado[2]         += influenciaAzul;
+                        }
+                    }
+                }
+            }
+
+            /**
+            * Obtem o ambiente atualizado como a soma dos valores do objeto com os globais da cena
+            */
+            iluminacaoGeral.ambient         = objetoAtual.ambientObjeto        + this.ambient         + objetoAtual.ambientLocalAcumulado;
+            iluminacaoGeral.diffuse         = objetoAtual.diffuseObjeto        + this.diffuse         + objetoAtual.diffuseLocalAcumulado;
+            iluminacaoGeral.specular        = objetoAtual.specularObjeto       + this.specular        + objetoAtual.specularLocalAcumulado;
+            iluminacaoGeral.brilho          = objetoAtual.brilhoObjeto         + this.brilho          + objetoAtual.brilhoLocalAcumulado;
+            iluminacaoGeral.intensidadeLuz  = objetoAtual.intensidadeLuzObjeto + this.intensidadeLuz  + objetoAtual.intensidadeLocalAcumulado;
+
+            // Pega a cor da luz
+            iluminacaoGeral.corLuz = [0,0,0];
+            iluminacaoGeral.corLuz[0] = objetoAtual.corLuzObjeto[0] + this.corAmbient[0] + objetoAtual.corLocalAcumulado[0];
+            iluminacaoGeral.corLuz[1] = objetoAtual.corLuzObjeto[1] + this.corAmbient[1] + objetoAtual.corLocalAcumulado[1];
+            iluminacaoGeral.corLuz[2] = objetoAtual.corLuzObjeto[2] + this.corAmbient[2] + objetoAtual.corLocalAcumulado[2];
+        }
+    }
+
+    /**
+    * Envia a iluminação geral do objeto já calculada para o shader 
+    * A iluminação geral é uma iluminação aplicada a todas as partes de um objeto
+    */
+    enviarIluminacaoGeralObjetoShader(gl:WebGL2RenderingContext, informacoesPrograma:any, iluminacaoGeral:any): void
+    {
+        /**
+        * Aplica os valores 
+        */
+        const brilhoShader          = informacoesPrograma.atributosObjeto.brilho;
+        const ambientShader         = informacoesPrograma.atributosObjeto.ambient;
+        const diffuseShader         = informacoesPrograma.atributosObjeto.diffuse;
+        const specularShader        = informacoesPrograma.atributosObjeto.specular;
+        const corLuzShader          = informacoesPrograma.atributosObjeto.corLuz;
+        const intensidadeLuzShader  = informacoesPrograma.atributosObjeto.intensidadeLuz;
+
+        // Atualiza as configurações gerais 
+        gl.uniform1f(brilhoShader,   iluminacaoGeral.brilho);
+        gl.uniform1f(ambientShader,  iluminacaoGeral.ambient);
+        gl.uniform1f(diffuseShader,  iluminacaoGeral.diffuse);
+        gl.uniform1f(specularShader, iluminacaoGeral.specular);
+
+        // Cores RGB
+        gl.uniform3fv(corLuzShader,  new Float32Array([
+                                                        iluminacaoGeral.corLuz[0], // Vermelho
+                                                        iluminacaoGeral.corLuz[1], // Verde
+                                                        iluminacaoGeral.corLuz[2]  // Azul
+                                                      ]) );
+
+        gl.uniform1f(intensidadeLuzShader, iluminacaoGeral.intensidadeLuz);
+    }
+
+    /**
     * Sempre o mesmo em cada objeto
     * Cria os buffers que vão ser usados na renderização
     * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
@@ -583,13 +717,11 @@ export class Renderer
         gl.uniform1f(intensidadeLuzShader, mapaIluminacaoTotalParte.intensidadeTotal ); // a intensidade da luz
 
         // Cores RGB
-        gl.uniform3fv(corLuzShader,        new Float32Array( 
-                                                             [ 
+        gl.uniform3fv(corLuzShader,        new Float32Array([ 
                                                                mapaIluminacaoTotalParte.corLuzTotal[0],  // Vermelho
                                                                mapaIluminacaoTotalParte.corLuzTotal[1],  // Verde
                                                                mapaIluminacaoTotalParte.corLuzTotal[2]   // Azul
-                                                             ] )
-                                           );
+                                                            ]) );
 
     }
 
@@ -720,7 +852,22 @@ export class Renderer
                 }
 
                 // Atualiza a iluminação geral do objeto
-                objetoAtual.aplicarIluminacao( gl, informacoesProgramaObjeto );
+                // Se o objeto sempre for atualizar luzes
+                if( objetoAtual.alwaysUpdateLights == true )
+                {
+                    // Calcula a iluminação e salva na iluminacaoGeral do objeto
+                    this.atualizarIluminacaoGeralObjeto( objetoAtual, objetoAtual.iluminacaoGeral );
+
+                    // Envia essa iluminaçao geral calculada para o shader
+                    this.enviarIluminacaoGeralObjetoShader( 
+                                                            gl, 
+                                                            informacoesProgramaObjeto, 
+                                                            objetoAtual.iluminacaoGeral
+                                                          );
+
+                    // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
+                    objetoAtual._jaAcumulouLuzes = true;
+                }
 
                 /**
                 * Desenha conforme o tipo do objeto em questão
@@ -890,7 +1037,22 @@ export class Renderer
                         // Se este objeto usa iluminação por partes, ele não aplica a global(EM TODO), pois as partes ja controlam isso
                         if( objetoAtual.childrenIndividualLights == false && objetoAtual.alwaysUpdateLights == true )
                         {
-                            objetoAtual.aplicarIluminacao( gl, informacoesProgramaObjeto );
+                            // Se o objeto sempre for atualizar luzes
+                            if( objetoAtual.alwaysUpdateLights == true )
+                            {
+                                // Calcula a iluminação e salva na iluminacaoGeral do objeto
+                                this.atualizarIluminacaoGeralObjeto( objetoAtual, objetoAtual.iluminacaoGeral );
+
+                                // Envia essa iluminaçao geral calculada para o shader
+                                this.enviarIluminacaoGeralObjetoShader( 
+                                                                        gl, 
+                                                                        informacoesProgramaObjeto, 
+                                                                        objetoAtual.iluminacaoGeral
+                                                                    );
+
+                                // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
+                                objetoAtual._jaAcumulouLuzes = true;
+                            }
                         }
 
                         gl.drawElements(gl.TRIANGLES, info.count, gl.UNSIGNED_SHORT, info.offset);

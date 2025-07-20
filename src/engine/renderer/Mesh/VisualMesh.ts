@@ -119,6 +119,9 @@ export class VisualMesh
     public nomesObjetos       : Array<string>;
     public objetosInfo        : Mapa<string, any>;
 
+    // Iluminaçao geral do objeto
+    public iluminacaoGeral : any;
+
     // Iluminação de cada parte, usado em instancias de objetos OBJMesh
     public iluminationInfo               : Mapa<string, any>;
     public iluminationAcumuladaInfo      : Mapa<string, any>;
@@ -231,6 +234,7 @@ export class VisualMesh
         this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;    // Se ativado, a acumulação das luzes ao redor das partes só vai ocorrer uma unica vez
         this._jaAcumulouLuzes         = false;                                       // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
 
+        this.iluminacaoGeral          = {};
         this.iluminationInfo          = new Mapa<string, any>();      // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
         this.iluminationAcumuladaInfo = new Mapa<string, any>();      // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
         this.iluminationTotal         = new Mapa<string, any>();      // A iluminação total de cada objeto individualmente(ou seja, que a soma da iluminação do propio objeto em si, com a iluminação global do meu mini renderizador, e com a iluminação local acumulada de todas as luzes proximas ao objeto, e com isso temos o que chamei de iluminação total da parte/objeto)
@@ -307,131 +311,6 @@ export class VisualMesh
     {
         this.staticAccumulatedLights = false;
     }
-
-    /**
-    * Código base para aplicar iluminação, usado em todos os objetos
-    * 
-    * Pra isso implementar em C++ eu teria 3 opções:
-    *    (1) Declarar ele só no final(pois ele depende da Cena com todos os métodos dela)
-    *    
-    *    (2) Ou então, ele tambem poderia ser virtual, e eu implemento em cada objeto(vai ter que duplicar código)
-    * 
-    *    (3) Ou então, eu poderia criar uma outra classe VisualMesh que vai herdar o ObjectBase, no final das definições raizes, e ai como todos os objetos herdam o VisualMesh, iria seguir o fluxo normal(visto que nesse ponto Cena, ObjectBase e outras classes raiz vão estar totalmente definidas)
-    *        Mais pode ser um pouco mais complicado por causa de conversões de objetos que podem ser necessarias ser feitas
-    */
-    atualizarIluminacao()
-    {
-        const renderer  : Renderer     = this.renderer;
-        const luzesCena : Array<any>   = renderer.getLuzes();
-
-        /**
-        * Calcula o recebimento de todas as luzes que afeta esse objeto 
-        */
-        this.brilhoLocalAcumulado          = 0;
-        this.ambientLocalAcumulado         = 0;
-        this.diffuseLocalAcumulado         = 0;
-        this.specularLocalAcumulado        = 0;
-        this.corLocalAcumulado             = [0,0,0];
-        this.intensidadeLocalAcumulado     = 0;
-
-        // Se esse recurso está ativado
-        if( this.useAccumulatedLights == true )
-        {
-            /** NOVA REGRA: 
-            *      Se ele usa acumulação estatica(que acumula apenas uma unica vez), então essa condição não vai permitir que o loop continue
-            *      EXCETO, se staticAccumulatedLights for false, que ai ele passa direto e não interrompe nada por que o recurso está desativado
-            */
-            if( 
-                (this.staticAccumulatedLights == false) ||                                 // Se não usa o recurso passa direto
-                (this.staticAccumulatedLights == true && this._jaAcumulouLuzes == false)   // se usa, e ja acumulou, então não faz mais
-
-            ){
-                /**
-                * Calcula o recebimento de todas as luzes que afeta esse objeto 
-                */
-                this.brilhoLocalAcumulado          = 0;
-                this.ambientLocalAcumulado         = 0;
-                this.diffuseLocalAcumulado         = 0;
-                this.specularLocalAcumulado        = 0;
-                this.corLocalAcumulado             = [0,0,0];
-                this.intensidadeLocalAcumulado     = 0;
-
-                for( let i = 0 ; i < luzesCena.length ; i++ )
-                {
-                    const luz                = luzesCena[i];
-                    const posicaoObjetoArray = [this.position.x, this.position.y, this.position.z];
-
-                    const interferenciaLuz  = luz.calcularInterferencia( posicaoObjetoArray );
-
-                    /**
-                    * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto atual(do primeiro laço FOR)
-                    */
-                    const forcaLuz               =  interferenciaLuz[0];
-                    const influenciaBrilho       =  interferenciaLuz[1];
-                    const influenciaAmbient      =  interferenciaLuz[2];
-                    const influenciaDiffuse      =  interferenciaLuz[3];
-                    const influenciaSpecular     =  interferenciaLuz[4];
-                    const influenciaIntensidade  =  interferenciaLuz[5];
-
-                    // Cores
-                    const influenciaVermelho     =  interferenciaLuz[6];
-                    const influenciaVerde        =  interferenciaLuz[7];
-                    const influenciaAzul         =  interferenciaLuz[8];
-
-                    // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
-                    this.brilhoLocalAcumulado         += influenciaBrilho;
-                    this.ambientLocalAcumulado        += influenciaAmbient;
-                    this.diffuseLocalAcumulado        += influenciaDiffuse;
-                    this.specularLocalAcumulado       += influenciaSpecular;
-                    this.intensidadeLocalAcumulado    += influenciaIntensidade;
-
-                    // As luzes mais proximas terão tambem mais influencia na cor
-                    this.corLocalAcumulado[0]         += influenciaVermelho;
-                    this.corLocalAcumulado[1]         += influenciaVerde;
-                    this.corLocalAcumulado[2]         += influenciaAzul;
-                }
-            }
-        }
-
-        /**
-        * Obtem o ambiente atualizado como a soma dos valores do objeto com os globais da cena
-        */
-        this.ambient         = this.ambientObjeto        + this.renderer.ambient         + this.ambientLocalAcumulado;
-        this.diffuse         = this.diffuseObjeto        + this.renderer.diffuse         + this.diffuseLocalAcumulado;
-        this.specular        = this.specularObjeto       + this.renderer.specular        + this.specularLocalAcumulado;
-        this.brilho          = this.brilhoObjeto         + this.renderer.brilho          + this.brilhoLocalAcumulado;
-        this.intensidadeLuz  = this.intensidadeLuzObjeto + this.renderer.intensidadeLuz  + this.intensidadeLocalAcumulado;
-
-        // Pega a cor da luz
-        this.corLuz    = [0, 0, 0];
-        this.corLuz[0] = this.corLuzObjeto[0] + this.renderer.corAmbient[0] + this.corLocalAcumulado[0];
-        this.corLuz[1] = this.corLuzObjeto[1] + this.renderer.corAmbient[1] + this.corLocalAcumulado[1];
-        this.corLuz[2] = this.corLuzObjeto[2] + this.renderer.corAmbient[2] + this.corLocalAcumulado[2];
-    }
-
-    /**
-    * Envia a iluminação já calculada para o shader 
-    */
-    enviarIluminacaoShader(gl:WebGL2RenderingContext, informacoesPrograma:any): void
-    {
-        /**
-        * Aplica os valores 
-        */
-        const brilhoShader          = informacoesPrograma.atributosObjeto.brilho;
-        const ambientShader         = informacoesPrograma.atributosObjeto.ambient;
-        const diffuseShader         = informacoesPrograma.atributosObjeto.diffuse;
-        const specularShader        = informacoesPrograma.atributosObjeto.specular;
-        const corLuzShader          = informacoesPrograma.atributosObjeto.corLuz;
-        const intensidadeLuzShader  = informacoesPrograma.atributosObjeto.intensidadeLuz;
-
-        // Atualiza as configurações gerais 
-        gl.uniform1f(brilhoShader,   this.brilho);
-        gl.uniform1f(ambientShader,  this.ambient);
-        gl.uniform1f(diffuseShader,  this.diffuse);
-        gl.uniform1f(specularShader, this.specular);
-        gl.uniform3fv(corLuzShader,  new Float32Array(this.corLuz) );
-        gl.uniform1f(intensidadeLuzShader, this.intensidadeLuz);
-    }
     
     /**
     * Define a iluminação do objeto como um todo 
@@ -449,25 +328,6 @@ export class VisualMesh
         this.corLuz[0] = (iluminationDefinition.corLuzObjeto[0] || 0) + this.renderer.corAmbient[0];
         this.corLuz[1] = (iluminationDefinition.corLuzObjeto[1] || 0) + this.renderer.corAmbient[1];
         this.corLuz[2] = (iluminationDefinition.corLuzObjeto[2] || 0) + this.renderer.corAmbient[2];
-    }
-
-    /**
-    * Código base para aplicar iluminação, usado em todos os objetos
-    */
-    aplicarIluminacao( gl:WebGL2RenderingContext, informacoesPrograma:any )
-    {
-        // Se o objeto sempre for atualizar luzes
-        if( this.alwaysUpdateLights == true )
-        {
-            // Calcula a iluminação
-            this.atualizarIluminacao();
-
-            // Envia a iluminaçao calculada para o shader
-            this.enviarIluminacaoShader(gl, informacoesPrograma);
-
-            // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
-            this._jaAcumulouLuzes = true;
-        }
     }
 
     getRotation()

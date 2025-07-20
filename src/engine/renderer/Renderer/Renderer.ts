@@ -861,9 +861,7 @@ export class Renderer
                         // Aplica a textura UV(uma imagem para todas as faces do cubo)
                         gl.activeTexture(gl.TEXTURE0);
                         gl.bindTexture(gl.TEXTURE_2D, objetoAtual.texturaUV ); // o texturaUV precisa estar carregado!
-                        
-                        //TODO: gl.uniform1i(gl.getUniformLocation(programUsado!, "u_textura"), 0);
-
+                    
                         gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.usarTextura, 0 ); //0 por que é false
                     }
 
@@ -929,7 +927,7 @@ export class Renderer
                         // Inverte verticalmente a imagem ao carregar
                         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
                         
-                        gl.uniform1i(gl.getUniformLocation(programUsado!, "u_textura"), 0);
+                        gl.uniform1i(gl.getUniformLocation(programUsado, "u_textura"), 0);
 
                         // Desenha só os índices daquela face (passa o offset correto)
                         // O offset do drawElements é em bytes. Cada índice é um UNSIGNED_SHORT (2 bytes).

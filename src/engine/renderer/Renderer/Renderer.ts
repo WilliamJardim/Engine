@@ -658,6 +658,36 @@ export class Renderer
     }
 
     /**
+    * Aplica a iluminação geral em um objeto 
+    */
+    aplicarIluminacaoGeralObjeto(gl:WebGL2RenderingContext, informacoesPrograma:any, objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:any): void
+    {
+        // Se o ponteiro não for null
+        if( objetoAtual != null )
+        {
+            // Se o objeto sempre for atualizar luzes
+            if( objetoAtual.alwaysUpdateLights == true )
+            {
+                // Calcula a iluminação e salva na iluminacaoGeral do objeto
+                this.atualizarIluminacaoGeralObjeto( 
+                                                     objetoAtual, 
+                                                     iluminacaoGeral    // o mesmo que objetoAtual.iluminacaoGeral 
+                                                   );
+
+                // Envia essa iluminaçao geral calculada para o shader
+                this.enviarIluminacaoGeralObjetoShader( 
+                                                        gl, 
+                                                        informacoesPrograma, 
+                                                        iluminacaoGeral        // o mesmo que objetoAtual.iluminacaoGeral
+                                                        );
+
+                // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
+                objetoAtual._jaAcumulouLuzes = true;
+            }
+        }
+    }
+
+    /**
     * Sempre o mesmo em cada objeto
     * Cria os buffers que vão ser usados na renderização
     * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
@@ -724,6 +754,7 @@ export class Renderer
                                                             ]) );
 
     }
+    
 
     /**
     * Desenha um objeto(seja ele qual for)
@@ -852,22 +883,12 @@ export class Renderer
                 }
 
                 // Atualiza a iluminação geral do objeto
-                // Se o objeto sempre for atualizar luzes
-                if( objetoAtual.alwaysUpdateLights == true )
-                {
-                    // Calcula a iluminação e salva na iluminacaoGeral do objeto
-                    this.atualizarIluminacaoGeralObjeto( objetoAtual, objetoAtual.iluminacaoGeral );
-
-                    // Envia essa iluminaçao geral calculada para o shader
-                    this.enviarIluminacaoGeralObjetoShader( 
-                                                            gl, 
-                                                            informacoesProgramaObjeto, 
-                                                            objetoAtual.iluminacaoGeral
-                                                          );
-
-                    // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
-                    objetoAtual._jaAcumulouLuzes = true;
-                }
+                this.aplicarIluminacaoGeralObjeto(
+                                                    gl,
+                                                    informacoesProgramaObjeto,
+                                                    objetoAtual,
+                                                    objetoAtual.iluminacaoGeral
+                                                 );
 
                 /**
                 * Desenha conforme o tipo do objeto em questão
@@ -1037,22 +1058,13 @@ export class Renderer
                         // Se este objeto usa iluminação por partes, ele não aplica a global(EM TODO), pois as partes ja controlam isso
                         if( objetoAtual.childrenIndividualLights == false && objetoAtual.alwaysUpdateLights == true )
                         {
-                            // Se o objeto sempre for atualizar luzes
-                            if( objetoAtual.alwaysUpdateLights == true )
-                            {
-                                // Calcula a iluminação e salva na iluminacaoGeral do objeto
-                                this.atualizarIluminacaoGeralObjeto( objetoAtual, objetoAtual.iluminacaoGeral );
-
-                                // Envia essa iluminaçao geral calculada para o shader
-                                this.enviarIluminacaoGeralObjetoShader( 
-                                                                        gl, 
-                                                                        informacoesProgramaObjeto, 
-                                                                        objetoAtual.iluminacaoGeral
-                                                                    );
-
-                                // Marca que as luzes de todas as partes ja foram atualizadas pela primeira vez
-                                objetoAtual._jaAcumulouLuzes = true;
-                            }
+                            // Atualiza a iluminação geral do objeto
+                            this.aplicarIluminacaoGeralObjeto(
+                                                                gl,
+                                                                informacoesProgramaObjeto,
+                                                                objetoAtual,
+                                                                objetoAtual.iluminacaoGeral
+                                                            );
                         }
 
                         gl.drawElements(gl.TRIANGLES, info.count, gl.UNSIGNED_SHORT, info.offset);

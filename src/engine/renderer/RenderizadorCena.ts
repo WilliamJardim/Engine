@@ -406,8 +406,8 @@ export default class RenderizadorCena
                         position: objProps.position,
                         scale: objProps.scale,
                         rotation: objProps.rotation,
-                        invisivel: false,
-                        transparencia: 1, // 100 opaco
+                        invisivel: objProps.isInvisible,
+                        transparencia: objProps.opacity, // 100 opaco
 
                         // Iluminação
                         alwaysUpdateLights: true,

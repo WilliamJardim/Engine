@@ -860,7 +860,8 @@ export class Renderer
                         gl.enableVertexAttribArray(informacoesProgramaObjeto.atributosObjeto.uv);
                     }
 
-                // Se não usa textura
+                // Se não usa textura(ou seja, se for um material sem textura)
+                // porém isso não vai servir para outros tipos de objetos que tenham textura e não sejam OBJ
                 }else{
                     // Diz que não usa textura
                     gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.usarTextura, 0); // 0 pois é false
@@ -876,10 +877,15 @@ export class Renderer
                 gl.uniformMatrix4fv(informacoesProgramaObjeto.atributosVisualizacaoObjeto.matrixVisualizacao, false, matrixVisualizacaoRenderizador);
                 gl.uniformMatrix4fv(informacoesProgramaObjeto.atributosVisualizacaoObjeto.modeloObjetoVisual, false, objetoAtual.modeloObjetoVisual);
 
-                // Se não for um objeto, aplica transparencia
+                // Se não for um objeto
                 if( objetoAtual.tipo != "OBJ")
                 {
-                    
+                    // Se tiver transparencia, aplica
+                    if( isTransparente == true )
+                    {
+                        // Opacidade
+                        gl.uniform1f(informacoesProgramaObjeto.uniformsCustomizados.opacidade, transparenciaObjeto );
+                    }
                 }
 
                 // Atualiza a iluminação geral do objeto

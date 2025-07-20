@@ -7,12 +7,17 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { float, Ponteiro } from "../../types/types-cpp-like";
+import { Ponteiro } from "../../types/types-cpp-like";
 
-export default interface Material
+export interface VerticesFace
 {
-    nome     : string;
-    Kd       : Array<float>;  // 3 elementos 
-    map_Kd   : Ponteiro<WebGLTexture>;
-    opacity  : number;
+    indiceVertice : number;  // Indice do vértice
+    indiceTextura : number;  // Indice da textura
+    indiceNormal  : number;  // Indice da normal
+} 
+
+export default interface FaceObjeto
+{
+    dadosFace    : Array<VerticesFace>,
+    nomeMaterial : string
 }

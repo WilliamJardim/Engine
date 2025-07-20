@@ -88,7 +88,7 @@ export class Renderer
     public miraCamera         : Array<float>;
 
     public objetos  : Array<VisualMesh>;
-    public luzes    : Array<Light>;
+    public luzes    : Array<Ponteiro<Light>>;
 
     public programs : Mapa<string, WebGLProgram>;
     
@@ -282,10 +282,22 @@ export class Renderer
         return this.programs.textureProgram;
     }
 
-    // Força atualizar a iluminação de todos os objetos
-    atualizarIluminacaoObjetos(): void
+    // Força atualizar a iluminação geral de todos os objetos
+    atualizarIluminacaoGeralObjetos(): void
     {
-        // TODO refatorar pra eu poder chamar a função de atualizar iluminação e envio pro shader denovo
+        const gl : WebGL2RenderingContext = this.gl;
+
+        for( let i = 0 ; i < this.objetos.length ; i++ )
+        {
+            const objetoAtual               : VisualMesh           = this.objetos[i];
+            const informacoesProgramaObjeto : InformacoesPrograma  = objetoAtual.getInformacoesPrograma();
+
+            this.aplicarIluminacaoGeralObjeto( gl, 
+                                               objetoAtual.getInformacoesPrograma(), 
+                                               objetoAtual, 
+                                               objetoAtual.iluminacaoGeral 
+                                             );
+        }
     }
 
     /**
@@ -374,7 +386,7 @@ export class Renderer
         return this.objetos;
     }
 
-    getLuzes()   : Array<Light>
+    getLuzes()   : Array<Ponteiro<Light>>
     {
         return this.luzes;
     }
@@ -908,7 +920,7 @@ export class Renderer
                     /**
                     * Desenha cada face com sua respectiva textura
                     */
-                    for( let i=0; i < 6; i++ )
+                    for( let i = 0; i < 6; i++ )
                     {
                         // Vincula a textura da face i
                         gl.activeTexture(gl.TEXTURE0);
@@ -931,9 +943,9 @@ export class Renderer
                     */
                     for ( let i = 0 ; i < objetoAtual.nomesObjetos.length ; i++ ) 
                     {
-                        const nomeObjeto  = objetoAtual.nomesObjetos[i];
-                        const info        = objetoAtual.objetosInfo[ nomeObjeto ];
-                        const material    = objetoAtual.materiais[objetoAtual.objetos[ nomeObjeto ][0].material];
+                        const nomeParte   = objetoAtual.nomesObjetos[i];
+                        const info        = objetoAtual.objetosInfo[ nomeParte ];
+                        const material    = objetoAtual.materiais[ objetoAtual.objetos[ nomeParte ][0].nomeMaterial ];
                         const usarTextura = material != null && material.map_Kd != null;
                         const opacidade   = material.opacity || 1.0;
 
@@ -944,9 +956,9 @@ export class Renderer
                         */
                         if( objetoAtual.childrenIndividualLights == true && objetoAtual.alwaysUpdateLights == true )
                         {
-                            const iluminacaoParte           : IluminacaoGeralParte      = objetoAtual.iluminationInfo[ nomeObjeto ];
-                            const iluminacaoAcumuladaParte  : IluminacaoAcumuladaParte  = objetoAtual.iluminationAcumuladaInfo[ nomeObjeto ];
-                            const iluminacaoTotalParte      : IluminacaoTotalParte      = objetoAtual.iluminationTotal[ nomeObjeto ];
+                            const iluminacaoParte           : IluminacaoGeralParte      = objetoAtual.iluminationInfo[ nomeParte ];
+                            const iluminacaoAcumuladaParte  : IluminacaoAcumuladaParte  = objetoAtual.iluminationAcumuladaInfo[ nomeParte ];
+                            const iluminacaoTotalParte      : IluminacaoTotalParte      = objetoAtual.iluminationTotal[ nomeParte ];
 
                             /**
                             * Calcula a iluminação dessa parte atual ( se esse OBJ usa acumulação de luzes )
@@ -963,7 +975,7 @@ export class Renderer
                                     (objetoAtual.staticAccumulatedLights == true && objetoAtual._jaAcumulouLuzes == false)   // se usa, e ja acumulou, então não faz mais
 
                                 ){
-                                    const posicaoCentroParte        = objetoAtual.calcularCentroideGlobalParte( nomeObjeto );
+                                    const posicaoCentroParte        = objetoAtual.calcularCentroideGlobalParte( nomeParte );
 
                                     iluminacaoAcumuladaParte.brilhoLocalAcumulado          = 0;
                                     iluminacaoAcumuladaParte.ambientLocalAcumulado         = 0;

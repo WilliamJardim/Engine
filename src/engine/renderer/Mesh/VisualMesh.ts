@@ -22,6 +22,7 @@ import IluminacaoGeralParte from "../../interfaces/render_engine/IluminacaoGeral
 import { Matrix } from "../../types/matrix";
 import OffsetCount from "../../interfaces/render_engine/OffSetCount";
 import Material from "../../interfaces/render_engine/Material";
+import FaceObjeto from "../../interfaces/render_engine/FaceObjeto";
 
 /**
 * PORTABILIDADE PRA C++:
@@ -121,8 +122,8 @@ export class VisualMesh
     // Usado em instancias de objetos OBJMesh
     public materiais          : Mapa<string, Material>;
     public materialAtivo      : string;
-    public objetos            : Mapa<string, any>;
-    public objetoAtivo        : any;
+    public objetos            : Mapa<string, Array<FaceObjeto> >;
+    public objetoAtivo        : string;
     public nomesObjetos       : Array<string>;
     public objetosInfo        : Mapa<string, OffsetCount>;
 
@@ -227,12 +228,12 @@ export class VisualMesh
         this.texturasFaces      = new Array<WebGLTexture>(); // Se ele usa texturas de faces
 
         // Usado em instancias de OBJMesh
-        this.materiais         = new Mapa<string, any>();
+        this.materiais         = new Mapa<string, Material>();
         this.materialAtivo     = "NENHUM_MATERIAL";
 
-        this.objetos                       = new Mapa<string, any>();
+        this.objetos                       = new Mapa<string, Array<FaceObjeto> >();
         this.nomesObjetos                  = new Array(); 
-        this.objetoAtivo                   = null;
+        this.objetoAtivo                   = "NENHUM_OBJETO";
         this.objetosInfo                   = new Mapa<string, OffsetCount>(); // objeto para guardar offset/count por objeto
 
         // Usado na iluminação de instancias de OBJMesh

@@ -25,6 +25,10 @@ import { float, Ponteiro } from "../../types/types-cpp-like.js";
 import Mapa from "../../utils/dicionarios/Mapa.js";
 import OBJMeshConfig from "../../interfaces/render_engine/OBJMeshConfig.js";
 import InformacoesPrograma from "../../interfaces/render_engine/InformacoesPrograma.js";
+import IluminacaoTotalParte from "../../interfaces/render_engine/IluminacaoTotalParte.js";
+import IluminacaoGeralOBJMesh from "../../interfaces/render_engine/IluminacaoGeralParte.js";
+import { Matrix } from "../../types/matrix.js";
+import OffsetCount from "../../interfaces/render_engine/OffSetCount.js";
 
 /**
 * PORTABILIDADE PRA C++:
@@ -80,9 +84,9 @@ export class OBJMesh extends VisualMesh
         //public corLuzParte       : Array<float>;
         //public intensidadeParte  : number;
 
-    public verticesObjetos               : Mapa<string, any>;   // Vertices por partes
-    public verticesObjetosOnlyNomeParte  : Mapa<string, any>;   // Vertices por partes (somente o nome da parte sem usar material na chave)
-    public verticesComecaObjetos         : Mapa<string, any>;   // Length que começa os vertices de cada objeto no vetor geral vertices(o vetor declarado no VisualMesh)
+    public verticesObjetos               : Mapa<string, Matrix<float> >;   // Vertices por partes
+    public verticesObjetosOnlyNomeParte  : Mapa<string, Matrix<float> >;   // Vertices por partes (somente o nome da parte sem usar material na chave)
+    public verticesComecaObjetos         : Mapa<string, Matrix<float> >;   // Length que começa os vertices de cada objeto no vetor geral vertices(o vetor declarado no VisualMesh)
 
     constructor(renderer:Renderer, propriedadesMesh:OBJMeshConfig) 
     {
@@ -134,9 +138,9 @@ export class OBJMesh extends VisualMesh
             //this.iluminationInfo          = new Mapa<string, any>();  // A iluminação de cada objeto individualmente(usada quanto childrenIndividualLights for true)
             //this.iluminationAcumuladaInfo = new Mapa<string, any>();  // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
 
-        this.verticesObjetos               = new Mapa<string, any>();   // Vertices por partes
-        this.verticesObjetosOnlyNomeParte  = new Mapa<string, any>();   // Vertices por partes (somente o nome da parte sem usar material na chave)
-        this.verticesComecaObjetos         = new Mapa<string, any>();   // Length que começa os vertices de cada objeto no vetor geral vertices(o vetor declarado no VisualMesh)
+        this.verticesObjetos               = new Mapa<string, Matrix<float> >();   // Vertices por partes
+        this.verticesObjetosOnlyNomeParte  = new Mapa<string, Matrix<float> >();   // Vertices por partes (somente o nome da parte sem usar material na chave)
+        this.verticesComecaObjetos         = new Mapa<string, Matrix<float> >();   // Length que começa os vertices de cada objeto no vetor geral vertices(o vetor declarado no VisualMesh)
 
         // Variaveis de renderização
         this.modeloObjetoVisual = CriarMatrix4x4();
@@ -390,7 +394,7 @@ export class OBJMesh extends VisualMesh
         // Obtem os nomes dos objetos
         this.nomesObjetos = objectKeys;
 
-        let keyToIndex  = new Mapa<string, any>();
+        let keyToIndex  = new Mapa<string, number>();
         let indiceAtual = 0;
 
         for (let i = 0; i < objectKeys.length; i++) 
@@ -458,14 +462,14 @@ export class OBJMesh extends VisualMesh
         * Mapeia os indices para cada objeto a ser desenhado,
         * Organiza os buffers de posições, cores, UVs e indices.
         */
-        keyToIndex = new Mapa<string, any>();
+        keyToIndex = new Mapa<string, number>();
         indiceAtual = 0;
 
         this.indices = []; // reseta para montar os índices gerais
 
-        this.objetosInfo       = new Mapa<string, any>();   // objeto para guardar offset/count por objeto
-        this.iluminationInfo   = new Mapa<string, any>();   // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
-        this.iluminationTotal  = new Mapa<string, any>();   // A iluminação total de cada objeto individualmente(ou seja, que a soma da iluminação do propio objeto em si, com a iluminação global do meu mini renderizador, e com a iluminação local acumulada de todas as luzes proximas ao objeto, e com isso temos o que chamei de iluminação total da parte/objeto)
+        this.objetosInfo       = new Mapa<string, OffsetCount>();              // objeto para guardar offset/count por objeto
+        this.iluminationInfo   = new Mapa<string, IluminacaoGeralOBJMesh>();   // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
+        this.iluminationTotal  = new Mapa<string, IluminacaoTotalParte>();     // A iluminação total de cada objeto individualmente(ou seja, que a soma da iluminação do propio objeto em si, com a iluminação global do meu mini renderizador, e com a iluminação local acumulada de todas as luzes proximas ao objeto, e com isso temos o que chamei de iluminação total da parte/objeto)
 
         let globalIndexCount = 0; // para contar índice total gerado
 
@@ -795,7 +799,7 @@ export class OBJMesh extends VisualMesh
     calcularCentroideParte( nomeParte:string ): number[]
     {
         let qtdeVerticesParte       = 0;
-        let verticesParte           = new Array<Array<any>>;
+        let verticesParte           = new Array<Array<float>>;  // Matrix<float>
 
         // Se for apenas um vertice
         if( this.nomesObjetos.length == 1 )

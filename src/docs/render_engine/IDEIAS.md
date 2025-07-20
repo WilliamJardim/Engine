@@ -270,3 +270,6 @@ Em vez disso, colocar no loop for do próprio atualizar desenho do objeto
 
 # 19/07/2025 19:50, sabado (FEITO)
 Centralizar tambem o método "atualizarIluminacao" e "enviarIluminacaoShader" do meu VisualMesh.ts
+
+# 20/07/2025 11:13 AM, domingo
+Tipar o atributo "materials" e atributos "objetos" do VisualMesh

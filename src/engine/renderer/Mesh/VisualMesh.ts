@@ -15,6 +15,12 @@ import VisualMeshConfig from "../../interfaces/render_engine/VisualMeshConfig";
 import { Renderer } from "../Renderer/Renderer";
 import Mapa from "../../utils/dicionarios/Mapa";
 import { createBuffer } from "../../utils/render_engine/funcoesBase";
+import IluminacaoGeral from "../../interfaces/render_engine/IluminacaoGeral";
+import IluminacaoTotalParte from "../../interfaces/render_engine/IluminacaoTotalParte";
+import IluminacaoAcumuladaParte from "../../interfaces/render_engine/IluminacaoAcumuladaParte";
+import IluminacaoGeralParte from "../../interfaces/render_engine/IluminacaoGeralParte";
+import { Matrix } from "../../types/matrix";
+import OffsetCount from "../../interfaces/render_engine/OffSetCount";
 
 /**
 * PORTABILIDADE PRA C++:
@@ -93,12 +99,12 @@ export class VisualMesh
     public bufferIndices      : Ponteiro<WebGLBuffer>;
     public modeloObjetoVisual : Ponteiro<Float32Array>;
 
-    public vertices           : Array<Array<float>>;
-    public uvs                : Array<Array<float>>;
+    public vertices           : Matrix<float>;
+    public uvs                : Matrix<float>;
     public uvArray            : Array<float>;
 
     // Normais, Posições, indices, cores e se criou todos os buffers
-    public normals            : Array<Array<float>>;
+    public normals            : Matrix<float>;
     public positions          : Array<float>;
     public indices            : Array<float>;
     public cores              : Array<float>;
@@ -117,15 +123,15 @@ export class VisualMesh
     public objetos            : Mapa<string, any>;
     public objetoAtivo        : any;
     public nomesObjetos       : Array<string>;
-    public objetosInfo        : Mapa<string, any>;
+    public objetosInfo        : Mapa<string, OffsetCount>;
 
     // Iluminaçao geral do objeto
-    public iluminacaoGeral : any;
+    public iluminacaoGeral : IluminacaoGeral;
 
     // Iluminação de cada parte, usado em instancias de objetos OBJMesh
-    public iluminationInfo               : Mapa<string, any>;
-    public iluminationAcumuladaInfo      : Mapa<string, any>;
-    public iluminationTotal              : Mapa<string, any>;
+    public iluminationInfo               : Mapa<string, IluminacaoGeralParte>;
+    public iluminationAcumuladaInfo      : Mapa<string, IluminacaoAcumuladaParte>;
+    public iluminationTotal              : Mapa<string, IluminacaoTotalParte>;
     public brilhoParte       : number;
     public ambientParte      : number;
     public diffuseParte      : number;
@@ -226,7 +232,7 @@ export class VisualMesh
         this.objetos                       = new Mapa<string, any>();
         this.nomesObjetos                  = new Array(); 
         this.objetoAtivo                   = null;
-        this.objetosInfo                   = new Mapa<string, any>(); // objeto para guardar offset/count por objeto
+        this.objetosInfo                   = new Mapa<string, OffsetCount>(); // objeto para guardar offset/count por objeto
 
         // Usado na iluminação de instancias de OBJMesh
         this.childrenIndividualLights = propriedadesMesh.childrenIndividualLights;   // Se cada parte vai usar iluminação
@@ -234,10 +240,19 @@ export class VisualMesh
         this.staticAccumulatedLights  = propriedadesMesh.staticAccumulatedLights;    // Se ativado, a acumulação das luzes ao redor das partes só vai ocorrer uma unica vez
         this._jaAcumulouLuzes         = false;                                       // Caso "staticAccumulatedLights" seja true, essa variavel de controle "_jaAcumulouLuzes" vai ser usada para interromper o loop de atualização das luzes
 
-        this.iluminacaoGeral          = {};
-        this.iluminationInfo          = new Mapa<string, any>();      // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
-        this.iluminationAcumuladaInfo = new Mapa<string, any>();      // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
-        this.iluminationTotal         = new Mapa<string, any>();      // A iluminação total de cada objeto individualmente(ou seja, que a soma da iluminação do propio objeto em si, com a iluminação global do meu mini renderizador, e com a iluminação local acumulada de todas as luzes proximas ao objeto, e com isso temos o que chamei de iluminação total da parte/objeto)
+        // Iluminação geral de um objeto
+        this.iluminacaoGeral          = {
+            ambient         : 0,
+            diffuse         : 0,
+            specular        : 0,
+            brilho          : 0,
+            intensidadeLuz  : 0,
+            corLuz          : [0,0,0]
+        };
+
+        this.iluminationInfo          = new Mapa<string, IluminacaoGeralParte>();        // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
+        this.iluminationAcumuladaInfo = new Mapa<string, IluminacaoAcumuladaParte>();    // A iluminação acumulada de cada objeto individualmente(usada quanto childrenIndividualLights for true)
+        this.iluminationTotal         = new Mapa<string, IluminacaoTotalParte>();        // A iluminação total de cada objeto individualmente(ou seja, que a soma da iluminação do propio objeto em si, com a iluminação global do meu mini renderizador, e com a iluminação local acumulada de todas as luzes proximas ao objeto, e com isso temos o que chamei de iluminação total da parte/objeto)
 
         // Mais variaveis para a acumulação de luzes
         this.brilhoParte       = 0;

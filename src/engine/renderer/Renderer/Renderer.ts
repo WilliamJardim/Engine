@@ -52,6 +52,10 @@ import { float, Ponteiro } from '../../types/types-cpp-like.js';
 import Mapa from '../../utils/dicionarios/Mapa.js';
 import { VisualMesh } from '../Mesh/VisualMesh.ts';
 import InformacoesPrograma from '../../interfaces/render_engine/InformacoesPrograma.ts';
+import IluminacaoGeral from '../../interfaces/render_engine/IluminacaoGeral.ts';
+import IluminacaoTotalParte from '../../interfaces/render_engine/IluminacaoTotalParte.ts';
+import IluminacaoAcumuladaParte from '../../interfaces/render_engine/IluminacaoAcumuladaParte.ts';
+import IluminacaoGeralParte from '../../interfaces/render_engine/IluminacaoGeralParte.ts';
 
 export class Renderer
 {
@@ -527,7 +531,7 @@ export class Renderer
     *    (3) Ou então, eu poderia criar uma outra classe VisualMesh que vai herdar o ObjectBase, no final das definições raizes, e ai como todos os objetos herdam o VisualMesh, iria seguir o fluxo normal(visto que nesse ponto Cena, ObjectBase e outras classes raiz vão estar totalmente definidas)
     *        Mais pode ser um pouco mais complicado por causa de conversões de objetos que podem ser necessarias ser feitas
     */
-    atualizarIluminacaoGeralObjeto( objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:any )
+    atualizarIluminacaoGeralObjeto( objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:IluminacaoGeral )
     {
         const luzesCena : Array<Ponteiro<Light>>   = this.getLuzes();
 
@@ -629,7 +633,7 @@ export class Renderer
     * Envia a iluminação geral do objeto já calculada para o shader 
     * A iluminação geral é uma iluminação aplicada a todas as partes de um objeto
     */
-    enviarIluminacaoGeralObjetoShader(gl:WebGL2RenderingContext, informacoesPrograma:any, iluminacaoGeral:any): void
+    enviarIluminacaoGeralObjetoShader(gl:WebGL2RenderingContext, informacoesPrograma:any, iluminacaoGeral:IluminacaoGeral): void
     {
         /**
         * Aplica os valores 
@@ -660,7 +664,7 @@ export class Renderer
     /**
     * Aplica a iluminação geral em um objeto 
     */
-    aplicarIluminacaoGeralObjeto(gl:WebGL2RenderingContext, informacoesPrograma:any, objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:any): void
+    aplicarIluminacaoGeralObjeto(gl:WebGL2RenderingContext, informacoesPrograma:any, objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:IluminacaoGeral): void
     {
         // Se o ponteiro não for null
         if( objetoAtual != null )
@@ -727,7 +731,7 @@ export class Renderer
     * Para isso, precisa do arrayIluminacaoParte, que é na verdade o array retornado pela função acima
     * O pipeline do meu mini renderizador no arquivo Renderer/Renderer.ts na linha 803 deixará isso bem claro.
     */
-    enviarIluminacaoParteShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, mapaIluminacaoTotalParte:Mapa<string, any> ): void
+    enviarIluminacaoParteShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, mapaIluminacaoTotalParte:IluminacaoTotalParte ): void
     {
         /**
         * Aplica os valores 
@@ -940,9 +944,9 @@ export class Renderer
                         */
                         if( objetoAtual.childrenIndividualLights == true && objetoAtual.alwaysUpdateLights == true )
                         {
-                            const iluminacaoParte           = objetoAtual.iluminationInfo[ nomeObjeto ];
-                            const iluminacaoAcumuladaParte  = objetoAtual.iluminationAcumuladaInfo[ nomeObjeto ];
-                            const iluminacaoTotalParte      = objetoAtual.iluminationTotal[ nomeObjeto ];
+                            const iluminacaoParte           : IluminacaoGeralParte      = objetoAtual.iluminationInfo[ nomeObjeto ];
+                            const iluminacaoAcumuladaParte  : IluminacaoAcumuladaParte  = objetoAtual.iluminationAcumuladaInfo[ nomeObjeto ];
+                            const iluminacaoTotalParte      : IluminacaoTotalParte      = objetoAtual.iluminationTotal[ nomeObjeto ];
 
                             /**
                             * Calcula a iluminação dessa parte atual ( se esse OBJ usa acumulação de luzes )

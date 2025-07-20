@@ -105,38 +105,6 @@ export class Triangulo3DMesh extends VisualMesh
         return cores;
     }
 
-    getInformacoesPrograma() : InformacoesPrograma
-    {
-        const renderer            = this.getRenderer();
-        const gl                  = renderer.gl;
-        const programUsado        = this.getProgram();
-
-        return {
-            atributosObjeto: {
-                posicao  : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
-                cor      : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),
-                uv       : 0, // NAO USA MAIS PODE SER ZERO PRA NAO DAR ERRO DE TIPO
-
-                // Iluminação
-                brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
-                ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),
-                diffuse    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelDiffuse),
-                specular   : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelSpecular),
-                corLuz     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelCorLuz),
-                intensidadeLuz : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
-            },
-            atributosVisualizacaoObjeto: {
-                matrixVisualizacao: gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
-                modeloObjetoVisual: gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelModeloObjeto)
-            },
-            uniformsCustomizados: {
-                usarTextura: gl.getUniformLocation(programUsado!, "uUsarTextura"),
-                opacidade  : gl.getUniformLocation(programUsado!, "uOpacidade"),
-                sampler    : gl.getUniformLocation(programUsado!, "uSampler")
-            }
-        };
-    }
-
     atualizarDesenho() 
     {
         // Atributos visuais 

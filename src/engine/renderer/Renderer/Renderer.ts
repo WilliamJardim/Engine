@@ -26,7 +26,8 @@ import {CriarMatrix4x4,
         DefinirX, 
         DefinirY, 
         DefinirZ,
-        FrameCounter} from '../../utils/render_engine/math.js';
+        FrameCounter,
+        booleanToNumber} from '../../utils/render_engine/math.js';
         
 /**
 * Importando shaders 
@@ -56,6 +57,7 @@ import IluminacaoGeral from '../../interfaces/render_engine/IluminacaoGeral.ts';
 import IluminacaoTotalParte from '../../interfaces/render_engine/IluminacaoTotalParte.ts';
 import IluminacaoAcumuladaParte from '../../interfaces/render_engine/IluminacaoAcumuladaParte.ts';
 import IluminacaoGeralParte from '../../interfaces/render_engine/IluminacaoGeralParte.ts';
+import { getMaxListeners } from 'events';
 
 export class Renderer
 {
@@ -290,10 +292,10 @@ export class Renderer
         for( let i = 0 ; i < this.objetos.length ; i++ )
         {
             const objetoAtual               : VisualMesh           = this.objetos[i];
-            const informacoesProgramaObjeto : InformacoesPrograma  = objetoAtual.getInformacoesPrograma();
+            const informacoesProgramaObjeto : InformacoesPrograma  = this.getInformacoesProgramaObjeto( gl, objetoAtual );
 
             this.aplicarIluminacaoGeralObjeto( gl, 
-                                               objetoAtual.getInformacoesPrograma(), 
+                                               informacoesProgramaObjeto, 
                                                objetoAtual, 
                                                objetoAtual.iluminacaoGeral 
                                              );
@@ -344,8 +346,8 @@ export class Renderer
     {
         const gl            = this.gl;
         const programSkybox = this.getSkyboxProgram();
-        const a_sky_pos     = gl.getAttribLocation(programSkybox, 'a_position');
-        const u_sky_texture = gl.getUniformLocation(programSkybox, 'u_texture');
+        const a_sky_pos     = gl.getAttribLocation(programSkybox,  'aPosicao');
+        const u_sky_texture = gl.getUniformLocation(programSkybox, 'uTextura');
 
         if (this.getSkyboxProgram() != null && this.skyTexture != null)
         {
@@ -532,6 +534,81 @@ export class Renderer
     }
 
     /**
+    * Obtem as informações do programa de um objeto, que vão ser usadas na renderização desse tal objeto
+    */
+    getInformacoesProgramaObjeto( gl:WebGL2RenderingContext, objetoAtual:Ponteiro<VisualMesh> ) : InformacoesPrograma
+    {
+        // Se o ponteiro não for null
+        if( objetoAtual != null )
+        {
+            const programUsado : Ponteiro<WebGLProgram>  = this.getProgramObjetoDesenhar( objetoAtual.tipo );
+
+            // Se o ponteiro do programa não for null
+            if( programUsado != null )
+            {
+                // Determina se o objeto usa UV ou não
+                let attribLocationUV : GLint = 0;
+
+                if( objetoAtual.usaUV == true )
+                {   
+                    attribLocationUV = gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelUV);
+                }
+
+                return {
+                    atributosObjeto: {
+                        posicao    : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
+                        cor        : gl.getAttribLocation(programUsado, baseShaders.vertexExtraInfo.variavelCorCubo),
+                        uv         : attribLocationUV,
+
+                        // Iluminação
+                        brilho     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelBrilho),
+                        ambient    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelAmbient),
+                        diffuse    : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelDiffuse),
+                        specular   : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelSpecular),
+                        corLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelCorLuz),
+                        intensidadeLuz : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
+
+                    },
+                    atributosVisualizacaoObjeto: {
+                        matrixVisualizacao: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
+                        modeloObjetoVisual: gl.getUniformLocation(programUsado, baseShaders.vertexExtraInfo.variavelModeloObjeto)
+                    },
+                    uniformsCustomizados: {
+                        usarTextura: gl.getUniformLocation(programUsado, "uUsarTextura"),
+                        opacidade  : gl.getUniformLocation(programUsado, "uOpacidade"),
+                        textura    : gl.getUniformLocation(programUsado, "uTextura")
+                    }
+                };
+            }
+        }
+
+        //Caso não exista retorna algo generico
+        // APENAS UM TEMPLATE PRA INDICAR QUE TIPO DE RETORNO O getInformacoesPrograma de um objeto retorna
+        return {
+            atributosObjeto: {
+                posicao: 0,
+                cor: 0,
+                uv : 0,
+                brilho: new WebGLUniformLocation(),
+                ambient: new WebGLUniformLocation(),
+                diffuse: new WebGLUniformLocation(),
+                specular: new WebGLUniformLocation(),
+                corLuz: new WebGLUniformLocation(),
+                intensidadeLuz: new WebGLUniformLocation()
+            },
+            atributosVisualizacaoObjeto: {
+                matrixVisualizacao: new WebGLUniformLocation(),
+                modeloObjetoVisual: new WebGLUniformLocation()
+            },
+            uniformsCustomizados: {
+                usarTextura  : new WebGLUniformLocation(),
+                opacidade    : new WebGLUniformLocation(),
+                textura      : new WebGLUniformLocation()
+            }
+        };
+    }
+
+    /**
     * Código base para aplicar iluminação geral em um objeto, usado em todos os objetos
     * A iluminação geral é uma iluminação aplicada a todas as partes de um objeto
     * 
@@ -709,10 +786,8 @@ export class Renderer
     * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
     * lembrando que cada buffer é um ponteiro, então ele pode ser nulo
     */
-    createBuffersObjetoDesenhar( objetoAtual:Ponteiro<VisualMesh> ): void
+    createBuffersObjetoDesenhar( gl:WebGL2RenderingContext, objetoAtual:Ponteiro<VisualMesh> ): void
     {
-        const gl : WebGL2RenderingContext = this.gl;
-        
         // Se o ponteiro não for nulo
         if( objetoAtual != null )
         {
@@ -799,9 +874,9 @@ export class Renderer
             * Dados de desenho 
             */
             const programUsado              : Ponteiro<WebGLProgram>  = this.getProgramObjetoDesenhar( tipoObjeto );
-            const informacoesProgramaObjeto : InformacoesPrograma     = objetoAtual.getInformacoesPrograma();
-            const locationPosicaoObjeto     : GLint              = informacoesProgramaObjeto.atributosObjeto.posicao;
-            const locationCorObjeto         : GLint              = informacoesProgramaObjeto.atributosObjeto.cor;
+            const informacoesProgramaObjeto : InformacoesPrograma     = this.getInformacoesProgramaObjeto( gl, objetoAtual );
+            const locationPosicaoObjeto     : GLint                   = informacoesProgramaObjeto.atributosObjeto.posicao;
+            const locationCorObjeto         : GLint                   = informacoesProgramaObjeto.atributosObjeto.cor;
 
             // Se os ponteiros não forem nulos
             if( objetoAtual.modeloObjetoVisual != null && programUsado != null )
@@ -818,7 +893,7 @@ export class Renderer
                 if( objetoAtual.allBuffersCriated == false )
                 {
                     // Cria os buffers do objeto que serão usados - se eles não existirem.
-                    this.createBuffersObjetoDesenhar( objetoAtual );
+                    this.createBuffersObjetoDesenhar( gl, objetoAtual );
 
                     // Diz que ja criou todos os buffers para não chamar novamente
                     objetoAtual.allBuffersCriated = true;
@@ -927,7 +1002,7 @@ export class Renderer
                         // Inverte verticalmente a imagem ao carregar
                         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
                         
-                        gl.uniform1i(gl.getUniformLocation(programUsado, "u_textura"), 0);
+                        gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.textura, 0);
 
                         // Desenha só os índices daquela face (passa o offset correto)
                         // O offset do drawElements é em bytes. Cada índice é um UNSIGNED_SHORT (2 bytes).
@@ -1055,7 +1130,7 @@ export class Renderer
                                                             );
                         }
 
-                        gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.usarTextura, usarTextura ? 1 : 0);
+                        gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.usarTextura, booleanToNumber(usarTextura) );
                         gl.uniform1f(informacoesProgramaObjeto.uniformsCustomizados.opacidade, opacidade);
 
                         // Se tiver opacidade, ativa blending
@@ -1072,7 +1147,7 @@ export class Renderer
                         {
                             gl.activeTexture(gl.TEXTURE0);
                             gl.bindTexture(gl.TEXTURE_2D, material.map_Kd);
-                            gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.sampler, 0);
+                            gl.uniform1i(informacoesProgramaObjeto.uniformsCustomizados.textura, 0);
                         }
 
                         // Se este objeto usa iluminação por partes, ele não aplica a global(EM TODO), pois as partes ja controlam isso

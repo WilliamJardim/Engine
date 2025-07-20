@@ -276,13 +276,15 @@ Tipar o atributo "materials" do VisualMesh (FEITO)
 
 Tipar o atributo "objetos" do VisualMesh
 
-# 20/07/2025 16:54 PM, domingo
+# 20/07/2025 16:54 PM, domingo (FEITO)
 Nova ideia: Vejo que dá pra eu padronizar o getInformacoesPrograma que cada objeto tem
 dá pra criar um unico método getInformacoesProgramaObjeto dentro do renderer/Renderer/Renderer.ts, 
 e fazer isso de uma forma que todos os objetos tenham exatamente a mesma estrutura de retorno e de uso do getInformacoesPrograma
 
 Nova ideia: ajustar gl.getUniformLocation(programUsado!, "u_textura") e outras linhas, para que não use o ! e que o programUsado seja algo garantido e tambem padronizado
 Conferir isso tambem: "programUsado!" pra ver onde o programUsado não e algo garantido
+
+
 
 
 

@@ -86,7 +86,7 @@ export const baseShaders = {
         varying lowp vec4 vColor;
         varying vec2 vUV;
 
-        uniform sampler2D uSampler;  
+        uniform sampler2D uTextura;  
         uniform bool uUsarTextura;
         uniform float uOpacidade;
 
@@ -140,7 +140,7 @@ export const baseShaders = {
                 corBase = vec4(luminanciaObjeto, corBase.a);
 
                 // Aplica a textura por cima
-                corBase *= texture2D(uSampler, vUV);
+                corBase *= texture2D(uTextura, vUV);
 
                 // Aplica a opacidade
                 corBase.a *= uOpacidade;
@@ -172,7 +172,7 @@ export const baseShaders = {
     fragmentExtraInfo: {
         variavelCorFragment: 'vColor',
         variavelUVFragment: 'vUV',
-        variavelSampler: 'uSampler',
+        variavelTextura: 'uTextura',
         variavelUsarTextura: 'uUsarTextura',
 
         // Variaveis que configuram luz no objeto

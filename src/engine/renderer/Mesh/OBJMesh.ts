@@ -37,12 +37,8 @@ import FaceObjeto, { VerticesFace } from "../../interfaces/render_engine/FaceObj
 * Classe baseada no VisualMesh. Tem todos os atributos e métodos que VisualMesh tem.
 * Porém implementa os métodos abstratos do VisualMesh que devem implementados por cada objeto
 *
-* Define "informacoesPrograma" na função getInformacoesPrograma(), utilizando informações fornecidas pelo "renderer".
-* Faz uso do "renderer" umas 23 vezes, exatamente com a mesma finalidade que o VisualMesh usa,
-* apenas pra obter informações pra criar o "informacoesPrograma", iluminação, e obter outras coisas que o "renderer" fornece
-*
-* Ele usa o "informacoesPrograma" umas 25 vezes ao todo. 
-* É algo chave: ele precisa do informacoesPrograma para poder se comunicar com o shaders, obter informações sobre as variaveis dos shaders, e outras coisas muito importantes.
+* Faz uso do "renderer" umas 10 vezes, exatamente com a mesma finalidade que o VisualMesh usa,
+* apenas pra obter informações pra criar a iluminação, e obter outras coisas que o "renderer" fornece
 * 
 * A classe OBJMesh também cria vários novos atributos e métodos propios. Os métodos manipulam, retornam ou acessam os propios atributos, ou atributos do "renderer"
 *
@@ -97,7 +93,8 @@ export class OBJMesh extends VisualMesh
         
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano           = false;
-        this.usaTexturas       = true; // Obrigaório para que tenha textura
+        this.usaTexturas       = true; // Obrigatório para que tenha textura
+        this.usaUV             = true; // Obrigatório para que tenha textura no modelo 3d
 
         this.mtlString         = propriedadesMesh.mtlString;
         this.objString         = propriedadesMesh.objString; 
@@ -604,40 +601,6 @@ export class OBJMesh extends VisualMesh
     getUVs() 
     {
         return this.uvArray || [];
-    }
-
-    getInformacoesPrograma() : InformacoesPrograma
-    {
-        const renderer           = this.getRenderer();
-        const gl                 = renderer.gl;
-        const programUsado       = this.getProgram();
-
-        return {
-            atributosObjeto: {
-                posicao    : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo),
-                cor        : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),
-                uv         : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelUV),
-
-                // Iluminação
-                brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
-                ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),
-                diffuse    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelDiffuse),
-                specular   : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelSpecular),
-                corLuz     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelCorLuz),
-                intensidadeLuz : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
-                //posicaoLuz     : gl.getUniformLocation(programUsado, baseShaders.fragmentExtraInfo.variavelPosicaoLuz),
-
-            },
-            atributosVisualizacaoObjeto: {
-                matrixVisualizacao: gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao),
-                modeloObjetoVisual: gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelModeloObjeto)
-            },
-            uniformsCustomizados: {
-                usarTextura: gl.getUniformLocation(programUsado!, "uUsarTextura"),
-                opacidade  : gl.getUniformLocation(programUsado!, "uOpacidade"),
-                sampler    : gl.getUniformLocation(programUsado!, "uSampler")
-            }
-        };
     }
 
     /**

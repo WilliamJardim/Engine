@@ -33,6 +33,6 @@ export default interface InformacoesPrograma
     uniformsCustomizados: {
         usarTextura: Ponteiro<WebGLUniformLocation>;
         opacidade  : Ponteiro<WebGLUniformLocation>;
-        sampler    : Ponteiro<WebGLUniformLocation>;
+        textura    : Ponteiro<WebGLUniformLocation>;
     };
 }

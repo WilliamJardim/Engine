@@ -52,7 +52,6 @@ export class VisualMesh
     
     public _isTransparente : boolean;
 
-    //public programUsado   : Ponteiro<WebGLProgram>;
     public vertexScript   : string;
     public fragmentScript : string;
     public isPlano        : boolean;
@@ -102,6 +101,7 @@ export class VisualMesh
     public modeloObjetoVisual : Ponteiro<Float32Array>;
 
     public vertices           : Matrix<float>;
+    public usaUV              : boolean;
     public uvs                : Matrix<float>;
     public uvArray            : Array<float>;
 
@@ -146,8 +146,6 @@ export class VisualMesh
         this.renderer   = renderer;
         this.meshConfig = propriedadesMesh;
 
-        //this.programUsado = null; // Vai ser um ponteiro, eu vou definir em cada tipo de Mesh
-
         // Os shaders da renderização dele
         this.vertexScript   = '';
         
@@ -157,6 +155,7 @@ export class VisualMesh
         this.isPlano       = false;
 
         this.vertices          = new Array();
+        this.usaUV             = false;
         this.uvs               = new Array();
         this.uvArray           = new Array<float>();
 
@@ -285,33 +284,6 @@ export class VisualMesh
         {
             this.staticAccumulatedLights = renderer.staticAccumulatedLights;
         }
-    }
-
-    getInformacoesPrograma(): InformacoesPrograma
-    {
-        // APENAS UM TEMPLATE PRA INDICAR QUE TIPO DE RETORNO O getInformacoesPrograma de um objeto retorna
-        return {
-            atributosObjeto: {
-                posicao: 0,
-                cor: 0,
-                uv : 0,
-                brilho: new WebGLUniformLocation(),
-                ambient: new WebGLUniformLocation(),
-                diffuse: new WebGLUniformLocation(),
-                specular: new WebGLUniformLocation(),
-                corLuz: new WebGLUniformLocation(),
-                intensidadeLuz: new WebGLUniformLocation()
-            },
-            atributosVisualizacaoObjeto: {
-                matrixVisualizacao: new WebGLUniformLocation(),
-                modeloObjetoVisual: new WebGLUniformLocation()
-            },
-            uniformsCustomizados: {
-                usarTextura: new WebGLUniformLocation(),
-                opacidade: new WebGLUniformLocation(),
-                sampler: new WebGLUniformLocation()
-            }
-        };
     }
 
     // ATIVAR EM TODOS: renderizador.getObjetos().forEach((o)=>{ o.enableStaticAccumulatedLights() })
@@ -653,14 +625,6 @@ export class VisualMesh
     {
         
     }
-
-    // Muda o valor do ponteiro "this.programUsado"
-    /*
-    setProgram( programUsar:WebGLProgram )
-    {
-        this.programUsado = programUsar;
-    }
-    */
 
     // Obtem o program usado por ele no meu mini renderizador webgl
     getProgram(): Ponteiro<WebGLProgram>

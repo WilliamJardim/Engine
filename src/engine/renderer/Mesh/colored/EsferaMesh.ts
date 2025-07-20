@@ -145,42 +145,7 @@ export class EsferaMesh extends VisualMesh
 
         return cores;
     }
-
-    /**
-    * Obtem as informações do programa, que vão ser usadas na renderização deste cubo 
-    */
-    getInformacoesPrograma() : InformacoesPrograma
-    {
-        const renderer:Renderer                     = this.getRenderer();
-        const gl:WebGL2RenderingContext             = renderer.gl;
-        const programUsado:Ponteiro<WebGLProgram>   = this.getProgram();
-
-        return {
-            atributosObjeto: {
-                posicao   : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelPosicaoCubo), // Obtem a variavel que armazena a posicao do objeto na renderização WebGL na GPU
-                cor       : gl.getAttribLocation(programUsado!, baseShaders.vertexExtraInfo.variavelCorCubo),     // Obtem a variavel que armazena a cor do objeto na renderização WebGL na GPU
-                uv        : 0, // NAO USA MAIS PODE SER ZERO PRA NAO DAR ERRO DE TIPO
-                
-                // Iluminação
-                brilho     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelBrilho),
-                ambient    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelAmbient),
-                diffuse    : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelDiffuse),
-                specular   : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelSpecular),
-                corLuz     : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelCorLuz),
-                intensidadeLuz : gl.getUniformLocation(programUsado!, baseShaders.fragmentExtraInfo.variavelIntensidadeLuz)
-            },
-            atributosVisualizacaoObjeto: {
-                matrixVisualizacao : gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelMatrixVisualizacao), // Obtem a variavel que armazena a matrix de visualização do renderizador na renderização WebGL na GPU
-                modeloObjetoVisual : gl.getUniformLocation(programUsado!, baseShaders.vertexExtraInfo.variavelModeloObjeto), // Obtem a variavel que armazena a matrix do modelo do objeto na renderização WebGL na GPU
-            },
-            uniformsCustomizados: {
-                usarTextura: gl.getUniformLocation(programUsado!, "uUsarTextura"),
-                opacidade  : gl.getUniformLocation(programUsado!, "uOpacidade"),
-                sampler    : gl.getUniformLocation(programUsado!, "uSampler")
-            }
-        }
-    }
-
+    
     /**
     * @implementation 
     * Implementação do método desenhar para especificamente desenhar um cubo

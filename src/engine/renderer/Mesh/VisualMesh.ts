@@ -21,6 +21,7 @@ import IluminacaoAcumuladaParte from "../../interfaces/render_engine/IluminacaoA
 import IluminacaoGeralParte from "../../interfaces/render_engine/IluminacaoGeralParte";
 import { Matrix } from "../../types/matrix";
 import OffsetCount from "../../interfaces/render_engine/OffSetCount";
+import Material from "../../interfaces/render_engine/Material";
 
 /**
 * PORTABILIDADE PRA C++:
@@ -118,8 +119,8 @@ export class VisualMesh
     public texturasFaces      : Array<WebGLTexture>;
 
     // Usado em instancias de objetos OBJMesh
-    public materiais          : Mapa<string, any>;
-    public materialAtivo      : any;
+    public materiais          : Mapa<string, Material>;
+    public materialAtivo      : string;
     public objetos            : Mapa<string, any>;
     public objetoAtivo        : any;
     public nomesObjetos       : Array<string>;
@@ -227,7 +228,7 @@ export class VisualMesh
 
         // Usado em instancias de OBJMesh
         this.materiais         = new Mapa<string, any>();
-        this.materialAtivo     = null;
+        this.materialAtivo     = "NENHUM_MATERIAL";
 
         this.objetos                       = new Mapa<string, any>();
         this.nomesObjetos                  = new Array(); 

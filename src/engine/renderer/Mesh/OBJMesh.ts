@@ -195,7 +195,7 @@ export class OBJMesh extends VisualMesh
         let linhas = mtlString.split('\n');
 
         // o material atual é o material que está sendo carregado com suas informações
-        let materialAtual = null;
+        let materialAtual : string = "NENHUM_MATERIAL";
 
         for (let i = 0; i < linhas.length; i++) 
         {
@@ -218,7 +218,7 @@ export class OBJMesh extends VisualMesh
                                                 };
 
             // Se o current for null              
-            } else if (materialAtual !== null) {
+            } else if (materialAtual != "NENHUM_MATERIAL") {
                 
                 // Se tiver transparencia
                 if (linha.startsWith('d')) 
@@ -264,7 +264,7 @@ export class OBJMesh extends VisualMesh
         }
 
         // Se nao tem material ativo
-        if (this.materialAtivo === null) 
+        if (this.materialAtivo == "NENHUM_MATERIAL") 
         {
             this.materialAtivo = 'defaultMat';
         }
@@ -347,7 +347,7 @@ export class OBJMesh extends VisualMesh
             }
 
             // Se nao tem material ativo
-            if (this.materialAtivo === null) 
+            if (this.materialAtivo == "NENHUM_MATERIAL") 
             {
                 this.materialAtivo = 'defaultMat';
             }
@@ -356,8 +356,8 @@ export class OBJMesh extends VisualMesh
             const grupoObjeto = String( this.objetoAtivo ) + '__' + String( this.materialAtivo );
 
             //Cadastra o objeto atual no dicionario de vertices objetos
-            this.verticesObjetos[ grupoObjeto ]                    = [];
-            this.verticesObjetosOnlyNomeParte[ this.objetoAtivo ]  = [];
+            this.verticesObjetos[ grupoObjeto ]                    = new Array<float>();
+            this.verticesObjetosOnlyNomeParte[ this.objetoAtivo ]  = new Array<float>();
 
             // Marca que os vertices desse OBJETO(denominado grupoObjeto) começa no indice numero tal do vetor de vertices global do modelo
             this.verticesComecaObjetos[ grupoObjeto ] = this.vertices.length;

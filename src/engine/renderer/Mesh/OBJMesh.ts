@@ -241,7 +241,8 @@ export class OBJMesh extends VisualMesh
                     const textureFile  = itensLinha[1];
                     
                     const gl           = this.getRenderer().gl;
-                    const textureWebGL = carregarTextura(gl, textureFile);
+                    //const textureWebGL = carregarTextura(gl, textureFile);
+                    const textureWebGL = this.getRenderer().carregarTextura(textureFile);
 
                     this.materiais[ materialAtual ].map_Kd = textureWebGL;
                 }

@@ -11,7 +11,7 @@
 /**
 * Importando funções essenciais 
 */
-import { createShader, createBuffer, createProgram } from '../../utils/render_engine/funcoesBase.js';
+import { createShader, createBuffer, createProgram, carregarTextura } from '../../utils/render_engine/funcoesBase.js';
 import { criarGL }    from '../../utils/render_engine/funcoesBase.js';
 import {CriarMatrix4x4, 
         MultiplicarMatrix4x4, 
@@ -99,9 +99,14 @@ export class Renderer
     public aspectoCamera    : number;
     public pPerto           : number;
     public pLonge           : number;
+
+    public mapaTexturasCarregadas : Mapa<string, WebGLTexture>;
     
     constructor( canvasRef:React.RefObject<HTMLCanvasElement>, tipoPerspectiva:string="perspectiva", renderConfig:any={} ){
         this.canvas = canvasRef;
+
+        // Inicializa um mapa que vai ser usado para armazenar e reaproveitar as texturas carregadas
+        this.mapaTexturasCarregadas = new Mapa<string, WebGLTexture>();
 
         this.lastFrameDelta = 0;
 
@@ -225,6 +230,22 @@ export class Renderer
         // AQUI USEI BIND PRA NAO DAR ERRO NA HORA DE RODAR O LOOP COM O requestAnimationFrame
         // SERIA NECESSARIO ADAPTAR NO C++
         this.render = this.render.bind(this);
+    }
+
+    /**
+    * Carrega uma textura WebGL e armazena num mapa de texturas
+    */
+    carregarTextura( textureFile:string ): WebGLTexture
+    {
+        const gl:WebGL2RenderingContext = this.gl;
+
+        // Se a textura ainda não está registrada na memoria, registra ela carregando ela
+        if( this.mapaTexturasCarregadas[ textureFile ] == null )
+        {
+            this.mapaTexturasCarregadas[ textureFile ] = carregarTextura(gl, textureFile);
+        }
+
+        return this.mapaTexturasCarregadas[ textureFile ];
     }
 
     ficarNoite()

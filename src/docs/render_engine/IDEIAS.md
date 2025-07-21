@@ -299,7 +299,24 @@ Assim o Renderer vai ter um gerenciador de texturas embutido, simplificando mais
 Isso vai permitir centralizar ainda mais
 
 
+# 21/07/2025 19:09 PM - Ideia de estrutura de como eu pretendo portar a minha Game Engine em C++
+Funções globais que chamam o WebGL ou Open GL 
 
+Declaração antecipada do renderizador
+
+VisualMesh:
+    Só atributos genéricos que qualquer objeto vai usar. E um ponteiro para o renderizador , mais 100% abstrato sem chamar nada dele aqui 
+
+    Também métodos abstratos que requerem implantação em cada classe que derivar dela, pois usa muito polimorfismo.
+
+
+Renderizador:
+    Usa ponteiros para VisualMesh, acessando e manipulando atributos diretamente. Inclusive chamando métodos das instâncias de ponteiro VisualMesh. Porém até aqui não declarei os objetos que usam ela. Ainda é só abstrato, chamadas, parâmetros, e expectativas de retorno. E só.
+
+
+Objetos:
+      Abaixo do Renderizador eu declaro todos os tipos de objetos como Cubos, triângulo, cada um com métodos implementados, recebendo o que o Renderizador envia como parâmetro e devolvendo o que o Renderizador espera receber.
+O Renderizador não conhece eles individualmente, mas apenas como ponteiros do tipo VisualMesh, por causa do polimorfismo
 
 
 

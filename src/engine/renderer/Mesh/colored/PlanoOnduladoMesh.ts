@@ -247,10 +247,8 @@ export class PlanoOnduladoMesh extends VisualMesh
             }
         }
 
-        // Atualiza o buffer no WebGL
-        const gl = this.getRenderer().gl;
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
+        // Atualiza os vertices desse objeto
+        this.renderer.atualizarVerticesPosicao( this, vertices );
     }
 
     /**
@@ -273,9 +271,7 @@ export class PlanoOnduladoMesh extends VisualMesh
             }
         }
 
-        // Atualiza buffer
-        const gl = this.getRenderer().gl;
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
+        // Atualiza os vertices desse objeto
+        this.renderer.atualizarVerticesPosicao( this, vertices );
     }
 }

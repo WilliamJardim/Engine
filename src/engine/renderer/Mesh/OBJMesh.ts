@@ -37,7 +37,7 @@ import FaceObjeto, { VerticesFace } from "../../interfaces/render_engine/FaceObj
 * Classe baseada no VisualMesh. Tem todos os atributos e métodos que VisualMesh tem.
 * Porém implementa os métodos abstratos do VisualMesh que devem implementados por cada objeto
 *
-* Faz uso do "renderer" umas 10 vezes, exatamente com a mesma finalidade que o VisualMesh usa,
+* Faz uso do "renderer" umas 11 vezes, exatamente com a mesma finalidade que o VisualMesh usa,
 * apenas pra obter informações pra criar a iluminação, e obter outras coisas que o "renderer" fornece
 * 
 * A classe OBJMesh também cria vários novos atributos e métodos propios. Os métodos manipulam, retornam ou acessam os propios atributos, ou atributos do "renderer"
@@ -239,9 +239,6 @@ export class OBJMesh extends VisualMesh
                 } else if (linha.indexOf('map_Kd') === 0) {
                     const itensLinha   = linha.split(/\s+/);
                     const textureFile  = itensLinha[1];
-                    
-                    const gl           = this.getRenderer().gl;
-                    //const textureWebGL = carregarTextura(gl, textureFile);
                     const textureWebGL = this.getRenderer().carregarTextura(textureFile);
 
                     this.materiais[ materialAtual ].map_Kd = textureWebGL;
@@ -1044,9 +1041,8 @@ export class OBJMesh extends VisualMesh
             }
         }
 
-        const gl = this.getRenderer().gl;
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
+        // Atualiza os vertices desse objeto
+        this.renderer.atualizarVerticesPosicao( this, vertices );
     }
 
     atualizarDesenho() 

@@ -287,14 +287,14 @@ Conferir isso tambem: "programUsado!" pra ver onde o programUsado não e algo ga
 # 21/07/2025 16:31 PM
 Também, criar um adaptador para o WebGL, que vai ser usado pra abstrair as chamadas gl.algumaCoisa que estão espalhadas por todos os tipos de objetos de minha Engine, inclusive no código de deformações. Abstrair tudo 
 
-Ou então, de alguma forma conseguir centralizar também todas as chamadas gl.algumaCoisa para o módulo principal Renderer.ts
+Ou então, de alguma forma conseguir centralizar também todas as chamadas gl.algumaCoisa para o módulo principal Renderer.ts (FEITO)
 
-Eu posso até mesmo abstrair tudo primeiro, pra só depois tentar centralizar mais ainda
+Eu posso até mesmo abstrair tudo primeiro, pra só depois tentar centralizar mais ainda 
 
 Isso poderia facilitar as coisas
 
 
-OUTRA Ideia: centralizar carregamento de texturas no MTL do OBJMesh Pra ele usar uma função abstraída que vai chamar o método carregarTextura e armazenar ela num mapa HASH no módulo principal do Renderizador também.
+(FEITO) OUTRA Ideia: centralizar carregamento de texturas no MTL do OBJMesh Pra ele usar uma função abstraída que vai chamar o método carregarTextura e armazenar ela num mapa HASH no módulo principal do Renderizador também.
 Assim o Renderer vai ter um gerenciador de texturas embutido, simplificando mais o código
 Isso vai permitir centralizar ainda mais
 

@@ -247,9 +247,8 @@ export class CuboDeformavelMesh extends VisualMesh
             }
         }
 
-        const gl = this.getRenderer().gl;
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
+        // Atualiza os vertices desse objeto
+        this.renderer.atualizarVerticesPosicao( this, vertices );
     }
 
     /**
@@ -259,8 +258,7 @@ export class CuboDeformavelMesh extends VisualMesh
     {
         this.verticesAtuais = this.verticesOriginais.slice();
 
-        const gl = this.getRenderer().gl;
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPosicao);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(this.verticesAtuais));
+        // Atualiza os vertices desse objeto
+        this.renderer.atualizarVerticesPosicao( this, this.verticesAtuais );
     }
 }

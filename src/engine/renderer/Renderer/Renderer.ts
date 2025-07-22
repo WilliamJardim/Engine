@@ -248,6 +248,22 @@ export class Renderer
         return this.mapaTexturasCarregadas[ textureFile ];
     }
 
+    /**
+    * Atualiza os vertices da posição de um objeto.
+    * Voce passa o objeto atual em questão, e em seguida, os vertices que quer definir nele. 
+    */
+    atualizarVerticesPosicao( objetoAtual:Ponteiro<VisualMesh>, vertices:Array<float> ): void
+    {
+        const gl:WebGL2RenderingContext = this.gl;
+
+        // Se o ponteiro não for null
+        if( objetoAtual != null )
+        {
+            gl.bindBuffer(gl.ARRAY_BUFFER, objetoAtual.bufferPosicao);
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array( vertices ));
+        }
+    }
+    
     ficarNoite()
     {
         this.ambient  = 0.2;  

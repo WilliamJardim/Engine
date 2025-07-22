@@ -318,5 +318,6 @@ Objetos:
       Abaixo do Renderizador eu declaro todos os tipos de objetos como Cubos, triângulo, cada um com métodos implementados, recebendo o que o Renderizador envia como parâmetro e devolvendo o que o Renderizador espera receber.
 O Renderizador não conhece eles individualmente, mas apenas como ponteiros do tipo VisualMesh, por causa do polimorfismo
 
-
+# 21/07/2025 21:25 PM - Template inicial da minha Engine em C++
+Criar a estrutura da minha Game Engine TS só que portado em C++, seguindo minhas ideias anotadas acima a risca, pra ter certeza que minha estrutura que pensei funciona em C++
 

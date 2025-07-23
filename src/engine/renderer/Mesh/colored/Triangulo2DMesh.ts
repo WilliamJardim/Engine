@@ -21,6 +21,8 @@ import {
 import { Renderer } from "../../Renderer/Renderer.js";
 import VisualMeshConfig from "../../../interfaces/render_engine/VisualMeshConfig.js";
 import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
+import { float } from "../../../types/types-cpp-like.js";
+import Position3D from "../../../interfaces/main_engine/Position3D.js";
 
 export class Triangulo2DMesh extends VisualMesh 
 {
@@ -51,7 +53,7 @@ export class Triangulo2DMesh extends VisualMesh
         this.criar();
     }
 
-    getPositions() 
+    getPositions() : Array<float>
     {
         return [
             0.0,  1.0,  0.0,   // Topo
@@ -60,7 +62,7 @@ export class Triangulo2DMesh extends VisualMesh
         ];
     }
 
-    getColors() 
+    getColors() : Array<float>
     {
         const nivelTransparencia = this.getTransparencia();
 
@@ -71,16 +73,16 @@ export class Triangulo2DMesh extends VisualMesh
         ];
     }
 
-    atualizarDesenho() 
+    atualizarDesenho() : void
     {
         // Copia os valores do renderer que o objeto acompanha
         this.copiarValoresRenderer();
 
         // Atributos visuais 
-        const meshConfig = this.meshConfig;
-        const position   = meshConfig.position;
-        const rotation   = meshConfig.rotation;
-        const scale      = meshConfig.scale;
+        const meshConfig : VisualMeshConfig  = this.meshConfig;
+        const position   : Position3D        = meshConfig.position;
+        const rotation   : Position3D        = meshConfig.rotation;
+        const scale      : Position3D        = meshConfig.scale;
 
         this.modeloObjetoVisual = CriarMatrix4x4();
 
@@ -140,7 +142,7 @@ export class Triangulo2DMesh extends VisualMesh
                     // Chama o drawElements para DESENHAR O OBJETO
     }
 
-    criar() 
+    criar() : void
     {
         this.atualizarDesenho();
     }

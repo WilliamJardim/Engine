@@ -27,9 +27,10 @@ import {
     booleanToNumber
 } from '../../../utils/render_engine/math.js';
 import { Renderer } from "../../Renderer/Renderer.js";
-import { float } from "../../../types/types-cpp-like.js";
+import { float, int } from "../../../types/types-cpp-like.js";
 import PlanoOnduladoMeshConfig from "../../../interfaces/render_engine/PlanoOnduladoMeshConfig.js";
 import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
+import { Matrix } from "../../../types/matrix.js";
 
 export class PlanoOnduladoMesh extends VisualMesh
 {
@@ -58,7 +59,7 @@ export class PlanoOnduladoMesh extends VisualMesh
         this.bufferCor     = null;
         this.bufferIndices = null;
         
-        this.vertices      = new Array();
+        this.vertices      = new Array<Array<float>>();
 
         // Sem textura sempre vai usar cores
         this.useColors     = true;
@@ -74,16 +75,16 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Obtem as posições de renderização do cubo 
     */
-    getPositions() 
+    getPositions() : Array<float>
     {
-        const positions = [];
-        const largura = 10;
-        const altura = 10;
-        const subdivisoes = 100;
+        const positions   : Array<float>  = [];
+        const largura     : float         = 10;
+        const altura      : float         = 10;
+        const subdivisoes : float         = 100;
 
-        for (let y = 0; y <= subdivisoes; y++) 
+        for (let y:int = 0; y <= subdivisoes; y++) 
         {
-            for (let x = 0; x <= subdivisoes; x++) 
+            for (let x:int = 0; x <= subdivisoes; x++) 
             {
                 const posX = (x / subdivisoes - 0.5) * largura;
                 const posZ = (y / subdivisoes - 0.5) * altura;
@@ -101,14 +102,14 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Obtem os indices de renderização do cubo 
     */
-    getIndices()
+    getIndices() : Array<float>
     {
-        const indices = [];
-        const subdivisoes = 100;
+        const indices     : Array<float>  = [];
+        const subdivisoes : float         = 100;
 
-        for (let y = 0; y < subdivisoes; y++) 
+        for (let y:int = 0; y < subdivisoes; y++) 
         {
-            for (let x = 0; x < subdivisoes; x++) 
+            for (let x:int = 0; x < subdivisoes; x++) 
             {
                 const i = y * (subdivisoes + 1) + x;
                 indices.push(i, i + 1, i + subdivisoes + 1);
@@ -122,7 +123,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Obtem as cores das faces do cubo, usados na renderização do cubo 
     */
-    getFaceColors()
+    getFaceColors() : Array<float>
     {
         return [];
     }
@@ -130,14 +131,14 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Cria o vetor de cores usando o getFaceColors
     */
-    getColors()
+    getColors() : Array<float>
     {
-        const cores = [];
-        const vertices = this.getPositions();
-        const nivelTransparencia = this.getTransparencia();
+        const cores              : Array<float>    = [];
+        const vertices           : Array<float>    = this.getPositions();
+        const nivelTransparencia : float           = this.getTransparencia();
 
-        const totalVertices = vertices.length / 3; // 3 por vértice
-        for (let i = 0; i < totalVertices; i++) 
+        const totalVertices : float  = vertices.length / 3; // 3 por vértice
+        for (let i:int = 0; i < totalVertices; i++) 
         {
             cores.push(1, 0, 0, nivelTransparencia);
         }
@@ -150,7 +151,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     * Implementação do método desenhar para especificamente desenhar um cubo
     * Converte a representação desse Mesh para desenhos com WebGL
     */
-    atualizarDesenho()
+    atualizarDesenho() : void
     {
         // Atributos visuais 
         const meshConfig = this.meshConfig;
@@ -224,7 +225,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     * Metodo chamado logo após o fim do construtor, quanto todos os parametros necessários já foram atribudos
     * Cria o cubo em si, usando o WebGL 
     */
-    criar()
+    criar() : void
     {
         this.atualizarDesenho();
     }
@@ -232,17 +233,18 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Pode subir ou afundar os pontos deste plano
     */
-    elevarPico(xAlvo:number, zAlvo:number, raio:number, intensidade:number) {
-        const vertices = this.getPositions();
-        for (let i = 0; i < vertices.length; i += 3) 
+    elevarPico(xAlvo:float, zAlvo:float, raio:float, intensidade:float) : void
+    {
+        const vertices : Array<float>  = this.getPositions();
+        for (let i:int = 0; i < vertices.length; i += 3) 
         {
-            const dx = vertices[i]     - xAlvo;
-            const dz = vertices[i + 2] - zAlvo;
-            const dist = Math.sqrt(dx * dx + dz * dz);
+            const dx   : float  = vertices[i]     - xAlvo;
+            const dz   : float  = vertices[i + 2] - zAlvo;
+            const dist : float  = Math.sqrt(dx * dx + dz * dz);
 
             if (dist < raio) 
             {
-                const fator = Math.cos((dist / raio) * Math.PI) * intensidade;
+                const fator : float  = Math.cos((dist / raio) * Math.PI) * intensidade;
                 vertices[i + 1] += fator;
             }
         }
@@ -255,14 +257,14 @@ export class PlanoOnduladoMesh extends VisualMesh
     * Pode subir ou afundar os pontos deste plano
     * Versão melhorada para criar animações
     */
-    elevarPicoParaAnimacao(xAlvo:number, zAlvo:number, raio:number, intensidade:number, tempo:number) 
+    elevarPicoParaAnimacao(xAlvo:float, zAlvo:float, raio:float, intensidade:float, tempo:float) : void
     {
-        const vertices = this.vertices;
-        for (let i = 0; i < vertices.length; i += 3) 
+        const vertices : Array<float>  = this.vertices;
+        for (let i:int = 0; i < vertices.length; i += 3) 
         {
-            const dx = vertices[i] - xAlvo;
-            const dz = vertices[i + 2] - zAlvo;
-            const dist = Math.sqrt(dx * dx + dz * dz);
+            const dx   : float  = vertices[i] - xAlvo;
+            const dz   : float  = vertices[i + 2] - zAlvo;
+            const dist : float  = Math.sqrt(dx * dx + dz * dz);
 
             if (dist < raio) 
             {

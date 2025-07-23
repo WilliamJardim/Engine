@@ -15,12 +15,13 @@ import Scene         from './core/Scene';
 import LocalSound    from './core/LocalSound';
 import { carregarTxt } from './utils/render_engine/funcoesBase';
 import { Light } from './core/Light';
+import { float, int } from './types/types-cpp-like';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
 export const globalContext = new GlobalContext({});
 
 /** Função que vai ser executada quanto a Engine for iniciada */
-export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: number, frameNumber: number ): void
+export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: float, frameNumber: int ): void
 {
     // Importa o modelo do meu quarto 1
     // Cria um plano que pode se deformar
@@ -429,13 +430,13 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 
 
 /** Loop que vai ser executado ANTES da função de atualização */
-export function EngineBeforeLoop( scene: Scene, frameDelta: number, frameNumber: number, firstRender: boolean, renderizadorPronto: boolean ): void
+export function EngineBeforeLoop( scene: Scene, frameDelta: float, frameNumber: int, firstRender: boolean, renderizadorPronto: boolean ): void
 {
 
 }
 
 /** Loop que vai ser executado a todo momento depois que a função de atualização rodar */
-export function EngineLoop( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: number, frameNumber: number ): void
+export function EngineLoop( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: float, frameNumber: int ): void
 {
 
     const htmlCanvas = globalContext.get('htmlCanvas');

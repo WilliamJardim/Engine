@@ -7,18 +7,19 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import { float } from "../../types/types-cpp-like";
 import ObjectPosition from "./ObjectPosition";
 
 export default interface LocalSoundProps
 {
-   audioPath     : string,         // The audio file path
-   autoplay      : boolean,        // If the sound will start automatically
-   startDelay    : number,         // How will await for play first time
-   begin         : number,         // The secounds that will start(in the audio position)
-   end           : number,         // The secounds that will end(in the audio position)
+   audioPath     : string,            // The audio file path
+   autoplay      : boolean,           // If the sound will start automatically
+   startDelay    : float,             // How will await for play first time
+   begin         : float,             // The secounds that will start(in the audio position)
+   end           : float,             // The secounds that will end(in the audio position)
    isLooping     : boolean,           // If the sound will play forever
    position      : ObjectPosition,    // The position of the sound origin 
-   reachrate     : 10,                // How far the sounds will go from the origin position
-   initialVolume : number,
-   maxVolume     : number
+   reachrate     : float,             // How far the sounds will go from the origin position
+   initialVolume : float,
+   maxVolume     : float
 }   

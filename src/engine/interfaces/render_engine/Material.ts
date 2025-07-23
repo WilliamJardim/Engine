@@ -14,5 +14,5 @@ export default interface Material
     nome     : string;
     Kd       : Array<float>;  // 3 elementos 
     map_Kd   : Ponteiro<WebGLTexture>;
-    opacity  : number;
+    opacity  : float;
 }

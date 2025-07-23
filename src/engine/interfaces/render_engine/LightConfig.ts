@@ -7,15 +7,16 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import { float } from "../../types/types-cpp-like";
 import Position3D from "../main_engine/Position3D";
 
 export default interface LightConfig{
     position    : Position3D;
-    raio        : number;
-    brilho      : number;
-    ambient     : number;
-    diffuse     : number;
-    specular    : number;
-    cor         : Array<number>;
-    intensidade : number  
+    raio        : float;
+    brilho      : float;
+    ambient     : float;
+    diffuse     : float;
+    specular    : float;
+    cor         : Array<float>;
+    intensidade : float  
 }

@@ -7,14 +7,14 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { Ponteiro } from "../../types/types-cpp-like";
+import { float, Ponteiro } from "../../types/types-cpp-like";
 
 export default interface IluminacaoTotalParte
 {
-    ambientTotal         : number;
-    diffuseTotal         : number;
-    specularTotal        : number;
-    brilhoTotal          : number;
-    intensidadeTotal     : number;
-    corLuzTotal          : Array<number>;
+    ambientTotal         : float;
+    diffuseTotal         : float;
+    specularTotal        : float;
+    brilhoTotal          : float;
+    intensidadeTotal     : float;
+    corLuzTotal          : Array<float>;
 } 

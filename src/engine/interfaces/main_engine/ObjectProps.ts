@@ -13,11 +13,11 @@ import ObjectScale       from "./ObjectScale";
 import ObjectEvents      from './ObjectEvents';
 import ProximityBounds   from './ProximityBounds';
 import ObjectAttachment  from './ObjectAttachment';
-import { Ponteiro }      from '../../types/types-cpp-like';
+import { float, Ponteiro }      from '../../types/types-cpp-like';
 
 export default interface ObjectProps
 {
-    mass             : number; //A massa do objeto
+    mass             : float;  //A massa do objeto
     type             : string, //Se é cubo, plano, esfera, ou modelo personalizado
     obj              : string,  // Se for um objeto OBJ vai ter o caminho dele
     mtl              : string,  // Se for um objeto OBJ vai ter o caminho do mtl dele
@@ -40,9 +40,9 @@ export default interface ObjectProps
     useAccumulatedLights     : boolean,
     staticAccumulatedLights  : boolean,
 
-    opacity          : number,
+    opacity          : float,
     events           : Array<ObjectEvents>,
-    kick_rate        : number,
+    kick_rate        : float,
 
     enable_advanced_frame_tracking : boolean, //Se ativado, vai capturar os dados do objeto a cada frame. Por padrão é ativado
 

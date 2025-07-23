@@ -26,7 +26,7 @@ export default function objectAHaveSomeClassesIgnoredByObjectB( objeto: Ponteiro
         const classesObjetoA         : Array<string> = objeto.objProps.classes;
         const ignoreColisionsObjetoB : Array<string> = outroObjeto.objProps.ignoreCollisions;
 
-        for( let i = 0 ; i < classesObjetoA.length ; i++ )
+        for( let i:int = 0 ; i < classesObjetoA.length ; i++ )
         {
             const classeAtualObjetoA : string = classesObjetoA[i];
 

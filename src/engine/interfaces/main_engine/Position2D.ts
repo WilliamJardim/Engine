@@ -1,3 +1,5 @@
+import { float } from "../../types/types-cpp-like";
+
 /**
 * AUTHOR: William Alves Jardim
 * LICENSE: Creative Commons BY-NC-ND 4.0 (https://creativecommons.org/licenses/by-nc-nd/4.0/)
@@ -9,6 +11,6 @@
 */
 export default interface Position2D
 {
-    x : number;
-    y : number;
+    x : float;
+    y : float;
 }

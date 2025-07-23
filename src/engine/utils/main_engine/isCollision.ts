@@ -11,7 +11,7 @@ import ObjectBase          from "../../core/ObjectBase";
 import ProximityBounds     from '../../interfaces/main_engine/ProximityBounds';
 import ObjectPosition      from '../../interfaces/main_engine/ObjectPosition';
 import ObjectScale         from '../../interfaces/main_engine/ObjectScale';
-import { Ponteiro }        from "../../types/types-cpp-like";
+import { float, Ponteiro }        from "../../types/types-cpp-like";
 import AbstractObjectBase  from "../../core/AbstractObjectBase";
 
 /**
@@ -29,7 +29,7 @@ export default function isCollision(objA:Ponteiro<AbstractObjectBase>,
     //Se os ponteiros não forem nulos
     if( objA != null && objB != null )
     {
-      const getLimite = (eixo: 'x' | 'y' | 'z'): number => {
+      const getLimite = (eixo: 'x' | 'y' | 'z'): float => {
         //Se o limites for um numero, todos os eixos tem o mesmo valor
         if (typeof limites === 'number'){
               return limites;
@@ -72,9 +72,9 @@ export default function isCollision(objA:Ponteiro<AbstractObjectBase>,
                     z: posB.z! + scaleB.z / 2
                   };
 
-      const sobreposicaoX : number = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);
-      const sobreposicaoY : number = Math.min(maxA.y, maxB.y) - Math.max(minA.y, minB.y);
-      const sobreposicaoZ : number = Math.min(maxA.z, maxB.z) - Math.max(minA.z, minB.z);
+      const sobreposicaoX : float = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);
+      const sobreposicaoY : float = Math.min(maxA.y, maxB.y) - Math.max(minA.y, minB.y);
+      const sobreposicaoZ : float = Math.min(maxA.z, maxB.z) - Math.max(minA.z, minB.z);
 
       // Se houver sobreposição em algum dos eixos então houve colisão
       if (sobreposicaoX > 0 && sobreposicaoY > 0 && sobreposicaoZ > 0) 

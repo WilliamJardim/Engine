@@ -21,15 +21,17 @@ import {
     RotacionarZ
 } from '../../utils/render_engine/math.js';
 import { Renderer } from "../Renderer/Renderer.js";
-import { float, Ponteiro } from "../../types/types-cpp-like.js";
+import { float, int, Ponteiro } from "../../types/types-cpp-like.js";
 import Mapa from "../../utils/dicionarios/Mapa.js";
 import OBJMeshConfig from "../../interfaces/render_engine/OBJMeshConfig.js";
 import InformacoesPrograma from "../../interfaces/render_engine/InformacoesPrograma.js";
 import IluminacaoTotalParte from "../../interfaces/render_engine/IluminacaoTotalParte.js";
 import IluminacaoGeralOBJMesh from "../../interfaces/render_engine/IluminacaoGeralParte.js";
 import { Matrix } from "../../types/matrix.js";
-import OffsetCount from "../../interfaces/render_engine/OffSetCount";
+import ContagemIndicesParteOBJ from "../../interfaces/render_engine/ContagemIndicesParteOBJ";
 import FaceObjeto, { VerticesFace } from "../../interfaces/render_engine/FaceObjeto.js";
+import VisualMeshConfig from "../../interfaces/render_engine/VisualMeshConfig.js";
+import Position3D from "../../interfaces/main_engine/Position3D.js";
 
 /**
 * PORTABILIDADE PRA C++:
@@ -84,13 +86,17 @@ export class OBJMesh extends VisualMesh
     public verticesObjetos               : Mapa<string, Matrix<float> >;   // Vertices por partes
     public verticesObjetosOnlyNomeParte  : Mapa<string, Matrix<float> >;   // Vertices por partes (somente o nome da parte sem usar material na chave)
     public verticesComecaObjetos         : Mapa<string, Matrix<float> >;   // Length que começa os vertices de cada objeto no vetor geral vertices(o vetor declarado no VisualMesh)
+    public qtdePartes                    : int; // Quantas partes esse OBJMesh possui
 
     constructor(renderer:Renderer, propriedadesMesh:OBJMeshConfig) 
     {
         super(renderer, propriedadesMesh);
 
         this.tipo              = "OBJ";
-        
+
+        // Quantas partes esse OBJMesh possui
+        this.qtdePartes        = 0; // Vai ser calculado depois
+
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano           = false;
         this.usaTexturas       = true; // Obrigatório para que tenha textura
@@ -156,25 +162,25 @@ export class OBJMesh extends VisualMesh
     }
 
     // Ativa a iluminação individual de cada parte individual do OBJ
-    enableChildrenIndividualLights()
+    enableChildrenIndividualLights() : void
     {   
         this.childrenIndividualLights = true;
     }
 
     // Desativa a iluminação individual de cada parte individual do OBJ
-    disableChildrenIndividualLights()
+    disableChildrenIndividualLights() : void
     {
         this.childrenIndividualLights = false;
     }
 
     // Ativa a acumulação de luzes em cada parte individual do OBJ
-    enableAccumulatedLights()
+    enableAccumulatedLights() : void
     {
         this.useAccumulatedLights = true;
     }
 
     // Disativa a acumulação de luzes em cada parte individual do OBJ
-    disableAccumulatedLights()
+    disableAccumulatedLights() : void
     {
         this.useAccumulatedLights = false;
     }
@@ -188,60 +194,73 @@ export class OBJMesh extends VisualMesh
     * Serve para interpretar os comandos de um arquivo MTL
     * como "newmtl" = novo material, "d" = opacidade, etc....
     */
-    carregarMTL(mtlString:String) 
+    carregarMTL(mtlString:String) : void
     {
-        let linhas = mtlString.split('\n');
-
+        let linhas         : Array<string>   = mtlString.split('\n');
+        let qtdeLinhas     : int             = linhas.length;
+        
         // o material atual é o material que está sendo carregado com suas informações
         let materialAtual : string = "NENHUM_MATERIAL";
 
-        for (let i = 0; i < linhas.length; i++) 
+        for (let i:int = 0; i < qtdeLinhas; i++) 
         {
-            let linha = linhas[i].trim();
+            let linha          : string    = linhas[i].trim();
+            let consideraLinha : boolean   = true; // Se a linha atual vai ser lida ou não(por padrão sim, exceto pelas regras de excesão)
 
-            if (linha.length === 0)
+            // Se for uma linha em branco, ignora
+            if (linha.length == 0)
             { 
-                continue;
+                consideraLinha = false;
             }
 
-            // Declara um novo material
-            if (linha.indexOf('newmtl') === 0) {
-                const itensLinha = linha.split(/\s+/);
+            // Se for um comentário, ignora
+            if( linha[0] == "#" )
+            {
+                consideraLinha = false;
+            }
 
-                materialAtual = itensLinha[1];
-                this.materiais[ materialAtual ] = { 
-                                                    nome   : materialAtual, 
-                                                    Kd     : [1, 1, 1], 
-                                                    map_Kd : null 
-                                                };
-
-            // Se o current for null              
-            } else if (materialAtual != "NENHUM_MATERIAL") {
-                
-                // Se tiver transparencia
-                if (linha.startsWith('d')) 
-                {
-                    this.materiais[ materialAtual ].opacity = parseFloat(linha.split(/\s+/)[1]);
-                    this._isTransparente = true; // Diz pra Engine que este objeto tem transparencia
-                }
-                
-                // Determina qual a cor do materal
-                if (linha.indexOf('Kd') === 0) {
+            // Se a linha é valida para ser interpretada, segue
+            if( consideraLinha == true )
+            {
+                // Declara um novo material
+                if (linha.indexOf('newmtl') === 0) {
                     const itensLinha = linha.split(/\s+/);
 
-                    this.materiais[ materialAtual ]["Kd"] = [
-                        parseFloat( itensLinha[1] ),
-                        parseFloat( itensLinha[2] ),
-                        parseFloat( itensLinha[3] )
-                    ];
-                
-                // Determina qual a imagem(imagem de textura) que o material usa
-                } else if (linha.indexOf('map_Kd') === 0) {
-                    const itensLinha   = linha.split(/\s+/);
-                    const textureFile  = itensLinha[1];
-                    const textureWebGL = this.getRenderer().carregarTextura(textureFile);
+                    materialAtual = itensLinha[1];
+                    this.materiais[ materialAtual ] = { 
+                                                        nome   : materialAtual, 
+                                                        Kd     : [1, 1, 1], 
+                                                        map_Kd : null 
+                                                    };
 
-                    this.materiais[ materialAtual ].map_Kd = textureWebGL;
+                // Se o current for null              
+                } else if (materialAtual != "NENHUM_MATERIAL") {
+                    
+                    // Se tiver transparencia
+                    if (linha.startsWith('d')) 
+                    {
+                        this.materiais[ materialAtual ].opacity = parseFloat(linha.split(/\s+/)[1]);
+                        this._isTransparente = true; // Diz pra Engine que este objeto tem transparencia
+                    }
+                    
+                    // Determina qual a cor do materal
+                    if (linha.indexOf('Kd') === 0) {
+                        const itensLinha = linha.split(/\s+/);
+
+                        this.materiais[ materialAtual ]["Kd"] = [
+                            parseFloat( itensLinha[1] ),
+                            parseFloat( itensLinha[2] ),
+                            parseFloat( itensLinha[3] )
+                        ];
+                    
+                    // Determina qual a imagem(imagem de textura) que o material usa
+                    } else if (linha.indexOf('map_Kd') === 0) {
+                        const itensLinha   = linha.split(/\s+/);
+                        const textureFile  = itensLinha[1];
+                        const textureWebGL = this.getRenderer().carregarTextura(textureFile);
+
+                        this.materiais[ materialAtual ].map_Kd = textureWebGL;
+                    }
                 }
             }
         }
@@ -251,7 +270,7 @@ export class OBJMesh extends VisualMesh
     * Função auxiliar que serve para interpretar os comandos de um arquivo OBJ
     * como "o" = objeto, "f" = faces, etc.... 
     */
-    _interpretarInstrucaoOBJ( comando=String(), partesLinha:Array<any>=[] )
+    _interpretarInstrucaoOBJ( comando=String(), partesLinha:Array<string>=[] )
     {
         // Se nao tem objeto ativo
         if (this.objetoAtivo == "NENHUM_OBJETO" ) 
@@ -313,14 +332,14 @@ export class OBJMesh extends VisualMesh
 
             const dadosFace : Array<VerticesFace>  = new Array();
 
-            for (let j = 1; j < partesLinha.length; j++)
+            for (let j:int = 1; j < partesLinha.length; j++)
             {
-                const itemLinha:string = partesLinha[j].split('/');
+                const linhaEmPartes:Array<string> = partesLinha[j].split('/');
 
                 dadosFace.push({
-                    indiceVertice : parseInt(itemLinha[0], 10) - 1,                        // Indice do vértice
-                    indiceTextura : itemLinha[1] ? parseInt(itemLinha[1], 10) - 1 : -1,    // Indice da textura
-                    indiceNormal  : itemLinha[2] ? parseInt(itemLinha[2], 10) - 1 : -1     // Indice da normal
+                    indiceVertice : parseInt(linhaEmPartes[0], 10) - 1,                            // Indice do vértice
+                    indiceTextura : linhaEmPartes[1] ? parseInt(linhaEmPartes[1], 10) - 1 : -1,    // Indice da textura
+                    indiceNormal  : linhaEmPartes[2] ? parseInt(linhaEmPartes[2], 10) - 1 : -1     // Indice da normal
                 });
             }
             
@@ -367,45 +386,63 @@ export class OBJMesh extends VisualMesh
     */
     carregarOBJ(objString:string) 
     {
-        const linhas : Array<string>  = objString.split('\n');
-
-        for (let i = 0; i < linhas.length; i++)
+        let linhas         : Array<string>  = objString.split('\n');
+        let qtdeLinhas     : int            = linhas.length;
+        
+        for (let i:int = 0; i < qtdeLinhas; i++)
         {
-            let linha : string = linhas[i].trim();
+            let linha          : string    = linhas[i].trim();
+            let consideraLinha : boolean   = true; // Se a linha atual vai ser lida ou não(por padrão sim, exceto pelas regras de excesão)
 
-            if( linha.length === 0 || linha.charAt(0) === '#' )
+            // Se for uma linha em branco, ignora
+            if( linha.length == 0 )
             {
-                continue;
+                consideraLinha = false;
             }
 
-            // (1) - Divide a linha em palavras separadas(uma lista de palavras)
-            // (2) - Extrai apenas o comando(que é sempre o primeiro elemento da lista de palavras acima)
-            const partes  : Array<string>  = linha.split(/\s+/);
-            const comando : string         = partes[0];
+            // Se for um comentário, ignora
+            if( linha[0] == "#" )
+            {
+                consideraLinha = false;
+            }
 
-            // (3) - Interpreta o comando atual
-            this._interpretarInstrucaoOBJ( comando, partes );
+            // Se a linha é valida para ser interpretada, segue
+            if( consideraLinha == true )
+            {
+                // (1) - Divide a linha em palavras separadas(uma lista de palavras)
+                // (2) - Extrai apenas o comando(que é sempre o primeiro elemento da lista de palavras acima)
+                const partes  : Array<string>  = linha.split(/\s+/);
+                const comando : string         = partes[0];
+
+                // (3) - Interpreta o comando atual
+                this._interpretarInstrucaoOBJ( comando, partes );
+            }
         }
 
-        const objectKeys : Array<string> = Object.keys( this.objetos );
+        const nomesPartes : Array<string> = Object.keys( this.objetos );
+        const qtdePartes  : int           = nomesPartes.length;
 
         // Obtem os nomes dos objetos
-        this.nomesObjetos = objectKeys;
+        this.nomesObjetos = nomesPartes;
+        this.qtdePartes   = qtdePartes;
 
-        let mapaIndicesVertices  : Mapa<string, number>  = new Mapa<string, number>();
-        let indiceAtual          : number = 0;
+        let mapaIndicesVertices  : Mapa<string, int>  = new Mapa<string, int>();
+        let indiceAtual          : int = 0;
 
-        for (let i = 0; i < objectKeys.length; i++) 
+        for (let i:int = 0; i < qtdePartes; i++) 
         {
-            const nomeParte    : string             = objectKeys[ i ];
-            const facesParte   : Array<FaceObjeto>  = this.objetos[ nomeParte ];
+            const nomeParte      : string              = nomesPartes[ i ];
+            const facesParte     : Array<FaceObjeto>   = this.objetos[ nomeParte ];
+            const qtdeFacesParte : int                 = facesParte.length;
 
-            for (let j = 0; j < facesParte.length; j++) 
+            for (let j:int = 0; j < qtdeFacesParte; j++) 
             {
-                const faceAtual    : FaceObjeto    = facesParte[j];
-                const indicesFaces : Array<float>  = new Array();
+                const faceAtual              : FaceObjeto           = facesParte[j];
+                const dadosFaceAtual         : Array<VerticesFace>  = faceAtual.dadosFace;
+                const qtdeVerticesFaceAtual  : int                  = dadosFaceAtual.length;
+                const indicesFaces           : Array<float>         = new Array();
 
-                for (let k = 0; k < faceAtual.dadosFace.length; k++) 
+                for (let k:int = 0; k < qtdeVerticesFaceAtual; k++) 
                 {
                     const verticeAtual   : VerticesFace  = faceAtual.dadosFace[k];
                     const keyVertice     : string        = String(verticeAtual.indiceVertice) + '/' + String(verticeAtual.indiceTextura) + '/' + String(verticeAtual.indiceNormal);    // Concatena os valores que vem no .OBJ para usar como chave
@@ -447,7 +484,7 @@ export class OBJMesh extends VisualMesh
                     indicesFaces.push( mapaIndicesVertices[ keyVertice ] );
                 }
 
-                for (let k = 1; k < indicesFaces.length - 1; k++) 
+                for (let k:int = 1; k < indicesFaces.length - 1; k++) 
                 {
                     this.indices.push( indicesFaces[0]     );
                     this.indices.push( indicesFaces[k]     );
@@ -460,24 +497,25 @@ export class OBJMesh extends VisualMesh
         * Mapeia os indices para cada objeto a ser desenhado,
         * Organiza os buffers de posições, cores, UVs e indices.
         */
-        mapaIndicesVertices = new Mapa<string, number>();
+        mapaIndicesVertices = new Mapa<string, int>();
         indiceAtual = 0;
 
         this.indices = []; // reseta para montar os índices gerais
 
-        this.objetosInfo       = new Mapa<string, OffsetCount>();              // objeto para guardar offset/count por objeto
+        this.objetosInfo       = new Mapa<string, ContagemIndicesParteOBJ>();              // objeto para guardar offset/count dos indices de cada parte do objeto
         this.iluminationInfo   = new Mapa<string, IluminacaoGeralOBJMesh>();   // Iluminação por objeto dentro desse OBJ, por padrão será iniciado com valores padrão
         this.iluminationTotal  = new Mapa<string, IluminacaoTotalParte>();     // A iluminação total de cada objeto individualmente(ou seja, que a soma da iluminação do propio objeto em si, com a iluminação global do meu mini renderizador, e com a iluminação local acumulada de todas as luzes proximas ao objeto, e com isso temos o que chamei de iluminação total da parte/objeto)
 
-        let globalIndexCount = 0; // para contar índice total gerado
+        let qtdeIndicesGlobais = 0; // para contar índice total gerado
 
-        for (let i = 0; i < objectKeys.length; i++) 
+        for (let i:int = 0; i < qtdePartes; i++) 
         {
-            const nomeParte   : string               = objectKeys[ i ];
-            const facesParte  : Array<FaceObjeto>    = this.objetos[ nomeParte ];
-            const startIndex  : number               = globalIndexCount;  // índice inicial no buffer geral
+            const nomeParte      : string               = nomesPartes[ i ];
+            const facesParte     : Array<FaceObjeto>    = this.objetos[ nomeParte ];
+            const qtdeFacesParte : int                  = facesParte.length;
+            const indiceInicial  : int                  = qtdeIndicesGlobais;  // índice inicial no buffer geral
 
-            let localIndexCount : number = 0;  // conta índices desse objeto só
+            let qtdeIndicesParte : int = 0;  // conta índices desse objeto só
 
             /**
             * Define a iluminação do objeto como sendo a iluminação padrão
@@ -515,12 +553,14 @@ export class OBJMesh extends VisualMesh
                 intensidadeLuzObjeto : 0
             };
 
-            for (let j = 0; j < facesParte.length; j++) 
+            for (let j:int = 0; j < qtdeFacesParte; j++) 
             {
-                const faceAtual    : FaceObjeto           = facesParte[j];
-                const indicesFaces : Array<float>         = new Array();
+                const faceAtual              : FaceObjeto           = facesParte[j];
+                const dadosFaceAtual         : Array<VerticesFace>  = faceAtual.dadosFace;
+                const qtdeVerticesFaceAtual  : int                  = dadosFaceAtual.length;
+                const indicesFaces           : Array<float>         = new Array();
 
-                for (let k = 0; k < faceAtual.dadosFace.length; k++) 
+                for (let k:int = 0; k < qtdeVerticesFaceAtual; k++) 
                 {
                     const verticeAtual   : VerticesFace   = faceAtual.dadosFace[k];
                     const keyVertice     : string         = String(verticeAtual.indiceVertice) + '/' + String(verticeAtual.indiceTextura) + '/' + String(verticeAtual.indiceNormal);   // Concatena os valores que vem no .OBJ para usar como chave
@@ -562,41 +602,41 @@ export class OBJMesh extends VisualMesh
                 }
 
                 // triangula a face atual (assumindo que faceAtual.dadosFace.length >= 3)
-                for (let k = 1; k < indicesFaces.length - 1; k++) 
+                for (let k:int = 1; k < indicesFaces.length - 1; k++) 
                 {
                     this.indices.push( indicesFaces[0]       );
                     this.indices.push( indicesFaces[k]       );
                     this.indices.push( indicesFaces[k + 1]   );
 
-                    localIndexCount  += 3;
-                    globalIndexCount += 3;
+                    qtdeIndicesParte   += 3;
+                    qtdeIndicesGlobais += 3;
                 }
             }
 
             // Armazena o offset em bytes (3 índices * 2 bytes por índice cada) e a contagem de índices
             this.objetosInfo[ nomeParte ] = {
-                offset : startIndex * 2, // offset em bytes, pois drawElements espera offset em bytes
-                count  : localIndexCount
+                indiceInicialParte      : indiceInicial * 2, // indica onde os indices da parte atual começam dentro do buffer de indices(global), pois drawElements espera offset em bytes
+                quantidadeIndicesParte  : qtdeIndicesParte
             };
         }
     }
 
-    getPositions() 
+    getPositions() : Array<float>
     {
         return this.positions;
     }
 
-    getColors() 
+    getColors() : Array<float>
     {
         return this.cores;
     }
 
-    getIndices() 
+    getIndices() : Array<float>
     {
         return this.indices;
     }
 
-    getUVs() 
+    getUVs() : Array<float>
     {
         return this.uvArray || [];
     }
@@ -605,7 +645,7 @@ export class OBJMesh extends VisualMesh
     * @override
     * @implementation
     */
-    isTransparente()
+    isTransparente() : boolean
     {
         return this.transparencia < 1 || this._isTransparente == true;
     }
@@ -614,7 +654,7 @@ export class OBJMesh extends VisualMesh
     * Define a iluminação do objeto como um todo 
     * @override
     */
-    setIntireIlumination( iluminationDefinition:any={} )
+    setIntireIlumination( iluminationDefinition:any={} ) : void
     {
         this.brilhoObjeto   = iluminationDefinition.brilhoObjeto;
         this.ambientObjeto  = iluminationDefinition.ambientObjeto;
@@ -631,7 +671,7 @@ export class OBJMesh extends VisualMesh
         // Se todos os filhos(subojetos) usam iluminação individual
         if( this.childrenIndividualLights == true )
         {
-            for( let i = 0 ; i < this.nomesObjetos.length ; i++ )
+            for( let i:int = 0 ; i < this.nomesObjetos.length ; i++ )
             {
                 const nomeParte : string = this.nomesObjetos[i];
 
@@ -651,32 +691,32 @@ export class OBJMesh extends VisualMesh
     /**
     * Abaixo criei métodos para permitir obter, pesquisar, e manipular partes do modelo, individualmente, ou em grupo
     */
-    getObjetos()
+    getObjetos() : Mapa<string, Array<FaceObjeto>>
     {
         return this.objetos;
     }
 
-    getPartes()
+    getPartes() : Mapa<string, Array<FaceObjeto>>
     {
         return this.objetos;
     }
 
-    getNomesObjetos()
+    getNomesObjetos() : Array<string>
     {
         return this.nomesObjetos;
     }
 
-    getNomesPartes()
+    getNomesPartes() : Array<string>
     {
         return this.nomesObjetos;
     }
 
-    getParteByIndex( index=0 )
+    getParteByIndex( index:int = 0 ) : Ponteiro<Array<FaceObjeto>>
     {
         return this.objetos[ this.nomesObjetos[ index ] ];
     }
 
-    getParteByName( nomeParte:string )
+    getParteByName( nomeParte:string ) : Ponteiro<Array<FaceObjeto>>
     {
         return this.objetos[ nomeParte ];
     }
@@ -687,11 +727,13 @@ export class OBJMesh extends VisualMesh
     queryPartes( criterio="nome", 
                  operador="like", 
                  valorPesquisar="" 
-    ){
+
+    ) : Array<Array<FaceObjeto>> 
+    {
         const partes      = []; // Com referencia(Array de ponteiros)
         const nomesPartes = []; // Se precisar 
 
-        for( let i = 0 ; i < this.nomesObjetos.length ; i++ )
+        for( let i:int = 0 ; i < this.nomesObjetos.length ; i++ )
         {
             const nomeParte        : string              = this.nomesObjetos[i];
             const referenciaParte  : Array<FaceObjeto>   = this.objetos[ nomeParte ];
@@ -714,7 +756,7 @@ export class OBJMesh extends VisualMesh
             {
                 let parteTemMaterial = false;
 
-                for( let j = 0 ; j < referenciaParte.length ; j++ )
+                for( let j:int = 0 ; j < referenciaParte.length ; j++ )
                 {
                     const pedacoParte  : FaceObjeto  = referenciaParte[j];
                     const nomeMaterial : string      = pedacoParte.nomeMaterial;
@@ -760,10 +802,10 @@ export class OBJMesh extends VisualMesh
     *  (1) Somar X, Y e Z de todos os vertices, fazendo uma acumulação
     *  (2) Dividir pela quantidade de vertices
     */
-    calcularCentroideParte( nomeParte:string ): number[]
+    calcularCentroideParte( nomeParte:string ): Array<float>
     {
-        let qtdeVerticesParte       = 0;
-        let verticesParte           = new Array<Array<float>>;  // Matrix<float>
+        let qtdeVerticesParte : int            = 0;
+        let verticesParte     : Matrix<float>  = new Array<Array<float>>;  // Matrix<float>
 
         // Se for apenas um vertice
         if( this.nomesObjetos.length == 1 )
@@ -791,7 +833,7 @@ export class OBJMesh extends VisualMesh
         let ySomado       = 0;
         let zSomado       = 0; 
     
-        for ( let i = 0 ; i < totalVertices ; i++ ) 
+        for ( let i:int = 0 ; i < totalVertices ; i++ ) 
         {
             const verticeAtual = verticesParte[i];
 
@@ -813,19 +855,19 @@ export class OBJMesh extends VisualMesh
     * FORMULA MATEMATICA:
     *    posicaoGlobalParte = matrixModeloObjetoVisual * posicaoLocalParte
     */
-    calcularCentroideGlobalParte( nomeParte:string ): number[]
+    calcularCentroideGlobalParte( nomeParte:string ): Array<float>
     {
-        const matrixModeloObjetoVisual = this.modeloObjetoVisual;
-        const centroLocalParte         = this.calcularCentroideParte( nomeParte );
+        const matrixModeloObjetoVisual : Ponteiro<Float32Array<ArrayBufferLike>>  = this.modeloObjetoVisual;
+        const centroLocalParte         : Array<float>                             = this.calcularCentroideParte( nomeParte );
 
-        const centroLocalParte4        = [ 
-                                           centroLocalParte[0], 
-                                           centroLocalParte[1], 
-                                           centroLocalParte[2], 
-                                           1 
-                                         ]; // o 1 é constante para posições
+        const centroLocalParte4        : Array<float> = [ 
+                                                            centroLocalParte[0], 
+                                                            centroLocalParte[1], 
+                                                            centroLocalParte[2], 
+                                                            1 // o 1 é constante para posições
+                                                        ]; 
 
-        const posicaoGlobalParte       = MultiplicarMatrix4x4PorVetor4( matrixModeloObjetoVisual!, centroLocalParte4 );
+        const posicaoGlobalParte       : Array<float> = MultiplicarMatrix4x4PorVetor4( matrixModeloObjetoVisual!, centroLocalParte4 );
 
         return posicaoGlobalParte;
     }
@@ -836,20 +878,20 @@ export class OBJMesh extends VisualMesh
     queryVerticesCoordenadas( minXYZ=Array(), maxXYZ=Array(), expansion=1, trazerNomeParte=true )
     {
         // Min Max X
-        const minX = minXYZ[0] * expansion;
-        const maxX = maxXYZ[0] * expansion;
+        const minX : float  = minXYZ[0] * expansion;
+        const maxX : float  = maxXYZ[0] * expansion;
 
         // Min Max Y
-        const minY = minXYZ[1] * expansion;
-        const maxY = maxXYZ[1] * expansion;
+        const minY : float  = minXYZ[1] * expansion;
+        const maxY : float  = maxXYZ[1] * expansion;
 
         // Min Max Z
-        const minZ = minXYZ[2] * expansion;
-        const maxZ = maxXYZ[2] * expansion;
+        const minZ : float  = minXYZ[2] * expansion;
+        const maxZ : float  = maxXYZ[2] * expansion;
 
 
         // detalhes dos vertices
-        const verticesInfo = [];
+        const verticesInfo : Array<any> = [];
 
         /**
         * Cada vértice ocupa 3 posições na memoria (X, Y, Z)
@@ -865,9 +907,9 @@ export class OBJMesh extends VisualMesh
         * Esses pregos dizem onde estão os cantos das superfícies do modelo.
         * O WebGL liga esses pregos formando faces e triângulos, criando o modelo visual. 
         */
-        const totalVertices = this.vertices.length;
+        const totalVertices : int  = this.vertices.length;
 
-        for( let i = 0 ; i < totalVertices ; i++ )
+        for( let i:int = 0 ; i < totalVertices ; i++ )
         {
             const verticeAtual       = this.vertices[ i ];
             const indiceVertice      = i;
@@ -889,7 +931,7 @@ export class OBJMesh extends VisualMesh
                     // Descobre o nome da parte associada ao tal vertice
                     // Para cada uma das partes
                     /*
-                    for( let j = 0 ; j < this.nomesObjetos.length ; j++ )
+                    for( let j:int = 0 ; j < this.nomesObjetos.length ; j++ )
                     {
                         const nomeParte       = this.nomesObjetos[j];
                         const referenciaParte = this.objetos[ nomeParte ];
@@ -931,25 +973,24 @@ export class OBJMesh extends VisualMesh
     * renderizador.getObjetos()[11].queryPartesCoordenadas( [0,0,0], [1,1,1], 1 )
     * 
     */
-    queryPartesCoordenadas( minXYZ=Array(), maxXYZ=Array(), expansion=1 )
+    queryPartesCoordenadas( minXYZ=Array(), maxXYZ=Array(), expansion=1 ) : Array<Array<any>>
     {
         // Min Max X
-        const minX = minXYZ[0] * expansion;
-        const maxX = maxXYZ[0] * expansion;
+        const minX : float  = minXYZ[0] * expansion;
+        const maxX : float  = maxXYZ[0] * expansion;
 
         // Min Max Y
-        const minY = minXYZ[1] * expansion;
-        const maxY = maxXYZ[1] * expansion;
+        const minY : float  = minXYZ[1] * expansion;
+        const maxY : float  = maxXYZ[1] * expansion;
 
         // Min Max Z
-        const minZ = minXYZ[2] * expansion;
-        const maxZ = maxXYZ[2] * expansion;
+        const minZ : float  = minXYZ[2] * expansion;
+        const maxZ : float  = maxXYZ[2] * expansion;
 
-
-        const partes = []; // Array de ponteiros
+        const partes : Matrix<any> = []; // Array de ponteiros
 
         // Para cada uma das partes
-        for( let i = 0 ; i < this.nomesObjetos.length ; i++ )
+        for( let i:int = 0 ; i < this.nomesObjetos.length ; i++ )
         {
             const nomeParte       = this.nomesObjetos[i];
             const referenciaParte = this.objetos[ nomeParte ];
@@ -986,7 +1027,7 @@ export class OBJMesh extends VisualMesh
                 // Para cada vertice da parte
                 let parteEstaNaZona   = false;
 
-                for( let j = 0 ; j < totalVerticesParte ; j++ )
+                for( let j:int = 0 ; j < totalVerticesParte ; j++ )
                 {
                     const verticeAtual_Parte = verticesParte[ j ];
                     const xVertice           = verticeAtual_Parte[ 0 ];
@@ -1021,20 +1062,21 @@ export class OBJMesh extends VisualMesh
     /**
     * Causa uma deformação em alguma parte do modelo, igual no CuboDeformavelMesh.js
     */
-    deformarVerticePorProximidade(xAlvo:number, yAlvo:number, zAlvo:number, raio:number, intensidade:number) 
+    deformarVerticePorProximidade(xAlvo:float, yAlvo:float, zAlvo:float, raio:float, intensidade:float) : void
     {
-        const vertices = this.getPositions();
+        const vertices : Array<float>  = this.getPositions();
 
-        for (let i = 0; i < vertices.length; i += 3) 
+        for (let i:int = 0; i < vertices.length; i += 3) 
         {
-            const dx = vertices[i]     - xAlvo;
-            const dy = vertices[i + 1] - yAlvo;
-            const dz = vertices[i + 2] - zAlvo;
-            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            const dx   : float  = vertices[i]     - xAlvo;
+            const dy   : float  = vertices[i + 1] - yAlvo;
+            const dz   : float  = vertices[i + 2] - zAlvo;
+            const dist : float  = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
             if (dist < raio && dist > 0.00001) 
             {
-                const fator = Math.cos((dist / raio) * Math.PI) * intensidade;
+                const fator : float  = Math.cos((dist / raio) * Math.PI) * intensidade;
+
                 vertices[i]     += (dx / dist) * fator;
                 vertices[i + 1] += (dy / dist) * fator;
                 vertices[i + 2] += (dz / dist) * fator;
@@ -1045,13 +1087,13 @@ export class OBJMesh extends VisualMesh
         this.renderer.atualizarVerticesPosicao( this, vertices );
     }
 
-    atualizarDesenho() 
+    atualizarDesenho() : void
     {
         // Atributos visuais 
-        const meshConfig = this.meshConfig;
-        const position   = meshConfig.position;
-        const rotation   = meshConfig.rotation;
-        const scale      = meshConfig.scale;
+        const meshConfig : VisualMeshConfig  = this.meshConfig;
+        const position   : Position3D        = meshConfig.position;
+        const rotation   : Position3D        = meshConfig.rotation;
+        const scale      : Position3D        = meshConfig.scale;
 
         // Copia os valores do renderer que o objeto acompanha
         this.copiarValoresRenderer();
@@ -1116,7 +1158,7 @@ export class OBJMesh extends VisualMesh
         //debugger
     }
 
-    criar() 
+    criar() : void
     {
         this.atualizarDesenho();
     }

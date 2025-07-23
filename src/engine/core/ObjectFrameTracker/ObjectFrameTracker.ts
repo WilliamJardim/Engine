@@ -12,7 +12,7 @@ import ObjectScale         from "../../interfaces/main_engine/ObjectScale";
 import ObjectVelocity      from "../../interfaces/main_engine/ObjectVelocity";
 import AbstractObjectBase  from "../AbstractObjectBase";
 import ObjectFrameData, { FrameDataOrder } from "./ObjectFrameData";
-import { Ponteiro }        from "../../types/types-cpp-like";
+import { float, int, Ponteiro }        from "../../types/types-cpp-like";
 
 /**
 * Vai guardar todas as informações relevantes do objeto dentro do array frameData, após cada frame 
@@ -48,8 +48,8 @@ export default class ObjectFrameTracker{
     public logObject( order       : FrameDataOrder, //"After" ou "Before" Object Update
                       firstRender : boolean, 
                       renderizadorPronto: boolean, 
-                      frameDelta  : number, 
-                      frameNumber : number 
+                      frameDelta  : float, 
+                      frameNumber : int 
     ): void{   
         const objeto : Ponteiro<AbstractObjectBase> = this.objetoVinculado;
 
@@ -80,7 +80,7 @@ export default class ObjectFrameTracker{
     /**
     * Obtem um registro 
     */
-    public getFrameByIndex( frameIndex: number ): ObjectFrameData
+    public getFrameByIndex( frameIndex: float ): ObjectFrameData
     {   
         return this.frameData[ frameIndex ];
     }
@@ -101,7 +101,7 @@ export default class ObjectFrameTracker{
         const framesEncontrados: Array<ObjectFrameData> = new Array();
 
         // Para cada registro de frame deste objeto
-        for( let i = 0 ; i < this.frameData.length ; i++ )
+        for( let i:int = 0 ; i < this.frameData.length ; i++ )
         {
             const dadosFrame: ObjectFrameData = this.getFrameByIndex( i );
 
@@ -122,7 +122,7 @@ export default class ObjectFrameTracker{
         const framesEncontrados: Array<ObjectFrameData> = new Array();
 
         // Para cada registro de frame deste objeto
-        for( let i = 0 ; i < this.frameData.length ; i++ )
+        for( let i:int = 0 ; i < this.frameData.length ; i++ )
         {
             const dadosFrame: ObjectFrameData = this.getFrameByIndex( i );
 
@@ -141,8 +141,8 @@ export default class ObjectFrameTracker{
     public queryFrames(
         parametrosBuscaFrames: {
             order      : string,
-            startFrame : number,
-            endFrame   : number
+            startFrame : int,
+            endFrame   : int
         }
 
     ): Array<ObjectFrameData> {
@@ -151,7 +151,7 @@ export default class ObjectFrameTracker{
         const framesEncontrados: Array<ObjectFrameData> = new Array();
 
         // Para cada registro de frame deste objeto
-        for( let i = 0 ; i < this.frameData.length ; i++ )
+        for( let i:int = 0 ; i < this.frameData.length ; i++ )
         {
             const dadosFrame: ObjectFrameData = this.getFrameByIndex( i );
 

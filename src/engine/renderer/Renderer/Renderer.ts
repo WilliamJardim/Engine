@@ -49,7 +49,7 @@ import { Triangulo2DMesh } from '../Mesh/colored/Triangulo2DMesh.ts';
 import { Triangulo3DMesh } from '../Mesh/colored/Triangulo3DMesh.ts';
 import { OBJMesh } from '../Mesh/OBJMesh.ts';
 import { Light } from '../Mesh/Light.js';
-import { float, Ponteiro } from '../../types/types-cpp-like.js';
+import { float, int, Ponteiro } from '../../types/types-cpp-like.js';
 import Mapa from '../../utils/dicionarios/Mapa.js';
 import { VisualMesh } from '../Mesh/VisualMesh.ts';
 import InformacoesPrograma from '../../interfaces/render_engine/InformacoesPrograma.ts';
@@ -64,21 +64,21 @@ export class Renderer
     public canvas        : React.RefObject<HTMLCanvasElement>;
     public skyTexture    : Ponteiro<WebGLTexture>;
     public skyQuadBuffer : Ponteiro<WebGLBuffer>;
-    public ambient       : number;
-    public diffuse       : number;
-    public specular      : number;
-    public brilho        : number;
-    public corAmbient    : Array<number>;
+    public ambient       : float;
+    public diffuse       : float;
+    public specular      : float;
+    public brilho        : float;
+    public corAmbient    : Array<float>;
 
-    public intensidadeLuz           : number;
+    public intensidadeLuz           : float;
     public childrenIndividualLights : boolean;
     public useAccumulatedLights     : boolean;
     public staticAccumulatedLights  : boolean;
 
     public frameCounter   : FrameCounter;
-    public lastFrameDelta : number;
-    public width          : number;
-    public height         : number;
+    public lastFrameDelta : float;
+    public width          : float;
+    public height         : float;
     public gl             : WebGL2RenderingContext;
     public glVersion      : string;
 
@@ -95,10 +95,10 @@ export class Renderer
     public programs : Mapa<string, WebGLProgram>;
     
     public tipoPerspectiva  : string;
-    public anguloVisaoY     : number;
-    public aspectoCamera    : number;
-    public pPerto           : number;
-    public pLonge           : number;
+    public anguloVisaoY     : float;
+    public aspectoCamera    : float;
+    public pPerto           : float;
+    public pLonge           : float;
 
     public mapaTexturasCarregadas : Mapa<string, WebGLTexture>;
     
@@ -326,7 +326,7 @@ export class Renderer
     {
         const gl : WebGL2RenderingContext = this.gl;
 
-        for( let i = 0 ; i < this.objetos.length ; i++ )
+        for( let i:int = 0 ; i < this.objetos.length ; i++ )
         {
             const objetoAtual               : VisualMesh           = this.objetos[i];
             const informacoesProgramaObjeto : InformacoesPrograma  = this.getInformacoesProgramaObjeto( gl, objetoAtual );
@@ -408,7 +408,7 @@ export class Renderer
 
     // chamada sempre que vão haver mudanças de camera, como no loop de renderização dos objetos, etc.
     // OBS: a matrixVisualizacao ja inclui o ponto de vista da camera, já está embutido
-    updateCamera( frameDelta:number ) : void
+    updateCamera( frameDelta:float ) : void
     {
         this.matrixPontoVista   = CriarMatrixPontoVista( frameDelta, "FPS", this.posicaoCamera, this.miraCamera, this.sentidoCamera );
         this.matrixVisualizacao = MultiplicarMatrix4x4( new Float32Array(16), this.matrixCamera, this.matrixPontoVista );
@@ -696,7 +696,7 @@ export class Renderer
                     objetoAtual.corLocalAcumulado             = [0,0,0];
                     objetoAtual.intensidadeLocalAcumulado     = 0;
 
-                    for( let i = 0 ; i < luzesCena.length ; i++ )
+                    for( let i:int = 0 ; i < luzesCena.length ; i++ )
                     {
                         const luz                = luzesCena[i];
 
@@ -889,7 +889,7 @@ export class Renderer
     * Uma função genérica, e que pode ser chamada aqui dentro, para qualquer objeto.
     * Vou usar ela no método desenharObjetos abaixo
     */
-    desenharUmObjeto( frameDelta:number, 
+    desenharUmObjeto( frameDelta:float, 
                       objetoAtual:Ponteiro<VisualMesh>
     ): void
     {
@@ -905,7 +905,7 @@ export class Renderer
             */
             const tipoObjeto                : string             = objetoAtual.tipo;
             const isTransparente            : boolean            = objetoAtual.isTransparente();
-            const transparenciaObjeto       : number             = objetoAtual.transparencia;
+            const transparenciaObjeto       : float              = objetoAtual.transparencia;
 
             /**
             * Dados de desenho 
@@ -1030,7 +1030,7 @@ export class Renderer
                     /**
                     * Desenha cada face com sua respectiva textura
                     */
-                    for( let i = 0; i < 6; i++ )
+                    for( let i:int = 0; i < 6; i++ )
                     {
                         // Vincula a textura da face i
                         gl.activeTexture(gl.TEXTURE0);
@@ -1043,15 +1043,15 @@ export class Renderer
 
                         // Desenha só os índices daquela face (passa o offset correto)
                         // O offset do drawElements é em bytes. Cada índice é um UNSIGNED_SHORT (2 bytes).
-                        const offset = 6 * i * 2; // 6 indices por face * i * 2 bytes por indice
-                        gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, offset);
+                        const indiceInicioFace = 6 * i * 2; // 6 indices por face * i * 2 bytes por indice
+                        gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, indiceInicioFace);
                     }
 
                 }else if( objetoAtual.tipo == "OBJ"){
                     /**
                     * Desenha cada objeto dentro deste OBJ 
                     */
-                    for ( let i = 0 ; i < objetoAtual.nomesObjetos.length ; i++ ) 
+                    for ( let i:int = 0 ; i < objetoAtual.nomesObjetos.length ; i++ ) 
                     {
                         const nomeParte   = objetoAtual.nomesObjetos[i];
                         const info        = objetoAtual.objetosInfo[ nomeParte ];
@@ -1097,7 +1097,7 @@ export class Renderer
                                     /**
                                     * Calcula o recebimento de todas as luzes que afeta essa parte 
                                     */
-                                    for( let j = 0 ; j < luzesCena.length ; j++ )
+                                    for( let j:int = 0 ; j < luzesCena.length ; j++ )
                                     {
                                         // Calcula a força da luz em relação a posição do objeto atual(do primeiro laço FOR)
                                         const luz               = luzesCena[j];
@@ -1199,7 +1199,7 @@ export class Renderer
                                                             );
                         }
 
-                        gl.drawElements(gl.TRIANGLES, info.count, gl.UNSIGNED_SHORT, info.offset);
+                        gl.drawElements(gl.TRIANGLES, info.quantidadeIndicesParte, gl.UNSIGNED_SHORT, info.indiceInicialParte);
 
                         // Se foi usado transparencia, desliga a excessão, e volta ao padrão
                         if( opacidade < 1 )
@@ -1243,7 +1243,7 @@ export class Renderer
         gl.enable(this.gl.DEPTH_TEST);
         gl.enable(this.gl.CULL_FACE);
 
-        for( let i = 0 ; i < objetosVisuais.length ; i++ )
+        for( let i:int = 0 ; i < objetosVisuais.length ; i++ )
         {
             const objetoAtual         = objetosVisuais[i];
             const isInvisivel         = objetoAtual.invisivel;
@@ -1268,7 +1268,7 @@ export class Renderer
         gl.enable(this.gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-        for( let i = 0 ; i < objetosVisuais.length ; i++ )
+        for( let i:int = 0 ; i < objetosVisuais.length ; i++ )
         {
             const objetoAtual     = objetosVisuais[i];
             const isInvisivel     = objetoAtual.invisivel;
@@ -1299,7 +1299,7 @@ export class Renderer
     }
 
     // SERIA NECESSARIO ADAPTAR NO C++ POR CAUSA DE CONTEXTO DE BIND
-    render(now:number) : void
+    render(now:float) : void
     {
         requestAnimationFrame(this.render);
 
@@ -1320,7 +1320,7 @@ export class Renderer
         const objetos      = []; // Com referencia(Array de ponteiros)
         const nomesObjetos = []; // Se precisar 
 
-        for( let i = 0 ; i < this.objetos.length ; i++ )
+        for( let i:int = 0 ; i < this.objetos.length ; i++ )
         {
             const objeto  = this.objetos[i];
 

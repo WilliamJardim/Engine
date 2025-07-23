@@ -7,12 +7,14 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import { int } from "../../types/types-cpp-like";
+
 export default function includeString( array: Array<string>, 
                                        strProcurando: string 
 ){   
     let tem = false;
 
-    for( let i = 0 ; array.length ;  i++ )
+    for( let i:int = 0 ; array.length ;  i++ )
     {
         if( array[i] == strProcurando )
         {

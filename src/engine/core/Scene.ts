@@ -30,7 +30,7 @@ import LocalSound            from "./LocalSound.ts";
 import { EngineMain }        from '../main'; // Importa a função EngineMain
 import { EngineLoop }        from '../main'; // Importa a função EngineLoop
 import { EngineBeforeLoop }  from '../main' //Importa a função EngineBeforeLoop
-import { Ponteiro }          from "../types/types-cpp-like.ts";
+import { float, int, Ponteiro }          from "../types/types-cpp-like.ts";
 import { Light }             from '../core/Light.ts';
 
 export default class Scene
@@ -40,13 +40,13 @@ export default class Scene
     public sceneCounter   : FrameCounter;
 
     public gravity                              : Position3D;
-    public normalSpeed                          : number = 0.05;
-    public slowSpeed                            : number = 0.05;
-    public frameDeltaIntensification            : number = this.normalSpeed;
-    public objectPhysicsUpdateRate              : number = 1; //Permite intensificar os efeitos da fisica nos objetos
-    public objectPhysicsDesaceleracaoUpdateRate : number = 9.5; //Afeta a velocidade de desaceleracao de objetos
-    public atrito                               : number = 1;
-    public arrastoAr                            : number = 1;
+    public normalSpeed                          : float = 0.05;
+    public slowSpeed                            : float = 0.05;
+    public frameDeltaIntensification            : float = this.normalSpeed;
+    public objectPhysicsUpdateRate              : float = 1; //Permite intensificar os efeitos da fisica nos objetos
+    public objectPhysicsDesaceleracaoUpdateRate : float = 9.5; //Afeta a velocidade de desaceleracao de objetos
+    public atrito                               : float = 1;
+    public arrastoAr                            : float = 1;
 
     public objects               : Array<Ponteiro<AbstractObjectBase>>;
     public lights                : Array<Ponteiro<Light>>;
@@ -427,7 +427,7 @@ export default class Scene
         }
 
         //Remove o objeto da cena
-        for( let i = 0 ; i < scene.objects.length ; i++ )
+        for( let i:int = 0 ; i < scene.objects.length ; i++ )
         {
             const objetoAtual : Ponteiro<AbstractObjectBase> = scene.objects[i];
 
@@ -443,8 +443,8 @@ export default class Scene
     }
 
     //Função que chama o loop "animate"
-    public loop( frameDelta: number, 
-                 frameNumber: number,
+    public loop( frameDelta: float, 
+                 frameNumber: int,
                  firstRender: boolean = true, 
                  renderizadorPronto: boolean = false 
     ){
@@ -476,7 +476,7 @@ export default class Scene
     /**
     * Update in general  
     */
-    public updateGeneral( firstRender:boolean, renderizadorPronto:boolean, frameDelta:number, frameNumber: number )
+    public updateGeneral( firstRender:boolean, renderizadorPronto:boolean, frameDelta:float, frameNumber: int )
     {
         this.updateCollisionReactions(firstRender, renderizadorPronto, frameDelta, frameNumber);
     }
@@ -484,13 +484,13 @@ export default class Scene
     /**
     * Update object collision reaction 
     */
-    public updateCollisionReactions(firstRender:boolean, renderizadorPronto:boolean, frameDelta:number, frameNumber: number)
+    public updateCollisionReactions(firstRender:boolean, renderizadorPronto:boolean, frameDelta:float, frameNumber: int)
     {
         const objetosCena: Array<Ponteiro<AbstractObjectBase>> = this.objects;
 
-        for (let i = 0; i < objetosCena.length; i++) 
+        for (let i:int = 0; i < objetosCena.length; i++) 
         {
-            for (let j = 0; j < objetosCena.length; j++) 
+            for (let j:int = 0; j < objetosCena.length; j++) 
             {
                 /**
                 * Ambos os objetos envolvidos: A e B, respectivamente
@@ -519,7 +519,7 @@ export default class Scene
                     /**
                     * Parametros da perca e tranferencia de velocidade 
                     */
-                    const porcentagemPerca : number  = 90; // Porcentagem de perca de velocidade ao colidir
+                    const porcentagemPerca : float  = 90; // Porcentagem de perca de velocidade ao colidir
 
                     if( objetoA.name != "Player" && objetoB.name != "Player" )
                     {
@@ -539,7 +539,7 @@ export default class Scene
                             //No eixo X
                             if( velocidadeX_objetoA != 0 )
                             {
-                                const percaX_objetoA : number  = (porcentagemPerca/100) * velocidadeX_objetoA;
+                                const percaX_objetoA           : float   = (porcentagemPerca/100) * velocidadeX_objetoA;
                                 const objetoA_isMovingForward  : boolean = movementA.forward  ? true : false;
                                 const objetoA_isMovingBackward : boolean = movementA.backward ? true : false;
 
@@ -587,7 +587,7 @@ export default class Scene
                             //No eixo Z
                             if( velocidadeZ_objetoA != 0 )
                             {
-                                const percaZ_objetoA : number  = (porcentagemPerca/100) * velocidadeZ_objetoA;
+                                const percaZ_objetoA         : float   = (porcentagemPerca/100) * velocidadeZ_objetoA;
                                 const objetoA_isMovingRight  : boolean = movementA.right  ? true : false;
                                 const objetoA_isMovingLeft   : boolean = movementA.left   ? true : false;
 
@@ -637,7 +637,7 @@ export default class Scene
                             //No eixo X
                             if( velocidadeX_objetoB != 0  )
                             {
-                                const percaX_objetoB : number  = (porcentagemPerca/100) * velocidadeX_objetoB;
+                                const percaX_objetoB           : float   = (porcentagemPerca/100) * velocidadeX_objetoB;
                                 const objetoB_isMovingForward  : boolean = movementB.forward  ? true : false;
                                 const objetoB_isMovingBackward : boolean = movementB.backward ? true : false;
 
@@ -685,7 +685,7 @@ export default class Scene
                             //No eixo Z
                             if( velocidadeZ_objetoB != 0  )
                             {
-                                const percaZ_objetoB : number  = (porcentagemPerca/100) * velocidadeZ_objetoB;
+                                const percaZ_objetoB         : float   = (porcentagemPerca/100) * velocidadeZ_objetoB;
                                 const objetoB_isMovingRight  : boolean = movementB.right  ? true : false;
                                 const objetoB_isMovingLeft   : boolean = movementB.left   ? true : false;
 
@@ -741,7 +741,7 @@ export default class Scene
     /**
     * Update all objects in the scene 
     */
-    public updateObjects( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void
+    public updateObjects( firstRender: boolean, renderizadorPronto: boolean, frameDelta:float, frameNumber: int ): void
     {
 
         const context      = this;
@@ -749,7 +749,7 @@ export default class Scene
 
         const updatableObjects = this.objects;
 
-        for( let i = 0 ; i < updatableObjects.length ; i++ )
+        for( let i:int = 0 ; i < updatableObjects.length ; i++ )
         {
             const currentObject : Ponteiro<AbstractObjectBase>   = updatableObjects[ i ];
         
@@ -758,7 +758,7 @@ export default class Scene
             {
                 const velocityBeforeUpdate : ObjectVelocity                 = {... currentObject.getVelocity()}; // Faz uma copia sem referencia
                 const velocitySinalyzerBeforeUpdate: VelocityStatus         = {... currentObject.velocitySinalyzer}; // Faz uma copia sem referencia
-                const currentObjectIndex : number = i;
+                const currentObjectIndex : int = i;
 
                 /**
                 * Atualiza uma tabela com os nomes dos objetos
@@ -814,12 +814,12 @@ export default class Scene
     }
 
     // Update all sounds in the scene
-    updateSounds( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void
+    updateSounds( firstRender: boolean, renderizadorPronto: boolean, frameDelta:float, frameNumber: int ): void
     {
         const context = this;
         const sounds  = this.sounds;
 
-        for( let i = 0 ; i < sounds.length ; i++ )
+        for( let i:int = 0 ; i < sounds.length ; i++ )
         {
             const currentSound = sounds[ i ];
             const currentSoundIndex = i;

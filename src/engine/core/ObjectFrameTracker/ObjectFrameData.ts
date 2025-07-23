@@ -10,14 +10,15 @@
 import ObjectPosition  from "../../interfaces/main_engine/ObjectPosition";
 import ObjectScale     from "../../interfaces/main_engine/ObjectScale";
 import ObjectVelocity  from "../../interfaces/main_engine/ObjectVelocity";
+import { float, int } from "../../types/types-cpp-like";
 
 export type FrameDataOrder = 'beforeUpdate' | 'afterUpdate';
 
 export default interface ObjectFrameData
 {
     order              : FrameDataOrder, //After or Before the object update
-    frameDelta         : number,
-    frameNumber        : number,
+    frameDelta         : float,
+    frameNumber        : int,
     firstRender        : boolean,
     renderizadorPronto : boolean,
     velocity           : ObjectVelocity,

@@ -7,6 +7,7 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import { float } from "../../types/types-cpp-like";
 import PhysicsState from "./PhysicsState"
 
 export default interface MovementState
@@ -17,6 +18,6 @@ export default interface MovementState
     right     : boolean,
     up        : boolean,
     down      : boolean,
-    steps     : number,       //Número de passos que o objeto dá(o tento que ele vai andar por movimentação baisca, em qualquer eixo)
+    steps     : float,        //Número de passos que o objeto dá(o tento que ele vai andar por movimentação baisca, em qualquer eixo)
     isJumping : boolean,      // Controle se está pulando ou não
 }

@@ -26,9 +26,10 @@ import {
     DefinirZ
 } from '../../../utils/render_engine/math.js';
 import { Renderer } from "../../Renderer/Renderer.js";
-import { Ponteiro } from "../../../types/types-cpp-like.js";
+import { float, int, Ponteiro } from "../../../types/types-cpp-like.js";
 import VisualMeshConfig from "../../../interfaces/render_engine/VisualMeshConfig.js";
 import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
+import Position3D from "../../../interfaces/main_engine/Position3D.js";
 
 export class EsferaMesh extends VisualMesh
 {
@@ -64,28 +65,28 @@ export class EsferaMesh extends VisualMesh
     /**
     * Obtem as posições de renderização do cubo 
     */
-    getPositions()
+    getPositions() : Array<float>
     {
-        const positions   = [];
-        const latitudes   = 30;
-        const longitudes  = 30;
-        const raio        = 1;
+        const positions  : Array<float>  = [];
+        const latitudes  : float         = 30;
+        const longitudes : float         = 30;
+        const raio       : int           = 1;
 
-        for (let lat = 0; lat <= latitudes; lat++) 
+        for (let lat:int = 0; lat <= latitudes; lat++) 
         {
-            const theta = lat * Math.PI / latitudes;
-            const sinTheta = Math.sin(theta);
-            const cosTheta = Math.cos(theta);
+            const theta    : float  = lat * Math.PI / latitudes;
+            const sinTheta : float  = Math.sin(theta);
+            const cosTheta : float  = Math.cos(theta);
 
-            for (let lon = 0; lon <= longitudes; lon++) 
+            for (let lon:int = 0; lon <= longitudes; lon++) 
             {
-                const phi = lon * 2 * Math.PI / longitudes;
-                const sinPhi = Math.sin(phi);
-                const cosPhi = Math.cos(phi);
+                const phi    : float  = lon * 2 * Math.PI / longitudes;
+                const sinPhi : float  = Math.sin(phi);
+                const cosPhi : float  = Math.cos(phi);
 
-                const x = raio * cosPhi * sinTheta;
-                const y = raio * cosTheta;
-                const z = raio * sinPhi * sinTheta;
+                const x : float  = raio * cosPhi * sinTheta;
+                const y : float  = raio * cosTheta;
+                const z : float  = raio * sinPhi * sinTheta;
 
                 positions.push(x, y, z);
             }
@@ -97,15 +98,15 @@ export class EsferaMesh extends VisualMesh
     /**
     * Obtem os indices de renderização do cubo 
     */
-    getIndices()
+    getIndices() : Array<float>
     {
-        const indices = [];
-        const latitudes = 30;
-        const longitudes = 30;
+        const indices    : Array<float> = [];
+        const latitudes  : float  = 30;
+        const longitudes : float  = 30;
 
-        for (let lat = 0; lat < latitudes; lat++) 
+        for (let lat:int = 0; lat < latitudes; lat++) 
         {
-            for (let lon = 0; lon < longitudes; lon++) 
+            for (let lon:int = 0; lon < longitudes; lon++) 
             {
                 const first = (lat * (longitudes + 1)) + lon;
                 const second = first + longitudes + 1;
@@ -121,7 +122,7 @@ export class EsferaMesh extends VisualMesh
     /**
     * Obtem as cores das faces do cubo, usados na renderização do cubo 
     */
-    getFaceColors()
+    getFaceColors() : Array<float>
     {
         return [];
     }
@@ -129,15 +130,15 @@ export class EsferaMesh extends VisualMesh
     /**
     * Cria o vetor de cores usando o getFaceColors
     */
-    getColors()
+    getColors() : Array<float>
     {
-        const cores = [];
-        const latitudes = 30;
-        const longitudes = 30;
-        const nivelTransparencia = this.getTransparencia();
+        const cores              : Array<float>  = [];
+        const latitudes          : float         = 30;
+        const longitudes         : float         = 30;
+        const nivelTransparencia : float         = this.getTransparencia();
 
-        for (let lat = 0; lat <= latitudes; lat++) {
-            for (let lon = 0; lon <= longitudes; lon++) {
+        for (let lat:int = 0; lat <= latitudes; lat++) {
+            for (let lon:int = 0; lon <= longitudes; lon++) {
                 // Aqui, cada vértice recebe uma cor RGBA
                 cores.push(1, 0, 0, nivelTransparencia); // vermelho como exemplo
             }
@@ -151,13 +152,13 @@ export class EsferaMesh extends VisualMesh
     * Implementação do método desenhar para especificamente desenhar um cubo
     * Converte a representação desse Mesh para desenhos com WebGL
     */
-    atualizarDesenho()
+    atualizarDesenho() : void
     {
         // Atributos visuais 
-        const meshConfig = this.meshConfig;
-        const position   = meshConfig.position;
-        const rotation   = meshConfig.rotation;
-        const scale      = meshConfig.scale;
+        const meshConfig : VisualMeshConfig  = this.meshConfig;
+        const position   : Position3D        = meshConfig.position;
+        const rotation   : Position3D        = meshConfig.rotation;
+        const scale      : Position3D        = meshConfig.scale;
 
         // Copia os valores do renderer que o objeto acompanha
         this.copiarValoresRenderer();
@@ -225,7 +226,7 @@ export class EsferaMesh extends VisualMesh
     * Metodo chamado logo após o fim do construtor, quanto todos os parametros necessários já foram atribudos
     * Cria o cubo em si, usando o WebGL 
     */
-    criar()
+    criar() : void
     {
         this.atualizarDesenho();
     }

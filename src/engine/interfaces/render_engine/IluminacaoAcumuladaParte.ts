@@ -7,14 +7,14 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { Ponteiro } from "../../types/types-cpp-like";
+import { float, Ponteiro } from "../../types/types-cpp-like";
 
 export default interface IluminacaoAcumuladaParte
 {
-    brilhoLocalAcumulado          : number;
-    ambientLocalAcumulado         : number;
-    diffuseLocalAcumulado         : number;
-    specularLocalAcumulado        : number;
-    intensidadeLocalAcumulado     : number;
-    corLocalAcumulado             : Array<number>;
+    brilhoLocalAcumulado          : float;
+    ambientLocalAcumulado         : float;
+    diffuseLocalAcumulado         : float;
+    specularLocalAcumulado        : float;
+    intensidadeLocalAcumulado     : float;
+    corLocalAcumulado             : Array<float>;
 }

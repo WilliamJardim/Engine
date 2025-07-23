@@ -7,10 +7,10 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { Ponteiro } from "../../types/types-cpp-like";
+import { float, Ponteiro } from "../../types/types-cpp-like";
 
-export default interface OffsetCount
+export default interface ContagemIndicesParteOBJ
 {
-    offset : number;
-    count  : number;
+    indiceInicialParte      : float;
+    quantidadeIndicesParte  : float;
 }

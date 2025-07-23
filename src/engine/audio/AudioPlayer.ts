@@ -1,3 +1,5 @@
+import { float } from "../types/types-cpp-like";
+
 /**
 * AUTHOR: William Alves Jardim
 * LICENSE: Creative Commons BY-NC-ND 4.0 (https://creativecommons.org/licenses/by-nc-nd/4.0/)
@@ -10,14 +12,14 @@
 export default class AudioPlayer
 { 
     public audioRef       : HTMLAudioElement;
-    public lastTime       : number;
+    public lastTime       : float;
     public isTocando      : boolean;
-    public begin          : number;
-    public end            : number;
+    public begin          : float;
+    public end            : float;
     public firstPlayed    : boolean; //Se foi tocado pela primeira vez
     public neverPlayed    : boolean;
-    public lastPlayedTime : number;
-    public lastEndedTime  : number;
+    public lastPlayedTime : float;
+    public lastEndedTime  : float;
 
     constructor()
     {
@@ -41,13 +43,13 @@ export default class AudioPlayer
         // Mais coisas se eu quiser
     }
 
-    setVolume( volume: number )
+    setVolume( volume: float )
     {
         this.audioRef.volume = volume;
     }
 
     // Define o segundo de inicio e fim do audio, caso ele seja muito grande
-    setExactCropTime( begin: number, end: number )
+    setExactCropTime( begin: float, end: float )
     {
         if( begin != -1 )
         {
@@ -105,7 +107,7 @@ export default class AudioPlayer
         this.isTocando = true;
     }
 
-    forwardSecounds( secounds: number )
+    forwardSecounds( secounds: float )
     {
         this.firstPlayed = true;
         this.lastTime = this.audioRef.currentTime;
@@ -132,7 +134,7 @@ export default class AudioPlayer
         }
     }
 
-    backSecounds( secounds: number )
+    backSecounds( secounds: float )
     {
         this.firstPlayed = true;
         this.neverPlayed = false;

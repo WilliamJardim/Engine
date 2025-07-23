@@ -12,7 +12,7 @@ import LocalSoundProps     from "../interfaces/main_engine/LocalSoundProps";
 import ObjectPosition      from "../interfaces/main_engine/ObjectPosition";
 import AbstractObjectBase  from "./AbstractObjectBase";
 import Scene               from "./Scene";
-import { Ponteiro }        from "../types/types-cpp-like";
+import { float, Ponteiro }        from "../types/types-cpp-like";
 
 /**
 * Classe responsavel por criar um som 3D local
@@ -23,9 +23,9 @@ export default class LocalSound
     public player            : Ponteiro<AbstractObjectBase>;
     public soundProps        : LocalSoundProps; 
     public audioPlayer       : AudioPlayer;
-    public currentVolume     : number;
+    public currentVolume     : float;
     public isLooping         : boolean;
-    public createdTime       : number;
+    public createdTime       : float;
 
     constructor( soundProps: LocalSoundProps )
     {
@@ -67,30 +67,30 @@ export default class LocalSound
     calculateHear(): void
     {
         const soundProps         : LocalSoundProps = this.soundProps;
-        const minVolume          : number          = soundProps.initialVolume;
-        const maxVolume          : number          = soundProps.maxVolume;
+        const minVolume          : float           = soundProps.initialVolume;
+        const maxVolume          : float           = soundProps.maxVolume;
         const soundPosition      : ObjectPosition  = this.soundProps.position;
-        const soundX             : number          = soundPosition.x;
-        const soundY             : number          = soundPosition.y;
-        const soundZ             : number          = soundPosition.z;
+        const soundX             : float           = soundPosition.x;
+        const soundY             : float           = soundPosition.y;
+        const soundZ             : float           = soundPosition.z;
         const player             : Ponteiro<AbstractObjectBase> = this.player;
 
         //Se o ponteiro nao for nulo
         if( player != null )
         {
             const playerPosition    : ObjectPosition = player.getPosition();
-            const playerX           : number         = playerPosition.x;
-            const playerY           : number         = playerPosition.y;
-            const playerZ           : number         = playerPosition.z;
+            const playerX           : float          = playerPosition.x;
+            const playerY           : float          = playerPosition.y;
+            const playerZ           : float          = playerPosition.z;
   
-            const deltaPlayerAudioX : number         =  playerX - soundX;
-            const deltaPlayerAudioY : number         =  playerY - soundY;
-            const deltaPlayerAudioZ : number         =  playerZ - soundZ;
+            const deltaPlayerAudioX : float          =  playerX - soundX;
+            const deltaPlayerAudioY : float          =  playerY - soundY;
+            const deltaPlayerAudioZ : float          =  playerZ - soundZ;
 
             /**
             * Calcula a distancia do som com base nas diferenças de posição 
             */
-            const distanciaSom      : number         =  (deltaPlayerAudioX * deltaPlayerAudioX) + 
+            const distanciaSom      : float          =  (deltaPlayerAudioX * deltaPlayerAudioX) + 
                                                         (deltaPlayerAudioY * deltaPlayerAudioY) + 
                                                         (deltaPlayerAudioZ * deltaPlayerAudioZ);  
 

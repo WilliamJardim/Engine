@@ -24,7 +24,7 @@ import PhysicsState        from "../interfaces/main_engine/PhysicsState";
 import Position3D          from "../interfaces/main_engine/Position3D";
 import RotationState       from "../interfaces/main_engine/RotationState";
 import VelocityStatus      from "../interfaces/main_engine/VelocityStatus";
-import { Ponteiro }        from "../types/types-cpp-like";
+import { float, int, Ponteiro }        from "../types/types-cpp-like";
 import ProximityBounds     from "../interfaces/main_engine/ProximityBounds";
 import ObjectFrameTracker  from "./ObjectFrameTracker/ObjectFrameTracker";
 import Scene               from "./Scene";
@@ -63,9 +63,9 @@ export default abstract class AbstractObjectBase
     public rotationSinalyzer   : RotationState; // Indica a direção de rotação do objeto
     public velocitySinalyzer   : VelocityStatus; // Indica o status da velocidade do objeto para cada eixo
     public physicsState        : PhysicsState;
-    public weight              : number;
+    public weight              : float;
     public isFalling           : boolean;
-    public groundY             : number; // A posição Y do chão atual em relação a este objeto
+    public groundY             : float; // A posição Y do chão atual em relação a este objeto
     public infoCollisions      : CollisionsData;
     public infoProximity       : CollisionsData;
     public isMovimentoTravadoPorColisao : boolean;
@@ -249,8 +249,8 @@ export default abstract class AbstractObjectBase
                                     velocitySinalyzerBeforeUpdate  : VelocityStatus, 
                                     firstRender                    : boolean, 
                                     renderizadorPronto             : boolean, 
-                                    frameDelta                     : number, 
-                                    frameNumber                    : number 
+                                    frameDelta                     : float, 
+                                    frameNumber                    : int 
     ): void{
 
     }
@@ -336,12 +336,12 @@ export default abstract class AbstractObjectBase
         };
     }
 
-    public getMass(): number
+    public getMass(): float
     {
        return 0;
     }
 
-    public getWeight(): number
+    public getWeight(): float
     {
        return 0;
     }
@@ -400,57 +400,57 @@ export default abstract class AbstractObjectBase
        
     }
 
-    public somarX( x:number ): void
+    public somarX( x:float ): void
     {
         
     }
     
-    public somarY( y:number ): void
+    public somarY( y:float ): void
     {
         
     }
 
-    public somarZ( z:number ): void
+    public somarZ( z:float ): void
     {
         
     }
 
-    public somarPosicaoX( x:number ): void
+    public somarPosicaoX( x:float ): void
     {
        
     }
     
-    public somarPosicaoY( y:number ): void
+    public somarPosicaoY( y:float ): void
     {
         
     }
 
-    public somarPosicaoZ( z:number ): void
+    public somarPosicaoZ( z:float ): void
     {
        
     }
 
-    public subtrairPosicaoX( x:number ): void
+    public subtrairPosicaoX( x:float ): void
     {
         
     }
     
-    public subtrairPosicaoY( y:number ): void
+    public subtrairPosicaoY( y:float ): void
     {
         
     }
 
-    public subtrairPosicaoZ( z:number ): void
+    public subtrairPosicaoZ( z:float ): void
     {
         
     }
 
-    public somarEixo(eixo:string, valor:number): void
+    public somarEixo(eixo:string, valor:float): void
     {
         
     }
 
-    public subtrairEixo(eixo:string, valor:number): void
+    public subtrairEixo(eixo:string, valor:float): void
     {
         
     }
@@ -474,17 +474,17 @@ export default abstract class AbstractObjectBase
       }
     }
 
-    public somarEscalaX( x:number ): void
+    public somarEscalaX( x:float ): void
     {
        
     }
     
-    public somarEscalaY( y:number ): void
+    public somarEscalaY( y:float ): void
     {
       
     }
 
-    public somarEscalaZ( z:number ): void
+    public somarEscalaZ( z:float ): void
     {
         
     }
@@ -508,42 +508,42 @@ export default abstract class AbstractObjectBase
 
     }
 
-    public somarForceX( forca:number ): void
+    public somarForceX( forca:float ): void
     {
       
     }
 
-    public somarForceY( forca:number ): void
+    public somarForceY( forca:float ): void
     {
        
     }
 
-    public somarForceZ( forca:number ): void
+    public somarForceZ( forca:float ): void
     {
         
     }
 
-    public subtrairForceX( forca:number ): void
+    public subtrairForceX( forca:float ): void
     {
        
     }
 
-    public subtrairForceY( forca:number ): void
+    public subtrairForceY( forca:float ): void
     {
        
     }
 
-    public subtrairForceZ( forca:number ): void
+    public subtrairForceZ( forca:float ): void
     {
        
     }
 
-    public somarForceEixo(eixo:string, valor:number): void
+    public somarForceEixo(eixo:string, valor:float): void
     {
         
     }
 
-    public subtrairForceEixo(eixo:string, valor:number): void
+    public subtrairForceEixo(eixo:string, valor:float): void
     {
        
     }
@@ -567,42 +567,42 @@ export default abstract class AbstractObjectBase
        
     }
 
-    public somarAccelerationX( acceleration:number ): void
+    public somarAccelerationX( acceleration:float ): void
     {
        
     }
 
-    public somarAccelerationY( acceleration:number ): void
+    public somarAccelerationY( acceleration:float ): void
     {
        
     }
 
-    public somarAccelerationZ( acceleration:number ): void
+    public somarAccelerationZ( acceleration:float ): void
     {
       
     }
 
-    public subtrairAccelerationX( acceleration:number ): void
+    public subtrairAccelerationX( acceleration:float ): void
     {
       
     }
 
-    public subtrairAccelerationY( acceleration:number ): void
+    public subtrairAccelerationY( acceleration:float ): void
     {
        
     }
 
-    public subtrairAccelerationZ( acceleration:number ): void
+    public subtrairAccelerationZ( acceleration:float ): void
     {
        
     }
 
-    public somarAccelerationEixo(eixo:string, valor:number): void
+    public somarAccelerationEixo(eixo:string, valor:float): void
     {
         
     }
 
-    public subtrairAccelerationEixo(eixo:string, valor:number): void
+    public subtrairAccelerationEixo(eixo:string, valor:float): void
     {
        
     }
@@ -626,42 +626,42 @@ export default abstract class AbstractObjectBase
 
     }
 
-    public somarVelocityX( velocidade:number ): void
+    public somarVelocityX( velocidade:float ): void
     {
         
     }
 
-    public somarVelocityY( velocidade:number, isExternal:boolean = true ): void
+    public somarVelocityY( velocidade:float, isExternal:boolean = true ): void
     {
        
     }
 
-    public somarVelocityZ( velocidade:number ): void
+    public somarVelocityZ( velocidade:float ): void
     {
        
     }
 
-    public subtrairVelocityX( velocidade:number ): void
+    public subtrairVelocityX( velocidade:float ): void
     {
         
     }
 
-    public subtrairVelocityY( velocidade:number, isExternal:boolean = true ): void
+    public subtrairVelocityY( velocidade:float, isExternal:boolean = true ): void
     {
        
     }
 
-    public subtrairVelocityZ( velocidade:number ): void
+    public subtrairVelocityZ( velocidade:float ): void
     {
        
     }
 
-    public somarVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void
+    public somarVelocityEixo(eixo:string, valor:float, isExternal:boolean = true): void
     {
         
     }
 
-    public subtrairVelocityEixo(eixo:string, valor:number, isExternal:boolean = true): void
+    public subtrairVelocityEixo(eixo:string, valor:float, isExternal:boolean = true): void
     {
        
     }
@@ -671,22 +671,22 @@ export default abstract class AbstractObjectBase
        
     }
 
-    public setVelocityX( velocidade:number ): void
+    public setVelocityX( velocidade:float ): void
     {
         
     }
 
-    public setVelocityY( velocidade:number, isExternal:boolean = true ): void
+    public setVelocityY( velocidade:float, isExternal:boolean = true ): void
     {
        
     }
 
-    public setVelocityZ( velocidade:number ): void
+    public setVelocityZ( velocidade:float ): void
     {
        
     }
 
-    public setVelocityEixo( eixo:string, velocidade:number, isExternal:boolean = true ): void
+    public setVelocityEixo( eixo:string, velocidade:float, isExternal:boolean = true ): void
     {
         
     }
@@ -706,7 +706,7 @@ export default abstract class AbstractObjectBase
     /**
     * Calcula a massa invertida
     */
-    public getMassaInvertida(): number
+    public getMassaInvertida(): float
     {
        return 0;
     }
@@ -725,17 +725,17 @@ export default abstract class AbstractObjectBase
       
     }
 
-    public somarRotationX( x:number ): void
+    public somarRotationX( x:float ): void
     {
         
     }
     
-    public somarRotationY( y:number ): void
+    public somarRotationY( y:float ): void
     {
         
     }
 
-    public somarRotationZ( z:number ): void
+    public somarRotationZ( z:float ): void
     {
        
     }
@@ -785,62 +785,62 @@ export default abstract class AbstractObjectBase
         }
     }
 
-    public somarRotationVelocityX( velocidadeRotacao:number )
+    public somarRotationVelocityX( velocidadeRotacao:float )
     {
         
     }
 
-    public somarRotationVelocityY( velocidadeRotacao:number )
+    public somarRotationVelocityY( velocidadeRotacao:float )
     {
        
     }
 
-    public somarRotationVelocityZ( velocidadeRotacao:number )
+    public somarRotationVelocityZ( velocidadeRotacao:float )
     {
         
     }
 
-    public subtrairRotationVelocityX( velocidadeRotacao:number )
+    public subtrairRotationVelocityX( velocidadeRotacao:float )
     {
         
     }
 
-    public subtrairRotationVelocityY( velocidadeRotacao:number )
+    public subtrairRotationVelocityY( velocidadeRotacao:float )
     {
         
     }
 
-    public subtrairRotationVelocityZ( velocidadeRotacao:number )
+    public subtrairRotationVelocityZ( velocidadeRotacao:float )
     {
        
     }
 
-    public somarRotationForceX( velocidadeRotacao:number )
+    public somarRotationForceX( velocidadeRotacao:float )
     {
         
     }
 
-    public somarRotationForceY( velocidadeRotacao:number )
+    public somarRotationForceY( velocidadeRotacao:float )
     {
        
     }
 
-    public somarRotationForceZ( velocidadeRotacao:number )
+    public somarRotationForceZ( velocidadeRotacao:float )
     {
         
     }
 
-    public setRotationVelocityX( velocidadeRotacaoX:number )
+    public setRotationVelocityX( velocidadeRotacaoX:float )
     {
       
     }
 
-    public setRotationVelocityY( velocidadeRotacaoY:number )
+    public setRotationVelocityY( velocidadeRotacaoY:float )
     {
 
     }
 
-    public setRotationVelocityZ( velocidadeRotacaoZ:number )
+    public setRotationVelocityZ( velocidadeRotacaoZ:float )
     {
 
     }
@@ -850,32 +850,32 @@ export default abstract class AbstractObjectBase
       
     }
 
-    public getVolume(): number 
+    public getVolume(): float 
     {
         return 0;
     }
 
-    public updateCollisionState( frameDelta:number ): void
+    public updateCollisionState( frameDelta:float ): void
     {
 
     }
 
-    public updatePhysics( frameDelta:number ): void
+    public updatePhysics( frameDelta:float ): void
     {
 
     }
 
-    public updateRotation( frameDelta:number ): void
+    public updateRotation( frameDelta:float ): void
     {
 
     }
 
-    public updateMovement( frameDelta:number ): void
+    public updateMovement( frameDelta:float ): void
     {
    
     }
 
-    public updateAttachments( frameDelta:number ): void
+    public updateAttachments( frameDelta:float ): void
     {
                            
     }
@@ -885,7 +885,7 @@ export default abstract class AbstractObjectBase
       
     }
 
-    public updateEvents( frameDelta:number ): void
+    public updateEvents( frameDelta:float ): void
     {
         
     }
@@ -895,7 +895,7 @@ export default abstract class AbstractObjectBase
 
     }
 
-    public updateObject( firstRender: boolean, renderizadorPronto: boolean, frameDelta:number, frameNumber: number ): void
+    public updateObject( firstRender: boolean, renderizadorPronto: boolean, frameDelta:float, frameNumber: int ): void
     {
         
     }

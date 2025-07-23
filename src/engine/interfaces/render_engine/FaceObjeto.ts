@@ -7,13 +7,13 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import { Ponteiro } from "../../types/types-cpp-like";
+import { float, Ponteiro } from "../../types/types-cpp-like";
 
 export interface VerticesFace
 {
-    indiceVertice : number;  // Indice do vértice
-    indiceTextura : number;  // Indice da textura
-    indiceNormal  : number;  // Indice da normal
+    indiceVertice : float;  // Indice do vértice
+    indiceTextura : float;  // Indice da textura
+    indiceNormal  : float;  // Indice da normal
 } 
 
 export default interface FaceObjeto

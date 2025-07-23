@@ -7,9 +7,11 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import { float } from "../../types/types-cpp-like";
+
 export default interface DistanciaEixos
 {
-    x : number;
-    y : number;
-    z : number;
+    x : float;
+    y : float;
+    z : float;
 }

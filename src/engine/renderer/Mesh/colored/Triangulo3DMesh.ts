@@ -22,6 +22,8 @@ import { Renderer } from "../../Renderer/Renderer.js";
 import { float } from "../../../types/types-cpp-like.js";
 import VisualMeshConfig from "../../../interfaces/render_engine/VisualMeshConfig.js";
 import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
+import Position3D from "../../../interfaces/main_engine/Position3D.js";
+import { Matrix } from "../../../types/matrix.js";
 
 export class Triangulo3DMesh extends VisualMesh 
 {
@@ -52,7 +54,7 @@ export class Triangulo3DMesh extends VisualMesh
         this.criar();
     }
 
-    getPositions() 
+    getPositions() : Array<float>
     {
         return [
             // Base (quadrado)
@@ -66,7 +68,7 @@ export class Triangulo3DMesh extends VisualMesh
         ];
     }
 
-    getIndices()
+    getIndices() : Array<float>
     {
         return [
             // Base (2 triângulos)
@@ -81,7 +83,8 @@ export class Triangulo3DMesh extends VisualMesh
         ];
     }
 
-    getFaceColors() {
+    getFaceColors() : Matrix<float>
+    {
         const nivelTransparencia = this.getTransparencia();
 
         return [
@@ -94,9 +97,9 @@ export class Triangulo3DMesh extends VisualMesh
         ];
     }
 
-    getColors() 
+    getColors() : Array<float>
     {
-        const faceColors = this.getFaceColors();
+        const faceColors : Matrix<float>  = this.getFaceColors();
 
         let cores : Array<float> = [];
         for (let cor of faceColors) {
@@ -105,13 +108,13 @@ export class Triangulo3DMesh extends VisualMesh
         return cores;
     }
 
-    atualizarDesenho() 
+    atualizarDesenho() : void
     {
         // Atributos visuais 
-        const meshConfig = this.meshConfig;
-        const position   = meshConfig.position;
-        const rotation   = meshConfig.rotation;
-        const scale      = meshConfig.scale;
+        const meshConfig : VisualMeshConfig  = this.meshConfig;
+        const position   : Position3D        = meshConfig.position;
+        const rotation   : Position3D        = meshConfig.rotation;
+        const scale      : Position3D        = meshConfig.scale;
 
         // Copia os valores do renderer que o objeto acompanha
         this.copiarValoresRenderer();
@@ -174,7 +177,7 @@ export class Triangulo3DMesh extends VisualMesh
                     // Chama o drawElements para DESENHAR O OBJETO
     }
 
-    criar() 
+    criar() : void
     {
         this.atualizarDesenho();
     }

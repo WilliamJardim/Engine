@@ -7,6 +7,7 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
+import { float } from "../../types/types-cpp-like";
 import Position3D from "../main_engine/Position3D";
 
 export default interface PlanoOnduladoMeshConfig{
@@ -17,7 +18,7 @@ export default interface PlanoOnduladoMeshConfig{
     scale                     : Position3D;
     rotation                  : Position3D;
     invisivel                 : boolean;
-    transparencia             : number;
+    transparencia             : float;
 
     // Iluminação
     alwaysUpdateLights        : boolean;
@@ -25,13 +26,13 @@ export default interface PlanoOnduladoMeshConfig{
     useAccumulatedLights      : boolean;
     staticAccumulatedLights   : boolean;
 
-    brilho              : number;
-    ambient             : number;
-    diffuse             : number;
-    specular            : number;
+    brilho              : float;
+    ambient             : float;
+    diffuse             : float;
+    specular            : float;
 
-    corLuzObjeto         : Array<number>;
-    intensidadeLuzObjeto : number;
+    corLuzObjeto         : Array<float>;
+    intensidadeLuzObjeto : float;
 
     // Parametros especificos do Mesh/PlanoOnduladoMesh.ts
     usarOndulacao        : boolean;

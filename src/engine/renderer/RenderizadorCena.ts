@@ -18,7 +18,7 @@ import Scene          from '../core/Scene';
 import ObjectProps    from '../interfaces/main_engine/ObjectProps';
 import InputListener  from '../input/InputListener';
 import SceneConfig    from '../interfaces/main_engine/SceneConfig';
-import { Ponteiro }   from '../types/types-cpp-like';
+import { int, Ponteiro }   from '../types/types-cpp-like';
 import { Renderer } from './Renderer/Renderer';
 import { calcularDirecaoCamera, calcularDireitaCamera } from '../utils/render_engine/math';
 import { VisualMesh } from './Mesh/VisualMesh';
@@ -348,7 +348,7 @@ export default class RenderizadorCena
         /**
         * Para cada objeto da cena da minha engine 
         */
-        for( let i = 0 ; i < engineSceneObjects.length ; i++ )
+        for( let i:int = 0 ; i < engineSceneObjects.length ; i++ )
         {
             const objetoAtual : Ponteiro<ObjectBase> = engineSceneObjects[i];
 
@@ -515,7 +515,7 @@ export default class RenderizadorCena
         /**
         * Para cada objeto da cena da minha engine 
         */
-        for( let i = 0 ; i < engineSceneLights.length ; i++ )
+        for( let i:int = 0 ; i < engineSceneLights.length ; i++ )
         {
             const luzAtual : Ponteiro<Light> = engineSceneLights[i];
             

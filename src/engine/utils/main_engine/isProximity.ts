@@ -12,7 +12,7 @@ import ObjectBase          from "../../core/ObjectBase";
 import DistanciaEixos      from "../../interfaces/main_engine/DistanciaEixos";
 import ProximityBounds     from "../../interfaces/main_engine/ProximityBounds";
 import getDistance         from "./getDistance";
-import { Ponteiro }        from "../../types/types-cpp-like";
+import { float, Ponteiro }        from "../../types/types-cpp-like";
 
 /**
 * Verifica se dois objetos estão proximos dentro de uma faixa de coordenadas:
@@ -40,7 +40,7 @@ export default function isProximity(
         const escalaA = objA.getScale?.() ?? { x: 0, y: 0, z: 0 };
         const escalaB = objB.getScale?.() ?? { x: 0, y: 0, z: 0 };
 
-        const getLimite = (eixo: 'x' | 'y' | 'z'): number => {
+        const getLimite = (eixo: 'x' | 'y' | 'z'): float => {
             if (typeof limites === 'number'){
                 return limites;
             }

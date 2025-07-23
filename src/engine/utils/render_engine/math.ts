@@ -90,7 +90,7 @@ export function TransporMatrix4x4(m:Float32Array) : Float32Array<ArrayBufferLike
 * @param {Number} perto - Valor perto
 * @param {Number} longe - Valor longe
 */
-export function CriarMatrixPerspectiva(anguloVisaoY:number, aspectoCamera:number, perto:number, longe:number) 
+export function CriarMatrixPerspectiva(anguloVisaoY:float, aspectoCamera:float, perto:float, longe:float) 
 {
     const fatorEscalaVertical = 1.0 / Math.tan(anguloVisaoY / 2);
     const diferencaPertoLonge = 1 / (perto - longe);
@@ -109,7 +109,7 @@ export function CriarMatrixPerspectiva(anguloVisaoY:number, aspectoCamera:number
 /**
 * Cria matriz ortográfica(sem profundidade), dando um efeito isométrico
 */
-export function CriarMatrixOrtografica(ladoEsquerdo:number, ladoDireito:number, baixo:number, cima:number, perto:number, longe:number) 
+export function CriarMatrixOrtografica(ladoEsquerdo:float, ladoDireito:float, baixo:float, cima:float, perto:float, longe:float) 
 {
     const diferencaCimaBaixo   = cima - baixo;
     const diferencaLongePerto  = longe - perto;
@@ -136,7 +136,7 @@ export function CriarMatrixOrtografica(ladoEsquerdo:number, ladoDireito:number, 
 * Nesse caso, uma que aponta para um objeto, fazendo a camera orbitar ao redor dele
 * Permitindo assim mover a camera para outro local na cena 
 */
-export function CriarMatrixLookAt(frameDelta:number, olhoJogador:Array<float>, focoCamera:Array<float>, sentidoCamera:Array<float>) 
+export function CriarMatrixLookAt(frameDelta:float, olhoJogador:Array<float>, focoCamera:Array<float>, sentidoCamera:Array<float>) 
 {
     // eixoZ = normaliza(olhoJogador - focoCamera)
     const diferencaFocoX   = olhoJogador[0] - focoCamera[0];
@@ -182,7 +182,7 @@ export function CriarMatrixLookAt(frameDelta:number, olhoJogador:Array<float>, f
 * Nesse caso, uma livre, que não fica restrita a orbitar em volta de um objeto, mais que pode se definir manualmente a rotação XYZ
 * Permitindo assim mover a camera para outro local na cena 
 */
-export function CriarMatrixFPSLivre(frameDelta:number, rotacaoAtual:Array<float>, posicaoAtual:Array<float>, sentidoAtual:Array<float>)
+export function CriarMatrixFPSLivre(frameDelta:float, rotacaoAtual:Array<float>, posicaoAtual:Array<float>, sentidoAtual:Array<float>)
 {
     const matrixRotacaoXYZ        = CriarMatrixRotacaoCameraXYZ( rotacaoAtual[0], rotacaoAtual[1], rotacaoAtual[2] ); // Mexe apenas no Y e Z, que nesse caso foi o que deu certo
     const matrixRotacaoTransposta = TransporMatrix4x4(matrixRotacaoXYZ);
@@ -241,7 +241,7 @@ export function calcularDireitaCamera(direcao:Array<float>)
 /**
 * Cria o ponto de vista desejado para a camera: FPS ou Orbital
 */
-export function CriarMatrixPontoVista( frameDelta:number, tipo:string = "FPS", posicaoCamera:Array<float>, rotacaoCamera:Array<float>, sentidoCamera:Array<float> ) : Float32Array<ArrayBufferLike>
+export function CriarMatrixPontoVista( frameDelta:float, tipo:string = "FPS", posicaoCamera:Array<float>, rotacaoCamera:Array<float>, sentidoCamera:Array<float> ) : Float32Array<ArrayBufferLike>
 {
     if( tipo == "FPS" ){
         return CriarMatrixFPSLivre(frameDelta, rotacaoCamera, posicaoCamera, sentidoCamera);
@@ -256,7 +256,7 @@ export function CriarMatrixPontoVista( frameDelta:number, tipo:string = "FPS", p
 }
 
 // Cria uma matriz de rotação de camera em X para girar ao redor do eixo X
-export function CriarMatrixRotacaoCameraX(angulo:number) : Float32Array
+export function CriarMatrixRotacaoCameraX(angulo:float) : Float32Array
 {
     const cosseno = Math.cos(angulo);
     const seno    = Math.sin(angulo);
@@ -270,7 +270,7 @@ export function CriarMatrixRotacaoCameraX(angulo:number) : Float32Array
 }
 
 // Cria uma matriz de rotação de camera em Y para girar ao redor do eixo Y
-export function CriarMatrixRotacaoCameraY(angulo:number) : Float32Array
+export function CriarMatrixRotacaoCameraY(angulo:float) : Float32Array
 {
     const cosseno = Math.cos(angulo);
     const seno    = Math.sin(angulo);
@@ -284,7 +284,7 @@ export function CriarMatrixRotacaoCameraY(angulo:number) : Float32Array
 }
 
 // Cria uma matriz de rotação de camera em Z para girar ao redor do eixo Z
-export function CriarMatrixRotacaoCameraZ(angulo:number) : Float32Array
+export function CriarMatrixRotacaoCameraZ(angulo:float) : Float32Array
 {
     const cosseno = Math.cos(angulo);
     const seno    = Math.sin(angulo);
@@ -298,7 +298,7 @@ export function CriarMatrixRotacaoCameraZ(angulo:number) : Float32Array
 }
 
 // Cria uma matriz de rotação de camera em XYZ
-export function CriarMatrixRotacaoCameraXYZ(rotacaoX:number, rotacaoY:number, rotacaoZ:number) : Float32Array
+export function CriarMatrixRotacaoCameraXYZ(rotacaoX:float, rotacaoY:float, rotacaoZ:float) : Float32Array
 {
     const matrixRotacaoX : Float32Array = CriarMatrixRotacaoCameraX(rotacaoX);
     const matrixRotacaoY : Float32Array = CriarMatrixRotacaoCameraY(rotacaoY);
@@ -343,7 +343,7 @@ export function DefinirEscala(matrixVisualizacao:Float32Array, escalaDesejada:Ar
 }
 
 // Rotaciona no eixo X na matriz 4x4
-export function RotacionarX(matrixVisualizacao:Float32Array, rotacaoX:number) 
+export function RotacionarX(matrixVisualizacao:Float32Array, rotacaoX:float) 
 {
     const cossenoRotacaoX  = Math.cos(rotacaoX);
     const senoRotacaoX     = Math.sin(rotacaoX);
@@ -358,7 +358,7 @@ export function RotacionarX(matrixVisualizacao:Float32Array, rotacaoX:number)
 }
 
 // Rotaciona no eixo Y na matriz 4x4
-export function RotacionarY(matrixVisualizacao:Float32Array, rotacaoY:number)
+export function RotacionarY(matrixVisualizacao:Float32Array, rotacaoY:float)
 {
     const cossenoRotacaoY  = Math.cos(rotacaoY);
     const senoRotacaoY     = Math.sin(rotacaoY);
@@ -373,7 +373,7 @@ export function RotacionarY(matrixVisualizacao:Float32Array, rotacaoY:number)
 }
 
 // Rotaciona no eixo Z na matriz 4x4
-export function RotacionarZ(matrixVisualizacao:Float32Array, rotacaoZ:number)
+export function RotacionarZ(matrixVisualizacao:Float32Array, rotacaoZ:float)
 {
     const cossenoRotacaoZ  = Math.cos(rotacaoZ);
     const senoRotacaoZ     = Math.sin(rotacaoZ);
@@ -400,7 +400,7 @@ export function DefinirRotacao(matrixVisualizacao:Float32Array, vetorRotacao:Arr
 }
 
 // Define a posição no eixo X
-export function DefinirX( matrixVisualizacao:Float32Array, vetorPosicaoAtual:Array<float>, novaPosicaoX:number ) 
+export function DefinirX( matrixVisualizacao:Float32Array, vetorPosicaoAtual:Array<float>, novaPosicaoX:float ) 
 {
     // Mantem o que ja estava em Y e Z, só mudando o X
     const novoX = novaPosicaoX;
@@ -411,7 +411,7 @@ export function DefinirX( matrixVisualizacao:Float32Array, vetorPosicaoAtual:Arr
 }
 
 // Define a posição no eixo Y
-export function DefinirY( matrixVisualizacao:Float32Array, vetorPosicaoAtual:Array<float>, novaPosicaoY:number ) 
+export function DefinirY( matrixVisualizacao:Float32Array, vetorPosicaoAtual:Array<float>, novaPosicaoY:float ) 
 {
     // Mantem o que ja estava em X e Z, só mudando o Y
     const novoX = vetorPosicaoAtual[0];
@@ -422,7 +422,7 @@ export function DefinirY( matrixVisualizacao:Float32Array, vetorPosicaoAtual:Arr
 }
 
 // Define a posição no eixo Z
-export function DefinirZ( matrixVisualizacao:Float32Array, vetorPosicaoAtual:Array<float>, novaPosicaoZ:number ) 
+export function DefinirZ( matrixVisualizacao:Float32Array, vetorPosicaoAtual:Array<float>, novaPosicaoZ:float ) 
 {
     // Mantem o que ja estava em Y e X, só mudando o Z
     const novoX = vetorPosicaoAtual[0];
@@ -432,7 +432,7 @@ export function DefinirZ( matrixVisualizacao:Float32Array, vetorPosicaoAtual:Arr
     DefinirTranslacao( matrixVisualizacao, [novoX, novoY, novoZ] );
 }
 
-export function isDentroRaio( positionObjeto:Position3D, positionCentro:Position3D, raioDesejado:number ) 
+export function isDentroRaio( positionObjeto:Position3D, positionCentro:Position3D, raioDesejado:float ) 
 {
   const xObjeto = positionObjeto.x; 
   const yObjeto = positionObjeto.y; 
@@ -452,11 +452,11 @@ export function isDentroRaio( positionObjeto:Position3D, positionCentro:Position
 
 export class FrameCounter
 {
-    public init        : number;
-    public lastTime    : number;
-    public frameLimit  : number;
-    public norm        : number;
-    public frameNumber : number;
+    public init        : float;
+    public lastTime    : float;
+    public frameLimit  : float;
+    public norm        : float;
+    public frameNumber : float;
 
     constructor( frameLimit = 60, norm = 16.666 ){
         this.init        = this.getTime();

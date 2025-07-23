@@ -37,20 +37,20 @@ export class Light
     public meshConfig  : LightConfig;
     public tipo        : string;
     public position    : Position3D;
-    public raio        : number;
-    public brilho      : number;
-    public ambient     : number;
-    public diffuse     : number;
-    public specular    : number;
-    public cor         : Array<number>;
-    public intensidade : number;
+    public raio        : float;
+    public brilho      : float;
+    public ambient     : float;
+    public diffuse     : float;
+    public specular    : float;
+    public cor         : Array<float>;
+    public intensidade : float;
 
     constructor(renderer:Renderer, propriedadesMesh:LightConfig) 
     {
         this.renderer   = renderer;
         this.meshConfig = propriedadesMesh;
 
-        this.tipo = "Light";
+        this.tipo        = "Light";
         this.position    = propriedadesMesh.position;
         this.raio        = propriedadesMesh.raio        || 1; // Raio de alcance da luz
         this.brilho      = propriedadesMesh.brilho      || 16;
@@ -69,21 +69,21 @@ export class Light
     *  - Objetos mais longe recebem menas influencia da luz
     *  - E objetos mais perto recebem mais influencia da luz
     */
-    calcularForcaLuz( posicaoObjeto:Array<float> )
+    calcularForcaLuz( posicaoObjeto:Array<float> ) : float
     {       
-        const posicaoLuz = this.position;
-        const alcanceLuz = this.raio;
+        const posicaoLuz : Position3D   = this.position;
+        const alcanceLuz : float        = this.raio;
 
-        const xInteresseObjeto = posicaoObjeto[0];
-        const yInteresseObjeto = posicaoObjeto[1];
-        const zInteresseObjeto = posicaoObjeto[2];
+        const xInteresseObjeto : float  = posicaoObjeto[0];
+        const yInteresseObjeto : float  = posicaoObjeto[1];
+        const zInteresseObjeto : float  = posicaoObjeto[2];
 
         // A distanca entre o objeto e a luz
-        const dx = posicaoLuz.x - xInteresseObjeto;
-        const dy = posicaoLuz.y - yInteresseObjeto;
-        const dz = posicaoLuz.z - zInteresseObjeto;
+        const dx : float  = posicaoLuz.x - xInteresseObjeto;
+        const dy : float  = posicaoLuz.y - yInteresseObjeto;
+        const dz : float  = posicaoLuz.z - zInteresseObjeto;
 
-        const distancia2 = Math.sqrt( dx*dx + dy*dy + dz*dz ) / alcanceLuz;
+        const distancia2 : float  = Math.sqrt( dx*dx + dy*dy + dz*dz ) / alcanceLuz;
 
         return distancia2;
     }
@@ -91,38 +91,42 @@ export class Light
     /**
     * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto
     */
-    calcularInfluenciaBrilho( forcaLuz:number ) : number
+    calcularInfluenciaBrilho( forcaLuz:float ) : float
     {
         return this.brilho / forcaLuz;
     }
 
-    calcularInfluenciaAmbient( forcaLuz:number ) : number
+    calcularInfluenciaAmbient( forcaLuz:float ) : float
     {
         return this.ambient / forcaLuz;
     }
 
-    calcularInfluenciaDiffuse( forcaLuz:number ) : number
+    calcularInfluenciaDiffuse( forcaLuz:float ) : float
     {
         return this.diffuse / forcaLuz
     }
 
-    calcularInfluenciaSpecular( forcaLuz:number ) : number
+    calcularInfluenciaSpecular( forcaLuz:float ) : float
     {
         return this.specular / forcaLuz;
     }
 
-    calcularInfluenciaIntensidade( forcaLuz:number ) : number
+    calcularInfluenciaIntensidade( forcaLuz:float ) : float
     {   
         return this.intensidade / forcaLuz;
     }
 
-    calcularInfluenciaCores( forcaLuz:number ) : Array<float>
+    calcularInfluenciaCores( forcaLuz:float ) : Array<float>
     {
-        const vermelho  =  this.cor[0] / forcaLuz;
-        const verde     =  this.cor[1] / forcaLuz;
-        const azul      =  this.cor[2] / forcaLuz;
+        const vermelho : float  = this.cor[0] / forcaLuz;
+        const verde    : float  = this.cor[1] / forcaLuz;
+        const azul     : float  = this.cor[2] / forcaLuz;
 
-        return [ vermelho, verde, azul ];
+        return [ 
+                 vermelho, 
+                 verde, 
+                 azul 
+               ];
     }
 
     /**
@@ -134,18 +138,18 @@ export class Light
         /**
         * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto atual(do primeiro laço FOR)
         */
-        const forcaLuz               =  this.calcularForcaLuz( posicaoObjeto );
-        const influenciaBrilho       =  this.calcularInfluenciaBrilho( forcaLuz );
-        const influenciaAmbient      =  this.calcularInfluenciaAmbient( forcaLuz );
-        const influenciaDiffuse      =  this.calcularInfluenciaDiffuse( forcaLuz );
-        const influenciaSpecular     =  this.calcularInfluenciaSpecular( forcaLuz );
-        const influenciaIntensidade  =  this.calcularInfluenciaIntensidade( forcaLuz );
+        const forcaLuz               : float     =  this.calcularForcaLuz( posicaoObjeto );
+        const influenciaBrilho       : float     =  this.calcularInfluenciaBrilho( forcaLuz );
+        const influenciaAmbient      : float     =  this.calcularInfluenciaAmbient( forcaLuz );
+        const influenciaDiffuse      : float     =  this.calcularInfluenciaDiffuse( forcaLuz );
+        const influenciaSpecular     : float     =  this.calcularInfluenciaSpecular( forcaLuz );
+        const influenciaIntensidade  : float     =  this.calcularInfluenciaIntensidade( forcaLuz );
 
         // Cores
-        const influenciaCores        =  this.calcularInfluenciaCores( forcaLuz );
-        const influenciaVermelho     =  influenciaCores[0];
-        const influenciaVerde        =  influenciaCores[1];
-        const influenciaAzul         =  influenciaCores[2];
+        const influenciaCores        : Array<float>  =  this.calcularInfluenciaCores( forcaLuz );
+        const influenciaVermelho     : float         =  influenciaCores[0];
+        const influenciaVerde        : float         =  influenciaCores[1];
+        const influenciaAzul         : float         =  influenciaCores[2];
 
         return [ 
             forcaLuz,

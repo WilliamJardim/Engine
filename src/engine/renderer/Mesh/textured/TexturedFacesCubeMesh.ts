@@ -32,9 +32,12 @@ import {
     DefinirZ
 } from '../../../utils/render_engine/math.js';
 import { Renderer } from "../../Renderer/Renderer.js";
-import { float, Ponteiro } from "../../../types/types-cpp-like.js";
+import { float, int, Ponteiro } from "../../../types/types-cpp-like.js";
 import TexturedFacesCuboMeshConfig from "../../../interfaces/render_engine/TexturedFacesCuboMeshConfig.js";
 import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
+import { Matrix } from "../../../types/matrix.js";
+import VisualMeshConfig from "../../../interfaces/render_engine/VisualMeshConfig.js";
+import Position3D from "../../../interfaces/main_engine/Position3D.js";
 
 export class TexturedFacesCuboMesh extends VisualMesh
 {
@@ -81,7 +84,7 @@ export class TexturedFacesCuboMesh extends VisualMesh
     /**
     * Cria os indices de cada face
     */
-    getIndicesPorFace() 
+    getIndicesPorFace() : Matrix<float>
     {
         return [
             [0, 1, 2, 0, 2, 3],     // front
@@ -97,7 +100,7 @@ export class TexturedFacesCuboMesh extends VisualMesh
     * Obtem o mapa UV do cubo, que permite aplicar uma textura em cada face,
     * A partir de uma unica imagem que contém o mapa UV nele
     */
-    getUVs() 
+    getUVs() : Array<float>
     {
         return [
             // Front
@@ -118,7 +121,7 @@ export class TexturedFacesCuboMesh extends VisualMesh
     /**
     * Obtem as posições de renderização do cubo 
     */
-    getPositions()
+    getPositions() : Array<float>
     {
         return [
             // Front
@@ -139,7 +142,7 @@ export class TexturedFacesCuboMesh extends VisualMesh
     /**
     * Obtem os indices de renderização do cubo 
     */
-    getIndices()
+    getIndices() : Array<float> 
     {
         return [
             0, 1, 2,    0, 2, 3,     // front
@@ -154,7 +157,7 @@ export class TexturedFacesCuboMesh extends VisualMesh
     /**
     * Obtem as cores das faces do cubo, usados na renderização do cubo 
     */
-    getFaceColors()
+    getFaceColors() : Matrix<float>
     {
         // A implantação em C++ seria diferente
         const nivelTransparencia = this.getTransparencia();
@@ -185,12 +188,12 @@ export class TexturedFacesCuboMesh extends VisualMesh
     /**
     * Cria o vetor de cores usando o getFaceColors
     */
-    getColors()
+    getColors() : Array<float>
     {
         const faceColors = this.getFaceColors();
 
         let cores : Array<float> = [];
-        for ( let c = 0 ; c < faceColors.length ; c++ ) {
+        for ( let c:int = 0 ; c < faceColors.length ; c++ ) {
             const cor = faceColors[c];
             cores = cores.concat(cor, cor, cor, cor);
         }
@@ -203,13 +206,13 @@ export class TexturedFacesCuboMesh extends VisualMesh
     * Implementação do método desenhar para especificamente desenhar um cubo
     * Converte a representação desse Mesh para desenhos com WebGL
     */
-    atualizarDesenho()
+    atualizarDesenho() : void
     {
         // Atributos visuais 
-        const meshConfig = this.meshConfig;
-        const position   = meshConfig.position;
-        const rotation   = meshConfig.rotation;
-        const scale      = meshConfig.scale;
+        const meshConfig : VisualMeshConfig  = this.meshConfig;
+        const position   : Position3D        = meshConfig.position;
+        const rotation   : Position3D        = meshConfig.rotation;
+        const scale      : Position3D        = meshConfig.scale;
 
         // Copia os valores do renderer que o objeto acompanha
         this.copiarValoresRenderer();
@@ -277,7 +280,7 @@ export class TexturedFacesCuboMesh extends VisualMesh
     * Metodo chamado logo após o fim do construtor, quanto todos os parametros necessários já foram atribudos
     * Cria o cubo em si, usando o WebGL 
     */
-    criar()
+    criar() : void
     {
         this.atualizarDesenho();
     }

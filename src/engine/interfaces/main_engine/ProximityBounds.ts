@@ -1,3 +1,5 @@
+import { float } from "../../types/types-cpp-like";
+
 /**
 * AUTHOR: William Alves Jardim
 * LICENSE: Creative Commons BY-NC-ND 4.0 (https://creativecommons.org/licenses/by-nc-nd/4.0/)
@@ -9,7 +11,7 @@
 */
 export default interface ProximityBounds
 {
-    x : number,
-    y : number,
-    z : number
+    x : float,
+    y : float,
+    z : float
 }

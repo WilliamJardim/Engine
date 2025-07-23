@@ -1,3 +1,5 @@
+import { float, int } from "../types/types-cpp-like";
+
 /**
 * AUTHOR: William Alves Jardim
 * LICENSE: Creative Commons BY-NC-ND 4.0 (https://creativecommons.org/licenses/by-nc-nd/4.0/)
@@ -9,13 +11,14 @@
 */
 export default class FrameCounter
 {
-    public init        : number;
-    public lastTime    : number; //Ultimo momento em milisegundos em que o calculateFrameDelta foi chamado
-    public frameLimit  : number;
-    public norm        : number;
-    public frameNumber : number;
+    public init        : float;
+    public lastTime    : float; //Ultimo momento em milisegundos em que o calculateFrameDelta foi chamado
+    public frameLimit  : float;
+    public norm        : float;
+    public frameNumber : float;
 
-    constructor( frameLimit:number = 60, norm:number = 16.666 ){
+    constructor( frameLimit:float = 60, norm:float = 16.666 )
+    {
         this.init        = this.getTime();
         this.lastTime    = this.init;
         this.frameLimit  = frameLimit;
@@ -26,20 +29,23 @@ export default class FrameCounter
     /**
     * Obtem o total de frames já percorridos até o momento
     */
-    public getFrameNumber(): number{
+    public getFrameNumber(): int
+    {
         return this.frameNumber;
     }
 
-    public getTime(): number{
+    public getTime(): float
+    {
         return performance.now();
     }
 
     /**
     * Calcula a diferença em milisegundos entre dois frames
     */
-    public calculateFrameDelta(): number{
-        const agora              : number = this.getTime();
-        const currentFrameDelta  : number = agora - this.lastTime;
+    public calculateFrameDelta(): float
+    {
+        const agora              : float = this.getTime();
+        const currentFrameDelta  : float = agora - this.lastTime;
 
         this.lastTime = agora;
 

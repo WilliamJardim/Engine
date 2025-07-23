@@ -10,7 +10,7 @@
 import AbstractObjectBase from "../../core/AbstractObjectBase";
 import ObjectPosition     from "../../interfaces/main_engine/ObjectPosition";
 import DistanciaEixos     from "../../interfaces/main_engine/DistanciaEixos";
-import { Ponteiro }       from "../../types/types-cpp-like";
+import { float, Ponteiro }       from "../../types/types-cpp-like";
 
 /**
 * Calcula a distancia entre dois objetos:
@@ -35,14 +35,14 @@ export default function getDistance( objA:Ponteiro<AbstractObjectBase>,
        * Coordenadas e escala
        */
       const object1_position : ObjectPosition  = objA.getRepresentacaoMesh().position,
-            X_object1        : number          = object1_position.x,
-            Y_object1        : number          = object1_position.y,
-            Z_object1        : number          = object1_position.z;
+            X_object1        : float           = object1_position.x,
+            Y_object1        : float           = object1_position.y,
+            Z_object1        : float           = object1_position.z;
 
       const object1_scale    : ObjectPosition  = objA.getRepresentacaoMesh().scale,
-            scaleX_object1   : number          = object1_scale.x,
-            scaleY_object1   : number          = object1_scale.y,
-            scaleZ_object1   : number          = object1_scale.z;
+            scaleX_object1   : float           = object1_scale.x,
+            scaleY_object1   : float           = object1_scale.y,
+            scaleZ_object1   : float           = object1_scale.z;
 
 
       /**
@@ -50,21 +50,21 @@ export default function getDistance( objA:Ponteiro<AbstractObjectBase>,
        * Coordenadas e escala
        */
       const object2_position : ObjectPosition  = objB.getRepresentacaoMesh().position,
-            X_object2        : number          = object2_position.x,
-            Y_object2        : number          = object2_position.y,
-            Z_object2        : number          = object2_position.z;
+            X_object2        : float           = object2_position.x,
+            Y_object2        : float           = object2_position.y,
+            Z_object2        : float           = object2_position.z;
 
       const object2_scale    : ObjectPosition  = objB.getRepresentacaoMesh().scale,
-            scaleX_object2   : number          = object2_scale.x,
-            scaleY_object2   : number          = object2_scale.y,
-            scaleZ_object2   : number          = object2_scale.z;
+            scaleX_object2   : float           = object2_scale.x,
+            scaleY_object2   : float           = object2_scale.y,
+            scaleZ_object2   : float           = object2_scale.z;
 
       /**
        * Calculando a distancia para cada eixo 
        */
-      const distX : number = (X_object1 + (consideraEscala ? scaleX_object1 : 0) ) - (X_object2 + (consideraEscala ? scaleX_object2 : 0) );
-      const distY : number = (Y_object1 + (consideraEscala ? scaleY_object1 : 0) ) - (Y_object2 + (consideraEscala ? scaleY_object2 : 0) );
-      const distZ : number = (Z_object1 + (consideraEscala ? scaleZ_object1 : 0) ) - (Z_object2 + (consideraEscala ? scaleZ_object2 : 0) );
+      const distX : float = (X_object1 + (consideraEscala ? scaleX_object1 : 0) ) - (X_object2 + (consideraEscala ? scaleX_object2 : 0) );
+      const distY : float = (Y_object1 + (consideraEscala ? scaleY_object1 : 0) ) - (Y_object2 + (consideraEscala ? scaleY_object2 : 0) );
+      const distZ : float = (Z_object1 + (consideraEscala ? scaleZ_object1 : 0) ) - (Z_object2 + (consideraEscala ? scaleZ_object2 : 0) );
 
       /**
        * Retorna a distancia dos tres eixos: X, Y e Z 

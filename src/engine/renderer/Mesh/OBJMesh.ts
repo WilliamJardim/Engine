@@ -32,6 +32,7 @@ import ContagemIndicesParteOBJ from "../../interfaces/render_engine/ContagemIndi
 import FaceObjeto, { VerticesFace } from "../../interfaces/render_engine/FaceObjeto.js";
 import VisualMeshConfig from "../../interfaces/render_engine/VisualMeshConfig.js";
 import Position3D from "../../interfaces/main_engine/Position3D.js";
+import IluminacaoGeralParte from "../../interfaces/render_engine/IluminacaoGeralParte.js";
 
 /**
 * PORTABILIDADE PRA C++:
@@ -88,7 +89,7 @@ export class OBJMesh extends VisualMesh
     public verticesComecaObjetos         : Mapa<string, Matrix<float> >;   // Length que começa os vertices de cada objeto no vetor geral vertices(o vetor declarado no VisualMesh)
     public qtdePartes                    : int; // Quantas partes esse OBJMesh possui
 
-    constructor(renderer:Renderer, propriedadesMesh:OBJMeshConfig) 
+    constructor(renderer:Renderer, propriedadesMesh:OBJMeshConfig)
     {
         super(renderer, propriedadesMesh);
 
@@ -270,7 +271,7 @@ export class OBJMesh extends VisualMesh
     * Função auxiliar que serve para interpretar os comandos de um arquivo OBJ
     * como "o" = objeto, "f" = faces, etc.... 
     */
-    _interpretarInstrucaoOBJ( comando=String(), partesLinha:Array<string>=[] )
+    _interpretarInstrucaoOBJ( comando=String(), partesLinha:Array<string>=[] ): void
     {
         // Se nao tem objeto ativo
         if (this.objetoAtivo == "NENHUM_OBJETO" ) 
@@ -654,13 +655,13 @@ export class OBJMesh extends VisualMesh
     * Define a iluminação do objeto como um todo 
     * @override
     */
-    setIntireIlumination( iluminationDefinition:any={} ) : void
+    setIntireIlumination( iluminationDefinition:IluminacaoGeralParte ) : void
     {
-        this.brilhoObjeto   = iluminationDefinition.brilhoObjeto;
-        this.ambientObjeto  = iluminationDefinition.ambientObjeto;
-        this.diffuseObjeto  = iluminationDefinition.diffuseObjeto;
-        this.specularObjeto = iluminationDefinition.specularObjeto;
-        this.intensidadeLuzObjeto = iluminationDefinition.intensidadeLuzObjeto;
+        this.brilhoObjeto          = iluminationDefinition.brilhoObjeto;
+        this.ambientObjeto         = iluminationDefinition.ambientObjeto;
+        this.diffuseObjeto         = iluminationDefinition.diffuseObjeto;
+        this.specularObjeto        = iluminationDefinition.specularObjeto;
+        this.intensidadeLuzObjeto  = iluminationDefinition.intensidadeLuzObjeto;
 
         // Pega a cor da luz
         this.corLuzObjeto    = [0, 0, 0];

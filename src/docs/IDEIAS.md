@@ -15,3 +15,14 @@ Unir a pasta docs com essas subpastas, pra centralizar as ideias e bugs
 Esse é meu arquivo com minhas ideias gerais
 As subpastas dentro de docs são minhas ideias especificas
 
+
+# 24/07/2025 17:26 PM
+Corrigir a confusos de ambiguidade por existir dois tipos de Light
+
+No RenderizadorCena não consegui tipar tudo por causa disso.
+
+Ideia: separar as interfaces
+LightRenderizador
+LightEnginePrincipal
+
+Pra não ter confusão de tipos

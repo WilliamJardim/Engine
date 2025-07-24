@@ -58,6 +58,10 @@ import IluminacaoTotalParte from '../../interfaces/render_engine/IluminacaoTotal
 import IluminacaoAcumuladaParte from '../../interfaces/render_engine/IluminacaoAcumuladaParte.ts';
 import IluminacaoGeralParte from '../../interfaces/render_engine/IluminacaoGeralParte.ts';
 import { getMaxListeners } from 'events';
+import ContagemIndicesParteOBJ from '../../interfaces/render_engine/ContagemIndicesParteOBJ.ts';
+import Material from '../../interfaces/render_engine/Material.ts';
+import Position3D from '../../interfaces/main_engine/Position3D.ts';
+import LightConfig from '../../interfaces/render_engine/LightConfig.ts';
 
 export class Renderer
 {
@@ -342,7 +346,7 @@ export class Renderer
     /**
     * Carrega a textura do fundo a cena(o skybox 2D)
     */
-    carregarImagemSkybox(imagemURL:string) 
+    carregarImagemSkybox(imagemURL:string) : void
     {
         const gl            : WebGL2RenderingContext   = this.gl;
         const programSkybox : WebGLProgram             = this.getSkyboxProgram();
@@ -359,8 +363,9 @@ export class Renderer
         ]), gl.STATIC_DRAW);
 
         // Criar textura
-        const skyTexture = gl.createTexture();
-        const imagem = new Image();
+        const skyTexture : WebGLTexture      = gl.createTexture();
+        const imagem     : HTMLImageElement  = new Image();
+
         imagem.src = imagemURL;
         imagem.onload = () => {
             gl.bindTexture(gl.TEXTURE_2D, skyTexture);
@@ -379,12 +384,12 @@ export class Renderer
     /**
     * Desenha o skybox da cena 
     */
-    desenharSkyboxFundo() 
+    desenharSkyboxFundo() : void
     {
-        const gl            = this.gl;
-        const programSkybox = this.getSkyboxProgram();
-        const a_sky_pos     = gl.getAttribLocation(programSkybox,  'aPosicao');
-        const u_sky_texture = gl.getUniformLocation(programSkybox, 'uTextura');
+        const gl                     : WebGL2RenderingContext          = this.gl;
+        const programSkybox          : WebGLProgram                    = this.getSkyboxProgram();
+        const attribPosicaoSkybox    : GLint                           = gl.getAttribLocation(programSkybox,  'aPosicao');
+        const locationTexturaSkybox  : Ponteiro<WebGLUniformLocation>  = gl.getUniformLocation(programSkybox, 'uTextura');
 
         if (this.getSkyboxProgram() != null && this.skyTexture != null)
         {
@@ -392,12 +397,12 @@ export class Renderer
 
             gl.disable(gl.DEPTH_TEST); // para não bloquear nada do fundo
             gl.bindBuffer(gl.ARRAY_BUFFER, this.skyQuadBuffer);
-            gl.enableVertexAttribArray(a_sky_pos);
-            gl.vertexAttribPointer(a_sky_pos, 2, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(attribPosicaoSkybox);
+            gl.vertexAttribPointer(attribPosicaoSkybox, 2, gl.FLOAT, false, 0, 0);
 
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, this.skyTexture);
-            gl.uniform1i(u_sky_texture, 0);
+            gl.uniform1i(locationTexturaSkybox, 0);
 
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
             gl.enable(gl.DEPTH_TEST); // reativa o depth test para objetos 3D
@@ -433,7 +438,7 @@ export class Renderer
     /**
     * Cria um novo objeto na cena( adicionando ele na lista de renderização )
     */
-    criarObjeto( propriedadesObjeto:any ): Ponteiro<Light|VisualMesh>
+    criarObjeto( propriedadesObjeto:any ): Ponteiro<VisualMesh>
     {
         const contextoRenderizador = this;
 
@@ -508,26 +513,24 @@ export class Renderer
                                 );
         }
 
-        if( propriedadesObjeto.tipo == "Light" )
-        {
-            this.luzes.push( new Light( contextoRenderizador, 
-                                        propriedadesObjeto ) 
-                                );
-        }
-        
-        
-        if( propriedadesObjeto.tipo != "Light" )
-        {
-            // Retorna o ultimo objeto criado
-            return this.objetos[ this.objetos.length-1 ];
-
-        // Se o tipo for luz
-        }else if( propriedadesObjeto.tipo == "Light" ){
-            
-             // Retorna a ultima luz criada
-            return this.luzes[ this.luzes.length-1 ];
-        }
+        // Retorna o ultimo objeto criado
+        return this.objetos[ this.objetos.length-1 ];
     }   
+
+    /**
+    * Cria uma nova luz na cena( adicionando ele na lista de renderização )
+    */
+    criarLuz( propriedadesLuz:LightConfig ): Ponteiro<Light>
+    {
+        const contextoRenderizador = this;
+
+        this.luzes.push( new Light( contextoRenderizador, 
+                                    propriedadesLuz ) 
+                       );
+
+        // Retorna a ultima luz criada
+        return this.luzes[ this.luzes.length-1 ];
+    }
 
     /**
     * Retorna qual o program deve ser usado para desenhar um objeto, de acordo com o tipo dele 
@@ -657,7 +660,7 @@ export class Renderer
     *    (3) Ou então, eu poderia criar uma outra classe VisualMesh que vai herdar o ObjectBase, no final das definições raizes, e ai como todos os objetos herdam o VisualMesh, iria seguir o fluxo normal(visto que nesse ponto Cena, ObjectBase e outras classes raiz vão estar totalmente definidas)
     *        Mais pode ser um pouco mais complicado por causa de conversões de objetos que podem ser necessarias ser feitas
     */
-    atualizarIluminacaoGeralObjeto( objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:IluminacaoGeral )
+    atualizarIluminacaoGeralObjeto( objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:IluminacaoGeral ) : void
     {
         const luzesCena : Array<Ponteiro<Light>>   = this.getLuzes();
 
@@ -703,24 +706,28 @@ export class Renderer
                         // Se o ponteiro não for nulo
                         if( luz != null )
                         {
-                            const posicaoObjetoArray = [objetoAtual.position.x, objetoAtual.position.y, objetoAtual.position.z];
+                            const posicaoObjetoArray : Array<float>  = [ 
+                                                                         objetoAtual.position.x, 
+                                                                         objetoAtual.position.y, 
+                                                                         objetoAtual.position.z
+                                                                       ];
 
-                            const interferenciaLuz  = luz.calcularInterferencia( posicaoObjetoArray );
+                            const interferenciaLuz   : Array<float>  = luz.calcularInterferencia( posicaoObjetoArray );
 
                             /**
                             * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto atual(do primeiro laço FOR)
                             */
-                            const forcaLuz               =  interferenciaLuz[0];
-                            const influenciaBrilho       =  interferenciaLuz[1];
-                            const influenciaAmbient      =  interferenciaLuz[2];
-                            const influenciaDiffuse      =  interferenciaLuz[3];
-                            const influenciaSpecular     =  interferenciaLuz[4];
-                            const influenciaIntensidade  =  interferenciaLuz[5];
+                            const forcaLuz              : float   = interferenciaLuz[0];
+                            const influenciaBrilho      : float   = interferenciaLuz[1];
+                            const influenciaAmbient     : float   = interferenciaLuz[2];
+                            const influenciaDiffuse     : float   = interferenciaLuz[3];
+                            const influenciaSpecular    : float   = interferenciaLuz[4];
+                            const influenciaIntensidade : float   = interferenciaLuz[5];
 
                             // Cores
-                            const influenciaVermelho     =  interferenciaLuz[6];
-                            const influenciaVerde        =  interferenciaLuz[7];
-                            const influenciaAzul         =  interferenciaLuz[8];
+                            const influenciaVermelho : float     = interferenciaLuz[6];
+                            const influenciaVerde    : float     = interferenciaLuz[7];
+                            const influenciaAzul     : float     = interferenciaLuz[8];
 
                             // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
                             objetoAtual.brilhoLocalAcumulado         += influenciaBrilho;
@@ -748,7 +755,7 @@ export class Renderer
             iluminacaoGeral.intensidadeLuz  = objetoAtual.intensidadeLuzObjeto + this.intensidadeLuz  + objetoAtual.intensidadeLocalAcumulado;
 
             // Pega a cor da luz
-            iluminacaoGeral.corLuz = [0,0,0];
+            iluminacaoGeral.corLuz = [0, 0, 0];
             iluminacaoGeral.corLuz[0] = objetoAtual.corLuzObjeto[0] + this.corAmbient[0] + objetoAtual.corLocalAcumulado[0];
             iluminacaoGeral.corLuz[1] = objetoAtual.corLuzObjeto[1] + this.corAmbient[1] + objetoAtual.corLocalAcumulado[1];
             iluminacaoGeral.corLuz[2] = objetoAtual.corLuzObjeto[2] + this.corAmbient[2] + objetoAtual.corLocalAcumulado[2];
@@ -759,17 +766,17 @@ export class Renderer
     * Envia a iluminação geral do objeto já calculada para o shader 
     * A iluminação geral é uma iluminação aplicada a todas as partes de um objeto
     */
-    enviarIluminacaoGeralObjetoShader(gl:WebGL2RenderingContext, informacoesPrograma:any, iluminacaoGeral:IluminacaoGeral): void
+    enviarIluminacaoGeralObjetoShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, iluminacaoGeral:IluminacaoGeral): void
     {
         /**
         * Aplica os valores 
         */
-        const brilhoShader          = informacoesPrograma.atributosObjeto.brilho;
-        const ambientShader         = informacoesPrograma.atributosObjeto.ambient;
-        const diffuseShader         = informacoesPrograma.atributosObjeto.diffuse;
-        const specularShader        = informacoesPrograma.atributosObjeto.specular;
-        const corLuzShader          = informacoesPrograma.atributosObjeto.corLuz;
-        const intensidadeLuzShader  = informacoesPrograma.atributosObjeto.intensidadeLuz;
+        const brilhoShader          : Ponteiro<WebGLUniformLocation>    = informacoesPrograma.atributosObjeto.brilho;
+        const ambientShader         : Ponteiro<WebGLUniformLocation>    = informacoesPrograma.atributosObjeto.ambient;
+        const diffuseShader         : Ponteiro<WebGLUniformLocation>    = informacoesPrograma.atributosObjeto.diffuse;
+        const specularShader        : Ponteiro<WebGLUniformLocation>    = informacoesPrograma.atributosObjeto.specular;
+        const corLuzShader          : Ponteiro<WebGLUniformLocation>    = informacoesPrograma.atributosObjeto.corLuz;
+        const intensidadeLuzShader  : Ponteiro<WebGLUniformLocation>    = informacoesPrograma.atributosObjeto.intensidadeLuz;
 
         // Atualiza as configurações gerais 
         gl.uniform1f(brilhoShader,   iluminacaoGeral.brilho);
@@ -860,12 +867,12 @@ export class Renderer
         /**
         * Aplica os valores 
         */
-        const ambientShader         = informacoesPrograma.atributosObjeto.ambient;
-        const diffuseShader         = informacoesPrograma.atributosObjeto.diffuse;
-        const specularShader        = informacoesPrograma.atributosObjeto.specular;
-        const brilhoShader          = informacoesPrograma.atributosObjeto.brilho;
-        const intensidadeLuzShader  = informacoesPrograma.atributosObjeto.intensidadeLuz;
-        const corLuzShader          = informacoesPrograma.atributosObjeto.corLuz;
+        const ambientShader         : Ponteiro<WebGLUniformLocation>   = informacoesPrograma.atributosObjeto.ambient;
+        const diffuseShader         : Ponteiro<WebGLUniformLocation>   = informacoesPrograma.atributosObjeto.diffuse;
+        const specularShader        : Ponteiro<WebGLUniformLocation>   = informacoesPrograma.atributosObjeto.specular;
+        const brilhoShader          : Ponteiro<WebGLUniformLocation>   = informacoesPrograma.atributosObjeto.brilho;
+        const intensidadeLuzShader  : Ponteiro<WebGLUniformLocation>   = informacoesPrograma.atributosObjeto.intensidadeLuz;
+        const corLuzShader          : Ponteiro<WebGLUniformLocation>   = informacoesPrograma.atributosObjeto.corLuz;
 
         // Atualiza as configurações gerais 
         gl.uniform1f(ambientShader,        mapaIluminacaoTotalParte.ambientTotal ); // o ambient
@@ -1053,11 +1060,11 @@ export class Renderer
                     */
                     for ( let i:int = 0 ; i < objetoAtual.nomesObjetos.length ; i++ ) 
                     {
-                        const nomeParte   = objetoAtual.nomesObjetos[i];
-                        const info        = objetoAtual.objetosInfo[ nomeParte ];
-                        const material    = objetoAtual.materiais[ objetoAtual.objetos[ nomeParte ][0].nomeMaterial ];
-                        const usarTextura = material != null && material.map_Kd != null;
-                        const opacidade   = material.opacity || 1.0;
+                        const nomeParte   : string                   = objetoAtual.nomesObjetos[i];
+                        const info        : ContagemIndicesParteOBJ  = objetoAtual.objetosInfo[ nomeParte ];
+                        const material    : Material                 = objetoAtual.materiais[ objetoAtual.objetos[ nomeParte ][0].nomeMaterial ];
+                        const usarTextura : boolean                  = material != null && material.map_Kd != null;
+                        const opacidade   : float                    = material.opacity || 1.0;
 
                         /**
                         * Se esse objeto usa iluminação por cada sub-objeto
@@ -1085,7 +1092,7 @@ export class Renderer
                                     (objetoAtual.staticAccumulatedLights == true && objetoAtual._jaAcumulouLuzes == false)   // se usa, e ja acumulou, então não faz mais
 
                                 ){
-                                    const posicaoCentroParte        = objetoAtual.calcularCentroideGlobalParte( nomeParte );
+                                    const posicaoCentroParte : Array<float>  = objetoAtual.calcularCentroideGlobalParte( nomeParte );
 
                                     iluminacaoAcumuladaParte.brilhoLocalAcumulado          = 0;
                                     iluminacaoAcumuladaParte.ambientLocalAcumulado         = 0;
@@ -1100,24 +1107,24 @@ export class Renderer
                                     for( let j:int = 0 ; j < luzesCena.length ; j++ )
                                     {
                                         // Calcula a força da luz em relação a posição do objeto atual(do primeiro laço FOR)
-                                        const luz               = luzesCena[j];
+                                        const luz : Ponteiro<Light>   = luzesCena[j];
 
                                         // Se o ponteiro não é nulo
                                         if( luz != null )
                                         {
-                                            const interferenciaLuz  = luz.calcularInterferencia( posicaoCentroParte );
+                                            const interferenciaLuz  : Array<float>  = luz.calcularInterferencia( posicaoCentroParte );
 
-                                            const forcaLuz               =  interferenciaLuz[0];
-                                            const influenciaBrilho       =  interferenciaLuz[1];
-                                            const influenciaAmbient      =  interferenciaLuz[2];
-                                            const influenciaDiffuse      =  interferenciaLuz[3];
-                                            const influenciaSpecular     =  interferenciaLuz[4];
-                                            const influenciaIntensidade  =  interferenciaLuz[5];
+                                            const forcaLuz              : float     = interferenciaLuz[0];
+                                            const influenciaBrilho      : float     = interferenciaLuz[1];
+                                            const influenciaAmbient     : float     = interferenciaLuz[2];
+                                            const influenciaDiffuse     : float     = interferenciaLuz[3];
+                                            const influenciaSpecular    : float     = interferenciaLuz[4];
+                                            const influenciaIntensidade : float     = interferenciaLuz[5];
 
                                             // Cores
-                                            const influenciaVermelho     =  interferenciaLuz[6];
-                                            const influenciaVerde        =  interferenciaLuz[7];
-                                            const influenciaAzul         =  interferenciaLuz[8];
+                                            const influenciaVermelho    : float     = interferenciaLuz[6];
+                                            const influenciaVerde       : float     = interferenciaLuz[7];
+                                            const influenciaAzul        : float     = interferenciaLuz[8];
                                             
                                             // Quanto mais perto estiver da luz, mais a luz vai afetar o objeto
                                             iluminacaoAcumuladaParte.brilhoLocalAcumulado         += influenciaBrilho;
@@ -1136,16 +1143,16 @@ export class Renderer
                                     /**
                                     * Obtem o ambiente da parte atual atualizado como a soma dos valores do objeto com os globais da cena
                                     */
-                                    const ambientTotalParte     = iluminacaoParte.ambientObjeto         + this.ambient                + iluminacaoAcumuladaParte.ambientLocalAcumulado;
-                                    const diffuseTotalParte     = iluminacaoParte.diffuseObjeto         + this.diffuse                + iluminacaoAcumuladaParte.diffuseLocalAcumulado;
-                                    const specularTotalParte    = iluminacaoParte.specularObjeto        + this.specular               + iluminacaoAcumuladaParte.specularLocalAcumulado;
-                                    const brilhoTotalParte      = iluminacaoParte.brilhoObjeto          + this.brilho                 + iluminacaoAcumuladaParte.brilhoLocalAcumulado;
-                                    const intensidadeTotalParte = iluminacaoParte.intensidadeLuzObjeto  + this.intensidadeLuz         + iluminacaoAcumuladaParte.intensidadeLocalAcumulado;
+                                    const ambientTotalParte      : float   = iluminacaoParte.ambientObjeto         + this.ambient                + iluminacaoAcumuladaParte.ambientLocalAcumulado;
+                                    const diffuseTotalParte      : float   = iluminacaoParte.diffuseObjeto         + this.diffuse                + iluminacaoAcumuladaParte.diffuseLocalAcumulado;
+                                    const specularTotalParte     : float   = iluminacaoParte.specularObjeto        + this.specular               + iluminacaoAcumuladaParte.specularLocalAcumulado;
+                                    const brilhoTotalParte       : float   = iluminacaoParte.brilhoObjeto          + this.brilho                 + iluminacaoAcumuladaParte.brilhoLocalAcumulado;
+                                    const intensidadeTotalParte  : float   = iluminacaoParte.intensidadeLuzObjeto  + this.intensidadeLuz         + iluminacaoAcumuladaParte.intensidadeLocalAcumulado;
 
-                                    const corLuzTotalParte   = [0, 0, 0];
-                                    corLuzTotalParte[0]      = iluminacaoParte.corLuzObjeto[0] + this.corAmbient[0] + iluminacaoAcumuladaParte.corLocalAcumulado[0];
-                                    corLuzTotalParte[1]      = iluminacaoParte.corLuzObjeto[1] + this.corAmbient[1] + iluminacaoAcumuladaParte.corLocalAcumulado[1];
-                                    corLuzTotalParte[2]      = iluminacaoParte.corLuzObjeto[2] + this.corAmbient[2] + iluminacaoAcumuladaParte.corLocalAcumulado[2];
+                                    const corLuzTotalParte : Array<float>  = [0, 0, 0];
+                                    corLuzTotalParte[0] = iluminacaoParte.corLuzObjeto[0] + this.corAmbient[0] + iluminacaoAcumuladaParte.corLocalAcumulado[0];
+                                    corLuzTotalParte[1] = iluminacaoParte.corLuzObjeto[1] + this.corAmbient[1] + iluminacaoAcumuladaParte.corLocalAcumulado[1];
+                                    corLuzTotalParte[2] = iluminacaoParte.corLuzObjeto[2] + this.corAmbient[2] + iluminacaoAcumuladaParte.corLocalAcumulado[2];
 
                                     // Salva no mapa que contém a iluminação total da parte(ja levendo em conta essas somas acima)
                                     iluminacaoTotalParte.ambientTotal         = ambientTotalParte;
@@ -1226,10 +1233,10 @@ export class Renderer
     */
     desenharObjetos() : void
     {
-        const gl             = this.gl;
-        const objetosVisuais = this.getObjetos();
-        const luzesCena      = this.getLuzes();
-        const frameDelta     = this.frameCounter.calculateFrameDelta();
+        const gl              : WebGL2RenderingContext    = this.gl;
+        const objetosVisuais  : Array<VisualMesh>         = this.getObjetos();
+        const luzesCena       : Array<Ponteiro<Light>>    = this.getLuzes();
+        const frameDelta      : float                     = this.frameCounter.calculateFrameDelta();
         this.lastFrameDelta  = frameDelta;
 
         // Atualiza a camera
@@ -1245,9 +1252,9 @@ export class Renderer
 
         for( let i:int = 0 ; i < objetosVisuais.length ; i++ )
         {
-            const objetoAtual         = objetosVisuais[i];
-            const isInvisivel         = objetoAtual.invisivel;
-            const isOpaco             = objetoAtual.isOpaco();
+            const objetoAtual : VisualMesh   = objetosVisuais[i];
+            const isInvisivel : boolean      = objetoAtual.invisivel;
+            const isOpaco     : boolean      = objetoAtual.isOpaco();
     
             // Se não está invisivel e SE ES OPACO, ENTAO desenha o objeto
             if( isInvisivel == false && isOpaco == true )
@@ -1270,9 +1277,9 @@ export class Renderer
 
         for( let i:int = 0 ; i < objetosVisuais.length ; i++ )
         {
-            const objetoAtual     = objetosVisuais[i];
-            const isInvisivel     = objetoAtual.invisivel;
-            const isTransparente  = objetoAtual.isTransparente();
+            const objetoAtual    : VisualMesh  = objetosVisuais[i];
+            const isInvisivel    : boolean     = objetoAtual.invisivel;
+            const isTransparente : boolean     = objetoAtual.isTransparente();
 
             // Se não está invisivel e SE ES TRANSPARENTE, ENTAO desenha o objeto
             if( isInvisivel == false && isTransparente == true )

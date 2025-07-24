@@ -25,14 +25,17 @@ import { VisualMesh } from './Mesh/VisualMesh';
 import { carregarTxt } from '../utils/render_engine/funcoesBase';
 import ObjString from '../interfaces/render_engine/ObjString';
 import Mapa from '../utils/dicionarios/Mapa';
-import { Light } from '../core/Light';
+import { Light } from '../renderer/Mesh/Light';
+import ObjectPosition from '../interfaces/main_engine/ObjectPosition';
+import ObjectScale from '../interfaces/main_engine/ObjectScale';
+import LightConfig from '../interfaces/main_engine/LightConfig';
 
 export default class RenderizadorCena
 {
     public engineScene                : Scene;
     public inputListener              : InputListener;
-    public toRenderAssociation        : Map<string, any>;
-    public toRenderLightsAssociation  : Map<string, any>;
+    public toRenderAssociation        : Map<string, Ponteiro<VisualMesh>>;
+    public toRenderLightsAssociation  : Map<string, Ponteiro<Light>>;
     public renderizador               : Renderer;
     public canvasRef                  : React.RefObject<HTMLCanvasElement>;
     public firstRender                : boolean = true;
@@ -57,10 +60,10 @@ export default class RenderizadorCena
         });
 
         // Cria um mapa que associa o id dos objetos da minha engine de logica com o que o meu mini renderizador webgl vai desenhar
-        this.toRenderAssociation       = new Map<string, any>();
+        this.toRenderAssociation       = new Map<string, Ponteiro<VisualMesh>>();
 
         // Cria um mapa que associa o id das luzes da minha engine de logica com o que o meu mini renderizador webgl vai desenhar
-        this.toRenderLightsAssociation = new Map<string, any>();
+        this.toRenderLightsAssociation = new Map<string, Ponteiro<Light>>();
 
         // Armazena todos os OBJ lidos por essa Engine gráfica
         this.objLidos                  = new Mapa<string, ObjString>();
@@ -470,9 +473,9 @@ export default class RenderizadorCena
                     /**
                     * Espelha atributos que a minha engine informou
                     */
-                    const position : any = objetoAtual.getRepresentacaoMesh().position;
-                    const rotation : any = objetoAtual.getRepresentacaoMesh().rotation;
-                    const scale    : any = objetoAtual.getRepresentacaoMesh().scale;
+                    const position : ObjectPosition  = objetoAtual.getRepresentacaoMesh().position;
+                    const rotation : ObjectPosition  = objetoAtual.getRepresentacaoMesh().rotation;
+                    const scale    : ObjectScale     = objetoAtual.getRepresentacaoMesh().scale;
 
                     objetoVisual.nome = objetoAtual.name;
 
@@ -497,7 +500,7 @@ export default class RenderizadorCena
                         objetoVisual.scale.z = scale.z;
                     }
 
-                    objetoVisual.isInvisible = false;
+                    objetoVisual.invisivel = false;
                 }
             }
         }
@@ -517,45 +520,54 @@ export default class RenderizadorCena
         */
         for( let i:int = 0 ; i < engineSceneLights.length ; i++ )
         {
-            const luzAtual : Ponteiro<Light> = engineSceneLights[i];
+            const luzAtual : Ponteiro<any> = engineSceneLights[i]; // o tipo aqui é a luz(tipo Light) da engine prinicipal
             
             if( luzAtual != null )
             {
                 const propriedadesLuz : any      = luzAtual.getPropriedadesLuz();
 
                 //Se a luz já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
-                if ( !this.toRenderLightsAssociation.has(luzAtual.id) ) 
+                if ( this.toRenderLightsAssociation.has(luzAtual.id) == false ) 
                 {
                     // Cria a luz no meu mini renderizador webgl
-                    const novaLuzVisual = this.renderizador.criarObjeto( propriedadesLuz );
-                    this.toRenderLightsAssociation.set(luzAtual.id, novaLuzVisual);
+                    const novaLuzVisual   = this.renderizador.criarLuz( propriedadesLuz );
+
+                    // Se o ponteiro da luz não for null
+                    if( novaLuzVisual != null )
+                    {
+                        this.toRenderLightsAssociation.set(luzAtual.id, novaLuzVisual);
+                    }
                 }
 
                 /**
                 * Atualiza visualmente a luz
                 */
-                let luzVisual = this.toRenderLightsAssociation.get( luzAtual.id );
+                let luzVisual : Ponteiro<any>  = this.toRenderLightsAssociation.get( luzAtual.id );
 
                 // Copiando os atributos da luz da minha engine de logica para meu mini renderizador webgl
     
-                // Posicao 
-                luzVisual.position.x  = propriedadesLuz.position.x;
-                luzVisual.position.y  = propriedadesLuz.position.y;
-                luzVisual.position.z  = propriedadesLuz.position.z;
-        
-                luzVisual.ambient     = propriedadesLuz.ambient;
-                luzVisual.raio        = propriedadesLuz.raio;
-                luzVisual.brilho      = propriedadesLuz.brilho;
-                luzVisual.ambient     = propriedadesLuz.ambient;
-                luzVisual.diffuse     = propriedadesLuz.diffuse;
-                luzVisual.specular    = propriedadesLuz.specular;
+                // Se o ponteiro da luz não for null
+                if( luzVisual != null )
+                {
+                    // Posicao 
+                    luzVisual.position.x  = propriedadesLuz.position.x;
+                    luzVisual.position.y  = propriedadesLuz.position.y;
+                    luzVisual.position.z  = propriedadesLuz.position.z;
+            
+                    luzVisual.ambient     = propriedadesLuz.ambient;
+                    luzVisual.raio        = propriedadesLuz.raio;
+                    luzVisual.brilho      = propriedadesLuz.brilho;
+                    luzVisual.ambient     = propriedadesLuz.ambient;
+                    luzVisual.diffuse     = propriedadesLuz.diffuse;
+                    luzVisual.specular    = propriedadesLuz.specular;
 
-                // Cores
-                luzVisual.cor[0]      = propriedadesLuz.cor[0];
-                luzVisual.cor[1]      = propriedadesLuz.cor[1];
-                luzVisual.cor[2]      = propriedadesLuz.cor[2];
+                    // Cores
+                    luzVisual.cor[0]      = propriedadesLuz.cor[0];
+                    luzVisual.cor[1]      = propriedadesLuz.cor[1];
+                    luzVisual.cor[2]      = propriedadesLuz.cor[2];
 
-                luzVisual.intensidade = propriedadesLuz.intensidade;
+                    luzVisual.intensidade = propriedadesLuz.intensidade;
+                }
             }
         }
     }

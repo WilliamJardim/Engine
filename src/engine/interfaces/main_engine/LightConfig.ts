@@ -14,7 +14,7 @@ import Position3D from "../main_engine/Position3D";
 export default interface LightConfig
 {
     name        : string;
-    position    : Array<float>;
+    position    : Position3D;
     raio        : float;
     brilho      : float;
     ambient     : float;

@@ -48,7 +48,7 @@ import { CilindroMesh } from '../Mesh/colored/CilindroMesh.ts';
 import { Triangulo2DMesh } from '../Mesh/colored/Triangulo2DMesh.ts';
 import { Triangulo3DMesh } from '../Mesh/colored/Triangulo3DMesh.ts';
 import { OBJMesh } from '../Mesh/OBJMesh.ts';
-import { Light } from '../Mesh/Light.js';
+import { LightRenderizador } from '../Mesh/LightRenderizador.js';
 import { float, int, Ponteiro } from '../../types/types-cpp-like.js';
 import Mapa from '../../utils/dicionarios/Mapa.js';
 import { VisualMesh } from '../Mesh/VisualMesh.ts';
@@ -94,7 +94,7 @@ export class Renderer
     public miraCamera         : Array<float>;
 
     public objetos  : Array<VisualMesh>;
-    public luzes    : Array<Ponteiro<Light>>;
+    public luzes    : Array<Ponteiro<LightRenderizador>>;
 
     public programs : Mapa<string, WebGLProgram>;
     
@@ -430,7 +430,7 @@ export class Renderer
         return this.objetos;
     }
 
-    getLuzes()   : Array<Ponteiro<Light>>
+    getLuzes()   : Array<Ponteiro<LightRenderizador>>
     {
         return this.luzes;
     }
@@ -520,12 +520,12 @@ export class Renderer
     /**
     * Cria uma nova luz na cena( adicionando ele na lista de renderização )
     */
-    criarLuz( propriedadesLuz:LightConfig ): Ponteiro<Light>
+    criarLuz( propriedadesLuz:LightConfig ): Ponteiro<LightRenderizador>
     {
         const contextoRenderizador = this;
 
-        this.luzes.push( new Light( contextoRenderizador, 
-                                    propriedadesLuz ) 
+        this.luzes.push( new LightRenderizador( contextoRenderizador, 
+                                                propriedadesLuz ) 
                        );
 
         // Retorna a ultima luz criada
@@ -662,7 +662,7 @@ export class Renderer
     */
     atualizarIluminacaoGeralObjeto( objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:IluminacaoGeral ) : void
     {
-        const luzesCena : Array<Ponteiro<Light>>   = this.getLuzes();
+        const luzesCena : Array<Ponteiro<LightRenderizador>>   = this.getLuzes();
 
         // Se o ponteiro não for nulo
         if( objetoAtual != null )
@@ -900,9 +900,9 @@ export class Renderer
                       objetoAtual:Ponteiro<VisualMesh>
     ): void
     {
-        const gl                             : WebGL2RenderingContext         = this.gl;
-        const luzesCena                      : Array<Ponteiro<Light>>         = this.luzes;   
-        const matrixVisualizacaoRenderizador : Float32Array<ArrayBufferLike>  = this.getMatrixVisualizacao();
+        const gl                             : WebGL2RenderingContext              = this.gl;
+        const luzesCena                      : Array<Ponteiro<LightRenderizador>>  = this.luzes;   
+        const matrixVisualizacaoRenderizador : Float32Array<ArrayBufferLike>       = this.getMatrixVisualizacao();
 
         // Se o ponteiro não for nulo
         if( objetoAtual != null )
@@ -1107,7 +1107,7 @@ export class Renderer
                                     for( let j:int = 0 ; j < luzesCena.length ; j++ )
                                     {
                                         // Calcula a força da luz em relação a posição do objeto atual(do primeiro laço FOR)
-                                        const luz : Ponteiro<Light>   = luzesCena[j];
+                                        const luz : Ponteiro<LightRenderizador>   = luzesCena[j];
 
                                         // Se o ponteiro não é nulo
                                         if( luz != null )
@@ -1233,10 +1233,10 @@ export class Renderer
     */
     desenharObjetos() : void
     {
-        const gl              : WebGL2RenderingContext    = this.gl;
-        const objetosVisuais  : Array<VisualMesh>         = this.getObjetos();
-        const luzesCena       : Array<Ponteiro<Light>>    = this.getLuzes();
-        const frameDelta      : float                     = this.frameCounter.calculateFrameDelta();
+        const gl              : WebGL2RenderingContext               = this.gl;
+        const objetosVisuais  : Array<VisualMesh>                    = this.getObjetos();
+        const luzesCena       : Array<Ponteiro<LightRenderizador>>   = this.getLuzes();
+        const frameDelta      : float                                = this.frameCounter.calculateFrameDelta();
         this.lastFrameDelta  = frameDelta;
 
         // Atualiza a camera

@@ -25,17 +25,18 @@ import { VisualMesh } from './Mesh/VisualMesh';
 import { carregarTxt } from '../utils/render_engine/funcoesBase';
 import ObjString from '../interfaces/render_engine/ObjString';
 import Mapa from '../utils/dicionarios/Mapa';
-import { Light } from '../renderer/Mesh/Light';
+import { LightRenderizador } from './Mesh/LightRenderizador';
 import ObjectPosition from '../interfaces/main_engine/ObjectPosition';
 import ObjectScale from '../interfaces/main_engine/ObjectScale';
 import LightConfig from '../interfaces/main_engine/LightConfig';
+import { LightInstance } from '../core/LightInstance';
 
 export default class RenderizadorCena
 {
     public engineScene                : Scene;
     public inputListener              : InputListener;
     public toRenderAssociation        : Map<string, Ponteiro<VisualMesh>>;
-    public toRenderLightsAssociation  : Map<string, Ponteiro<Light>>;
+    public toRenderLightsAssociation  : Map<string, Ponteiro<LightRenderizador>>;
     public renderizador               : Renderer;
     public canvasRef                  : React.RefObject<HTMLCanvasElement>;
     public firstRender                : boolean = true;
@@ -63,7 +64,7 @@ export default class RenderizadorCena
         this.toRenderAssociation       = new Map<string, Ponteiro<VisualMesh>>();
 
         // Cria um mapa que associa o id das luzes da minha engine de logica com o que o meu mini renderizador webgl vai desenhar
-        this.toRenderLightsAssociation = new Map<string, Ponteiro<Light>>();
+        this.toRenderLightsAssociation = new Map<string, Ponteiro<LightRenderizador>>();
 
         // Armazena todos os OBJ lidos por essa Engine gráfica
         this.objLidos                  = new Mapa<string, ObjString>();
@@ -520,7 +521,7 @@ export default class RenderizadorCena
         */
         for( let i:int = 0 ; i < engineSceneLights.length ; i++ )
         {
-            const luzAtual : Ponteiro<any> = engineSceneLights[i]; // o tipo aqui é a luz(tipo Light) da engine prinicipal
+            const luzAtual : Ponteiro<LightInstance> = engineSceneLights[i]; // o tipo aqui é a luz(tipo LightInstance) da engine prinicipal
             
             if( luzAtual != null )
             {

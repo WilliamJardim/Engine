@@ -31,7 +31,7 @@ import LightConfig from "../../interfaces/render_engine/LightConfig.js";
 
 // OUTRO: renderizador.criarLuz( { tipo: "Light", position: {x: renderizador.posicaoCamera[0], y: renderizador.posicaoCamera[1], z: renderizador.posicaoCamera[2] }, ambient: 0.5, raio: 0.1 , cor: [255,0,0]} )
 
-export class Light
+export class LightRenderizador
 {
     public renderer    : Renderer;
     public meshConfig  : LightConfig;

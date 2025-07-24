@@ -31,7 +31,7 @@ import { EngineMain }        from '../main'; // Importa a função EngineMain
 import { EngineLoop }        from '../main'; // Importa a função EngineLoop
 import { EngineBeforeLoop }  from '../main' //Importa a função EngineBeforeLoop
 import { float, int, Ponteiro }          from "../types/types-cpp-like.ts";
-import { Light }             from '../core/Light.ts';
+import { Light }             from './LightInstance.ts';
 
 export default class Scene
 {

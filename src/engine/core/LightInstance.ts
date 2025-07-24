@@ -11,11 +11,11 @@ import { float } from "../types/types-cpp-like";
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-export class Light
+export class LightInstance
 {
     public tipo            : string;
     public propriedadesLuz : LightConfig;
-    public position        : Array<float>;
+    public position        : Position3D;
     public raio            : float;
     public brilho          : float;
     public ambient         : float;
@@ -34,14 +34,14 @@ export class Light
 
         this.name        = propriedadesLuz.name || 'luz';
         this.id          = (this.name) + String(new Date().getTime());
-        this.position    = propriedadesLuz.position       || [0,0,0];
-        this.raio        = propriedadesLuz.raio           || 1; // Raio de alcance da luz
-        this.brilho      = propriedadesLuz.brilho         || 16;
-        this.ambient     = propriedadesLuz.ambient        || 0.2; 
-        this.diffuse     = propriedadesLuz.diffuse        || 0.2;
-        this.specular    = propriedadesLuz.specular       || 0.2;
-        this.cor         = propriedadesLuz.cor            || [1, 1, 1];
-        this.intensidade = propriedadesLuz.intensidade    || 0;
+        this.position    = propriedadesLuz.position;
+        this.raio        = propriedadesLuz.raio;
+        this.brilho      = propriedadesLuz.brilho;
+        this.ambient     = propriedadesLuz.ambient;
+        this.diffuse     = propriedadesLuz.diffuse ;
+        this.specular    = propriedadesLuz.specular;
+        this.cor         = propriedadesLuz.cor;
+        this.intensidade = propriedadesLuz.intensidade;
     }
 
     // Converte o objeto para um objeto mais simples, pra poder usar no meu mini renderizador webgl
@@ -50,7 +50,7 @@ export class Light
         const tipo        : string        = this.tipo;
         const name        : string        = this.name;
         const id          : string        = this.id;
-        const position    : Array<float>  = this.position;
+        const position    : Position3D    = this.position;
         const raio        : float         = this.raio;
         const brilho      : float         = this.brilho;
         const ambient     : float         = this.ambient;

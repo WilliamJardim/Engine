@@ -19,7 +19,7 @@ import {
     DefinirEscala 
 } from "../../../utils/render_engine/math.js";
 import { Renderer } from "../../Renderer/Renderer.js";
-import { float } from "../../../types/types-cpp-like.js";
+import { float, int } from "../../../types/types-cpp-like.js";
 import VisualMeshConfig from "../../../interfaces/render_engine/VisualMeshConfig.js";
 import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
 import Position3D from "../../../interfaces/main_engine/Position3D.js";
@@ -102,9 +102,14 @@ export class Triangulo3DMesh extends VisualMesh
         const faceColors : Matrix<float>  = this.getFaceColors();
 
         let cores : Array<float> = [];
-        for (let cor of faceColors) {
+
+        for (let i:int = 0; i < faceColors.length; i++ ) 
+        {
+            const cor : Array<float>  = faceColors[i];
+
             cores = cores.concat(cor, cor, cor); // Cada face tem 3 vértices
         }
+        
         return cores;
     }
 

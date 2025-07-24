@@ -31,7 +31,7 @@ import { EngineMain }        from '../main'; // Importa a função EngineMain
 import { EngineLoop }        from '../main'; // Importa a função EngineLoop
 import { EngineBeforeLoop }  from '../main' //Importa a função EngineBeforeLoop
 import { float, int, Ponteiro }          from "../types/types-cpp-like.ts";
-import { Light }             from './LightInstance.ts';
+import { LightInstance }     from './LightInstance.ts';
 
 export default class Scene
 {
@@ -49,7 +49,7 @@ export default class Scene
     public arrastoAr                            : float = 1;
 
     public objects               : Array<Ponteiro<AbstractObjectBase>>;
-    public lights                : Array<Ponteiro<Light>>;
+    public lights                : Array<Ponteiro<LightInstance>>;
     public sounds                : Array<Ponteiro<LocalSound>>;
     
     public objectTableById       : Mapa<string, Ponteiro<AbstractObjectBase>>;
@@ -97,7 +97,7 @@ export default class Scene
         this.objects = new Array<Ponteiro<AbstractObjectBase>>();
 
         // Luzes
-        this.lights  = new Array<Ponteiro<Light>>();
+        this.lights  = new Array<Ponteiro<LightInstance>>();
 
         // Sons locais
         this.sounds  = new Array<Ponteiro<LocalSound>>();
@@ -197,10 +197,14 @@ export default class Scene
             //this.collisionBinaryTable.byClasses[objectClasses] = {};
 
         }else if( typeof objectClasses == 'object' ){
-            objectClasses.forEach(function(nomeClasse:string){
+        
+            for( let i:int = 0; i < objectClasses.length; i++ )
+            {
+                const nomeClasse:string = objectClasses[i];
+
                 contexto.collisionTable.byClasses[nomeClasse] = [];
                 //contexto.collisionBinaryTable.byClasses[nomeClasse] = {};
-            })
+            }
         }
 
         //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
@@ -250,10 +254,14 @@ export default class Scene
             //this.collisionBinaryTable.byClasses[objectClasses] = {};
 
         }else if( typeof objectClasses == 'object' ){
-            objectClasses.forEach(function(nomeClasse:string){
+            
+            for( let i:int = 0; i < objectClasses.length; i++ )
+            {
+                const nomeClasse:string = objectClasses[i];
+                
                 contexto.proximityTable.byClasses[nomeClasse] = [];
                 //contexto.collisionBinaryTable.byClasses[nomeClasse] = {};
-            })
+            }
         }
 
         //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
@@ -402,7 +410,7 @@ export default class Scene
     /**
     * Adiciona uma luz na cena 
     */
-    public criarLuz( luz:Ponteiro<Light> ): void
+    public criarLuz( luz:Ponteiro<LightInstance> ): void
     {
         this.lights.push( luz );
     }
@@ -417,13 +425,16 @@ export default class Scene
         //Se tem o evento whenDestroy, executa ele
         if( objetoRemover != null && objetoRemover.objEvents )
         {   
-            objetoRemover.objEvents
-            .getEventos()
-            .forEach(function( eventos:ObjectEvents ){
+            const eventosDoObjeto : Array<ObjectEvents>  = objetoRemover.objEvents.getEventos();
+
+            for( let i:int = 0; i < eventosDoObjeto.length; i++ )
+            {
+                const eventos:ObjectEvents = eventosDoObjeto[i];
+
                 if( eventos.whenDestroy ){
                     eventos.whenDestroy.bind(objetoRemover)(objetoRemover);
                 }
-            });
+            }
         }
 
         //Remove o objeto da cena

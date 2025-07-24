@@ -250,7 +250,18 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         },
         isInvisible: false,
         opacity: 1,
-        events: [],
+        events: [
+            {
+                // Quando o objeto cair
+                whenFall: function () {
+                    
+                },
+                whenCollide: null,
+                whenProximity: null,
+                whenDestroy: null,
+                loop: null
+            }
+        ],
         kick_rate: 4,
         enable_advanced_frame_tracking: false,
         attachments: [],

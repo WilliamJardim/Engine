@@ -1274,8 +1274,10 @@ export default class ObjectBase extends AbstractObjectBase
             * Para cada objeto da cena
             * (Esse laço só executa uma vez por que tem códigos que criei que precisam do BREAK)
             */
-            for( let objetoAtualCena of objetosCena )
+            for( let i:int = 0; i < objetosCena.length; i++ )
             {
+                const objetoAtualCena :  Ponteiro<AbstractObjectBase>  = objetosCena[i];
+
                 /**
                 * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
                 */
@@ -1510,20 +1512,21 @@ export default class ObjectBase extends AbstractObjectBase
                     /**
                     * Executa os eventos de queda 
                     */
-                    this.objEvents
-                    .getEventos()
-                    .forEach(function(eventosObjeto:ObjectEvents){
+                    const eventosDoObjeto : Array<ObjectEvents> = this.objEvents.getEventos();
+
+                    for( let j:int = 0; j < eventosDoObjeto.length; j++ )
+                    {
+                        const eventosObjeto : ObjectEvents = eventosDoObjeto[ j ];
 
                         //Chama o evento whenFall
-                        if( eventosObjeto.whenFall )
+                        if( eventosObjeto.whenFall != null )
                         {
                             esteObjeto.callEvent( eventosObjeto.whenFall, {
                                 self     : esteObjeto,
                                 instante : new Date().getTime()
                             });
                         }
-
-                    });
+                    }
                 }
 
                 /**
@@ -1951,8 +1954,9 @@ export default class ObjectBase extends AbstractObjectBase
             /**
             * Para cada objeto da cena
             */
-            for( let anexo of objeto.objProps.attachments )
+            for( let i:int = 0; i < objeto.objProps.attachments.length; i++ )
             {   
+                const anexo            : ObjectAttachment             = objeto.objProps.attachments[i];
                 const nomeObjetoAnexar : string                       = anexo.name;
                 const objetoAnexar     : Ponteiro<AbstractObjectBase> = scene.getObjectByName( nomeObjetoAnexar );
                 
@@ -2028,99 +2032,105 @@ export default class ObjectBase extends AbstractObjectBase
         const objeto  : Ponteiro<AbstractObjectBase>  = this;
         const eventos : ObjectEventLayer              = objeto.objEvents;
 
-        if( scene == null )
+        // Se o ponteiro não for null
+        if( scene != null )
         {
-           return; 
-        }
+            //Se tem eventos
+            if( eventos != null )
+            {   
+                const eventosDoObjeto : Array<ObjectEvents>  = eventos.getEventos();
 
-        //Se tem eventos
-        if( eventos )
-        {   
-            // Para cada bloco de evento
-            for( let eventosObjeto of eventos.getEventos() )
-            {
-                const objetosCena: Array<Ponteiro<AbstractObjectBase>> = scene.objects;
+                // Para cada bloco de evento
+                for( let i:int = 0; i < eventosDoObjeto.length; i++ )
+                {
+                    const eventosObjeto : ObjectEvents                        = eventosDoObjeto[i];
+                    const objetosCena   : Array<Ponteiro<AbstractObjectBase>> = scene.objects;
 
-                // Se o objeto pode colidir e Se existe o evento whenCollide
-                if( (objeto.objProps.collide != false || objeto.objProps.collisionEvents == true) && 
-                    eventosObjeto.whenCollide 
-                ){
-                    
-                    // Para cada objeto na cena, verifica se colidiu com este objeto
-                    for( let objetoAtualCena of objetosCena )
-                    {
-                        //Se ESTE objeto COLIDIR com o objeto atual da cena 
-                        if( 
-                            objetoAtualCena != null &&
-                            // Se não for ele mesmo
-                            objetoAtualCena.id != objeto.id &&
-                            
-                            //Se o objetoAtualCena tem colisão habilitada
-                            (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collisionEvents == true) &&
-                            
-                            //Se o objeto atual NÂO tiver uma exceção para o objetoAtualCena
-                            (
-                                //Se ele inclui o ID ou se não tem ignoreColisions nem entra
-                                includeString(objeto.objProps.ignoreCollisions, objetoAtualCena.id) == false &&
-                                //Se ele tem nome o nome é uma excessao ou se ele não tem name, nem entra
-                                includeString(objeto.objProps.ignoreCollisions, objetoAtualCena.name) == false &&
-                                // Se o ignoreCollisions do outro objeto(o objeto B) NÂO inclui alguma classe que o objeto A tenha
-                                objectANOTHaveSomeClassesIgnoredByObjectB( objeto, objetoAtualCena )
-                            ) &&
-                            //Se o objetoAtualCena NÂO tiver uma exceção para o objeto
-                            (   
-                                includeString(objetoAtualCena.objProps.ignoreCollisions, objeto.id) == false && 
-                                includeString(objetoAtualCena.objProps.ignoreCollisions, objeto.name) == false &&
-                                objectANOTHaveSomeClassesIgnoredByObjectB( objetoAtualCena, objeto )
-                            ) &&
-                            /** Se houve uma colisão de fato **/
-                            (
-                                isCollision( objeto, objetoAtualCena, {x: 0.5, y: 0.5, z: 0.5} ) == true 
-                            )
-                        ) {
-                            objeto.callEvent( eventosObjeto.whenCollide, {
-                                self     : objeto,
-                                target   : objetoAtualCena,
-                                instante : new Date().getTime(),
-                                subjects : [ objeto.id, objetoAtualCena.id ],
-                                distance : getDistance(objeto, objetoAtualCena) 
-                            });
-                        }
+                    // Se o objeto pode colidir e Se existe o evento whenCollide
+                    if( (objeto.objProps.collide != false || objeto.objProps.collisionEvents == true) && 
+                        eventosObjeto.whenCollide 
+                    ){
                         
-                    }
-                }
+                        // Para cada objeto na cena, verifica se colidiu com este objeto
+                        for( let j:int = 0; j < objetosCena.length; j++ )
+                        {
+                            const objetoAtualCena : Ponteiro<AbstractObjectBase>  = objetosCena[j];
 
-                //Se tem o evento whenProximity
-                if( eventosObjeto.whenProximity != null )
-                {
-                    // Para cada objeto na cena, verifica se colidiu com este objeto
-                    for( let objetoAtualCena of objetosCena )
-                    {
-                        if( 
-                            objetoAtualCena != null &&
-                            // Se não for ele mesmo
-                            objetoAtualCena.id != objeto.id &&
-                            isProximity( objeto, objetoAtualCena, objeto.objProps.proximityConfig ) == true
-                        ){
-                            objeto.callEvent( eventosObjeto.whenProximity, {
-                                self     : objeto,
-                                target   : objetoAtualCena,
-                                instante : new Date().getTime(),
-                                subjects : [ objeto.id, objetoAtualCena.id ],
-                                proximityConfig: objeto.objProps.proximityConfig,
-                                distance : getDistance(objeto, objetoAtualCena) 
-                            });
+                            //Se ESTE objeto COLIDIR com o objeto atual da cena 
+                            if( 
+                                objetoAtualCena != null &&
+                                // Se não for ele mesmo
+                                objetoAtualCena.id != objeto.id &&
+                                
+                                //Se o objetoAtualCena tem colisão habilitada
+                                (objetoAtualCena.objProps.collide == true || objetoAtualCena.objProps.collisionEvents == true) &&
+                                
+                                //Se o objeto atual NÂO tiver uma exceção para o objetoAtualCena
+                                (
+                                    //Se ele inclui o ID ou se não tem ignoreColisions nem entra
+                                    includeString(objeto.objProps.ignoreCollisions, objetoAtualCena.id) == false &&
+                                    //Se ele tem nome o nome é uma excessao ou se ele não tem name, nem entra
+                                    includeString(objeto.objProps.ignoreCollisions, objetoAtualCena.name) == false &&
+                                    // Se o ignoreCollisions do outro objeto(o objeto B) NÂO inclui alguma classe que o objeto A tenha
+                                    objectANOTHaveSomeClassesIgnoredByObjectB( objeto, objetoAtualCena )
+                                ) &&
+                                //Se o objetoAtualCena NÂO tiver uma exceção para o objeto
+                                (   
+                                    includeString(objetoAtualCena.objProps.ignoreCollisions, objeto.id) == false && 
+                                    includeString(objetoAtualCena.objProps.ignoreCollisions, objeto.name) == false &&
+                                    objectANOTHaveSomeClassesIgnoredByObjectB( objetoAtualCena, objeto )
+                                ) &&
+                                /** Se houve uma colisão de fato **/
+                                (
+                                    isCollision( objeto, objetoAtualCena, {x: 0.5, y: 0.5, z: 0.5} ) == true 
+                                )
+                            ) {
+                                objeto.callEvent( eventosObjeto.whenCollide, {
+                                    self     : objeto,
+                                    target   : objetoAtualCena,
+                                    instante : new Date().getTime(),
+                                    subjects : [ objeto.id, objetoAtualCena.id ],
+                                    distance : getDistance(objeto, objetoAtualCena) 
+                                });
+                            }
+                            
                         }
                     }
+
+                    //Se tem o evento whenProximity
+                    if( eventosObjeto.whenProximity != null )
+                    {
+                        // Para cada objeto na cena, verifica se colidiu com este objeto
+                        for( let j:int = 0; j < objetosCena.length; j++ )
+                        {
+                            const objetoAtualCena : Ponteiro<AbstractObjectBase>  = objetosCena[j];
+
+                            if( 
+                                objetoAtualCena != null &&
+                                // Se não for ele mesmo
+                                objetoAtualCena.id != objeto.id &&
+                                isProximity( objeto, objetoAtualCena, objeto.objProps.proximityConfig ) == true
+                            ){
+                                objeto.callEvent( eventosObjeto.whenProximity, {
+                                    self     : objeto,
+                                    target   : objetoAtualCena,
+                                    instante : new Date().getTime(),
+                                    subjects : [ objeto.id, objetoAtualCena.id ],
+                                    proximityConfig: objeto.objProps.proximityConfig,
+                                    distance : getDistance(objeto, objetoAtualCena) 
+                                });
+                            }
+                        }
+                    }
+
+                    //Se tem o evento loop(um evento sem condições que sempre será executado se existir, pra permitir criar loops especificos para cada objeto)
+                    if( eventosObjeto.loop != null )
+                    {
+                        eventosObjeto.loop.bind(objeto)(objeto);
+                    }
                 }
 
-                //Se tem o evento loop(um evento sem condições que sempre será executado se existir, pra permitir criar loops especificos para cada objeto)
-                if( eventosObjeto.loop != null )
-                {
-                    eventosObjeto.loop.bind(objeto)(objeto);
-                }
             }
-
         }
     }
 

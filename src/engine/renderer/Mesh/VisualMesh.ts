@@ -305,13 +305,13 @@ export class VisualMesh
     /**
     * Define a iluminação do objeto como um todo 
     */
-    setIntireIlumination( iluminationDefinition:any={} ) : void
+    setIntireIlumination( iluminationDefinition:IluminacaoGeralParte ) : void
     {
-        this.brilhoObjeto   = iluminationDefinition.brilhoObjeto;
-        this.ambientObjeto  = iluminationDefinition.ambientObjeto;
-        this.diffuseObjeto  = iluminationDefinition.diffuseObjeto;
-        this.specularObjeto = iluminationDefinition.specularObjeto;
-        this.intensidadeLuzObjeto = iluminationDefinition.intensidadeLuzObjeto;
+        this.brilhoObjeto          = iluminationDefinition.brilhoObjeto;
+        this.ambientObjeto         = iluminationDefinition.ambientObjeto;
+        this.diffuseObjeto         = iluminationDefinition.diffuseObjeto;
+        this.specularObjeto        = iluminationDefinition.specularObjeto;
+        this.intensidadeLuzObjeto  = iluminationDefinition.intensidadeLuzObjeto;
 
         // Pega a cor da luz
         this.corLuz    = [0, 0, 0];

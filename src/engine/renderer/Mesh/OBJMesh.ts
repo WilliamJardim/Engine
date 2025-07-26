@@ -33,6 +33,7 @@ import FaceObjeto, { VerticesFace } from "../../interfaces/render_engine/FaceObj
 import VisualMeshConfig from "../../interfaces/render_engine/VisualMeshConfig.js";
 import Position3D from "../../interfaces/main_engine/Position3D.js";
 import IluminacaoGeralParte from "../../interfaces/render_engine/IluminacaoGeralParte.js";
+import VerticesParteOBJ from "../../interfaces/render_engine/VerticesParteOBJ.js";
 
 /**
 * PORTABILIDADE PRA C++:
@@ -892,7 +893,7 @@ export class OBJMesh extends VisualMesh
 
 
         // detalhes dos vertices
-        const verticesInfo : Array<any> = [];
+        const verticesInfo : Array<VerticesParteOBJ> = [];
 
         /**
         * Cada vértice ocupa 3 posições na memoria (X, Y, Z)

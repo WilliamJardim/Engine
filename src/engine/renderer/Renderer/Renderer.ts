@@ -62,6 +62,8 @@ import ContagemIndicesParteOBJ from '../../interfaces/render_engine/ContagemIndi
 import Material from '../../interfaces/render_engine/Material.ts';
 import Position3D from '../../interfaces/main_engine/Position3D.ts';
 import LightConfig from '../../interfaces/render_engine/LightConfig.ts';
+import RenderConfig from '../../interfaces/render_engine/RenderConfig.ts';
+import VisualMeshConfig from '../../interfaces/render_engine/VisualMeshConfig.ts';
 
 export class Renderer
 {
@@ -106,7 +108,7 @@ export class Renderer
 
     public mapaTexturasCarregadas : Mapa<string, WebGLTexture>;
     
-    constructor( canvasRef:React.RefObject<HTMLCanvasElement>, tipoPerspectiva:string="perspectiva", renderConfig:any={} ){
+    constructor( canvasRef:React.RefObject<HTMLCanvasElement>, tipoPerspectiva:string="perspectiva", renderConfig:RenderConfig ){
         this.canvas = canvasRef;
 
         // Inicializa um mapa que vai ser usado para armazenar e reaproveitar as texturas carregadas
@@ -797,7 +799,7 @@ export class Renderer
     /**
     * Aplica a iluminação geral em um objeto 
     */
-    aplicarIluminacaoGeralObjeto(gl:WebGL2RenderingContext, informacoesPrograma:any, objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:IluminacaoGeral): void
+    aplicarIluminacaoGeralObjeto(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:IluminacaoGeral): void
     {
         // Se o ponteiro não for null
         if( objetoAtual != null )

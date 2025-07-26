@@ -30,14 +30,16 @@ import ObjectPosition from '../interfaces/main_engine/ObjectPosition';
 import ObjectScale from '../interfaces/main_engine/ObjectScale';
 import LightConfig from '../interfaces/main_engine/LightConfig';
 import { LightInstance } from '../core/LightInstance';
+import RenderConfig from '../interfaces/render_engine/RenderConfig';
 
 export default class RenderizadorCena
 {
     public engineScene                : Scene;
     public inputListener              : InputListener;
-    public toRenderAssociation        : Map<string, Ponteiro<VisualMesh>>;
-    public toRenderLightsAssociation  : Map<string, Ponteiro<LightRenderizador>>;
+    public toRenderAssociation        : Mapa<string, Ponteiro<VisualMesh>>;
+    public toRenderLightsAssociation  : Mapa<string, Ponteiro<LightRenderizador>>;
     public renderizador               : Renderer;
+    public renderConfig               : RenderConfig;
     public canvasRef                  : React.RefObject<HTMLCanvasElement>;
     public firstRender                : boolean = true;
     public provavelmentePronto        : boolean = false; //Sinaliza se os objetos iniciais foram carregados
@@ -60,11 +62,21 @@ export default class RenderizadorCena
             enable_advanced_frame_tracking : true
         });
 
+        // Configuração da renderização da Engine
+        this.renderConfig = {
+            ambient        : 0.4, // Força da luz ambiente
+            diffuse        : 0.6,
+            specular       : 0.6,
+            brilho         : 16,  // Brilho geral
+            corAmbient     : [1, 1, 1],
+            intensidadeLuz : 1
+        };
+
         // Cria um mapa que associa o id dos objetos da minha engine de logica com o que o meu mini renderizador webgl vai desenhar
-        this.toRenderAssociation       = new Map<string, Ponteiro<VisualMesh>>();
+        this.toRenderAssociation       = new Mapa<string, Ponteiro<VisualMesh>>();
 
         // Cria um mapa que associa o id das luzes da minha engine de logica com o que o meu mini renderizador webgl vai desenhar
-        this.toRenderLightsAssociation = new Map<string, Ponteiro<LightRenderizador>>();
+        this.toRenderLightsAssociation = new Mapa<string, Ponteiro<LightRenderizador>>();
 
         // Armazena todos os OBJ lidos por essa Engine gráfica
         this.objLidos                  = new Mapa<string, ObjString>();
@@ -73,7 +85,7 @@ export default class RenderizadorCena
         this.canvasRef = canvasRef;
         
         // CRIA O RENDERIZADOR
-        this.renderizador = new Renderer( this.canvasRef, "perspectiva" );
+        this.renderizador = new Renderer( this.canvasRef, "perspectiva", this.renderConfig );
     
         // Inicia o loop de renderização
         this.renderizador.inicializar();
@@ -399,7 +411,7 @@ export default class RenderizadorCena
                 }
 
                 //Se o objeto já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
-                if ( !this.toRenderAssociation.has(objetoAtual.id) ) 
+                if ( this.toRenderAssociation[objetoAtual.id] == null ) 
                 {
                     const context = this;
 
@@ -448,7 +460,7 @@ export default class RenderizadorCena
 
                         // Cria o OBJ no meu mini renderizador
                         const novoObjetoVisual = this.renderizador.criarObjeto(atributosObjetos);
-                        this.toRenderAssociation.set(objetoAtual.id, novoObjetoVisual);
+                        this.toRenderAssociation[ objetoAtual.id ] = novoObjetoVisual
 
                         // ERRO: Mesmo assim, ele ainda continua dando erro na hora de criar o OBJMesh, umas 4 vezes, dos primeiros frames
                         // DEPOIS O ERRO PARA, PORÈM, O OBJETO CONTINUA NÂO SENDO DESENHADO
@@ -456,7 +468,7 @@ export default class RenderizadorCena
 
                     }else if( tipoObjeto != "OBJ" ){
                         const novoObjetoVisual = this.renderizador.criarObjeto(atributosObjetos);
-                        this.toRenderAssociation.set(objetoAtual.id, novoObjetoVisual);
+                        this.toRenderAssociation[ objetoAtual.id ] = novoObjetoVisual
                     }
                     
                 }   
@@ -528,7 +540,7 @@ export default class RenderizadorCena
                 const propriedadesLuz : any      = luzAtual.getPropriedadesLuz();
 
                 //Se a luz já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
-                if ( this.toRenderLightsAssociation.has(luzAtual.id) == false ) 
+                if ( this.toRenderLightsAssociation[ luzAtual.id ] == null ) 
                 {
                     // Cria a luz no meu mini renderizador webgl
                     const novaLuzVisual   = this.renderizador.criarLuz( propriedadesLuz );
@@ -536,14 +548,14 @@ export default class RenderizadorCena
                     // Se o ponteiro da luz não for null
                     if( novaLuzVisual != null )
                     {
-                        this.toRenderLightsAssociation.set(luzAtual.id, novaLuzVisual);
+                        this.toRenderLightsAssociation[ luzAtual.id ] = novaLuzVisual;
                     }
                 }
 
                 /**
                 * Atualiza visualmente a luz
                 */
-                let luzVisual : Ponteiro<any>  = this.toRenderLightsAssociation.get( luzAtual.id );
+                let luzVisual : Ponteiro<LightRenderizador>  = this.toRenderLightsAssociation.get( luzAtual.id );
 
                 // Copiando os atributos da luz da minha engine de logica para meu mini renderizador webgl
     

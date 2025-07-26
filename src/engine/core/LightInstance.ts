@@ -1,6 +1,7 @@
 import Position3D from "../interfaces/main_engine/Position3D";
 import LightConfig from "../interfaces/main_engine/LightConfig";
 import { float } from "../types/types-cpp-like";
+import PropriedadesLuz from "../interfaces/render_engine/PropridadesLuz";
 
 /**
 * AUTHOR: William Alves Jardim
@@ -45,7 +46,7 @@ export class LightInstance
     }
 
     // Converte o objeto para um objeto mais simples, pra poder usar no meu mini renderizador webgl
-    getPropriedadesLuz()
+    getPropriedadesLuz(): PropriedadesLuz
     {
         const tipo        : string        = this.tipo;
         const name        : string        = this.name;

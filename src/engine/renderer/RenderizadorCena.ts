@@ -31,6 +31,7 @@ import ObjectScale from '../interfaces/main_engine/ObjectScale';
 import LightConfig from '../interfaces/main_engine/LightConfig';
 import { LightInstance } from '../core/LightInstance';
 import RenderConfig from '../interfaces/render_engine/RenderConfig';
+import PropriedadesLuz from '../interfaces/render_engine/PropridadesLuz';
 
 export default class RenderizadorCena
 {
@@ -537,7 +538,7 @@ export default class RenderizadorCena
             
             if( luzAtual != null )
             {
-                const propriedadesLuz : any      = luzAtual.getPropriedadesLuz();
+                const propriedadesLuz : PropriedadesLuz   = luzAtual.getPropriedadesLuz();
 
                 //Se a luz já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
                 if ( this.toRenderLightsAssociation[ luzAtual.id ] == null ) 

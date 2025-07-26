@@ -321,7 +321,7 @@ O Renderizador não conhece eles individualmente, mas apenas como ponteiros do t
 # 21/07/2025 21:25 PM - Template inicial da minha Engine em C++
 Criar a estrutura da minha Game Engine TS só que portado em C++, seguindo minhas ideias anotadas acima a risca, pra ter certeza que minha estrutura que pensei funciona em C++
 
-# 26/07/2025, 14:50 PM, sabado
+# 26/07/2025, 14:50 PM, sabado (JA FIZ)
 Na função criarObjeto do meu Renderer.ts: criarObjeto( propriedadesObjeto:any ): Ponteiro<VisualMesh>
 Tipar ela, para que, o propriedadesObjeto não seja any, mais tenha um tipo bem definido 
 POREM VAI SER NECESSARIO UMA REFATORAÇÂO, pois o OBJMesh usa o meu tipo OBJMeshConfig.ts, e todos os outros usam o meu tipo VisualMeshConfig.ts

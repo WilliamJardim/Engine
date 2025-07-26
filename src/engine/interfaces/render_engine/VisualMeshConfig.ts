@@ -33,4 +33,19 @@ export default interface VisualMeshConfig{
 
     corLuzObjeto         : Array<float>;
     intensidadeLuzObjeto : float;
+   
+    // Parametros especificos para o Mesh/OBJMesh.ts
+    mtlString            : string;
+    objString            : string;
+
+    // Parametros especificos do Mesh/PlanoOnduladoMesh.ts
+    usarOndulacao        : boolean;
+    usarOndulacaoSimples : boolean;
+
+    // Parametros do Mesh/TexturedFacesCuboMesh.ts
+    useColors            : boolean;
+    texturasFaces        : Array<WebGLTexture>;
+
+    // Parametros do Mesh/TexturedUVCubeMesh.ts
+    texturaUV            : WebGLTexture;
 }

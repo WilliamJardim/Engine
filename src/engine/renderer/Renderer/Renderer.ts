@@ -440,7 +440,7 @@ export class Renderer
     /**
     * Cria um novo objeto na cena( adicionando ele na lista de renderização )
     */
-    criarObjeto( propriedadesObjeto:any ): Ponteiro<VisualMesh>
+    criarObjeto( propriedadesObjeto:VisualMeshConfig ): Ponteiro<VisualMesh>
     {
         const contextoRenderizador = this;
 

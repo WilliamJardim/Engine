@@ -90,7 +90,7 @@ export class OBJMesh extends VisualMesh
     public verticesComecaObjetos         : Mapa<string, Matrix<float> >;   // Length que começa os vertices de cada objeto no vetor geral vertices(o vetor declarado no VisualMesh)
     public qtdePartes                    : int; // Quantas partes esse OBJMesh possui
 
-    constructor(renderer:Renderer, propriedadesMesh:OBJMeshConfig)
+    constructor(renderer:Renderer, propriedadesMesh:VisualMeshConfig)
     {
         super(renderer, propriedadesMesh);
 

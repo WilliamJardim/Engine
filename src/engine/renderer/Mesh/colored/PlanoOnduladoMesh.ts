@@ -31,15 +31,16 @@ import { float, int } from "../../../types/types-cpp-like.js";
 import PlanoOnduladoMeshConfig from "../../../interfaces/render_engine/PlanoOnduladoMeshConfig.js";
 import InformacoesPrograma from "../../../interfaces/render_engine/InformacoesPrograma.js";
 import { Matrix } from "../../../types/matrix.js";
+import VisualMeshConfig from "../../../interfaces/render_engine/VisualMeshConfig.js";
 
 export class PlanoOnduladoMesh extends VisualMesh
 {
-    public meshConfig : PlanoOnduladoMeshConfig; // Apenas pra dizer pro TypeScript que esse objeto usa um Mesh config diferente
+    public meshConfig : VisualMeshConfig; // Apenas pra dizer pro TypeScript que esse objeto usa um Mesh config diferente
 
     // ATRIBUTOS MOTIVOS PARA O VisualMesh, para melhor generalização de código
         //public vertices   : Array<float>;
 
-    constructor( renderer:Renderer, propriedadesMesh:PlanoOnduladoMeshConfig )
+    constructor( renderer:Renderer, propriedadesMesh:VisualMeshConfig )
     {
         super(renderer, 
               propriedadesMesh);

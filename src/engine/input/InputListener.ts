@@ -7,25 +7,28 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import InputKeyMap  from "../interfaces/main_engine/InputKeyMap";
+import KeyDetection from "../interfaces/both_engines/KeyDetection";
 import Position2D   from "../interfaces/main_engine/Position2D";
 
 export default class InputListener
 {
     public mousePosition : Position2D;
-    public keyDetection  : InputKeyMap;
+    public keyDetection  : KeyDetection;
 
     constructor(){
         const contexto = this;
 
-        this.keyDetection  = { W          : false,
+        this.keyDetection  = { 
+                              SHIFT      : false,
+                               W          : false,
                                A          : false,
                                S          : false,
                                D          : false,
                                ArrowUp    : false,
                                ArrowDown  : false,
                                ArrowLeft  : false,
-                               ArrowRight : false };
+                               ArrowRight : false 
+                            };
 
         this.mousePosition = { x: 0, y: 0 }; 
                     
@@ -80,6 +83,10 @@ export default class InputListener
             {
                 contexto.keyDetection.D = true;
             }
+
+            if( event.shiftKey == true ){
+                contexto.keyDetection.SHIFT = true;
+            }
             
         };
         
@@ -123,6 +130,10 @@ export default class InputListener
             if(event.code == "KeyD")
             {
                 contexto.keyDetection.D = false;
+            }
+
+            if( event.shiftKey == true ){
+                contexto.keyDetection.SHIFT = false;
             }
             
         };
@@ -178,6 +189,10 @@ export default class InputListener
             isPrecionada = this.keyDetection.ArrowRight == true;
         }
         
+        if( keyName == "SHIFT" ){
+            isPrecionada = this.keyDetection.SHIFT == true;
+        }
+
         return isPrecionada;
     }
 }

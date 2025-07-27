@@ -64,6 +64,10 @@ import Position3D from '../../interfaces/main_engine/Position3D.ts';
 import LightConfig from '../../interfaces/render_engine/LightConfig.ts';
 import RenderConfig from '../../interfaces/render_engine/RenderConfig.ts';
 import VisualMeshConfig from '../../interfaces/render_engine/VisualMeshConfig.ts';
+import KeyDetection from '../../interfaces/both_engines/KeyDetection.ts';
+import Position2D from '../../interfaces/main_engine/Position2D.ts';
+import Camera from '../Camera.ts';
+import ConfigCamera from '../../interfaces/render_engine/CameraConfig.ts';
 
 export class Renderer
 {
@@ -107,9 +111,38 @@ export class Renderer
     public pLonge           : float;
 
     public mapaTexturasCarregadas : Mapa<string, WebGLTexture>;
+
+    // Informações sobre o teclado e mouse
+    public infoPosicaoMouse  : Position2D;
+    public infoTeclasTeclado : KeyDetection;
+
+    public cameras           : Array<Ponteiro<Camera>>;
+    public idCameraAtiva     : int;
+    public refCameraAtiva    : Ponteiro<Camera>;
     
     constructor( canvasRef:React.RefObject<HTMLCanvasElement>, tipoPerspectiva:string="perspectiva", renderConfig:RenderConfig ){
         this.canvas = canvasRef;
+
+        this.cameras         = new Array();
+        this.idCameraAtiva   = -1;
+        this.refCameraAtiva  = null;
+
+        // Informações sobre o teclado e mouse(vão ser atualizadas via função atualizarDadosTecladoMouse)
+        this.infoPosicaoMouse = {
+            x: 0,
+            y: 0,
+        }
+        this.infoTeclasTeclado = { 
+                               SHIFT      : false,
+                               W          : false,
+                               A          : false,
+                               S          : false,
+                               D          : false,
+                               ArrowUp    : false,
+                               ArrowDown  : false,
+                               ArrowLeft  : false,
+                               ArrowRight : false 
+                            };
 
         // Inicializa um mapa que vai ser usado para armazenar e reaproveitar as texturas carregadas
         this.mapaTexturasCarregadas = new Mapa<string, WebGLTexture>();
@@ -236,6 +269,27 @@ export class Renderer
         // AQUI USEI BIND PRA NAO DAR ERRO NA HORA DE RODAR O LOOP COM O requestAnimationFrame
         // SERIA NECESSARIO ADAPTAR NO C++
         this.render = this.render.bind(this);
+    }
+
+    /**
+    * Chamado no arquivo principal, para atualizar as informações de teclado e mouse, que serão usadas por exemplo nos calculos de movimentação e rotação da camera do jogador
+    */
+    receberInformacoesTecladoMouse( infoPosicaoMouse: Position2D, infoTeclasTeclado: KeyDetection ): void
+    {
+        // Atualiza a posição do mouse, do meu renderizador
+        this.infoPosicaoMouse.x = infoPosicaoMouse.x;
+        this.infoPosicaoMouse.y = infoPosicaoMouse.y;
+
+        // Atualiza as teclas do teclado
+        this.infoTeclasTeclado.W = infoTeclasTeclado.W;
+        this.infoTeclasTeclado.A = infoTeclasTeclado.A;
+        this.infoTeclasTeclado.S = infoTeclasTeclado.S;
+        this.infoTeclasTeclado.D = infoTeclasTeclado.D;
+        this.infoTeclasTeclado.ArrowUp    = infoTeclasTeclado.ArrowUp;
+        this.infoTeclasTeclado.ArrowDown  = infoTeclasTeclado.ArrowDown;
+        this.infoTeclasTeclado.ArrowLeft  = infoTeclasTeclado.ArrowLeft;
+        this.infoTeclasTeclado.ArrowRight = infoTeclasTeclado.ArrowRight;
+        this.infoTeclasTeclado.SHIFT      = infoTeclasTeclado.SHIFT;
     }
 
     /**
@@ -524,14 +578,21 @@ export class Renderer
     */
     criarLuz( propriedadesLuz:LightConfig ): Ponteiro<LightRenderizador>
     {
-        const contextoRenderizador = this;
-
-        this.luzes.push( new LightRenderizador( contextoRenderizador, 
-                                                propriedadesLuz ) 
-                       );
+        this.luzes.push( new LightRenderizador( propriedadesLuz ) );
 
         // Retorna a ultima luz criada
         return this.luzes[ this.luzes.length-1 ];
+    }
+
+    /**
+    * Cria uma nova camera no meu renderizador 
+    */
+    criarCamera( propriedadesCamera:ConfigCamera ) : Ponteiro<Camera>
+    {
+        this.cameras.push( new Camera( propriedadesCamera ) );
+
+        // Retorna a ultima camera criada
+        return this.cameras[ this.cameras.length-1 ];
     }
 
     /**
@@ -1307,6 +1368,95 @@ export class Renderer
         this.desenharObjetos();
     }
 
+    /**
+    * Obtem todas as cameras criadas no meu renderizador
+    */
+    getCameras(): Array<Ponteiro<Camera>>
+    {
+        return this.cameras;
+    }
+
+    /**
+    * Define a camera de numero TAL como sendo a visão do jogador 
+    */
+    setCameraAtiva( idCameraUsar:int ): void
+    {   
+        this.idCameraAtiva  = idCameraUsar;
+        
+        // Se for -1 significa que não é nenhuma, então, não posso fazer nada disso:
+        // E não deixa acessar uma camera que não existe
+        if( idCameraUsar > -1 && idCameraUsar <= this.cameras.length )
+        {
+            this.refCameraAtiva = this.cameras[ idCameraUsar ]; 
+
+        }else{
+            console.warn(`ID INVALIDO: A camera de ID: ${idCameraUsar}, não existe!`);
+        }
+    }
+
+    /**
+    * Obtem a camera ativa do momento
+    */
+    getCameraAtiva(): Ponteiro<Camera>
+    {
+        return this.cameras[ this.idCameraAtiva ];
+    }
+    /**
+    * Obtem o ID da camera ativa do momento
+    */
+    getIDCameraAtiva(): int
+    {
+        return this.idCameraAtiva;
+    }
+
+    /**
+    * Atualiza a camera atual repassando os dados pra ela, e chamando a função de atualização, passando o frame dela
+    */
+    atualizarCameraAtual(): void
+    {
+        const cameraAtual : Ponteiro<Camera>  = this.getCameraAtiva();
+
+        if( this.idCameraAtiva > this.cameras.length )
+        {
+            console.warn("O this.idCameraAtiva tem um valor invalido!");
+        }
+
+        // Se o ponteiro não for null, e se o ID da camera não for valor invalido(no caso, eu defini -1 como sendo um valor invalido)
+        if( cameraAtual != null && this.idCameraAtiva != -1 )
+        {
+            // Repassa as informações de teclado e mouse que o meu renderizador recebeu da minha camada de entrada
+            cameraAtual.receberInformacoesTecladoMouse( this.infoPosicaoMouse, this.infoTeclasTeclado );
+
+            // Atualiza a camera atual
+            cameraAtual.atualizarCamera( this.lastFrameDelta );
+
+            // Repassa as informações da camera atual para as variaveis do meu renderizador que controlam a camera
+            this.miraCamera[0] = cameraAtual.miraCamera.x;
+            this.miraCamera[1] = cameraAtual.miraCamera.y;
+            this.miraCamera[2] = cameraAtual.miraCamera.z;
+            this.posicaoCamera[0] = cameraAtual.posicaoCamera.x;
+            this.posicaoCamera[1] = cameraAtual.posicaoCamera.y;
+            this.posicaoCamera[2] = cameraAtual.posicaoCamera.z;
+        }
+
+        /*
+        Isso eu pensei caso eu quisesse atualizar cada camera, uma por uma pra alguma coisa:
+        const cameras : Array<Ponteiro<Camera>> = this.getCameras();
+
+        for( let i:int = 0 ; i < cameras.length ; i++ )
+        {
+            const cameraAtual : Ponteiro<Camera>   = cameras[i];
+
+            // Se o ponteiro não for null
+            if( cameraAtual != null )
+            {
+
+            }
+        }
+        */
+    }
+
+
     // SERIA NECESSARIO ADAPTAR NO C++ POR CAUSA DE CONTEXTO DE BIND
     render(now:float) : void
     {
@@ -1314,6 +1464,10 @@ export class Renderer
 
         now *= 0.001;
 
+        // Atualiza a camera atual
+        this.atualizarCameraAtual();
+
+        // Desenha todos os objetos
         this.desenharTudo();
     }
 

@@ -7,14 +7,16 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-export default interface InputKeyMap
+import { float } from "../../types/types-cpp-like";
+import Position3D from "../main_engine/Position3D";
+
+export default interface ConfigCamera
 {
-    W          : boolean,
-    A          : boolean,
-    S          : boolean,
-    D          : boolean,
-    ArrowUp    : boolean,
-    ArrowDown  : boolean,
-    ArrowLeft  : boolean,
-    ArrowRight : boolean
+    nome          : string;
+    miraCamera    : Position3D;
+    posicaoCamera : Position3D;
+    sensibilidade : float;
+    limiteMiraX   : float;
+    limiteMiraY   : float;
+    passosAndar   : float;
 }

@@ -33,7 +33,6 @@ import LightConfig from "../../interfaces/render_engine/LightConfig.js";
 
 export class LightRenderizador
 {
-    public renderer    : Renderer;
     public meshConfig  : LightConfig;
     public tipo        : string;
     public position    : Position3D;
@@ -45,9 +44,8 @@ export class LightRenderizador
     public cor         : Array<float>;
     public intensidade : float;
 
-    constructor(renderer:Renderer, propriedadesMesh:LightConfig) 
+    constructor( propriedadesMesh:LightConfig) 
     {
-        this.renderer   = renderer;
         this.meshConfig = propriedadesMesh;
 
         this.tipo        = "Light";

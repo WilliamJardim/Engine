@@ -433,6 +433,22 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         staticAccumulatedLights: false
     }) );
 
+    // Camera
+    /*
+    ESBOLÇO DE COMO PENSEI EM CRIAR A API DA ENGINE PRINCIPAL PRA CONVERSAR COM MEU RENDERIZADOR
+    
+    scene.criarCamera({ 
+        nome                 : "CameraJogador",
+        miraCamera           : {x:0, y:0, z:0}, 
+        posicaoCamera        : {x:0, y:0, z:0}, 
+        sensibilidade        : 0.05,
+        limiteMiraCimaBaixo  : 1.6183333333333352
+    });
+
+    // Define a camera ativa
+    scene.setCameraAtiva(0);
+    */
+
     // Ponto de luz
     scene.criarLuz( new LightInstance({ 
                                         name: "LuzTeste",

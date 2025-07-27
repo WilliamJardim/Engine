@@ -327,3 +327,26 @@ Tipar ela, para que, o propriedadesObjeto não seja any, mais tenha um tipo bem 
 POREM VAI SER NECESSARIO UMA REFATORAÇÂO, pois o OBJMesh usa o meu tipo OBJMeshConfig.ts, e todos os outros usam o meu tipo VisualMeshConfig.ts
 Eu preciso juntar os dois em um só, para todos usarem o mesmo tipo de configuração, iria ficar melhor, e mais facil de portar para C ou C++ no futuro caso eu queria.
 
+# 27/07/2025 11:34 AM - MINHA IDEIA DE GERENCIADOR DE CAMERAS QUE ESTOU INVENTANDO (TIVE IDEIA E FIZ NO MESMO DIA)
+Terminado 17:14 PM;
+
+Criando meu sistema de gerenciamento de cameras
+
+o arquivo principal vai ler as informações do teclado, no loop, e enviar pra engine de lógica e pra engine de renderização
+a engine de renderização vai ficar recebendo do loop do arquivo principal o tempo todo as informações do teclado e mouse
+ela por sua vez, vai repassar essas exatas informações para cada camera, dentro de um loop de atualização de cameras que vou criar
+ai, a posiçãoCamera e miraCamera e outros dados, vão sempre espelhar exatamente o tempo todo o que está na camera atual(a que estiver ativa no momento)
+
+PROCESSO
+  1 - arquivo principal coleta dados do teclado
+  2 - a engine de renderização recebe eles, e repassa para as cameras
+  3 - as cameras se atualizam
+  4 - a engine de renderização copia a posição, rotação, etc.. das cameras e cola na variavel miraCamera e posicaoCamera da propia engine de renderização
+
+# 27/07/2025 17:14 PM - NOVA IDEIA PRA CONTINUAR O AJUSTE ANTERIOR:
+Criar uma API na minha engine principal, igual eu fiz com os objetos e luzes,
+pra engine principal nao falar diretamente com a engine de renderização
+mais para criar as cameras, e o meu modulo RenderizadorCena.ts vai fazer o trabalho de ler e interpretar, convertendo para objetos da minha engine de renderização
+
+
+

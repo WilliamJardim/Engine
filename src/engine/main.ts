@@ -16,6 +16,7 @@ import LocalSound    from './core/LocalSound';
 import { carregarTxt } from './utils/render_engine/funcoesBase';
 import { LightInstance } from './core/LightInstance';
 import { float, int } from './types/types-cpp-like';
+import CameraInstance from './core/CameraInstance';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
 export const globalContext = new GlobalContext({});
@@ -434,20 +435,31 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     }) );
 
     // Camera
-    /*
-    ESBOLÇO DE COMO PENSEI EM CRIAR A API DA ENGINE PRINCIPAL PRA CONVERSAR COM MEU RENDERIZADOR
-    
-    scene.criarCamera({ 
-        nome                 : "CameraJogador",
-        miraCamera           : {x:0, y:0, z:0}, 
-        posicaoCamera        : {x:0, y:0, z:0}, 
-        sensibilidade        : 0.05,
-        limiteMiraCimaBaixo  : 1.6183333333333352
-    });
+    scene.criarCamera( new CameraInstance({ 
+        nome : "CameraJogador",
 
-    // Define a camera ativa
+        // Pra onde a camera está mirando
+        miraCamera : { 
+                    x:0, 
+                    y:0, 
+                    z:0
+                },
+
+        // A posição X,Y e Z da camera
+        posicaoCamera : { 
+                         x:0, 
+                         y:0, 
+                         z:0
+                       },
+
+        sensibilidade        : 0.05,
+        limiteMiraCimaBaixo  : 1.6183333333333352,
+        passosAndar          : 0.5
+    }));
+
+    // Define a camera ativa como sendo a primeira camera, ou seja, camera cujo indice é zero(a camera criada acima)
     scene.setCameraAtiva(0);
-    */
+
 
     // Ponto de luz
     scene.criarLuz( new LightInstance({ 

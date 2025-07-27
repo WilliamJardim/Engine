@@ -12,11 +12,10 @@ import Position3D from "../main_engine/Position3D";
 
 export default interface ConfigCamera
 {
-    nome          : string;
-    miraCamera    : Position3D;
-    posicaoCamera : Position3D;
-    sensibilidade : float;
-    limiteMiraX   : float;
-    limiteMiraY   : float;
-    passosAndar   : float;
+    nome                 : string;
+    miraCamera           : Position3D;
+    posicaoCamera        : Position3D;
+    sensibilidade        : float;
+    limiteMiraCimaBaixo  : float
+    passosAndar          : float;
 }

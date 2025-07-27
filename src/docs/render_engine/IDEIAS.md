@@ -343,10 +343,16 @@ PROCESSO
   3 - as cameras se atualizam
   4 - a engine de renderização copia a posição, rotação, etc.. das cameras e cola na variavel miraCamera e posicaoCamera da propia engine de renderização
 
-# 27/07/2025 17:14 PM - NOVA IDEIA PRA CONTINUAR O AJUSTE ANTERIOR:
+# 27/07/2025 17:14 PM - NOVA IDEIA PRA CONTINUAR O AJUSTE ANTERIOR: (FEITO)
+Terminado 18:20 PM
+
 Criar uma API na minha engine principal, igual eu fiz com os objetos e luzes,
 pra engine principal nao falar diretamente com a engine de renderização
 mais para criar as cameras, e o meu modulo RenderizadorCena.ts vai fazer o trabalho de ler e interpretar, convertendo para objetos da minha engine de renderização
+
+Ja Criei essa API, agora eu posso definir qual camera esta ativa pela engine principal usando o setCameraAtiva( NUMERO ) e todas as cameras que eu crio na engine principal, ele mapeia para cameras da minha engine de renderização, exatamente igual como fiz para minhas luzes e objetos
+
+
 
 
 

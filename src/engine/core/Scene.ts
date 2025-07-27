@@ -32,6 +32,8 @@ import { EngineLoop }        from '../main'; // Importa a função EngineLoop
 import { EngineBeforeLoop }  from '../main' //Importa a função EngineBeforeLoop
 import { float, int, Ponteiro }          from "../types/types-cpp-like.ts";
 import { LightInstance }     from './LightInstance.ts';
+import { PipelineCallback } from 'stream';
+import CameraInstance from './CameraInstance.ts';
 
 export default class Scene
 {
@@ -51,6 +53,10 @@ export default class Scene
     public objects               : Array<Ponteiro<AbstractObjectBase>>;
     public lights                : Array<Ponteiro<LightInstance>>;
     public sounds                : Array<Ponteiro<LocalSound>>;
+
+    public cameras               : Array<Ponteiro<CameraInstance>>;
+    public idCameraAtiva         : int;
+    public refCameraAtiva        : Ponteiro<CameraInstance>;
     
     public objectTableById       : Mapa<string, Ponteiro<AbstractObjectBase>>;
     public objectTableByName     : Mapa<string, Ponteiro<AbstractObjectBase>>;
@@ -66,7 +72,11 @@ export default class Scene
     public wind     : Wind;
     public haveWind : boolean;
 
-    constructor( sceneConfig:SceneConfig ){
+    constructor( sceneConfig:SceneConfig )
+    {
+        this.idCameraAtiva  = -1;
+        this.refCameraAtiva = null;
+
 
         this.wind = {
             orientation : { x: 0.5, 
@@ -101,6 +111,9 @@ export default class Scene
 
         // Sons locais
         this.sounds  = new Array<Ponteiro<LocalSound>>();
+
+        // Cameras
+        this.cameras = new Array<Ponteiro<CameraInstance>>();
             
         /**
         * ESSA INICIALIZAÇÂO ABAIXO NÂO PRECISA SER FEITA EM C++
@@ -143,6 +156,49 @@ export default class Scene
         * FIM DAS INICIALIZAÇÔES QUE NÂO PRECISAM EM C++ 
         */
     }
+
+     /**
+    * Obtem todas as cameras criadas no meu renderizador
+    */
+    getCameras(): Array<Ponteiro<CameraInstance>>
+    {
+        return this.cameras;
+    }
+
+    /**
+    * Define a camera de numero TAL como sendo a visão do jogador 
+    */
+    setCameraAtiva( idCameraUsar:int ): void
+    {   
+        this.idCameraAtiva  = idCameraUsar;
+        
+        // Se for -1 significa que não é nenhuma, então, não posso fazer nada disso:
+        // E não deixa acessar uma camera que não existe
+        if( idCameraUsar > -1 && idCameraUsar <= this.cameras.length )
+        {
+            this.refCameraAtiva = this.cameras[ idCameraUsar ]; 
+
+        }else{
+            console.warn(`ID INVALIDO: A camera de ID: ${idCameraUsar}, não existe!`);
+        }
+    }
+
+    /**
+    * Obtem a camera ativa do momento
+    */
+    getCameraAtiva(): Ponteiro<CameraInstance>
+    {
+        return this.cameras[ this.idCameraAtiva ]; // Retorna a instancia da camera cujo id numerico é idCameraAtiva
+        //OBS: não confuda o getCameraAtiva aqui da minha engine principal com o getCameraAtiva do meu renderizador. São distintos.
+    }
+    /**
+    * Obtem o ID da camera ativa do momento
+    */
+    getIDCameraAtiva(): int
+    {
+        return this.idCameraAtiva;
+    }
+
 
     public getObjects(): Array<Ponteiro<AbstractObjectBase>>
     {
@@ -413,6 +469,14 @@ export default class Scene
     public criarLuz( luz:Ponteiro<LightInstance> ): void
     {
         this.lights.push( luz );
+    }
+
+    /**
+    * Adiciona uma camera na cena 
+    */
+    public criarCamera( camera: Ponteiro<CameraInstance> ) : void
+    {
+        this.cameras.push( camera );
     }
 
     /**

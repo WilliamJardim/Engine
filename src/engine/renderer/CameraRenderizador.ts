@@ -10,7 +10,7 @@
 import KeyDetection from "../interfaces/both_engines/KeyDetection";
 import Position2D from "../interfaces/main_engine/Position2D";
 import Position3D from "../interfaces/main_engine/Position3D";
-import ConfigCamera from "../interfaces/render_engine/CameraConfig";
+import ConfigCamera from "../interfaces/both_engines/CameraConfig";
 import { float } from "../types/types-cpp-like";
 import { calcularDirecaoCamera, calcularDireitaCamera } from "../utils/render_engine/math";
 
@@ -23,9 +23,7 @@ import { calcularDirecaoCamera, calcularDireitaCamera } from "../utils/render_en
 /*
 renderizador.criarCamera({ nome: "CameraJogador", miraCamera: {x:0, y:0, z:0}, posicaoCamera: {x:0,y:0,z:0}, sensibilidade: 0.05, limiteMiraCimaBaixo: 1.6183333333333352 }) ; renderizador.setCameraAtiva(0)
 */
-
-
-export default class Camera
+export default class CameraRenderizador
 {
     public nome                        : string;
     public miraCamera                  : Position3D;
@@ -55,7 +53,7 @@ export default class Camera
         * Configurações de sensibilidade, limite de rotação, etc... 
         */
         this.sensibilidade = cameraConfig.sensibilidade;
-        this.limiteMiraCimaBaixo   = cameraConfig.limiteMiraX || 1.6183333333333352;
+        this.limiteMiraCimaBaixo   = cameraConfig.limiteMiraCimaBaixo || 1.6183333333333352;
         this.passosAndar   = cameraConfig.passosAndar;
 
         /**

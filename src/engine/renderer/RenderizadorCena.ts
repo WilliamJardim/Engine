@@ -32,6 +32,10 @@ import LightConfig from '../interfaces/main_engine/LightConfig';
 import { LightInstance } from '../core/LightInstance';
 import RenderConfig from '../interfaces/render_engine/RenderConfig';
 import PropriedadesLuz from '../interfaces/render_engine/PropridadesLuz';
+import ConfigCamera from '../interfaces/both_engines/CameraConfig';
+import CameraInstance from '../core/CameraInstance';
+import CameraRenderizador from './CameraRenderizador';
+import AbstractObjectBase from '../core/AbstractObjectBase';
 
 export default class RenderizadorCena
 {
@@ -39,6 +43,7 @@ export default class RenderizadorCena
     public inputListener              : InputListener;
     public toRenderAssociation        : Mapa<string, Ponteiro<VisualMesh>>;
     public toRenderLightsAssociation  : Mapa<string, Ponteiro<LightRenderizador>>;
+    public toRenderCameraAssociation  : Mapa<string, Ponteiro<CameraRenderizador>>;
     public renderizador               : Renderer;
     public renderConfig               : RenderConfig;
     public canvasRef                  : React.RefObject<HTMLCanvasElement>;
@@ -79,6 +84,10 @@ export default class RenderizadorCena
         // Cria um mapa que associa o id das luzes da minha engine de logica com o que o meu mini renderizador webgl vai desenhar
         this.toRenderLightsAssociation = new Mapa<string, Ponteiro<LightRenderizador>>();
 
+        // Cria um mapa que associa o id das cameras da minha engine de logica com o que o meu mini renderizador webgl vai desenhar
+        this.toRenderCameraAssociation = new Mapa<string, Ponteiro<CameraRenderizador>>();
+
+
         // Armazena todos os OBJ lidos por essa Engine gráfica
         this.objLidos                  = new Mapa<string, ObjString>();
 
@@ -92,6 +101,7 @@ export default class RenderizadorCena
         this.renderizador.inicializar();
 
         // Lista de objetos lidos pelo meu mini renderizador webgl
+        window.scene            = this.engineScene;
         window.renderizador     = this.renderizador;
         window.objLidos         = this.objLidos;
         window.luzesAssociadas  = this.toRenderLightsAssociation;
@@ -153,13 +163,14 @@ export default class RenderizadorCena
     }
 
     /** 
-    * Atualiza os objetos visualmente
+    * Atualiza os objetos visualmente, convertendo os objetos da minha Engine principal pra minha Engine de renderização
+    * Se o objeto não existe, cria. Se ja existe, só atualiza
     */
     public updateObjectsVisually(): void
     {
 
-        const engineScene         = this.engineScene;
-        const engineSceneObjects  = engineScene.objects;
+        const engineScene         : Scene                                = this.engineScene;
+        const engineSceneObjects  : Array<Ponteiro<AbstractObjectBase>>  = engineScene.objects;
 
         /**
         * Para cada objeto da cena da minha engine 
@@ -321,12 +332,13 @@ export default class RenderizadorCena
     }
 
     /** 
-    * Atualiza as luzes visualmente
+    * Atualiza as luzes visualmente, convertendo as luzes da minha Engine principal pra minha Engine de renderização
+    * Se a luz não existe, cria. Se ja existe, só atualiza
     */
     public updateLightsVisually(): void
     {
-        const engineScene         = this.engineScene;
-        const engineSceneLights   = engineScene.lights;
+        const engineScene       : Scene                            = this.engineScene;
+        const engineSceneLights : Array<Ponteiro<LightInstance>>   = engineScene.lights;
 
         /**
         * Para cada objeto da cena da minha engine 
@@ -385,6 +397,73 @@ export default class RenderizadorCena
         }
     }
 
+    /** 
+    * Atualiza as cameras, convertendo as cameras da minha Engine principal pra minha Engine de renderização
+    * Se a camera não existe, cria. Se ja existe, só atualiza
+    */
+    public updateCamerasVisually()
+    {
+        const engineScene        : Scene                            = this.engineScene;
+        const engineSceneCameras : Array<Ponteiro<CameraInstance>>  = engineScene.cameras;
+
+        /**
+        * Para cada camera da cena da minha engine 
+        */
+        for( let i:int = 0 ; i < engineSceneCameras.length ; i++ )
+        {
+            const cameraAtual : Ponteiro<CameraInstance> = engineSceneCameras[i]; // o tipo aqui é a luz(tipo LightInstance) da engine prinicipal
+            
+            if( cameraAtual != null )
+            {
+                const propriedadesCamera : ConfigCamera   = cameraAtual.getPropriedadesCamera();
+
+                //Se a luz já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
+                if ( this.toRenderCameraAssociation[ cameraAtual.id ] == null ) 
+                {
+                    // Cria a camera no meu mini renderizador webgl
+                    const novaCameraVisual   = this.renderizador.criarCamera( propriedadesCamera );
+
+                    // Se o novaCameraVisual da luz não for null
+                    if( novaCameraVisual != null )
+                    {
+                        this.toRenderCameraAssociation[ cameraAtual.id ] = novaCameraVisual;
+                    }
+                }
+
+                /**
+                * Atualiza visualmente a luz
+                */
+                let cameraVisual : Ponteiro<CameraRenderizador>  = this.toRenderCameraAssociation.get( cameraAtual.id );
+
+                // Copiando os atributos da luz da minha engine de logica para meu mini renderizador webgl
+    
+                // Se o ponteiro da luz não for null
+                if( cameraVisual != null )
+                {
+                    // Camera ativa no meu renderizador
+                    this.renderizador.idCameraAtiva = engineScene.idCameraAtiva;
+
+                    // Posicao 
+                    cameraVisual.posicaoCamera.x  = propriedadesCamera.posicaoCamera.x;
+                    cameraVisual.posicaoCamera.y  = propriedadesCamera.posicaoCamera.y;
+                    cameraVisual.posicaoCamera.z  = propriedadesCamera.posicaoCamera.z;
+
+                    // Mira 
+                    cameraVisual.miraCamera.x   = propriedadesCamera.miraCamera.x;
+                    cameraVisual.miraCamera.y   = propriedadesCamera.miraCamera.y;
+                    cameraVisual.miraCamera.z   = propriedadesCamera.miraCamera.z;
+        
+                    // Outros atributos
+                    cameraVisual.nome                 = propriedadesCamera.nome;
+                    cameraVisual.passosAndar          = propriedadesCamera.passosAndar;
+                    cameraVisual.sensibilidade        = propriedadesCamera.sensibilidade;
+                    cameraVisual.limiteMiraCimaBaixo  = propriedadesCamera.limiteMiraCimaBaixo;
+                    
+                }
+            }
+        }
+    }
+
     //Função que chama o loop "animate"
     public iniciar(): void
     {
@@ -413,6 +492,9 @@ export default class RenderizadorCena
                                       frameNumber, 
                                       context.firstRender, 
                                       context.provavelmentePronto );
+
+            // Atualiza as cameras
+            context.updateCamerasVisually();
 
             // Atualiza a visualização dos objetos
             context.updateObjectsVisually();

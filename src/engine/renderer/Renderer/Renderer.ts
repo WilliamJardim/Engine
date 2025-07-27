@@ -66,8 +66,8 @@ import RenderConfig from '../../interfaces/render_engine/RenderConfig.ts';
 import VisualMeshConfig from '../../interfaces/render_engine/VisualMeshConfig.ts';
 import KeyDetection from '../../interfaces/both_engines/KeyDetection.ts';
 import Position2D from '../../interfaces/main_engine/Position2D.ts';
-import Camera from '../Camera.ts';
-import ConfigCamera from '../../interfaces/render_engine/CameraConfig.ts';
+import CameraRenderizador from '../CameraRenderizador.ts';
+import ConfigCamera from '../../interfaces/both_engines/CameraConfig.ts';
 
 export class Renderer
 {
@@ -116,9 +116,9 @@ export class Renderer
     public infoPosicaoMouse  : Position2D;
     public infoTeclasTeclado : KeyDetection;
 
-    public cameras           : Array<Ponteiro<Camera>>;
+    public cameras           : Array<Ponteiro<CameraRenderizador>>;
     public idCameraAtiva     : int;
-    public refCameraAtiva    : Ponteiro<Camera>;
+    public refCameraAtiva    : Ponteiro<CameraRenderizador>;
     
     constructor( canvasRef:React.RefObject<HTMLCanvasElement>, tipoPerspectiva:string="perspectiva", renderConfig:RenderConfig ){
         this.canvas = canvasRef;
@@ -587,9 +587,9 @@ export class Renderer
     /**
     * Cria uma nova camera no meu renderizador 
     */
-    criarCamera( propriedadesCamera:ConfigCamera ) : Ponteiro<Camera>
+    criarCamera( propriedadesCamera:ConfigCamera ) : Ponteiro<CameraRenderizador>
     {
-        this.cameras.push( new Camera( propriedadesCamera ) );
+        this.cameras.push( new CameraRenderizador( propriedadesCamera ) );
 
         // Retorna a ultima camera criada
         return this.cameras[ this.cameras.length-1 ];
@@ -1371,7 +1371,7 @@ export class Renderer
     /**
     * Obtem todas as cameras criadas no meu renderizador
     */
-    getCameras(): Array<Ponteiro<Camera>>
+    getCameras(): Array<Ponteiro<CameraRenderizador>>
     {
         return this.cameras;
     }
@@ -1397,7 +1397,7 @@ export class Renderer
     /**
     * Obtem a camera ativa do momento
     */
-    getCameraAtiva(): Ponteiro<Camera>
+    getCameraAtiva(): Ponteiro<CameraRenderizador>
     {
         return this.cameras[ this.idCameraAtiva ];
     }
@@ -1414,7 +1414,7 @@ export class Renderer
     */
     atualizarCameraAtual(): void
     {
-        const cameraAtual : Ponteiro<Camera>  = this.getCameraAtiva();
+        const cameraAtual : Ponteiro<CameraRenderizador>  = this.getCameraAtiva();
 
         if( this.idCameraAtiva > this.cameras.length )
         {

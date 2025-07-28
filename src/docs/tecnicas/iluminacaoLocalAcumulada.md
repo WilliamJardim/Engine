@@ -87,6 +87,14 @@ OBS: Eu posso desativar a acumulação de iluminação individual das partes, de
 Commit inicial deste documento técnico explicativo publicado em:  
 https://github.com/WilliamJardim/Engine/commit/53feccecaf2b1072e9c0657f600dc2e88924e55a
 
+*Nota:* Os links para arquivos de código dentro deste documento, no commit inicial, apontam para a versão mais recente do repositório.  
+Para ver a versão exata do código na data de publicação desta técnica, consulte o commit indicado acima.
+
+## Código completo até 28/07/2025
+Você pode acessar o código completo de todos os arquivos deste projeto, desde o início até o dia 28/07/2025, no seguinte commit. Para navegar pelos arquivos, clique em Browse files na página do commit no GitHub:
+https://github.com/WilliamJardim/Engine/commit/b60a102d15e4de9b6ecc07106e3cd119cead7d7a
+
+
 
 
 

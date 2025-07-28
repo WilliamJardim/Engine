@@ -4,6 +4,7 @@ Estou documentando e compartilhando publicamente essas ideias para contribuir co
 
 Os links a seguir explicam resumidamente cada uma dessas técnicas:
 
+ - [Iluminação Local Acumulada](./tecnicas/iluminacaoLocalAcumulada.md)
  - [Iluminação estática acumulada](./tecnicas/staticAccumulatedLights.md)
  - [Carregamento assincrono de objetos](./tecnicas/carregamentoAssincronoObjeto.md)
 

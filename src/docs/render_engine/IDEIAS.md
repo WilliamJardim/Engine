@@ -353,6 +353,12 @@ mais para criar as cameras, e o meu modulo RenderizadorCena.ts vai fazer o traba
 Ja Criei essa API, agora eu posso definir qual camera esta ativa pela engine principal usando o setCameraAtiva( NUMERO ) e todas as cameras que eu crio na engine principal, ele mapeia para cameras da minha engine de renderização, exatamente igual como fiz para minhas luzes e objetos
 
 
+# 28/07/2025 15:37 PM - Ideias otimização de cenários com muitos objetos 
+
+*Carregamento limitado*: Carregamento de objetos só ocorre quando o jogador está perto deles(perto da posição da instância na Engine de lógica): ou seja, na minha lógica onde eu carrego os arquivos .obj e .mtl, eu posso criar um controle ali, para verificar se o objeto usa carregamento de proximidade, e se sim, verifica se o jogador está perto, e se está perto, aí continua a lógica de carregamento normal, e só faz uma vez também, igual eu fiz.
+
+*Desenho limitado*: parecido com minha ideia anterior, porém, ao invés dele carregar os arquivos dos objetos só quando o jogador estiver perto deles, ele vai carregar tudo, mais só vai desenhar o que o jogador estiver perto, e inclusive posso tentar otimizar os laços de repetição FOR nesses casos, pra ele pular os índices no Array desses objetos que estão longe, pra melhorar a performance
+
 
 
 

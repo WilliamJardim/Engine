@@ -25,3 +25,6 @@ Esse é o conceito, a ideia que tive. Eu criei isso na prática no meu arquivo [
 
 *Nota: Este é apenas um resumo da técnica. Os detalhes completos estão disponíveis nos arquivos de código mencionados neste documento.*
 
+## Links
+Commit inicial deste documento técnico explicativo publicado em:  
+https://github.com/WilliamJardim/Engine/commit/d7f9a2faebbbb208bbad567818b3f72cbb96cffe

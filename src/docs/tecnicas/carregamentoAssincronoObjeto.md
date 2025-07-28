@@ -18,3 +18,7 @@ Esse é o conceito, a ideia que tive. Eu criei isso na prática no meu arquivo [
 *Nota: Este documento técnico foi escrito e publicado por William Alves Jardim para registrar publicamente esta ideia como parte do estado da técnica (prior art), com a intenção de contribuir com a comunidade e compartilhar conhecimento de forma aberta.*
 
 *Nota: Este é apenas um resumo da técnica. Os detalhes completos estão disponíveis nos arquivos de código mencionados neste documento.*
+
+## Links
+Commit inicial deste documento técnico explicativo publicado em:  
+https://github.com/WilliamJardim/Engine/commit/d7f9a2faebbbb208bbad567818b3f72cbb96cffe

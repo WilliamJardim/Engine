@@ -83,7 +83,9 @@ OBS: Eu posso desativar a acumulação de iluminação individual das partes, de
 
 *Nota: quando eu digo "luzes que estão próximas ao objeto", na realidade, no meu código, eu percorro todas as luzes, mais eu faço um calculo de distancia, que determina o quão perto estã a luz do objeto. Mais eu prefiro usar a expressão "luzes que estão próximas ao objeto" por que é mais simples.*
 
-
+## Links
+Commit inicial deste documento técnico explicativo publicado em:  
+https://github.com/WilliamJardim/Engine/commit/53feccecaf2b1072e9c0657f600dc2e88924e55a
 
 
 

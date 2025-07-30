@@ -471,6 +471,16 @@ export default class RenderizadorCena
     /**
     * @Thread 
     * Thread principal, responsavel por fazer todas as chamadas necessárias para a renderização. 
+    * 
+    * NOTA CASO EU QUEIRA PORTAR PRA C++ UM DIA: 
+    *   29/07/2025 22:25 PM
+    *   Como minha thread principal ela faz tudo: a renderização gráfica e também, o processamento da lógica de jogo, fisica, teclado, mouse, etc
+    *   eu não preciso me preocupar com concorrencia e nem sincronização de threads. No entando, se eu precisar ter alguma thread que acessa dados que uma thread está escrevendo por exemplo, ai eu precisaria usar mutex, atomics, condition_variable do C++
+    *   só esse detalhe, caso um dia eu queira portar isso pra C++
+    * 
+    *   Tambem não preciso me preocupar com tempo de vida, pois, as variaveis e ponteiros não são destruidos em lugar nenhum.
+    *   Se uma thread fizesse uso de alguma variavel ou ponteiro que pode ser destruido em algum momento, eu preciso tratar isso, para a thread não dar crash no programa.
+    *   Eu preciso ter certeza de que todas as variaveis que uma thread usa vão estar realmente disponiveis e não tenham sido destruidas.
     */
     public async loop_principal(): Thread<void>
     {

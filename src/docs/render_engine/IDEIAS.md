@@ -360,5 +360,10 @@ Ja Criei essa API, agora eu posso definir qual camera esta ativa pela engine pri
 *Desenho limitado*: parecido com minha ideia anterior, porém, ao invés dele carregar os arquivos dos objetos só quando o jogador estiver perto deles, ele vai carregar tudo, mais só vai desenhar o que o jogador estiver perto, e inclusive posso tentar otimizar os laços de repetição FOR nesses casos, pra ele pular os índices no Array desses objetos que estão longe, pra melhorar a performance
 
 
+# 29/07/2025 22:06 PM - Deixar a minha lógica de carregamento de arquivos .obj mais próxima do C++
+Na função carregarOBJ_seNaoCarregado, e outras da minha lógica,... garantir que elas não tenham problemas de concorrencia nem com sincronização de Threads. Pois no C++ tem que lidar de outras formas com esse tipos de problemas(concorrencia nem com sincronização).
+
+
+
 
 

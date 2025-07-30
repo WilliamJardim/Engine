@@ -37,6 +37,7 @@ import CameraInstance from '../core/CameraInstance';
 import CameraRenderizador from './CameraRenderizador';
 import AbstractObjectBase from '../core/AbstractObjectBase';
 import sleep_thread from '../utils/thread/sleep_thread';
+import ThreadInstance from '../utils/thread/ThreadInstance';
 
 export default class RenderizadorCena
 {
@@ -556,7 +557,8 @@ export default class RenderizadorCena
         context.executandoRenderizacao = true;
 
         // Cria a Thread principal usada na renderização
-        context.loop_principal();
+        const thread_principal = new ThreadInstance( context.loop_principal, context ); // Executa a função loop_principal passando o própia context, ou seja, o this
+        thread_principal.detach();
     }
 
     // Função que vai destruir o Renderizador

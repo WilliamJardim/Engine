@@ -18,7 +18,7 @@ import Scene          from '../core/Scene';
 import ObjectProps    from '../interfaces/main_engine/ObjectProps';
 import InputListener  from '../input/InputListener';
 import SceneConfig    from '../interfaces/main_engine/SceneConfig';
-import { int, Ponteiro }   from '../types/types-cpp-like';
+import { float, int, Ponteiro, Thread }   from '../types/types-cpp-like';
 import { Renderer } from './Renderer/Renderer';
 import { calcularDirecaoCamera, calcularDireitaCamera } from '../utils/render_engine/math';
 import { VisualMesh } from './Mesh/VisualMesh';
@@ -36,6 +36,7 @@ import ConfigCamera from '../interfaces/both_engines/CameraConfig';
 import CameraInstance from '../core/CameraInstance';
 import CameraRenderizador from './CameraRenderizador';
 import AbstractObjectBase from '../core/AbstractObjectBase';
+import sleep_thread from '../utils/thread/sleep_thread';
 
 export default class RenderizadorCena
 {
@@ -48,7 +49,9 @@ export default class RenderizadorCena
     public renderConfig               : RenderConfig;
     public canvasRef                  : React.RefObject<HTMLCanvasElement>;
     public firstRender                : boolean = true;
-    public provavelmentePronto        : boolean = false; //Sinaliza se os objetos iniciais foram carregados
+    public provavelmentePronto        : boolean = false; // Sinaliza se os objetos iniciais foram carregados
+    public executandoRenderizacao     : boolean = false; // Sinaliza se a Engine já está funcionando ou não
+    public LimiteFPS                  : int     = 30;   // Limita o FPS para 60 frames por segundo
 
     // Armazena todos os OBJ lidos por essa Engine gráfica
     public objLidos                   : Mapa<string, ObjString>;
@@ -57,7 +60,8 @@ export default class RenderizadorCena
     {
         const contexto = this;
 
-        this.provavelmentePronto = false;
+        this.provavelmentePronto    = false;
+        this.executandoRenderizacao = false;
 
         this.inputListener = new InputListener();
 
@@ -464,64 +468,95 @@ export default class RenderizadorCena
         }
     }
 
-    //Função que chama o loop "animate"
+    /**
+    * @Thread 
+    * Thread principal, responsavel por fazer todas as chamadas necessárias para a renderização. 
+    */
+    public async loop_principal(): Thread<void>
+    {
+        const context             : RenderizadorCena = this;
+        const TempoEsperaPorFrame : float            = 1000 / context.LimiteFPS; // Calcula os milisegundos que serão usados para fazer a espera
+
+        // Se o ponteiro não for null
+        if( this.canvasRef.current != null )
+        {   
+            // Se já estiver rodando
+            while( context.executandoRenderizacao == true )
+            {
+                //Outras coisas que vão acontecer
+                const milisegundosFrameComecou : float  = context.engineScene.sceneCounter.getTime();
+                const frameDelta               : float  = context.engineScene.sceneCounter.calculateFrameDelta(); // Tempo entre frames
+                const frameNumber              : float  = context.engineScene.sceneCounter.getFrameNumber();
+
+                // Fornece as informações atualizadas de teclado e mouse para o renderizador usar nas cameras
+                context.renderizador.receberInformacoesTecladoMouse( context.inputListener.mousePosition, 
+                                                                    context.inputListener.keyDetection );
+
+                // Só chama o loop da minha engine se o renderizador já está apto para renderizar coisas
+                context.engineScene.loop( frameDelta, 
+                                          frameNumber, 
+                                          context.firstRender, 
+                                          context.provavelmentePronto );
+
+                // Atualiza as cameras
+                context.updateCamerasVisually();
+
+                // Atualiza a visualização dos objetos
+                context.updateObjectsVisually();
+
+                // Atualiza as luzes
+                context.updateLightsVisually();
+
+                // TODO: Atualiza os movimentos da camera
+                
+                // TODO: Renderizar a cena
+
+                // Diz que a primeira renderização já terminou
+                context.firstRender = false;
+
+                const milisegundosFrameTerminou : float  = context.engineScene.sceneCounter.getTime();
+                const diferencaComecouTerminou  : float  = milisegundosFrameTerminou - milisegundosFrameComecou;
+
+                /**
+                * Se a diferença(tempo decorrido neste frame em questão) for menor que o tempo de espera(do FPS) que eu defini, 
+                * ai ele vai aguarda ele completar os milisegundos que faltam pra terminar. 
+                * Porém, caso contrário, se a diferença for maior, vai seguir direto sem dar sleep, pois não precisa.
+                */
+                if( diferencaComecouTerminou < TempoEsperaPorFrame )
+                {
+                    // Faz uma pausa, para poder manter o controle do FPS que eu quero
+                    await sleep_thread( TempoEsperaPorFrame );
+                }
+            }
+        }   
+
+    }
+
+    //Função que inicia o loop principal
     public iniciar(): void
     {
         const context = this;
 
-        //Se não tem, ignora
-        if ( this.canvasRef.current == null )
-        { 
-            return;
-        }
-
-        function animate()
-        {
-            requestAnimationFrame(animate);
-    
-            //Outras coisas que vão acontecer
-            const frameDelta  = context.engineScene.sceneCounter.calculateFrameDelta(); // Tempo entre frames
-            const frameNumber = context.engineScene.sceneCounter.getFrameNumber();
-
-            // Fornece as informações atualizadas de teclado e mouse para o renderizador usar nas cameras
-            context.renderizador.receberInformacoesTecladoMouse( context.inputListener.mousePosition, 
-                                                                 context.inputListener.keyDetection );
-
-            // Só chama o loop da minha engine se o renderizador já está apto para renderizar coisas
-            context.engineScene.loop( frameDelta, 
-                                      frameNumber, 
-                                      context.firstRender, 
-                                      context.provavelmentePronto );
-
-            // Atualiza as cameras
-            context.updateCamerasVisually();
-
-            // Atualiza a visualização dos objetos
-            context.updateObjectsVisually();
-
-            // Atualiza as luzes
-            context.updateLightsVisually();
-
-            // TODO: Atualiza os movimentos da camera
-            
-            // TODO: Renderizar a cena
-
-            // Diz que a primeira renderização já terminou
-            context.firstRender = false;
-        }
-
-        //Aguarda um pouco o meu mini renderizador webgl terminar de carregar os objetos
+        // Aguarda um pouco o meu mini renderizador webgl terminar de carregar os objetos
         setTimeout(function(){
             context.provavelmentePronto = true;
         }, 500);
 
-        animate();
+        // Diz pra minha Engine que ela já está executando
+        context.executandoRenderizacao = true;
+
+        // Cria a Thread principal usada na renderização
+        context.loop_principal();
     }
 
     // Função que vai destruir o Renderizador
     public encerrar(): void
     {
-        
+        const context = this;
+
+        // Manda a thread principal parar de rodar
+        context.executandoRenderizacao = false;
+        context.provavelmentePronto = false;
     }
 
     public getRenderizador(): Renderer

@@ -43,3 +43,9 @@ export type Ponteiro<T> = T | null;
 *   template <typename T>
 *   typedef T* Ptr;
 */
+
+/**
+* Simula um thread para fins de tipagem no TypeScript.
+* Inspirado na semântica da std::thread do C++.
+*/
+export type Thread<T = void> = Promise<T>;

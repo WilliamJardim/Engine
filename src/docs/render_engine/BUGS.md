@@ -160,3 +160,13 @@ porém o Cubo(e com certeza os outros) não renderizam. Eles não aparecem na re
 (testei e já estava deis do meu ultimo commit)
 
 
+# 29/07/2025 21:37 - Movimentação da camera não "acompanha" o FPS
+Quando eu altero a variavel LimiteFPS que eu criei, pra valores baixo, como 10, 5, tudo na minha engine: logica, fisica, ocorre mais lento, lagado, como esperado.
+Porém, a camera continua com efeito "fluido", com movimentação e rotação livres que não são afetados pelo FPS
+no entando, a lógica que faz a camera andar pra frente, fica mais lenta.
+Mais a da rotação nem tanto.
+Na verdade a camera só demora mais pra responder a um comando, mais ela continua fluida.
+Não sei o por que isso está acontecendo, mais eu tenho uma hipotese:
+
+    Os calculos das matrizes são extremamente rapidos, e os valores de rotação e movimentação são definidos de forma indepedente da thread principal em si, o que resulta em resposta imediata ou quase imediata para rotação, movimento da camera,.... apenas com um atraso para responder os comandos em si de andar, rotacionar, pois isso tambem está na thread principal.
+

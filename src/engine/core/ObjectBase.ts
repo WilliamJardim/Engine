@@ -1058,20 +1058,19 @@ export default class ObjectBase extends AbstractObjectBase
             const objetosCena : Array<Ponteiro<AbstractObjectBase>> = scene.objects;
 
             // Zera as informações de colisão com outros objetos
-            this.infoCollisions = {
+            esteObjeto.infoCollisions = {
                 objectNames    : [],
                 objectIDs      : [],
                 objectClasses  : [],
                 objects        : []
             };
             // Zera as informações de proximidade com outros objetos
-            this.infoProximity = {
+            esteObjeto.infoProximity = {
                 objectNames    : [],
                 objectIDs      : [],
                 objectClasses  : [],
                 objects        : []
             };
-            
 
             //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
             // ou se for um std:array pode usar .fill(nullptr) direto
@@ -1081,13 +1080,13 @@ export default class ObjectBase extends AbstractObjectBase
                 (this.objProps.collide == true) && 
                 this.physicsState.havePhysics == true 
             ){
-        
-                // Limpa a tabela de colisões do objeto
+    
+                // Limpa a tabela global de colisões do objeto 
                 esteObjeto.scene.clearObjectCollisionFromTableByName( esteObjeto.name );
                 esteObjeto.scene.clearObjectCollisionFromTableByID( esteObjeto.id );
                 esteObjeto.scene.clearObjectCollisionFromTableByCLASSES( esteObjeto.objProps.classes );
 
-                // Limpa a tabela de proximidade do objeto
+                // Limpa a tabela global de proximidade do objeto
                 esteObjeto.scene.clearObjectProximityFromTableByName( esteObjeto.name );
                 esteObjeto.scene.clearObjectProximityFromTableByID( esteObjeto.id );
                 esteObjeto.scene.clearObjectProximityFromTableByCLASSES( esteObjeto.objProps.classes );
@@ -1252,7 +1251,7 @@ export default class ObjectBase extends AbstractObjectBase
                         //Se houve uma proximidade
                         if( isProximity( esteObjeto, objetoAtualCena, esteObjeto.objProps.proximityConfig ) === true )
                         {
-    
+
                             // Registra as colisões detectadas
                             esteObjeto.infoProximity.objectNames.push( objetoAtualCena.name );
 
@@ -1262,7 +1261,7 @@ export default class ObjectBase extends AbstractObjectBase
                             esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ]   = true;
 
                             // infoProximity
-                            esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
+                            esteObjeto.infoProximity.objectIDs.push( objetoAtualCena.id );
 
                             // Por ID
                             esteObjeto.scene.proximityTable.byID[ esteObjeto.id ].push( objetoAtualCena );

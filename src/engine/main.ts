@@ -186,7 +186,10 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         },
 
         mass: 1,
-        classes: [],
+        classes: [
+            "veiculo",
+            "testeclasse"
+        ],
         havePhysics: false,
         scaleReduce: {
             x: 0,
@@ -485,6 +488,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     // scene.getObjectByName("Cubo1").isProximityOf( scene.getObjectByName("Carro") , null )
     // scene.getObjectByName("Carro").isProximityOf( scene.getObjectByName("Cubo1") , null )
     // scene.getObjectByName("Cubo1").isProximityOf( scene.getObjectByName("Chao") , null )
+    // scene.getObjectByName("Cubo1").infoProximity 
 }
 
 
@@ -499,6 +503,50 @@ export function EngineLoop( scene: Scene, firstRender: boolean, renderizadorPron
 {
 
     const htmlCanvas = globalContext.get('htmlCanvas');
+
+
+    // testando colisões
+    /*
+    if(scene != null &&  scene.getObjectByName("Cubo2") != null && scene.getObjectByName("Cubo1") != null )
+    {
+        if( scene.getObjectByName("Cubo2").isProximityOf( scene.getObjectByName("Cubo1"), null ) )
+        {
+            debugger
+        }
+
+        if( scene.getObjectByName("Cubo1").isProximityOf( scene.getObjectByName("Cubo2"), null ) )
+        {
+            debugger
+        }
+    }
+
+    if(scene != null &&  scene.getObjectByName("Cubo1") != null && scene.getObjectByName("Cubo") != null )
+    {
+        if( scene.getObjectByName("Cubo").isProximityOf( scene.getObjectByName("Cubo1"), null ) )
+        {
+            debugger
+        }
+
+        if( scene.getObjectByName("Cubo1").isProximityOf( scene.getObjectByName("Cubo"), null ) )
+        {
+            debugger
+        }
+    }
+
+    if(scene != null &&  scene.getObjectByName("Cubo2") != null && scene.getObjectByName("Cubo") != null )
+    {
+        if( scene.getObjectByName("Cubo").isProximityOf( scene.getObjectByName("Cubo2"), null ) )
+        {
+            debugger
+        }
+
+        if( scene.getObjectByName("Cubo2").isProximityOf( scene.getObjectByName("Cubo"), null ) )
+        {
+            debugger
+        }
+    }
+    */
+
 
     if(htmlCanvas)
     {

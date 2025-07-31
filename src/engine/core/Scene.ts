@@ -210,7 +210,8 @@ export default class Scene
         return this.gravity;
     }
 
-    public clearCollisionTable(): void{
+    public clearCollisionTable(): void
+    {
         // Tabela de objetos colidindo com outros objetos
         this.collisionTable = {
             byName    : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>(),
@@ -229,7 +230,8 @@ export default class Scene
         // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
-    public clearObjectCollisionFromTableByName( objectName: string ): void{
+    public clearObjectCollisionFromTableByName( objectName: string ): void
+    {
         this.collisionTable.byName[objectName] = [];
         //this.collisionBinaryTable.byName[objectName] = {};
 
@@ -237,7 +239,8 @@ export default class Scene
         // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
-    public clearObjectCollisionFromTableByID( objectID: string ): void{
+    public clearObjectCollisionFromTableByID( objectID: string ): void
+    {
         this.collisionTable.byID[objectID] = [];
         //this.collisionBinaryTable.byID[objectID] = {};
 
@@ -245,29 +248,24 @@ export default class Scene
         // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
-    public clearObjectCollisionFromTableByCLASSES( objectClasses: string|Array<string> ): void{
+    public clearObjectCollisionFromTableByCLASSES( objectClasses: Array<string> ): void
+    {
         const contexto = this;
 
-        if( typeof objectClasses == 'string' ){
-            this.collisionTable.byClasses[objectClasses] = [];
-            //this.collisionBinaryTable.byClasses[objectClasses] = {};
+        for( let i:int = 0; i < objectClasses.length; i++ )
+        {
+            const nomeClasse:string = objectClasses[i];
 
-        }else if( typeof objectClasses == 'object' ){
-        
-            for( let i:int = 0; i < objectClasses.length; i++ )
-            {
-                const nomeClasse:string = objectClasses[i];
-
-                contexto.collisionTable.byClasses[nomeClasse] = [];
-                //contexto.collisionBinaryTable.byClasses[nomeClasse] = {};
-            }
+            contexto.collisionTable.byClasses[nomeClasse] = [];
+            //contexto.collisionBinaryTable.byClasses[nomeClasse] = {};
         }
 
         //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
         // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
-    public clearProximityTable(): void{
+    public clearProximityTable(): void
+    {
         // Tabela de objetos proximos de outros objetos
         this.proximityTable = {
             byName    : new Mapa<string, Array<Ponteiro<AbstractObjectBase>>>(),
@@ -286,7 +284,8 @@ export default class Scene
         // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
-    public clearObjectProximityFromTableByName( objectName: string ): void{
+    public clearObjectProximityFromTableByName( objectName: string ): void
+    {
         this.proximityTable.byName[objectName] = [];
         this.collisionBinaryTable.byName[objectName] = {};
 
@@ -294,7 +293,8 @@ export default class Scene
         // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
-    public clearObjectProximityFromTableByID( objectID: string ): void{
+    public clearObjectProximityFromTableByID( objectID: string ): void
+    {
         this.proximityTable.byID[objectID] = [];
         this.collisionBinaryTable.byName[objectID] = {};
 
@@ -302,22 +302,16 @@ export default class Scene
         // ou se for um std:array pode usar .fill(nullptr) direto
     }
 
-    public clearObjectProximityFromTableByCLASSES( objectClasses: string|Array<string> ): void{
+    public clearObjectProximityFromTableByCLASSES( objectClasses: Array<string> ): void
+    {
         const contexto = this;
 
-        if( typeof objectClasses == 'string' ){
-            this.proximityTable.byClasses[objectClasses] = [];
-            //this.collisionBinaryTable.byClasses[objectClasses] = {};
-
-        }else if( typeof objectClasses == 'object' ){
+        for( let i:int = 0; i < objectClasses.length; i++ )
+        {
+            const nomeClasse:string = objectClasses[i];
             
-            for( let i:int = 0; i < objectClasses.length; i++ )
-            {
-                const nomeClasse:string = objectClasses[i];
-                
-                contexto.proximityTable.byClasses[nomeClasse] = [];
-                //contexto.collisionBinaryTable.byClasses[nomeClasse] = {};
-            }
+            contexto.proximityTable.byClasses[nomeClasse] = [];
+            //contexto.collisionBinaryTable.byClasses[nomeClasse] = {};
         }
 
         //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);

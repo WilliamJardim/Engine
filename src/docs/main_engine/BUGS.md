@@ -88,3 +88,6 @@ BUG: DETECÇÂO DE COLISÂO UNILATERAL
             }
         }
 
+# 31/07/2025 16:29 PM
+BUG: os cubos ao ficarem no chão, andando levemente com a força restantante do arremeço inicial que eu faço, eles as vezes afundam no chão
+só vi acontecer uma vez nos testes de hoje

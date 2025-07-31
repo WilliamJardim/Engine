@@ -71,9 +71,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 5,
-            y: 5,
-            z: 5
+            x: 8,
+            y: 8,
+            z: 8
         },
         events: [],
         kick_rate: 4,
@@ -131,9 +131,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 5,
-            y: 5,
-            z: 5
+            x: 8,
+            y: 8,
+            z: 8
         },
         events: [],
         kick_rate: 4,
@@ -248,9 +248,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 5,
-            y: 5,
-            z: 5
+            x: 8,
+            y: 8,
+            z: 8
         },
         isInvisible: false,
         opacity: 1,
@@ -312,9 +312,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 5,
-            y: 5,
-            z: 5
+            x: 8,
+            y: 8,
+            z: 8
         },
         isInvisible: false,
         opacity: 1,
@@ -365,9 +365,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 5,
-            y: 5,
-            z: 5
+            x: 8,
+            y: 8,
+            z: 8
         },
         isInvisible: false,
         opacity: 1,
@@ -418,9 +418,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 5,
-            y: 5,
-            z: 5
+            x: 8,
+            y: 8,
+            z: 8
         },
         isInvisible: false,
         opacity: 1,

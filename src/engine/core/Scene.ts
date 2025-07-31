@@ -332,52 +332,23 @@ export default class Scene
     * @param objB 
     * @returns {boolean}
     */
-    public queryIfObjectIsProximityOf( objA: Ponteiro<AbstractObjectBase>|string, objB: Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean{
-
-        // Se vai usar o calculo da propia Engine mesmo, nos limites que ela ja calculou
-        if( limites == undefined ){
-            //Se eu passar dois objetos do tipo ObjectBase, ou um ObjectBase e uma string
-            if( (typeof objA == 'object' && typeof objB == 'object') || 
-                (typeof objA == 'object' && typeof objB == 'string') 
-            
-            ){
-                if( objA != null && objB != null )
+    public queryIfObjectIsProximityOf( objA: Ponteiro<AbstractObjectBase>, objB: Ponteiro<AbstractObjectBase>, limites:ProximityBounds ): boolean
+    {
+        // Se os ponteiros não forem nulos
+        if( objA != null && objB != null )
+        {
+            // Se vai usar o calculo da propia Engine mesmo, nos limites que ela ja calculou
+            if( limites == null )
+            {
+                // Se a chave objA.name e objB.name existem no mapa proximityBinaryTable, acessa
+                if( this.proximityBinaryTable.byName[ objA.name ] != null && this.proximityBinaryTable.byName[ objA.name ][ objB.name ] != null  )
                 {
-                    if( objA.name != undefined && 
-                        ( ( typeof objB == 'object' && objB.name != undefined ) || typeof objB == 'string' ) && 
-                        this.proximityBinaryTable.byName[ objA.name ] != undefined &&
-                        this.proximityBinaryTable.byName[ objA.name ][ typeof objB == 'object' ? objB.name! : objB ] != undefined 
-                    ){
-                        return this.proximityBinaryTable.byName[ objA.name ][ typeof objB == 'object' ? objB.name! : objB ] == true;
-                        
-                    }else if( objA.id != undefined && 
-                            ( ( typeof objB == 'object' && objB.id != undefined) || typeof objB == 'string' ) && 
-                            this.proximityBinaryTable.byID[ objA.id ] != undefined &&
-                            this.proximityBinaryTable.byID[ objA.id ][ typeof objB == 'object' ? objB.id : objB ] != undefined 
-                    ){
-                        return this.proximityBinaryTable.byID[ objA.id ][ typeof objB == 'object' ? objB.id : objB ] == true;
-                    }
+                    return this.proximityBinaryTable.byName[ objA.name ][ objB.name ] == true;
                 }
 
-            //Senao, se for só o name ou o id dos objetos em string, Nesse caso, ele ja vai entender tanto se for o name quanto o id
-            }else if( typeof objA == 'string' && typeof objB == 'string' ){
-                return this.proximityBinaryTable.byName[ objA ][ objB ] == true || this.proximityBinaryTable.byID[ objA ][ objB ] == true; 
-            }
-
-        //Se tem limites personalizados vai fazer um novo calculo
-        }else{
-            if( typeof objB == 'object' ){
+            //Se tem limites personalizados vai fazer um novo calculo
+            }else{
                 return isProximity( objA, objB, limites ) == true;
-
-            //Se for uma string, ele pega o objeto que tem esse nome
-            }else if( typeof objB == 'string' ){
-                return isProximity( objA, this.getObjectByName(objB), limites )
-
-            }else if( typeof objA == 'string' ){
-                return isProximity( this.getObjectByName(objA), objB, limites )
-
-            }else if( typeof objA == 'string' && typeof objB == 'string' ){
-                return isProximity( this.getObjectByName(objA), this.getObjectByName(objB), limites )
             }
         }
 
@@ -392,36 +363,24 @@ export default class Scene
     * @param objB 
     * @returns {boolean}
     */
-    public queryIfObjectIsCollisionOf( objA: Ponteiro<AbstractObjectBase>|string, objB: Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean{
-
-        // Se vai usar o calculo da propia Engine mesmo, nos limites que ela ja calculou
-        if( limites == undefined ){
-            //Se eu passar dois objetos do tipo ObjectBase
-            if( typeof objA == 'object' && typeof objB == 'object' && objA != null && objB != null ){
-                if( objA.name != undefined && 
-                    objB.name != undefined  && 
-                    this.collisionBinaryTable.byName[ objA.name ] != undefined &&
-                    this.collisionBinaryTable.byName[ objA.name ][ objB.name ] != undefined
-                ){
+    public queryIfObjectIsCollisionOf( objA: Ponteiro<AbstractObjectBase>, objB: Ponteiro<AbstractObjectBase>, limites:ProximityBounds ): boolean
+    {
+        // Se os ponteiros não forem nulos
+        if( objA != null && objB != null )
+        {
+            // Se vai usar o calculo da propia Engine mesmo, nos limites que ela ja calculou
+            if( limites == null )
+            {
+                // Se a chave objA.name e objB.name existem no mapa collisionBinaryTable, acessa
+                if( this.collisionBinaryTable.byName[ objA.name ] != null && this.collisionBinaryTable.byName[ objA.name ][ objB.name ] != null  )
+                {
                     return this.collisionBinaryTable.byName[ objA.name ][ objB.name ] == true;
-
-
-                }else if( objA.id != undefined && 
-                        objB.id != undefined && 
-                        this.collisionBinaryTable.byID[ objA.id ] != undefined &&
-                        this.collisionBinaryTable.byID[ objA.id ][ objB.id ] != undefined
-                ){
-                    return this.collisionBinaryTable.byID[ objA.id ][ objB.id ] == true;
                 }
 
-            //Senao, se for só o name ou o id dos objetos em string, Nesse caso, ele ja vai entender tanto se for o name quanto o id
-            }else if( typeof objA == 'string' && typeof objB == 'string' ){
-                return this.collisionBinaryTable.byName[ objA ][ objB ] == true || this.collisionBinaryTable.byID[ objA ][ objB ] == true;
+            //Se tem limites personalizados vai fazer um novo calculo
+            }else{
+                return isCollision( objA, objB, limites ) == true;
             }
-
-        //Se tem limites personalizados vai fazer um novo calculo
-        }else{
-            return isCollision( objA, objB, limites ) == true;
         }
 
         return false;
@@ -482,7 +441,8 @@ export default class Scene
     /**
     * Remove um objeto da cena
     */
-    public remove( objetoRemover:Ponteiro<AbstractObjectBase> ): void{
+    public remove( objetoRemover:Ponteiro<AbstractObjectBase> ): void
+    {
         const scene            : Ponteiro<Scene>                     = this;
         const novosObjetosCena : Array<Ponteiro<AbstractObjectBase>> = new Array();
 

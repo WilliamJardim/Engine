@@ -1071,6 +1071,7 @@ export default class ObjectBase extends AbstractObjectBase
                 objectClasses  : [],
                 objects        : []
             };
+            
 
             //em c++ precisaria usar o .clear() ou fazer std::fill(attachments.begin(), attachments.end(), nullptr);
             // ou se for um std:array pode usar .fill(nullptr) direto
@@ -1083,7 +1084,7 @@ export default class ObjectBase extends AbstractObjectBase
         
                 // Limpa a tabela de colisões do objeto
                 esteObjeto.scene.clearObjectCollisionFromTableByName( esteObjeto.name );
-                esteObjeto.scene.clearObjectCollisionFromTableByName( esteObjeto.id );
+                esteObjeto.scene.clearObjectCollisionFromTableByID( esteObjeto.id );
                 esteObjeto.scene.clearObjectCollisionFromTableByCLASSES( esteObjeto.objProps.classes );
 
                 // Limpa a tabela de proximidade do objeto
@@ -1103,50 +1104,106 @@ export default class ObjectBase extends AbstractObjectBase
                         (objetoAtualCena.objProps.collide == true) && 
                         objetoAtualCena.id != esteObjeto.id 
                     ){
-        
+
+                        /**
+                        * Cadastra pela primeira vez as chaves de nomes e ids nos meus mapas collisionTable e collisionBinaryTable
+                        * Para ser usados em detecção de colisões entre os objetos:
+                        * 
+                        * Assim como eu já fizia antes do commit desse dia 30/07/2025: Se a chave não existir, cria um Array ou Mapa para ela(dependendo de qual critério: se é por nome ou por ID)
+                        * Esses objetos criados para a chave vão ser acessados para definir estados de colisão
+                        */
+
+                        // Por nome
+                        if( esteObjeto.scene.collisionTable.byName.search( esteObjeto.name ) == esteObjeto.scene.collisionTable.byName.NotFounded() ){
+                            esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] = new Array<Ponteiro<AbstractObjectBase>>();
+                        }
+                        if( esteObjeto.scene.collisionBinaryTable.byName.search( esteObjeto.name ) == esteObjeto.scene.collisionBinaryTable.byName.NotFounded() ){
+                            esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] = new Mapa<string, boolean>();
+                        }
+
+                        // Por ID
+                        if( esteObjeto.scene.collisionTable.byID.search( esteObjeto.id ) == esteObjeto.scene.collisionTable.byID.NotFounded() ){
+                            esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] = new Array<Ponteiro<AbstractObjectBase>>();
+                        }
+                        if( esteObjeto.scene.collisionBinaryTable.byID.search( esteObjeto.id ) == esteObjeto.scene.collisionBinaryTable.byID.NotFounded() ){
+                            esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ] = new Mapa<string, boolean>();
+                        }
+
+                        /**
+                        * Cadastra pela primeira vez as chaves de nomes e ids nos meus mapas proximityTable e proximityBinaryTable
+                        * Para ser usados em detecção de proximidade entre os objetos:
+                        * 
+                        * Assim como eu já fizia antes do commit desse dia 30/07/2025: Se a chave não existir, cria um Array ou Mapa para ela(dependendo de qual critério: se é por nome ou por ID)
+                        * Esses objetos criados para a chave vão ser acessados para definir estados de colisão
+                        */
+                        
+                        // Por nome
+                        if( esteObjeto.scene.proximityTable.byName.search( esteObjeto.name ) == esteObjeto.scene.proximityTable.byName.NotFounded() ){
+                            esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] = new Array<Ponteiro<AbstractObjectBase>>();
+                        }
+                        if( esteObjeto.scene.proximityBinaryTable.byName.search( esteObjeto.name ) == esteObjeto.scene.proximityBinaryTable.byName.NotFounded() ){
+                            esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ] = new Mapa<string, boolean>();
+                        }
+
+                        if( esteObjeto.scene.proximityTable.byID.search( esteObjeto.id ) == esteObjeto.scene.proximityTable.byID.NotFounded() ){
+                            esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] = new Array<Ponteiro<AbstractObjectBase>>();
+                        }
+                        if( esteObjeto.scene.proximityBinaryTable.byID.search( esteObjeto.id ) == esteObjeto.scene.proximityBinaryTable.byID.NotFounded() ){
+                            esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ] = new Mapa<string, boolean>();
+                        }
+                
+                        /**
+                        * Cadastra pela primeira vez as chaves de classes nos meus mapas proximityTable e proximityBinaryTable
+                        * E tambem as chaves de classes nos meus mapas collisionTable e collisionBinaryTable
+                        * 
+                        * Exatamente como eu já fazia antes do commit desse dia 30/07/2025
+                        */
+                        for( let classeIndex:int = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
+                        {
+                            const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
+
+                            //Registra tambem na tabela mestre da cena
+                            if( esteObjeto.scene.proximityTable.byClasses.search( nomeClasse ) == esteObjeto.scene.proximityTable.byClasses.NotFounded() ){
+                                esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] = new Array<Ponteiro<AbstractObjectBase>>();
+                            }
+                            if( esteObjeto.scene.proximityBinaryTable.byClasses.search( nomeClasse ) == esteObjeto.scene.proximityBinaryTable.byClasses.NotFounded() ){
+                                esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] = new Mapa<string, boolean>();
+                            }
+
+                            //Registra tambem na tabela mestre da cena
+                            if( esteObjeto.scene.collisionTable.byClasses.search( nomeClasse ) == esteObjeto.scene.collisionTable.byClasses.NotFounded() ){
+                                esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] = new Array<Ponteiro<AbstractObjectBase>>();
+                            }
+                            if( esteObjeto.scene.collisionBinaryTable.byClasses.search( nomeClasse ) == esteObjeto.scene.collisionBinaryTable.byClasses.NotFounded() ){
+                                esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] = new Mapa<string, boolean>();
+                            }
+                        }
+
+                        /**
+                        * Começa a verificar as colisões
+                        * Nesse ponto, eu ja tenho os mapas collisionTable, collisionBinaryTable, proximityTable, proximityBinaryTable devidamente inicializados
+                        * Pois os Arrays e Mapas dessas chaves que não existiam já estão todos criados nesse ponto. (Foram criados nos trechos de códigos das linhas anteriores) 
+                        */
+
                         //Se houve uma colisão(usando Bounding Box)
-                        if( isCollision( esteObjeto, objetoAtualCena, {x: 0.5, y: 0.5, z: 0.5} ) === true ){
+                        if( isCollision( esteObjeto, objetoAtualCena, {x: 0.5, y: 0.5, z: 0.5} ) === true )
+                        {
                             // POR NOME
                             // Registra as colisões detectadas
                             esteObjeto.infoCollisions.objectNames.push( objetoAtualCena.name );
 
-                            /**
-                            * Registra tambem na tabela mestre da cena
-                            * Logica: Se a chave "esteObjeto.name" não existir, ou seja, se não existir entrada para o objeto atual no mapa esteObjeto.scene.collisionTable.byName
-                            * Então, ele vai criar um Array vazio, para permitr que seja inserido as entradas, que vão registrar a colisão 
-                            */
-                            if( esteObjeto.scene.collisionTable.byName.search( esteObjeto.name ) == esteObjeto.scene.collisionTable.byName.NotFounded() ){
-                                esteObjeto.scene.collisionTable.byName[ esteObjeto.name ] = new Array<Ponteiro<AbstractObjectBase>>();
-                            }
-                            /**
-                            * Registra tambem na tabela mestre da cena
-                            * Logica: Se a chave "esteObjeto.name" não existir, ou seja, se não existir entrada para o objeto atual no mapa esteObjeto.scene.collisionTable.byName
-                            * Então, ele vai criar um mapa vazio, para permitr que seja inserido as entradas, que vão registrar a colisão 
-                            */
-                            if( esteObjeto.scene.collisionBinaryTable.byName.search( esteObjeto.name ) == esteObjeto.scene.collisionBinaryTable.byName.NotFounded() ){
-                                esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ] = new Mapa<string, boolean>();
-                            }
                             // Por Nome
                             esteObjeto.scene.collisionTable.byName[ esteObjeto.name ].push( objetoAtualCena );
                             esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.name ] = true;
                             esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ] = true;
 
-
                             // Por ID
                             esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
-
-                            //Registra tambem na tabela mestre da cena
-                            if( esteObjeto.scene.collisionTable.byID.search( esteObjeto.id ) == esteObjeto.scene.collisionTable.byID.NotFounded() ){
-                                esteObjeto.scene.collisionTable.byID[ esteObjeto.id ] = new Array<Ponteiro<AbstractObjectBase>>();
-                            }
-                            if( esteObjeto.scene.collisionBinaryTable.byID.search( esteObjeto.id ) == esteObjeto.scene.collisionBinaryTable.byID.NotFounded() ){
-                                esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ] = new Mapa<string, boolean>();
-                            }
-                            
                             esteObjeto.scene.collisionTable.byID[ esteObjeto.id ].push( objetoAtualCena );
+
+                            // Marca na tabela binaria
                             esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.name ] = true;
                             esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id ] = true;
-
 
                             //As classes tambem são inclusas se houver, para permitir facil acesso
                             for( let classeIndex:int = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
@@ -1157,14 +1214,6 @@ export default class ObjectBase extends AbstractObjectBase
 
                                 esteObjeto.infoCollisions.objectClasses.push( nomeClasse );
 
-                                //Registra tambem na tabela mestre da cena
-                                if( esteObjeto.scene.collisionTable.byClasses.search( nomeClasse ) == esteObjeto.scene.collisionTable.byClasses.NotFounded() ){
-                                    esteObjeto.scene.collisionTable.byClasses[ nomeClasse ] = new Array<Ponteiro<AbstractObjectBase>>();
-                                }
-                                if( esteObjeto.scene.collisionBinaryTable.byClasses.search( nomeClasse ) == esteObjeto.scene.collisionBinaryTable.byClasses.NotFounded() ){
-                                    esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ] = new Mapa<string, boolean>();
-                                }
-
                                 // por Nome da classe
                                 esteObjeto.scene.collisionTable.byClasses[ nomeClasse ].push( objetoAtualCena );                          
                                 esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = true;
@@ -1173,42 +1222,52 @@ export default class ObjectBase extends AbstractObjectBase
 
                             esteObjeto.infoCollisions.objects.push( objetoAtualCena );
 
+                        // Se não está mais colidindo, desmarca na tabela binaria, tanto por nome, id e classes
+                        }else{
+                            // Por Nome
+                            esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.name ] = false;
+                            esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ]   = false;
+
+                            // Por ID
+                            esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.name ] = false;
+                            esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id   ] = false;
+
+                            //As classes tambem são inclusas se houver, para permitir facil acesso
+                            for( let classeIndex:int = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
+                            {
+                                const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
+                                esteObjeto.scene.collisionBinaryTable.byName[ esteObjeto.id ][ nomeClasse ] = false;
+                                esteObjeto.scene.collisionBinaryTable.byID[ esteObjeto.id ][ nomeClasse ]   = false;
+
+                                esteObjeto.infoCollisions.objectClasses.push( nomeClasse );
+
+                                // por Nome da classe
+                                esteObjeto.scene.collisionTable.byClasses[ nomeClasse ].push( objetoAtualCena );                          
+                                esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = false;
+                                esteObjeto.scene.collisionBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.id ]   = false;
+                            }
+
                         }
 
                         //Se houve uma proximidade
-                        if( isProximity( esteObjeto, objetoAtualCena, esteObjeto.objProps.proximityConfig ) === true ){
-        
+                        if( isProximity( esteObjeto, objetoAtualCena, esteObjeto.objProps.proximityConfig ) === true )
+                        {
+    
                             // Registra as colisões detectadas
                             esteObjeto.infoProximity.objectNames.push( objetoAtualCena.name );
 
-                            //Registra tambem na tabela mestre da cena
-                            if( esteObjeto.scene.proximityTable.byName.search( esteObjeto.name ) == esteObjeto.scene.proximityTable.byName.NotFounded() ){
-                                esteObjeto.scene.proximityTable.byName[ esteObjeto.name ] = new Array<Ponteiro<AbstractObjectBase>>();
-                            }
-                            if( esteObjeto.scene.proximityBinaryTable.byName.search( esteObjeto.name ) == esteObjeto.scene.proximityBinaryTable.byName.NotFounded() ){
-                                esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ] = new Mapa<string, boolean>();
-                            }
-                            
                             // Por nome
                             esteObjeto.scene.proximityTable.byName[ esteObjeto.name ].push( objetoAtualCena );
                             esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.name ] = true;
-                            esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ] = true;
+                            esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ]   = true;
 
                             // infoProximity
                             esteObjeto.infoCollisions.objectIDs.push( objetoAtualCena.id );
 
-                            //Registra tambem na tabela mestre da cena
-                            if( esteObjeto.scene.proximityTable.byID.search( esteObjeto.id ) == esteObjeto.scene.proximityTable.byID.NotFounded() ){
-                                esteObjeto.scene.proximityTable.byID[ esteObjeto.id ] = new Array<Ponteiro<AbstractObjectBase>>();
-                            }
-                            if( esteObjeto.scene.proximityBinaryTable.byID.search( esteObjeto.id ) == esteObjeto.scene.proximityBinaryTable.byID.NotFounded() ){
-                                esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ] = new Mapa<string, boolean>();
-                            }
-
                             // Por ID
                             esteObjeto.scene.proximityTable.byID[ esteObjeto.id ].push( objetoAtualCena );
                             esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.name ] = true;
-                            esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id ] = true; 
+                            esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id ]   = true; 
                             
                             // Por classes
                             for( let classeIndex:int = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
@@ -1216,15 +1275,7 @@ export default class ObjectBase extends AbstractObjectBase
                                  const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
                                  
                                  esteObjeto.infoProximity.objectClasses.push( nomeClasse );
-
-                                 //Registra tambem na tabela mestre da cena
-                                 if( esteObjeto.scene.proximityTable.byClasses.search( nomeClasse ) == esteObjeto.scene.proximityTable.byClasses.NotFounded() ){
-                                     esteObjeto.scene.proximityTable.byClasses[ nomeClasse ] = new Array<Ponteiro<AbstractObjectBase>>();
-                                 }
-                                 if( esteObjeto.scene.proximityBinaryTable.byClasses.search( nomeClasse ) == esteObjeto.scene.proximityBinaryTable.byClasses.NotFounded() ){
-                                     esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ] = new Mapa<string, boolean>();
-                                 }
-                                
+    
                                  // Por nome da classe
                                  esteObjeto.scene.proximityTable.byClasses[ nomeClasse ].push( objetoAtualCena );
                                  esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = true;
@@ -1232,6 +1283,32 @@ export default class ObjectBase extends AbstractObjectBase
                             }
                             
                             esteObjeto.infoProximity.objects.push( objetoAtualCena );
+
+
+                        // Se não está mais proximo, desmarca na tabela binaria, tanto por nome, id e classes
+                        }else{
+                            // Por nome
+                            esteObjeto.scene.proximityTable.byName[ esteObjeto.name ].push( objetoAtualCena );
+                            esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.name ] = false;
+                            esteObjeto.scene.proximityBinaryTable.byName[ esteObjeto.name ][ objetoAtualCena.id ]   = false;
+
+                            // Por ID
+                            esteObjeto.scene.proximityTable.byID[ esteObjeto.id ].push( objetoAtualCena );
+                            esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.name ] = false;
+                            esteObjeto.scene.proximityBinaryTable.byID[ esteObjeto.id ][ objetoAtualCena.id ]   = false; 
+
+                            // Por classes
+                            for( let classeIndex:int = 0 ; classeIndex < objetoAtualCena.objProps.classes.length ; classeIndex++ )
+                            {
+                                 const nomeClasse : string = objetoAtualCena.objProps.classes[classeIndex];
+                                 
+                                 esteObjeto.infoProximity.objectClasses.push( nomeClasse );
+    
+                                 // Por nome da classe
+                                 esteObjeto.scene.proximityTable.byClasses[ nomeClasse ].push( objetoAtualCena );
+                                 esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.name ] = false;
+                                 esteObjeto.scene.proximityBinaryTable.byClasses[ nomeClasse ][ objetoAtualCena.id ]   = false;
+                            }
 
                         }
                     }
@@ -2216,7 +2293,7 @@ export default class ObjectBase extends AbstractObjectBase
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, 
+    isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>, 
                    limites:ProximityBounds 
 
     ): boolean{
@@ -2319,7 +2396,7 @@ export default class ObjectBase extends AbstractObjectBase
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, 
+    isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>, 
                    limites:ProximityBounds 
 
     ): boolean{

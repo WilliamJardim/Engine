@@ -66,14 +66,14 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             y: 0,
             z: 0
         },
-        collide: false,
-        collisionEvents: false,
+        collide: true,
+        collisionEvents: true,
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 0,
-            y: 0,
-            z: 0
+            x: 5,
+            y: 5,
+            z: 5
         },
         events: [],
         kick_rate: 4,
@@ -126,14 +126,14 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             y: 0,
             z: 0
         },
-        collide: false,
-        collisionEvents: false,
+        collide: true,
+        collisionEvents: true,
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 0,
-            y: 0,
-            z: 0
+            x: 5,
+            y: 5,
+            z: 5
         },
         events: [],
         kick_rate: 4,
@@ -198,9 +198,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 0,
-            y: 0,
-            z: 0
+            x: 15,
+            y: 15,
+            z: 15
         },
         events: [],
         kick_rate: 4,
@@ -245,9 +245,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 0,
-            y: 0,
-            z: 0
+            x: 5,
+            y: 5,
+            z: 5
         },
         isInvisible: false,
         opacity: 1,
@@ -309,9 +309,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 0,
-            y: 0,
-            z: 0
+            x: 5,
+            y: 5,
+            z: 5
         },
         isInvisible: false,
         opacity: 1,
@@ -362,9 +362,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 0,
-            y: 0,
-            z: 0
+            x: 5,
+            y: 5,
+            z: 5
         },
         isInvisible: false,
         opacity: 1,
@@ -415,9 +415,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 0,
-            y: 0,
-            z: 0
+            x: 5,
+            y: 5,
+            z: 5
         },
         isInvisible: false,
         opacity: 1,
@@ -479,6 +479,12 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
                                      }));
 
     globalContext.set("scene", scene);
+
+    // testando
+    // scene.getObjectByName("Carro").getCollisions({x:10,y:10,z:10}, true)
+    // scene.getObjectByName("Cubo1").isProximityOf( scene.getObjectByName("Carro") , null )
+    // scene.getObjectByName("Carro").isProximityOf( scene.getObjectByName("Cubo1") , null )
+    // scene.getObjectByName("Cubo1").isProximityOf( scene.getObjectByName("Chao") , null )
 }
 
 

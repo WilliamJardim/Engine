@@ -91,3 +91,25 @@ BUG: DETECÇÂO DE COLISÂO UNILATERAL
 # 31/07/2025 16:29 PM
 BUG: os cubos ao ficarem no chão, andando levemente com a força restantante do arremeço inicial que eu faço, eles as vezes afundam no chão
 só vi acontecer uma vez nos testes de hoje
+
+# 01/08/2025 15:42 PM
+Testar valores mais altos de proximityConfig 
+E ver se todos os cubos podem detectar proximidade uns aos outros
+
+Se não, aí tem erro
+
+# 01/08/2025 15:42 PM
+Sobre o BUG da detecção unilateral de proximidade. Eu tenho uma hipótese de explicação:
+
+No teste que eu fiz foram com um dos cubos. 
+Um dos cubos detectou com sucesso a proximidade com o outro cuco. Ok. Isso está correto.
+
+Porém o contrário não foi verdade: o outro cubo, que estava na mesma distância, e tinha a mesma escala. E além disso tinha a mesma configuração de proximityConfig, não conseguiu detectar a proximidade com o ele
+
+Foi um caso de colisão unilateral: apenas uma das partes conseguiu identificar. E a outra não.
+
+Eu raciocínei o seguinte: se a distância entre os dois cubos é mesma, e se eles tem a mesma escala, e a mesma configuração de proximityConfig, e mesmo assim, só uma das partes conseguiu identificar e a outra não.
+Matematicamente e logicamente falando, a única hipótese mais possível pra isso acontecer seria se a minha função que faz a verificação de proximidade está usando uma lógica diferente para cada eixo(ou seja, não está executando exatamente a mesma lógica pra todos os eixos, e pra todos os sentidos)
+Valores de posição podem ser negativos, e uso valor absoluto e isso pode afetar tbm 
+
+E isso também explicaria o por que em alguns casos, alguns objetos conseguem identificar três objetos, e já outros só dois. Explicaria a imprecisão da verificação de proximidade e o por que as vezes falha

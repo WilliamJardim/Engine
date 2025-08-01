@@ -342,7 +342,7 @@ export default class Scene
 
             //Se tem limites personalizados vai fazer um novo calculo
             }else{
-                return isProximity( objA, objB, limites ) == true;
+                return isCollision( objA, objB, limites ) == true;
             }
         }
 

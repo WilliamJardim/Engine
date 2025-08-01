@@ -201,9 +201,9 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {
-            x: 15,
-            y: 15,
-            z: 15
+            x: 8,
+            y: 8,
+            z: 8
         },
         events: [],
         kick_rate: 4,

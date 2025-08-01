@@ -13,6 +13,7 @@ import ObjectPosition      from '../../interfaces/main_engine/ObjectPosition';
 import ObjectScale         from '../../interfaces/main_engine/ObjectScale';
 import { float, Ponteiro }        from "../../types/types-cpp-like";
 import AbstractObjectBase  from "../../core/AbstractObjectBase";
+import Position3D from "../../interfaces/main_engine/Position3D";
 
 /**
 * Verifica se dois objetos estão colidindo:
@@ -21,63 +22,77 @@ import AbstractObjectBase  from "../../core/AbstractObjectBase";
 * @param objB - Object 2 
 * @returns {boolean} - Se está colidindo ou não
 */
-export default function isCollision(objA:Ponteiro<AbstractObjectBase>, 
-                                    objB:Ponteiro<AbstractObjectBase>, 
-                                    limites: ProximityBounds
+export default function isCollision(objetoA             : Ponteiro<AbstractObjectBase>, 
+                                    objetoB             : Ponteiro<AbstractObjectBase>, 
+                                    limites             : ProximityBounds,
+                                    usarLimitesEmAmbos  : boolean = false
 ): boolean{
  
     //Se os ponteiros não forem nulos
-    if( objA != null && objB != null )
+    if( objetoA != null && objetoB != null )
     {
-      const getLimite = (eixo: 'x' | 'y' | 'z'): float => {
-        //Se o limites for um numero, todos os eixos tem o mesmo valor
-        if (typeof limites === 'number'){
-              return limites;
-        }
-
-        const valor = limites[eixo];
-        return typeof valor === 'number' ? valor : 0;
-      };
-
       // Bounding boxes de ambos os objetos
-      const posA   : ObjectPosition  = objA.getPosition();
-      const scaleA : ObjectScale     = objA.getScale();
+      const posicaoObjetoA   : ObjectPosition  = objetoA.getPosition();
+      const scaleObjetoA     : ObjectScale     = objetoA.getScale();
 
-      const posB   : ObjectPosition  = objB.getPosition();
-      const scaleB : ObjectScale     = objB.getScale();
+      const posicaoObjetoB   : ObjectPosition  = objetoB.getPosition();
+      const scaleObjetoB     : ObjectScale     = objetoB.getScale();
 
       // Zona do objeto atual
-      const minA = { 
-                    x: posA.x! - (scaleA.x / 2) - getLimite('x'),
-                    y: posA.y! - (scaleA.y / 2) - getLimite('y'),
-                    z: posA.z! - (scaleA.z / 2) - getLimite('z')
-                  };
+      const minimoObjetoA : Position3D = { 
+                              x: posicaoObjetoA.x - (scaleObjetoA.x / 2) - limites.x,
+                              y: posicaoObjetoA.y - (scaleObjetoA.y / 2) - limites.y,
+                              z: posicaoObjetoA.z - (scaleObjetoA.z / 2) - limites.z
+                           };
 
-      const maxA = { 
-                    x: posA.x! + (scaleA.x / 2) + getLimite('x'), 
-                    y: posA.y! + (scaleA.y / 2) + getLimite('y'),
-                    z: posA.z! + (scaleA.z / 2) + getLimite('z'), 
-                  };
+      const maximoObjetoA : Position3D = { 
+                              x: posicaoObjetoA.x + (scaleObjetoA.x / 2) + limites.x, 
+                              y: posicaoObjetoA.y + (scaleObjetoA.y / 2) + limites.y,
+                              z: posicaoObjetoA.z + (scaleObjetoA.z / 2) + limites.z, 
+                           };
 
       // Zona do objeto colisor, cujo objeto atual esta intersectando
-      const minB = { 
-                    x: posB.x! - scaleB.x / 2, 
-                    y: posB.y! - scaleB.y / 2,
-                    z: posB.z! - scaleB.z / 2
-                  };
+      const minimoObjetoB : Position3D = {
+          x: 0,
+          y: 0,
+          z: 0
+      };
 
-      const maxB = { 
-                    x: posB.x! + scaleB.x / 2,
-                    y: posB.y! + scaleB.y / 2, 
-                    z: posB.z! + scaleB.z / 2
-                  };
+      const maximoObjetoB : Position3D = { 
+          x: 0,
+          y: 0, 
+          z: 0
+      };
 
-      const sobreposicaoX : float = Math.min(maxA.x, maxB.x) - Math.max(minA.x, minB.x);
-      const sobreposicaoY : float = Math.min(maxA.y, maxB.y) - Math.max(minA.y, minB.y);
-      const sobreposicaoZ : float = Math.min(maxA.z, maxB.z) - Math.max(minA.z, minB.z);
+      // Define se vai ou não usar o limite no segundo objeto tambem
+      if( usarLimitesEmAmbos == false )
+      {
+         // Se não usa, não aplica o limite
+         minimoObjetoB.x = posicaoObjetoB.x - (scaleObjetoB.x / 2);
+         minimoObjetoB.y = posicaoObjetoB.y - (scaleObjetoB.y / 2);
+         minimoObjetoB.z = posicaoObjetoB.z - (scaleObjetoB.z / 2);
+
+         maximoObjetoB.x = posicaoObjetoB.x + (scaleObjetoB.x / 2);
+         maximoObjetoB.y = posicaoObjetoB.y + (scaleObjetoB.y / 2);
+         maximoObjetoB.z = posicaoObjetoB.z + (scaleObjetoB.z / 2);
+
+      }else{
+         // Se usa, Aplica o limite tanto no objeto A quanto no objeto B
+         minimoObjetoB.x = posicaoObjetoB.x - (scaleObjetoB.x / 2) - limites.x;
+         minimoObjetoB.y = posicaoObjetoB.y - (scaleObjetoB.y / 2) - limites.y;
+         minimoObjetoB.z = posicaoObjetoB.z - (scaleObjetoB.z / 2) - limites.z;
+
+         maximoObjetoB.x = posicaoObjetoB.x + (scaleObjetoB.x / 2) + limites.x;
+         maximoObjetoB.y = posicaoObjetoB.y + (scaleObjetoB.y / 2) + limites.y;
+         maximoObjetoB.z = posicaoObjetoB.z + (scaleObjetoB.z / 2) + limites.z;
+      }
+
+      const sobreposicaoX : float  = Math.min(maximoObjetoA.x, maximoObjetoB.x) - Math.max(minimoObjetoA.x, minimoObjetoB.x);
+      const sobreposicaoY : float  = Math.min(maximoObjetoA.y, maximoObjetoB.y) - Math.max(minimoObjetoA.y, minimoObjetoB.y);
+      const sobreposicaoZ : float  = Math.min(maximoObjetoA.z, maximoObjetoB.z) - Math.max(minimoObjetoA.z, minimoObjetoB.z);
 
       // Se houver sobreposição em algum dos eixos então houve colisão
-      if (sobreposicaoX > 0 && sobreposicaoY > 0 && sobreposicaoZ > 0) 
+      if( sobreposicaoX > 0 && sobreposicaoY > 0 && sobreposicaoZ > 0 ) 
       {
         return true;
       }

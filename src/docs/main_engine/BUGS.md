@@ -98,7 +98,7 @@ E ver se todos os cubos podem detectar proximidade uns aos outros
 
 Se não, aí tem erro
 
-# 01/08/2025 15:42 PM
+# 01/08/2025 15:42 PM (EU TO ANALISANDO)
 Sobre o BUG da detecção unilateral de proximidade. Eu tenho uma hipótese de explicação:
 
 No teste que eu fiz foram com um dos cubos. 
@@ -113,3 +113,7 @@ Matematicamente e logicamente falando, a única hipótese mais possível pra iss
 Valores de posição podem ser negativos, e uso valor absoluto e isso pode afetar tbm 
 
 E isso também explicaria o por que em alguns casos, alguns objetos conseguem identificar três objetos, e já outros só dois. Explicaria a imprecisão da verificação de proximidade e o por que as vezes falha
+
+# 01/08/2025 16:53 PM - Cubos podem afundar no chão depois de um tempo
+BUG: os cubos ao ficarem no chão, andando levemente com a força restantante do arremeço inicial que eu faço, eles as vezes afundam no chão
+Aconteceu umas 3 vezes

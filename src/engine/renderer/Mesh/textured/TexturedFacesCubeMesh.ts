@@ -50,7 +50,7 @@ export class TexturedFacesCuboMesh extends VisualMesh
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
-        this.tipo = 'CuboFacesTexturizadas';
+        this.tipo = "CuboFacesTexturizadas";
 
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;

@@ -7,13 +7,13 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import ObjectPosition    from "./ObjectPosition";
-import ObjectRotation    from "./ObjectRotation";
-import ObjectScale       from "./ObjectScale";
-import ObjectEvents      from './ObjectEvents';
-import ProximityBounds   from './ProximityBounds';
-import ObjectAttachment  from './ObjectAttachment';
-import { float, Ponteiro }      from '../../types/types-cpp-like';
+import ObjectPosition       from "./ObjectPosition";
+import ObjectRotation       from "./ObjectRotation";
+import ObjectScale          from "./ObjectScale";
+import ObjectEvents         from './ObjectEvents';
+import ProximityBounds      from './ProximityBounds';
+import ObjectAttachment     from './ObjectAttachment';
+import { float, Ponteiro }  from '../../types/types-cpp-like';
 
 export default interface ObjectProps
 {
@@ -58,7 +58,7 @@ export default interface ObjectProps
     * @example
     * attachments: [
             { 
-                name: 'MyCube', 
+                name: "MyCube", 
                 position: {z: 8},
                 sameScale: false, 
                 scale: {x: 9, y: 9, z: 9},

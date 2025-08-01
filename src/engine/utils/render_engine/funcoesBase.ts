@@ -12,7 +12,7 @@ import { Ponteiro } from "../../types/types-cpp-like";
 export function criarGL( canvas:React.RefObject<HTMLCanvasElement>, version:string="auto" ): any
 {
     let gl;
-    let v = 'N';
+    let v = "N";
     
     let elementoCanvas = canvas.current;
     if ( !elementoCanvas ) 
@@ -20,36 +20,36 @@ export function criarGL( canvas:React.RefObject<HTMLCanvasElement>, version:stri
         throw new Error("Canvas ainda é null.");
     }
 
-    if( version != '1' && version != '2' && version != 'auto' )
+    if( version != "1" && version != "2" && version != "auto" )
     {
         throw Error("Versão invalida do WebGL!");
     }
 
-    if( version == 'auto' )
+    if( version == "auto" )
     {
         // Tenta WebGL 2
-        gl = elementoCanvas!.getContext('webgl2');
+        gl = elementoCanvas!.getContext("webgl2");
 
         if (gl) {
-            console.log('WebGL 2 está disponível!');
+            console.log("WebGL 2 está disponível!");
             v = "2";
 
         } else {
             // Tenta WebGL 1
-            gl = elementoCanvas!.getContext('webgl');
+            gl = elementoCanvas!.getContext("webgl");
 
             if (gl) {
-                console.log('WebGL 1 está disponível!');
+                console.log("WebGL 1 está disponível!");
                 v = "1";
 
             } else {
-                console.log('WebGL não está disponível neste navegador.');
+                console.log("WebGL não está disponível neste navegador.");
                 v = "N";
             }
         }
 
     }else{
-        gl = elementoCanvas!.getContext('webgl' + (version == "1" ? '' : version) );
+        gl = elementoCanvas!.getContext("webgl" + (version == "1" ? "" : version) );
         v = version;
     }
 
@@ -71,7 +71,7 @@ export function createShader(gl:WebGL2RenderingContext, type:GLenum, source:stri
 
     if ( gl.getShaderParameter(shader, gl.COMPILE_STATUS) == null ) 
     {
-        console.error('An error occurred compiling the shaders:', gl.getShaderInfoLog(shader));
+        console.error("An error occurred compiling the shaders:", gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
     }
 
@@ -98,7 +98,7 @@ export function createProgram(gl:WebGL2RenderingContext, vertexScript:string, fr
     gl.linkProgram(program);
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error('Unable to initialize the shader program:', gl.getProgramInfoLog(program));
+        console.error("Unable to initialize the shader program:", gl.getProgramInfoLog(program));
     }
 
     return program;
@@ -147,6 +147,6 @@ export async function carregarTxt(path:string)
 export function carregarImagem(texturePath:string) 
 {
     const img = new Image();
-    img.src = `./textures/${texturePath.split('\\').pop()}`;
+    img.src = `./textures/${texturePath.split("\\").pop()}`;
     return img;
 }

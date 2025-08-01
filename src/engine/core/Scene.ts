@@ -561,7 +561,7 @@ export default class Scene
                         (objetoA.id != objetoB.id) &&
                         (objetoB.objProps.collide == true) &&
                         (objetoA.objProps.collide == true) &&
-                        (objetoB.name != 'Chao')
+                        (objetoB.name != "Chao")
                         ){
                         
                             //Se o objeto A é quem está se movendo

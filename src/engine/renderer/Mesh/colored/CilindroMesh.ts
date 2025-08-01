@@ -38,7 +38,7 @@ export class CilindroMesh extends VisualMesh
               propriedadesMesh);
 
         // Usa o programa para desenhar cilindros
-        this.tipo = 'Cilindro';
+        this.tipo = "Cilindro";
 
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;

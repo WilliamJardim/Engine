@@ -12,7 +12,7 @@ import ObjectScale     from "../../interfaces/main_engine/ObjectScale";
 import ObjectVelocity  from "../../interfaces/main_engine/ObjectVelocity";
 import { float, int } from "../../types/types-cpp-like";
 
-export type FrameDataOrder = 'beforeUpdate' | 'afterUpdate';
+export type FrameDataOrder = "beforeUpdate" | "afterUpdate";
 
 export default interface ObjectFrameData
 {

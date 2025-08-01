@@ -502,7 +502,7 @@ export function EngineBeforeLoop( scene: Scene, frameDelta: float, frameNumber: 
 export function EngineLoop( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: float, frameNumber: int ): void
 {
 
-    const htmlCanvas = globalContext.get('htmlCanvas');
+    const htmlCanvas = globalContext.get("htmlCanvas");
 
 
     // testando colisões
@@ -556,10 +556,10 @@ export function EngineLoop( scene: Scene, firstRender: boolean, renderizadorPron
         document.addEventListener("click", (event) => {
 
             if( event.target === htmlCanvas ){
-                globalContext.set('isDentroCanvas', true);
+                globalContext.set("isDentroCanvas", true);
 
             }else{
-                globalContext.set('isDentroCanvas', false);
+                globalContext.set("isDentroCanvas", false);
             }
 
         });

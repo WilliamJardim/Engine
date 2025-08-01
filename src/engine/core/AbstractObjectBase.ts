@@ -51,7 +51,7 @@ export default abstract class AbstractObjectBase
     public lastObjectBelow  : Ponteiro<AbstractObjectBase>; //Um ponteiro AbstractObjectBase*, O ultimo objeto cujo o objeto atual esteve em cima 
 
     /** OUTROS ATRIBUTOS DO OBJETO */
-    public tipo                : string = 'AbstractObjectBase';
+    public tipo                : string = "AbstractObjectBase";
     public name                : string;
     public id                  : string;
     public mesh                : MeshRepresentation;
@@ -195,9 +195,9 @@ export default abstract class AbstractObjectBase
             down      : false
         };
         this.velocitySinalyzer = {
-            x  : 'uncalculed',
-            y  : 'uncalculed',
-            z  : 'uncalculed'
+            x  : "uncalculed",
+            y  : "uncalculed",
+            z  : "uncalculed"
         }
         this.physicsState = {
             havePhysics: objProps.havePhysics,
@@ -230,12 +230,12 @@ export default abstract class AbstractObjectBase
         
     }
 
-    public setScene( novaScene:Scene )
+    public setScene( novaScene:Scene ): void
     {
         this.scene = novaScene;
     }
 
-    public debug()
+    public debug(): void
     {
         
     }
@@ -785,62 +785,62 @@ export default abstract class AbstractObjectBase
         }
     }
 
-    public somarRotationVelocityX( velocidadeRotacao:float )
+    public somarRotationVelocityX( velocidadeRotacao:float ): void
     {
         
     }
 
-    public somarRotationVelocityY( velocidadeRotacao:float )
+    public somarRotationVelocityY( velocidadeRotacao:float ): void
     {
        
     }
 
-    public somarRotationVelocityZ( velocidadeRotacao:float )
+    public somarRotationVelocityZ( velocidadeRotacao:float ): void
     {
         
     }
 
-    public subtrairRotationVelocityX( velocidadeRotacao:float )
+    public subtrairRotationVelocityX( velocidadeRotacao:float ): void
     {
         
     }
 
-    public subtrairRotationVelocityY( velocidadeRotacao:float )
+    public subtrairRotationVelocityY( velocidadeRotacao:float ): void
     {
         
     }
 
-    public subtrairRotationVelocityZ( velocidadeRotacao:float )
+    public subtrairRotationVelocityZ( velocidadeRotacao:float ): void
     {
        
     }
 
-    public somarRotationForceX( velocidadeRotacao:float )
+    public somarRotationForceX( velocidadeRotacao:float ): void
     {
         
     }
 
-    public somarRotationForceY( velocidadeRotacao:float )
+    public somarRotationForceY( velocidadeRotacao:float ): void
     {
        
     }
 
-    public somarRotationForceZ( velocidadeRotacao:float )
+    public somarRotationForceZ( velocidadeRotacao:float ): void
     {
         
     }
 
-    public setRotationVelocityX( velocidadeRotacaoX:float )
+    public setRotationVelocityX( velocidadeRotacaoX:float ): void
     {
       
     }
 
-    public setRotationVelocityY( velocidadeRotacaoY:float )
+    public setRotationVelocityY( velocidadeRotacaoY:float ): void
     {
 
     }
 
-    public setRotationVelocityZ( velocidadeRotacaoZ:float )
+    public setRotationVelocityZ( velocidadeRotacaoZ:float ): void
     {
 
     }
@@ -900,7 +900,7 @@ export default abstract class AbstractObjectBase
         
     }
     
-    isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean
+    isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>, limites:ProximityBounds ): boolean
     {
         return false;
     }
@@ -921,7 +921,7 @@ export default abstract class AbstractObjectBase
         return [];
     }
 
-    isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>|string, limites:ProximityBounds ): boolean
+    isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>, limites:ProximityBounds ): boolean
     {
         return false;
     }

@@ -46,7 +46,7 @@ export class PlanoOnduladoMesh extends VisualMesh
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
-        this.tipo = 'PlanoOndulado';
+        this.tipo = "PlanoOndulado";
 
         this.meshConfig    = propriedadesMesh;
 

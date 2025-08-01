@@ -70,13 +70,13 @@ export const baseShaders = {
     * Contem informações sobre as variaveis usadas no vertex 
     */
     vertexExtraInfo: {
-        variavelPosicaoCubo: 'aPosicao', // Representa a posição do objeto na GPU do WebGL
-        variavelCorCubo: 'aCor', // Representa a cor do objeto na GPU do WebGL
-        variavelUV: 'aUV', 
-        variavelUVFragment: 'vUV', 
-        variavelMatrixVisualizacao: 'uMatrixVisualizacao', // Representa a matrix de visualização do renderizador na GPU do WebGL
-        variavelModeloObjeto: 'uModeloObjetoVisual', // Representa a matrix do modelo do objeto na GPU do WebGL
-        variavelCorFragment: 'vColor' // Representa a cor usada no fragment logo abaixo:
+        variavelPosicaoCubo        : "aPosicao", // Representa a posição do objeto na GPU do WebGL
+        variavelCorCubo            : "aCor",     // Representa a cor do objeto na GPU do WebGL
+        variavelUV                 : "aUV", 
+        variavelUVFragment         : "vUV", 
+        variavelMatrixVisualizacao : "uMatrixVisualizacao",  // Representa a matrix de visualização do renderizador na GPU do WebGL
+        variavelModeloObjeto       : "uModeloObjetoVisual",  // Representa a matrix do modelo do objeto na GPU do WebGL
+        variavelCorFragment        : "vColor"                // Representa a cor usada no fragment logo abaixo:
     },
 
     // Fragment shader
@@ -170,17 +170,17 @@ export const baseShaders = {
     * Contem informações sobre as variaveis usadas no fragment 
     */
     fragmentExtraInfo: {
-        variavelCorFragment: 'vColor',
-        variavelUVFragment: 'vUV',
-        variavelTextura: 'uTextura',
-        variavelUsarTextura: 'uUsarTextura',
+        variavelCorFragment  : "vColor",
+        variavelUVFragment   : "vUV",
+        variavelTextura      : "uTextura",
+        variavelUsarTextura  : "uUsarTextura",
 
         // Variaveis que configuram luz no objeto
-        variavelBrilho: 'brilhoObjeto',
-        variavelAmbient: 'ambientObjeto',
-        variavelDiffuse: 'diffuseObjeto',
-        variavelSpecular: 'specularObjeto',
-        variavelCorLuz: 'corLuz',
-        variavelIntensidadeLuz: 'intensidadeLuz'
+        variavelBrilho         : "brilhoObjeto",
+        variavelAmbient        : "ambientObjeto",
+        variavelDiffuse        : "diffuseObjeto",
+        variavelSpecular       : "specularObjeto",
+        variavelCorLuz         : "corLuz",
+        variavelIntensidadeLuz : "intensidadeLuz"
     }
 }

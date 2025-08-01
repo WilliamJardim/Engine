@@ -105,7 +105,7 @@ export default class ObjectFrameTracker{
         {
             const dadosFrame: ObjectFrameData = this.getFrameByIndex( i );
 
-            if( dadosFrame.order == 'afterUpdate' )
+            if( dadosFrame.order == "afterUpdate" )
             {
                 framesEncontrados.push( dadosFrame );
             }
@@ -126,7 +126,7 @@ export default class ObjectFrameTracker{
         {
             const dadosFrame: ObjectFrameData = this.getFrameByIndex( i );
 
-            if( dadosFrame.order == 'beforeUpdate' )
+            if( dadosFrame.order == "beforeUpdate" )
             {
                 framesEncontrados.push( dadosFrame );
             }
@@ -157,7 +157,7 @@ export default class ObjectFrameTracker{
 
             // Se tem ordem
             if( parametrosBuscaFrames.order != "nenhuma" && parametrosBuscaFrames.endFrame == -1 && parametrosBuscaFrames.startFrame == -1 ){
-                if( dadosFrame.order == parametrosBuscaFrames.order || parametrosBuscaFrames.order == 'all' ){
+                if( dadosFrame.order == parametrosBuscaFrames.order || parametrosBuscaFrames.order == "all" ){
                     framesEncontrados.push( dadosFrame );
                 }
 
@@ -168,7 +168,7 @@ export default class ObjectFrameTracker{
                 {
                     if( dadosFrame.frameNumber >= parametrosBuscaFrames.startFrame && dadosFrame.frameNumber < parametrosBuscaFrames.endFrame 
                         //Se tem ordem inclui, se nao ignora
-                        && ( temOrdem == true && parametrosBuscaFrames.order != 'all' ? ( dadosFrame.order == parametrosBuscaFrames.order ) : true )
+                        && ( temOrdem == true && parametrosBuscaFrames.order != "all" ? ( dadosFrame.order == parametrosBuscaFrames.order ) : true )
                     ){
                         framesEncontrados.push( dadosFrame );
                     }
@@ -177,7 +177,7 @@ export default class ObjectFrameTracker{
                 }else if( parametrosBuscaFrames.startFrame != -1 && parametrosBuscaFrames.endFrame == -1 ){
                     if( dadosFrame.frameNumber >= parametrosBuscaFrames.startFrame 
                         //Se tem ordem inclui, se nao ignora
-                        && ( temOrdem == true && parametrosBuscaFrames.order != 'all' ? ( dadosFrame.order == parametrosBuscaFrames.order ) : true )
+                        && ( temOrdem == true && parametrosBuscaFrames.order != "all" ? ( dadosFrame.order == parametrosBuscaFrames.order ) : true )
                     ){
                         framesEncontrados.push( dadosFrame );
                     }
@@ -186,7 +186,7 @@ export default class ObjectFrameTracker{
                 }else if( parametrosBuscaFrames.startFrame == -1 && parametrosBuscaFrames.endFrame != -1 ){
                     if( dadosFrame.frameNumber < parametrosBuscaFrames.endFrame 
                         //Se tem ordem inclui, se nao ignora
-                        && ( temOrdem == true && parametrosBuscaFrames.order != 'all' ? ( dadosFrame.order == parametrosBuscaFrames.order ) : true )
+                        && ( temOrdem == true && parametrosBuscaFrames.order != "all" ? ( dadosFrame.order == parametrosBuscaFrames.order ) : true )
                     ){
                         framesEncontrados.push( dadosFrame );
                     }

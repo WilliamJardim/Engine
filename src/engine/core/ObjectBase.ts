@@ -156,9 +156,9 @@ export default class ObjectBase extends AbstractObjectBase
             down      : false
         };
         this.velocitySinalyzer = {
-            x : 'uncalculed',
-            y : 'uncalculed',
-            z : 'uncalculed'
+            x : "uncalculed",
+            y : "uncalculed",
+            z : "uncalculed"
         }
         this.physicsState = {
             havePhysics: objProps.havePhysics,
@@ -251,43 +251,43 @@ export default class ObjectBase extends AbstractObjectBase
 
         // Se o valor do eixo X no frame atual for maior que no frame anterior, então está aumentando
         if( velocityAtual.x > velocityBeforeUpdate.x ){
-            velocitySinalyzerAtual.x = 'increasing';
+            velocitySinalyzerAtual.x = "increasing";
 
         // Se o valor do eixo X no frame atual for menor que no frame anterior, então está diminuindo
         }else if( velocityAtual.x < velocityBeforeUpdate.x ){
-            velocitySinalyzerAtual.x = 'decreasing';
+            velocitySinalyzerAtual.x = "decreasing";
 
         // Se o valor do eixo X no frame atual for igual ao do frame anterior, então está a mesma coisa
         }else if( velocityAtual.x == velocityBeforeUpdate.x ){
-            velocitySinalyzerAtual.x = 'constant'; // Se manteve o mesmo
+            velocitySinalyzerAtual.x = "constant"; // Se manteve o mesmo
         }
 
 
         // Se o valor do eixo Y no frame atual for maior que no frame anterior, então está aumentando
         if( velocityAtual.y > velocityBeforeUpdate.y ){
-            velocitySinalyzerAtual.y = 'increasing';
+            velocitySinalyzerAtual.y = "increasing";
 
         // Se o valor do eixo X no frame atual for menor que no frame anterior, então está diminuindo
         }else if( velocityAtual.y < velocityBeforeUpdate.y ){
-            velocitySinalyzerAtual.y = 'decreasing';
+            velocitySinalyzerAtual.y = "decreasing";
 
         // Se o valor do eixo X no frame atual for igual ao do frame anterior, então está a mesma coisa
         }else if( velocityAtual.y == velocityBeforeUpdate.y ){
-            velocitySinalyzerAtual.y = 'constant'; // Se manteve o mesmo
+            velocitySinalyzerAtual.y = "constant"; // Se manteve o mesmo
         }
 
 
         // Se o valor do eixo Z no frame atual for maior que no frame anterior, então está aumentando
         if( velocityAtual.z > velocityBeforeUpdate.z ){
-            velocitySinalyzerAtual.z = 'increasing';
+            velocitySinalyzerAtual.z = "increasing";
 
         // Se o valor do eixo Z no frame atual for menor que no frame anterior, então está diminuindo
         }else if( velocityAtual.z < velocityBeforeUpdate.z ){
-            velocitySinalyzerAtual.z = 'decreasing';
+            velocitySinalyzerAtual.z = "decreasing";
 
         // Se o valor do eixo Z no frame atual for igual ao do frame anterior, então está a mesma coisa
         }else if( velocityAtual.z == velocityBeforeUpdate.z ){
-            velocitySinalyzerAtual.z = 'constant'; // Se manteve o mesmo
+            velocitySinalyzerAtual.z = "constant"; // Se manteve o mesmo
         }
         
     }
@@ -591,17 +591,17 @@ export default class ObjectBase extends AbstractObjectBase
     public somarForceEixo(eixo:string, valor:float): void
     {
         
-        if( eixo == 'x' )
+        if( eixo == "x" )
         {
             this.somarForceX( valor );
         }
 
-        if( eixo == 'y' )
+        if( eixo == "y" )
         {
             this.somarForceY( valor );
         }
             
-        if( eixo == 'z' )
+        if( eixo == "z" )
         {
             this.somarForceZ( valor );
         }    
@@ -610,17 +610,17 @@ export default class ObjectBase extends AbstractObjectBase
 
     public subtrairForceEixo(eixo:string, valor:float): void
     {
-        if( eixo == 'x' )
+        if( eixo == "x" )
         {
             this.subtrairForceX( valor );
         }    
         
-        if( eixo == 'y' )
+        if( eixo == "y" )
         {
             this.subtrairForceY( valor );
         }
             
-        if( eixo == 'z' )
+        if( eixo == "z" )
         {
             this.subtrairForceZ( valor );
         }   
@@ -678,17 +678,17 @@ export default class ObjectBase extends AbstractObjectBase
 
     public somarAccelerationEixo(eixo:string, valor:float): void
     {
-        if( eixo == 'x' )
+        if( eixo == "x" )
         {
             this.somarAccelerationX( valor );
         }
 
-        if( eixo == 'y' )
+        if( eixo == "y" )
         {
             this.somarAccelerationY( valor );
         }
 
-        if( eixo == 'z' )
+        if( eixo == "z" )
         {
             this.somarAccelerationZ( valor );
         }
@@ -698,17 +698,17 @@ export default class ObjectBase extends AbstractObjectBase
     public subtrairAccelerationEixo(eixo:string, valor:float): void
     {
         
-        if( eixo == 'x' )
+        if( eixo == "x" )
         {
             this.subtrairAccelerationX( valor );
         }
 
-        if( eixo == 'y' )
+        if( eixo == "y" )
         {
             this.subtrairAccelerationY( valor );
         }
 
-        if( eixo == 'z' )
+        if( eixo == "z" )
         {
             this.subtrairAccelerationZ( valor );
         }
@@ -782,19 +782,19 @@ export default class ObjectBase extends AbstractObjectBase
     public somarVelocityEixo(eixo:string, valor:float, isExternal:boolean = true): void
     {
         
-        if( eixo == 'x' )
+        if( eixo == "x" )
         {
             this.somarVelocityX( valor );
         }
 
-        if( eixo == 'y' )
+        if( eixo == "y" )
         {
             // Diz pra Engine que o objeto recebeu uma velocidade externa
             this.isReceiving_Y_Velocity = isExternal;
             this.somarVelocityY( valor );
         }
 
-        if( eixo == 'z' )
+        if( eixo == "z" )
         {
             this.somarVelocityZ( valor );
         }
@@ -804,19 +804,19 @@ export default class ObjectBase extends AbstractObjectBase
     public subtrairVelocityEixo(eixo:string, valor:float, isExternal:boolean = true): void
     {
         
-        if( eixo == 'x' )
+        if( eixo == "x" )
         {
             this.subtrairVelocityX( valor );
         }
 
-        if( eixo == 'y' )
+        if( eixo == "y" )
         {
             // Diz pra Engine que o objeto recebeu uma velocidade externa
             this.isReceiving_Y_Velocity = isExternal;
             this.subtrairVelocityY( valor );
         }
 
-        if( eixo == 'z' )
+        if( eixo == "z" )
         {
             this.subtrairVelocityZ( valor );
         }
@@ -856,19 +856,19 @@ export default class ObjectBase extends AbstractObjectBase
     public setVelocityEixo( eixo:string, velocidade:float, isExternal:boolean = true ): void
     {
         
-        if( eixo == 'x' )
+        if( eixo == "x" )
         {
             this.setVelocityX( velocidade );
         }
 
-        if( eixo == 'y' )
+        if( eixo == "y" )
         {
             // Diz pra Engine que o objeto recebeu uma velocidade externa
             this.isReceiving_Y_Velocity = isExternal;
             this.setVelocityY( velocidade );
         }
 
-        if( eixo == 'z' )
+        if( eixo == "z" )
         {
             this.setVelocityZ( velocidade );
         }
@@ -965,62 +965,62 @@ export default class ObjectBase extends AbstractObjectBase
         return this.physicsState.rotationVelocity;
     }
 
-    public somarRotationVelocityX( velocidadeRotacao:float )
+    public somarRotationVelocityX( velocidadeRotacao:float ): void
     {
         this.getRotationVelocity().x += velocidadeRotacao;
     }
 
-    public somarRotationVelocityY( velocidadeRotacao:float )
+    public somarRotationVelocityY( velocidadeRotacao:float ): void
     {
         this.getRotationVelocity().y += velocidadeRotacao;
     }
 
-    public somarRotationVelocityZ( velocidadeRotacao:float )
+    public somarRotationVelocityZ( velocidadeRotacao:float ): void
     {
         this.getRotationVelocity().z += velocidadeRotacao;
     }
 
-    public subtrairRotationVelocityX( velocidadeRotacao:float )
+    public subtrairRotationVelocityX( velocidadeRotacao:float ): void
     {
         this.getRotationVelocity().x -= velocidadeRotacao;
     }
 
-    public subtrairRotationVelocityY( velocidadeRotacao:float )
+    public subtrairRotationVelocityY( velocidadeRotacao:float ): void
     {
         this.getRotationVelocity().y -= velocidadeRotacao;
     }
 
-    public subtrairRotationVelocityZ( velocidadeRotacao:float )
+    public subtrairRotationVelocityZ( velocidadeRotacao:float ): void
     {
         this.getRotationVelocity().z -= velocidadeRotacao;
     }
 
-    public somarRotationForceX( velocidadeRotacao:float )
+    public somarRotationForceX( velocidadeRotacao:float ): void
     {
         this.getRotationForce().x += velocidadeRotacao;
     }
 
-    public somarRotationForceY( velocidadeRotacao:float )
+    public somarRotationForceY( velocidadeRotacao:float ): void
     {
         this.getRotationForce().y += velocidadeRotacao;
     }
 
-    public somarRotationForceZ( velocidadeRotacao:float )
+    public somarRotationForceZ( velocidadeRotacao:float ): void
     {
         this.getRotationForce().z += velocidadeRotacao;
     }
 
-    public setRotationVelocityX( velocidadeRotacaoX:float )
+    public setRotationVelocityX( velocidadeRotacaoX:float ): void
     {
         this.getRotationVelocity().x += velocidadeRotacaoX;
     }
 
-    public setRotationVelocityY( velocidadeRotacaoY:float )
+    public setRotationVelocityY( velocidadeRotacaoY:float ): void
     {
         this.getRotationVelocity().y += velocidadeRotacaoY;
     }
 
-    public setRotationVelocityZ( velocidadeRotacaoZ:float )
+    public setRotationVelocityZ( velocidadeRotacaoZ:float ): void
     {
         this.getRotationVelocity().z += velocidadeRotacaoZ;
     }
@@ -1500,7 +1500,7 @@ export default class ObjectBase extends AbstractObjectBase
                 */
                 if( this.scene.sceneConfig.haveWind == true )
                 {
-                    if( this.objProps.name != 'Player' ){
+                    if( this.objProps.name != "Player" ){
                         const wind:Wind = this.scene.wind;
                         const randomX = Math.random() * 0.001;
                         const randomY = Math.random() * 0.001;
@@ -1526,7 +1526,7 @@ export default class ObjectBase extends AbstractObjectBase
             // Se o objeto não está caindo
             }else{
                 //Se ele já está no chão
-                if( this.objectBelow != null && this.objProps.name != 'Player' ){
+                if( this.objectBelow != null && this.objProps.name != "Player" ){
                     this.setRotation({x:0, y: 0, z: 0});
                 }
 
@@ -1849,7 +1849,7 @@ export default class ObjectBase extends AbstractObjectBase
             objeto.objProps.havePhysics == true &&
             objeto.objProps.collide == true &&
             //Essa regra não vale para chãos
-            objeto.objectBelow.haveClass('ground') == false
+            objeto.objectBelow.haveClass("ground") == false
         ){
              const esteObjeto       = objeto;
              const objetoAbaixoDele = objeto.objectBelow;
@@ -1885,7 +1885,7 @@ export default class ObjectBase extends AbstractObjectBase
             // Porém o objeto ainda assim deve colidir
             objeto.objectBelow.objProps.collide == true &&
             //Essa regra não vale para chãos
-            objeto.objectBelow.haveClass('ground') == false
+            objeto.objectBelow.haveClass("ground") == false
         ){
             const esteObjeto          = objeto;
             const objetoAbaixoDele    = objeto.objectBelow;

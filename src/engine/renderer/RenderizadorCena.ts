@@ -256,12 +256,12 @@ export default class RenderizadorCena
                     // Avisa se tiver erros bobos
                     if( tipoObjeto != "OBJ" && (objProps.obj != "" || objProps.mtl != "") )
                     {
-                        console.warn(`Parece que voce está tentando importar um objeto .OBJ, pra isso altere o 'type' do objeto '${objProps.name}' para 'OBJ'.`);
+                        console.warn(`Parece que voce está tentando importar um objeto .OBJ, pra isso altere o "type" do objeto "${objProps.name}" para "OBJ".`);
                     }
 
                     if( tipoObjeto == "OBJ" && (objProps.obj == "" || objProps.mtl == "") )
                     {
-                        console.warn(`O mtl ou obj do objeto '${objProps.name}' não foi preenchido. Isso impossibilita a Engine de carregar esses modelos.`);
+                        console.warn(`O mtl ou obj do objeto "${objProps.name}" não foi preenchido. Isso impossibilita a Engine de carregar esses modelos.`);
                     }
 
                     // Se o tipo for OBJ, ele só cria ele quando o carregamento terminar

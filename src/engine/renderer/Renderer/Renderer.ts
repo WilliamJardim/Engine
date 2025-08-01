@@ -444,8 +444,8 @@ export class Renderer
     {
         const gl                     : WebGL2RenderingContext          = this.gl;
         const programSkybox          : WebGLProgram                    = this.getSkyboxProgram();
-        const attribPosicaoSkybox    : GLint                           = gl.getAttribLocation(programSkybox,  'aPosicao');
-        const locationTexturaSkybox  : Ponteiro<WebGLUniformLocation>  = gl.getUniformLocation(programSkybox, 'uTextura');
+        const attribPosicaoSkybox    : GLint                           = gl.getAttribLocation(programSkybox,  "aPosicao");
+        const locationTexturaSkybox  : Ponteiro<WebGLUniformLocation>  = gl.getUniformLocation(programSkybox, "uTextura");
 
         if (this.getSkyboxProgram() != null && this.skyTexture != null)
         {

@@ -33,7 +33,7 @@ export class LightInstance
         this.tipo = "Light";
         this.propriedadesLuz = propriedadesLuz;
 
-        this.name        = propriedadesLuz.name || 'luz';
+        this.name        = propriedadesLuz.name || "luz";
         this.id          = (this.name) + String(new Date().getTime());
         this.position    = propriedadesLuz.position;
         this.raio        = propriedadesLuz.raio;

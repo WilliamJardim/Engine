@@ -148,9 +148,9 @@ export class VisualMesh
         this.meshConfig = propriedadesMesh;
 
         // Os shaders da renderização dele
-        this.vertexScript   = '';
+        this.vertexScript   = "";
         
-        this.fragmentScript = ''; 
+        this.fragmentScript = ""; 
 
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;
@@ -161,10 +161,10 @@ export class VisualMesh
         this.uvArray           = new Array<float>();
 
         // Atributos visuais
-        this.nome          = propriedadesMesh.nome || "SemNome";
+        this.nome          = propriedadesMesh.nome   || "SemNome";
         this.id            = this.nome + String(new Date().getTime());
         this.classe        = propriedadesMesh.classe || "Geral";
-        this.tipo          = propriedadesMesh.tipo || 'Nenhum';
+        this.tipo          = propriedadesMesh.tipo   || "Nenhum";
         this._isTransparente = false;
         this.position      = propriedadesMesh.position;
         this.scale         = propriedadesMesh.scale;

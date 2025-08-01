@@ -39,7 +39,7 @@ export class EsferaMesh extends VisualMesh
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
-        this.tipo = 'Esfera';
+        this.tipo = "Esfera";
 
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;

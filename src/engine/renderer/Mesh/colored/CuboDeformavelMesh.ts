@@ -44,7 +44,7 @@ export class CuboDeformavelMesh extends VisualMesh
               propriedadesMesh);
 
         // Usa o programa para desenhar cubos
-        this.tipo = 'Cubo';
+        this.tipo = "Cubo";
 
         // Diz se o objeto é uma superficie plana ou não
         this.isPlano       = false;

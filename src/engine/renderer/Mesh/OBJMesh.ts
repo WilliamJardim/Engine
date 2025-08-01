@@ -198,19 +198,19 @@ export class OBJMesh extends VisualMesh
     */
     carregarMTL(mtlString:String) : void
     {
-        let linhas         : Array<string>   = mtlString.split('\n');
+        let linhas         : Array<string>   = mtlString.split("\n");
         let qtdeLinhas     : int             = linhas.length;
         
         // o material atual é o material que está sendo carregado com suas informações
         let materialAtual : string = "NENHUM_MATERIAL";
 
-        for (let i:int = 0; i < qtdeLinhas; i++) 
+        for( let i:int = 0; i < qtdeLinhas; i++ ) 
         {
             let linha          : string    = linhas[i].trim();
             let consideraLinha : boolean   = true; // Se a linha atual vai ser lida ou não(por padrão sim, exceto pelas regras de excesão)
 
             // Se for uma linha em branco, ignora
-            if (linha.length == 0)
+            if( linha.length == 0 )
             { 
                 consideraLinha = false;
             }
@@ -225,8 +225,8 @@ export class OBJMesh extends VisualMesh
             if( consideraLinha == true )
             {
                 // Declara um novo material
-                if (linha.indexOf('newmtl') === 0) {
-                    const itensLinha = linha.split(/\s+/);
+                if( linha.indexOf("newmtl") == 0 ){
+                    const itensLinha : Array<string> = linha.split(/\s+/);
 
                     materialAtual = itensLinha[1];
                     this.materiais[ materialAtual ] = { 
@@ -236,17 +236,17 @@ export class OBJMesh extends VisualMesh
                                                     };
 
                 // Se o current for null              
-                } else if (materialAtual != "NENHUM_MATERIAL") {
+                }else if( materialAtual != "NENHUM_MATERIAL" ){
                     
                     // Se tiver transparencia
-                    if (linha.startsWith('d')) 
+                    if( linha.startsWith("d") ) 
                     {
                         this.materiais[ materialAtual ].opacity = parseFloat(linha.split(/\s+/)[1]);
                         this._isTransparente = true; // Diz pra Engine que este objeto tem transparencia
                     }
                     
                     // Determina qual a cor do materal
-                    if (linha.indexOf('Kd') === 0) {
+                    if( linha.indexOf("Kd") == 0 ){
                         const itensLinha = linha.split(/\s+/);
 
                         this.materiais[ materialAtual ]["Kd"] = [
@@ -256,7 +256,7 @@ export class OBJMesh extends VisualMesh
                         ];
                     
                     // Determina qual a imagem(imagem de textura) que o material usa
-                    } else if (linha.indexOf('map_Kd') === 0) {
+                    }else if( linha.indexOf("map_Kd") == 0 ){
                         const itensLinha   = linha.split(/\s+/);
                         const textureFile  = itensLinha[1];
                         const textureWebGL = this.getRenderer().carregarTextura(textureFile);
@@ -275,23 +275,22 @@ export class OBJMesh extends VisualMesh
     _interpretarInstrucaoOBJ( comando=String(), partesLinha:Array<string>=[] ): void
     {
         // Se nao tem objeto ativo
-        if (this.objetoAtivo == "NENHUM_OBJETO" ) 
+        if( this.objetoAtivo == "NENHUM_OBJETO" ) 
         {
-            this.objetoAtivo = 'default';
+            this.objetoAtivo = "objetoPadrao";
         }
 
         // Se nao tem material ativo
-        if (this.materialAtivo == "NENHUM_MATERIAL") 
+        if( this.materialAtivo == "NENHUM_MATERIAL" ) 
         {
-            this.materialAtivo = 'defaultMat';
+            this.materialAtivo = "materialPadrao";
         }
 
         // Agrupa por objeto + material
-        const grupoObjeto = String( this.objetoAtivo ) + '__' + String( this.materialAtivo );
+        const grupoObjeto = String( this.objetoAtivo ) + "__" + String( this.materialAtivo );
 
-        
         // Se for um Vertice
-        if (comando === 'v') {
+        if( comando === "v" ){
             const verticeAtual : Array<float> = [ 
                                                 parseFloat(partesLinha[1]), 
                                                 parseFloat(partesLinha[2]), 
@@ -306,7 +305,7 @@ export class OBJMesh extends VisualMesh
 
 
         // Se for uma Textura de Vertice
-        } else if (comando === 'vt') {
+        }else if( comando === "vt" ){
             const verticeTextura_Atual : Array<float> = [ 
                                                           parseFloat(partesLinha[1]), 
                                                           parseFloat(partesLinha[2]) 
@@ -315,7 +314,7 @@ export class OBJMesh extends VisualMesh
             this.uvs.push( verticeTextura_Atual );
 
         // Se for uma Normal do Vertice
-        } else if (comando === 'vn') {
+        }else if( comando === "vn" ){
             const verticeNormal_Atual : Array<float> = [ 
                                                         parseFloat(partesLinha[1]), 
                                                         parseFloat(partesLinha[2]), 
@@ -325,18 +324,18 @@ export class OBJMesh extends VisualMesh
             this.normals.push( verticeNormal_Atual );
 
         // Se for uma Face
-        } else if (comando === 'f') {
+        }else if( comando === "f" ){
 
-            if ( this.objetos[ grupoObjeto ] == null ) 
+            if( this.objetos[ grupoObjeto ] == null ) 
             {
                 this.objetos[ grupoObjeto ] = new Array();
             }
 
             const dadosFace : Array<VerticesFace>  = new Array();
 
-            for (let j:int = 1; j < partesLinha.length; j++)
+            for( let j:int = 1; j < partesLinha.length; j++ )
             {
-                const linhaEmPartes:Array<string> = partesLinha[j].split('/');
+                const linhaEmPartes:Array<string> = partesLinha[j].split("/");
 
                 dadosFace.push({
                     indiceVertice : parseInt(linhaEmPartes[0], 10) - 1,                            // Indice do vértice
@@ -351,27 +350,27 @@ export class OBJMesh extends VisualMesh
             });
 
         // Diz qual material esta sendo usado
-        } else if (comando === 'usemtl') {
+        }else if( comando === "usemtl" ){
             this.materialAtivo = partesLinha[1];
 
         // Definicao de um sub-objeto
-        } else if (comando === 'o') {
+        }else if( comando === "o" ){
             this.objetoAtivo = partesLinha[1];
 
             // Se nao tem objeto ativo
-            if (this.objetoAtivo == "NENHUM_OBJETO" ) 
+            if( this.objetoAtivo == "NENHUM_OBJETO" ) 
             {
-                this.objetoAtivo = 'default';
+                this.objetoAtivo = "objetoPadrao";
             }
 
             // Se nao tem material ativo
-            if (this.materialAtivo == "NENHUM_MATERIAL") 
+            if( this.materialAtivo == "NENHUM_MATERIAL" ) 
             {
-                this.materialAtivo = 'defaultMat';
+                this.materialAtivo = "materialPadrao";
             }
 
             // Agrupa por objeto + material
-            const grupoObjeto = String( this.objetoAtivo ) + '__' + String( this.materialAtivo );
+            const grupoObjeto = String( this.objetoAtivo ) + "__" + String( this.materialAtivo );
 
             //Cadastra o objeto atual no dicionario de vertices objetos
             this.verticesObjetos[ grupoObjeto ]                    = new Array<float>();
@@ -388,10 +387,10 @@ export class OBJMesh extends VisualMesh
     */
     carregarOBJ(objString:string) 
     {
-        let linhas         : Array<string>  = objString.split('\n');
+        let linhas         : Array<string>  = objString.split("\n");
         let qtdeLinhas     : int            = linhas.length;
         
-        for (let i:int = 0; i < qtdeLinhas; i++)
+        for( let i:int = 0; i < qtdeLinhas; i++ )
         {
             let linha          : string    = linhas[i].trim();
             let consideraLinha : boolean   = true; // Se a linha atual vai ser lida ou não(por padrão sim, exceto pelas regras de excesão)
@@ -431,26 +430,26 @@ export class OBJMesh extends VisualMesh
         let mapaIndicesVertices  : Mapa<string, int>  = new Mapa<string, int>();
         let indiceAtual          : int = 0;
 
-        for (let i:int = 0; i < qtdePartes; i++) 
+        for( let i:int = 0; i < qtdePartes; i++ ) 
         {
             const nomeParte      : string              = nomesPartes[ i ];
             const facesParte     : Array<FaceObjeto>   = this.objetos[ nomeParte ];
             const qtdeFacesParte : int                 = facesParte.length;
 
-            for (let j:int = 0; j < qtdeFacesParte; j++) 
+            for( let j:int = 0; j < qtdeFacesParte; j++ ) 
             {
                 const faceAtual              : FaceObjeto           = facesParte[j];
                 const dadosFaceAtual         : Array<VerticesFace>  = faceAtual.dadosFace;
                 const qtdeVerticesFaceAtual  : int                  = dadosFaceAtual.length;
                 const indicesFaces           : Array<float>         = new Array();
 
-                for (let k:int = 0; k < qtdeVerticesFaceAtual; k++) 
+                for( let k:int = 0; k < qtdeVerticesFaceAtual; k++ ) 
                 {
                     const verticeAtual   : VerticesFace  = faceAtual.dadosFace[k];
-                    const keyVertice     : string        = String(verticeAtual.indiceVertice) + '/' + String(verticeAtual.indiceTextura) + '/' + String(verticeAtual.indiceNormal);    // Concatena os valores que vem no .OBJ para usar como chave
+                    const keyVertice     : string        = String(verticeAtual.indiceVertice) + "/" + String(verticeAtual.indiceTextura) + "/" + String(verticeAtual.indiceNormal);    // Concatena os valores que vem no .OBJ para usar como chave
 
                     // Se o indice da chave nao foi cadastrado, salva ele, com posição, cor
-                    if ( mapaIndicesVertices[ keyVertice ] === undefined ) 
+                    if( mapaIndicesVertices[ keyVertice ] === undefined ) 
                     {
                         const kdMaterial : Array<float>  = this.materiais[faceAtual.nomeMaterial]["Kd"] || [1, 1, 1];
                         const posicao    : Array<float>  = this.vertices[verticeAtual.indiceVertice]    || [0, 0, 0];
@@ -470,13 +469,13 @@ export class OBJMesh extends VisualMesh
                         this.positions.push(posicao[2]);
 
                         // Adiciona a UV
-                        if (verticeAtual.indiceTextura >= 0) {
+                        if( verticeAtual.indiceTextura >= 0 ){
                             const uv = this.uvs[verticeAtual.indiceTextura];
                             this.uvArray = this.uvArray;
                             this.uvArray.push(uv[0]);
                             this.uvArray.push(uv[1]);
 
-                        } else {
+                        }else{
                             this.uvArray = this.uvArray;
                             this.uvArray.push(0);
                             this.uvArray.push(0);
@@ -486,7 +485,7 @@ export class OBJMesh extends VisualMesh
                     indicesFaces.push( mapaIndicesVertices[ keyVertice ] );
                 }
 
-                for (let k:int = 1; k < indicesFaces.length - 1; k++) 
+                for( let k:int = 1; k < indicesFaces.length - 1; k++ ) 
                 {
                     this.indices.push( indicesFaces[0]     );
                     this.indices.push( indicesFaces[k]     );
@@ -510,7 +509,7 @@ export class OBJMesh extends VisualMesh
 
         let qtdeIndicesGlobais = 0; // para contar índice total gerado
 
-        for (let i:int = 0; i < qtdePartes; i++) 
+        for( let i:int = 0; i < qtdePartes; i++ ) 
         {
             const nomeParte      : string               = nomesPartes[ i ];
             const facesParte     : Array<FaceObjeto>    = this.objetos[ nomeParte ];
@@ -555,19 +554,19 @@ export class OBJMesh extends VisualMesh
                 intensidadeLuzObjeto : 0
             };
 
-            for (let j:int = 0; j < qtdeFacesParte; j++) 
+            for( let j:int = 0; j < qtdeFacesParte; j++ ) 
             {
                 const faceAtual              : FaceObjeto           = facesParte[j];
                 const dadosFaceAtual         : Array<VerticesFace>  = faceAtual.dadosFace;
                 const qtdeVerticesFaceAtual  : int                  = dadosFaceAtual.length;
                 const indicesFaces           : Array<float>         = new Array();
 
-                for (let k:int = 0; k < qtdeVerticesFaceAtual; k++) 
+                for( let k:int = 0; k < qtdeVerticesFaceAtual; k++ ) 
                 {
                     const verticeAtual   : VerticesFace   = faceAtual.dadosFace[k];
-                    const keyVertice     : string         = String(verticeAtual.indiceVertice) + '/' + String(verticeAtual.indiceTextura) + '/' + String(verticeAtual.indiceNormal);   // Concatena os valores que vem no .OBJ para usar como chave
+                    const keyVertice     : string         = String(verticeAtual.indiceVertice) + "/" + String(verticeAtual.indiceTextura) + "/" + String(verticeAtual.indiceNormal);   // Concatena os valores que vem no .OBJ para usar como chave
 
-                    if ( mapaIndicesVertices[ keyVertice ] === undefined ) 
+                    if( mapaIndicesVertices[ keyVertice ] === undefined ) 
                     {
                         const kdMaterial : Array<float>  = this.materiais[faceAtual.nomeMaterial]["Kd"]  || [1, 1, 1];
                         const posicao    : Array<float>  = this.vertices[verticeAtual.indiceVertice]     || [0, 0, 0];
@@ -587,13 +586,13 @@ export class OBJMesh extends VisualMesh
                         this.positions.push(posicao[2]);
 
                         // Define a UV
-                        if (verticeAtual.indiceTextura >= 0) {
+                        if( verticeAtual.indiceTextura >= 0 ){
                             const uv = this.uvs[verticeAtual.indiceTextura];
                             this.uvArray = this.uvArray;
                             this.uvArray.push(uv[0]);
                             this.uvArray.push(uv[1]);
 
-                        } else {
+                        }else{
                             this.uvArray = this.uvArray;
                             this.uvArray.push(0);
                             this.uvArray.push(0);
@@ -604,7 +603,7 @@ export class OBJMesh extends VisualMesh
                 }
 
                 // triangula a face atual (assumindo que faceAtual.dadosFace.length >= 3)
-                for (let k:int = 1; k < indicesFaces.length - 1; k++) 
+                for( let k:int = 1; k < indicesFaces.length - 1; k++ ) 
                 {
                     this.indices.push( indicesFaces[0]       );
                     this.indices.push( indicesFaces[k]       );
@@ -824,7 +823,7 @@ export class OBJMesh extends VisualMesh
 
             // Se não existe literamente NOME__GRUPO, então despreza o material e pega só o nome
             }else{
-                const apenasNomeObjetoSemMaterial = nomeParte.split('__')[0];
+                const apenasNomeObjetoSemMaterial = nomeParte.split("__")[0];
                 verticesParte = this.verticesObjetosOnlyNomeParte[ apenasNomeObjetoSemMaterial ];
                 qtdeVerticesParte = verticesParte.length;
             }

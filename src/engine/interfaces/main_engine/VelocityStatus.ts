@@ -7,7 +7,7 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-export type StatusVelocidadeEixo = 'uncalculed' | 'increasing' | 'decreasing' | 'constant';
+export type StatusVelocidadeEixo = "uncalculed" | "increasing" | "decreasing" | "constant";
 
 export default interface VelocityStatus
 {

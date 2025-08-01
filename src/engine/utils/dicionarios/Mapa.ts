@@ -12,7 +12,7 @@
 * Isso precisaria ser convertido pra C++
 * Eu só estou criando essa classe em TypeScript para usar uma estrutura mais compativel com C++ 
 */
-export type FoundStatus = 'FOUNDED' | 'NOT_FOUNDED';
+export type FoundStatus = "FOUNDED" | "NOT_FOUNDED";
 
 export default class Mapa<
                           TIPO_CHAVE extends string, 

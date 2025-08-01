@@ -40,7 +40,7 @@ export default class InputListener
         }
     
         // Adiciona o evento de movimento do mouse
-        window.addEventListener('mousemove', onMouseMove, false);
+        window.addEventListener("mousemove", onMouseMove, false);
 
         const onKeyDown = (event: KeyboardEvent) => {
             
@@ -138,8 +138,8 @@ export default class InputListener
             
         };
         
-        document.addEventListener('keydown', onKeyDown);
-        document.addEventListener('keyup',   onKeyUp);
+        document.addEventListener("keydown", onKeyDown);
+        document.addEventListener("keyup",   onKeyUp);
     }
 
     /**

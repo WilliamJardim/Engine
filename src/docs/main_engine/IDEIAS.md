@@ -94,4 +94,6 @@ TERMINAR MINHA CLASSE PLAYER E TESTAR TUDO ISSO
 Essa parte do "exceto se tiver em alguma cena externa", é uma outra ideia que eu tive, que se um atributo booleano for true, ele vai ignorar a lógica de definir a camera do jogador como ativa, e vai permitir que eu defina qualquer camera como ativa, enquanto o atributo booleano for true. 
 Caso ele seja false, a camera ativa volta a ser a camera do jogador ativo. (ISSO JA FIZ)
 
-
+# 03/08/2025 16:02 - IDs e Referencias para as cameras em primeira e terceira pessoa do jogador
+Depois eu preciso lembrar de outra ideia que tive: Levar em conta o "modoCamera" do Player. Ao invez de ter apenas um "idCameraAtual" e "refCameraAtual", a classe Player poderia ter "idCameraAtual_primeira_pessoa" e "idCameraAtual_terceira_pessoa", assim como o "refCameraAtual_primeira_pessoa" e "refCameraAtual_terceira_pessoa"
+Tambem preciso criar casos onde só vai existir uma das opções de camera no jogador(caso eu criei com apenas uma delas), e o jogo vai precisar respeitar isso. 

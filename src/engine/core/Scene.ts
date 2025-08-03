@@ -34,6 +34,7 @@ import { float, int, Ponteiro }          from "../types/types-cpp-like.ts";
 import { LightInstance }     from './LightInstance.ts';
 import { PipelineCallback } from 'stream';
 import CameraInstance from './CameraInstance.ts';
+import Player from './Player.ts';
 
 export default class Scene
 {
@@ -55,8 +56,11 @@ export default class Scene
     public sounds                : Array<Ponteiro<LocalSound>>;
 
     public cameras               : Array<Ponteiro<CameraInstance>>;
-    public idCameraAtiva         : int;
+    public idCameraAtiva         : int;   // O ID da camera atual é um numero
     public refCameraAtiva        : Ponteiro<CameraInstance>;
+
+    public jogadores             : Array<Ponteiro<Player>>;
+    public idJogadorAtivo        : string; // o ID do jogador atual é uma string.
     
     public objectTableById       : Mapa<string, Ponteiro<AbstractObjectBase>>;
     public objectTableByName     : Mapa<string, Ponteiro<AbstractObjectBase>>;
@@ -77,6 +81,7 @@ export default class Scene
         this.idCameraAtiva  = -1;
         this.refCameraAtiva = null;
 
+        this.idJogadorAtivo = "NENHUM";
 
         this.wind = {
             orientation : { x: 0.5, 
@@ -114,6 +119,9 @@ export default class Scene
 
         // Cameras
         this.cameras = new Array<Ponteiro<CameraInstance>>();
+
+        // Jogadores
+        this.jogadores = new Array<Ponteiro<Player>>();
             
         /**
         * ESSA INICIALIZAÇÂO ABAIXO NÂO PRECISA SER FEITA EM C++
@@ -493,6 +501,8 @@ export default class Scene
 
         context.updateSounds( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
+        context.updateJogadores( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
         if( firstRender == true )
         {
             // Chamar a função EngineMain
@@ -773,10 +783,10 @@ export default class Scene
     public updateObjects( firstRender: boolean, renderizadorPronto: boolean, frameDelta:float, frameNumber: int ): void
     {
 
-        const context      = this;
-        const currentScene = context;
+        const context      : Scene  = this;
+        const currentScene : Scene  = context;
 
-        const updatableObjects = this.objects;
+        const updatableObjects : Array<Ponteiro<AbstractObjectBase>>  = this.objects;
 
         for( let i:int = 0 ; i < updatableObjects.length ; i++ )
         {
@@ -785,9 +795,9 @@ export default class Scene
             // Se o ponteiro não está nulo
             if( currentObject != null )
             {
-                const velocityBeforeUpdate : ObjectVelocity                 = {... currentObject.getVelocity()}; // Faz uma copia sem referencia
-                const velocitySinalyzerBeforeUpdate: VelocityStatus         = {... currentObject.velocitySinalyzer}; // Faz uma copia sem referencia
-                const currentObjectIndex : int = i;
+                const velocityBeforeUpdate          : ObjectVelocity     = {... currentObject.getVelocity()}; // Faz uma copia sem referencia
+                const velocitySinalyzerBeforeUpdate : VelocityStatus     = {... currentObject.velocitySinalyzer}; // Faz uma copia sem referencia
+                const currentObjectIndex            : int                = i;
 
                 /**
                 * Atualiza uma tabela com os nomes dos objetos
@@ -843,15 +853,15 @@ export default class Scene
     }
 
     // Update all sounds in the scene
-    updateSounds( firstRender: boolean, renderizadorPronto: boolean, frameDelta:float, frameNumber: int ): void
+    public updateSounds( firstRender: boolean, renderizadorPronto: boolean, frameDelta:float, frameNumber: int ): void
     {
-        const context = this;
-        const sounds  = this.sounds;
+        const context : Scene                        = this;
+        const sounds  : Array<Ponteiro<LocalSound>>  = this.sounds;
 
         for( let i:int = 0 ; i < sounds.length ; i++ )
         {
-            const currentSound = sounds[ i ];
-            const currentSoundIndex = i;
+            const currentSound      : Ponteiro<LocalSound>  = sounds[ i ];
+            const currentSoundIndex : int                   = i;
 
             // Se o ponteiro não é nulo
             if( currentSound != null )
@@ -864,6 +874,45 @@ export default class Scene
 
                  // Atualiza o som
                  currentSound.updateSound();
+            }
+        }
+    }
+
+    // Atualiza todos os jogadores na cena
+    public updateJogadores( firstRender: boolean, renderizadorPronto: boolean, frameDelta:float, frameNumber: int ): void
+    {
+        const context   : Scene                    = this;
+        const jogadores : Array<Ponteiro<Player>>  = this.jogadores;
+
+        for( let i:int = 0 ; i < jogadores.length ; i++ )
+        {
+            const jogadorAtual       : Ponteiro<Player>  = jogadores[ i ];
+            const indiceJogadorAtual : int               = i;
+
+            // Se o ponteiro não é nulo
+            if( jogadorAtual != null )
+            {
+                 /**
+                 * Repass some important informations into the  "currentObject"
+                 */
+                 jogadorAtual.scene  = this;
+
+                 // Se o jogador usa a primeira camera da cena, e ela não é um ponteiro nulo
+                 if( jogadorAtual.idCameraAtual == -1 && this.cameras[0] != null )
+                 {
+                    // Ele vai acessar a camera pelo ID numérico dela no Array de cameras 
+                    jogadorAtual.idCameraAtual  = 0;
+                    jogadorAtual.refCameraAtual = this.cameras[0];
+                 }
+
+                 // Se o jogador é o jogador ativo no momento, e o idJogadorAtivo não for NENHUM
+                 if( jogadorAtual.id == this.idJogadorAtivo && this.idJogadorAtivo != "NENHUM" )
+                 {
+                    this.setCameraAtiva( jogadorAtual.idCameraAtual );
+                 }
+
+                 // Atualiza o som
+                 jogadorAtual.updatePlayer(firstRender, renderizadorPronto, frameDelta, frameNumber);
             }
         }
     }

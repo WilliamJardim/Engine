@@ -2182,8 +2182,8 @@ export default class ObjectBase extends AbstractObjectBase
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>, 
-                   limites:ProximityBounds 
+    public isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>, 
+                          limites:ProximityBounds 
 
     ): boolean{
         let objetosColidindo : Array<Ponteiro<AbstractObjectBase>> = new Array();
@@ -2201,8 +2201,8 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Traz todos os objetos que estão colidindo com ESTE OBJETO
     */
-    getCollisions( limites:ProximityBounds = {x:0, y:0, z:0}, 
-                   recalculate:boolean = false  
+    public getCollisions( limites:ProximityBounds = {x:0, y:0, z:0}, 
+                          recalculate:boolean = false  
 
     ): Array<Ponteiro<AbstractObjectBase>>
     {
@@ -2242,8 +2242,8 @@ export default class ObjectBase extends AbstractObjectBase
     /**
     * Traz todos os objetos que estão proximos DESTE OBJETO
     */
-    getProximity( limites:ProximityBounds = {x:0, y:0, z:0}, 
-                  recalculate:boolean = false 
+    public getProximity( limites:ProximityBounds = {x:0, y:0, z:0}, 
+                         recalculate:boolean = false 
                   
     ): Array<Ponteiro<AbstractObjectBase>>
     {
@@ -2285,8 +2285,8 @@ export default class ObjectBase extends AbstractObjectBase
     * @param outroObjeto 
     * @returns {boolean}
     */
-    isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>, 
-                   limites:ProximityBounds 
+    public isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>, 
+                          limites:ProximityBounds 
 
     ): boolean{
         const esteObjeto       : Ponteiro<AbstractObjectBase>        = this;

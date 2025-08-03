@@ -97,3 +97,11 @@ Caso ele seja false, a camera ativa volta a ser a camera do jogador ativo. (ISSO
 # 03/08/2025 16:02 - IDs e Referencias para as cameras em primeira e terceira pessoa do jogador
 Depois eu preciso lembrar de outra ideia que tive: Levar em conta o "modoCamera" do Player. Ao invez de ter apenas um "idCameraAtual" e "refCameraAtual", a classe Player poderia ter "idCameraAtual_primeira_pessoa" e "idCameraAtual_terceira_pessoa", assim como o "refCameraAtual_primeira_pessoa" e "refCameraAtual_terceira_pessoa"
 Tambem preciso criar casos onde só vai existir uma das opções de camera no jogador(caso eu criei com apenas uma delas), e o jogo vai precisar respeitar isso. 
+
+# 03/08/2025 16:08 
+IDEIA: Transferir a lógica de movimentação e rotação da camera para a função "updateJogadores", para que, ele use o InputListener para tratar os comandos de teclado e mouse, e assim, manipular a movimentação e rotação da camera do jogador ativo.
+Isso vai trazer uma obrigação para a cena: *Ter pelo menos um jogador*, pois sem o jogador, não será possivel movimentar nem rotacionar a camera.
+
+Com isso tive ainda outra ideia: Criar um modo jogador-inspetor, que vai servir para voar livremente pelo cenário, sem receber fisica, nem nenhuma logica de jogo.
+
+

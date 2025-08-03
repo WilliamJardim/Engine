@@ -62,6 +62,8 @@ export default class Scene
     public jogadores             : Array<Ponteiro<Player>>;
     public idJogadorAtivo        : string; // o ID do jogador atual é uma string.
     
+    public usarTrocaCameraLivre  : boolean; // Se for true, permite que eu mude a camera a qualquer momento. Pensei nisso para poder criar cenas externas a visão do jogador
+
     public objectTableById       : Mapa<string, Ponteiro<AbstractObjectBase>>;
     public objectTableByName     : Mapa<string, Ponteiro<AbstractObjectBase>>;
 
@@ -82,6 +84,8 @@ export default class Scene
         this.refCameraAtiva = null;
 
         this.idJogadorAtivo = "NENHUM";
+
+        this.usarTrocaCameraLivre = false; // Se for true, permite que eu mude a camera a qualquer momento. Pensei nisso para poder criar cenas externas a visão do jogador
 
         this.wind = {
             orientation : { x: 0.5, 
@@ -165,10 +169,10 @@ export default class Scene
         */
     }
 
-     /**
+    /**
     * Obtem todas as cameras criadas no meu renderizador
     */
-    getCameras(): Array<Ponteiro<CameraInstance>>
+    public getCameras(): Array<Ponteiro<CameraInstance>>
     {
         return this.cameras;
     }
@@ -176,7 +180,7 @@ export default class Scene
     /**
     * Define a camera de numero TAL como sendo a visão do jogador 
     */
-    setCameraAtiva( idCameraUsar:int ): void
+    public setCameraAtiva( idCameraUsar:int ): void
     {   
         this.idCameraAtiva  = idCameraUsar;
         
@@ -194,7 +198,7 @@ export default class Scene
     /**
     * Obtem a camera ativa do momento
     */
-    getCameraAtiva(): Ponteiro<CameraInstance>
+    public getCameraAtiva(): Ponteiro<CameraInstance>
     {
         return this.cameras[ this.idCameraAtiva ]; // Retorna a instancia da camera cujo id numerico é idCameraAtiva
         //OBS: não confuda o getCameraAtiva aqui da minha engine principal com o getCameraAtiva do meu renderizador. São distintos.
@@ -202,11 +206,29 @@ export default class Scene
     /**
     * Obtem o ID da camera ativa do momento
     */
-    getIDCameraAtiva(): int
+    public getIDCameraAtiva(): int
     {
         return this.idCameraAtiva;
     }
 
+    /**
+    * Ativa o modo de troca de camera livre
+    * Permite que eu mude a camera atual do renderizador a qualquer momento
+    * Desativa a atribuição automatica da camera do jogador atual como sendo a camera ativa.
+    */
+    public ativarTrocaCameraLivre() : void
+    {
+        this.usarTrocaCameraLivre = true;
+    }
+
+    /**
+    * Desativa o modo de troca de camera livre
+    * Permite que a Engine bloqueie a camera atual, para que ela sempre seja a camera do jogador ativo
+    */
+    public desativarTrocaCameraLivre(): void
+    {
+        this.usarTrocaCameraLivre = false;
+    }
 
     public getObjects(): Array<Ponteiro<AbstractObjectBase>>
     {
@@ -905,10 +927,14 @@ export default class Scene
                     jogadorAtual.refCameraAtual = this.cameras[0];
                  }
 
-                 // Se o jogador é o jogador ativo no momento, e o idJogadorAtivo não for NENHUM
-                 if( jogadorAtual.id == this.idJogadorAtivo && this.idJogadorAtivo != "NENHUM" )
-                 {
-                    this.setCameraAtiva( jogadorAtual.idCameraAtual );
+                 // Se a cena não está usando troca livre de camera
+                 if( this.usarTrocaCameraLivre == false )
+                 { 
+                    // Se o jogador é o jogador ativo no momento, e o idJogadorAtivo não for NENHUM
+                    if( jogadorAtual.id == this.idJogadorAtivo && this.idJogadorAtivo != "NENHUM" )
+                    {
+                        this.setCameraAtiva( jogadorAtual.idCameraAtual );
+                    }
                  }
 
                  // Atualiza o som

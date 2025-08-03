@@ -92,6 +92,6 @@ TESTES:
 TERMINAR MINHA CLASSE PLAYER E TESTAR TUDO ISSO
 
 Essa parte do "exceto se tiver em alguma cena externa", é uma outra ideia que eu tive, que se um atributo booleano for true, ele vai ignorar a lógica de definir a camera do jogador como ativa, e vai permitir que eu defina qualquer camera como ativa, enquanto o atributo booleano for true. 
-Caso ele seja false, a camera ativa volta a ser a camera do jogador ativo.
+Caso ele seja false, a camera ativa volta a ser a camera do jogador ativo. (ISSO JA FIZ)
 
 

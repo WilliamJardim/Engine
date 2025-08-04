@@ -102,15 +102,6 @@ export default class CameraRenderizador
     */
 
     /**
-    * NAO USADO
-    * Atualiza essa camera 
-    * ATENÇÂO: Esse método não foi planejado para ser usado para criar regras de jogo.
-    * As regras de jogo com respeito a cameras vão estar na parte de lógica de cameras, na engine principal.
+    * NOTA, 04/08/2025 16:37 PM: a função atualizarCamera foi removida.
     */
-    atualizarCamera( frameDelta:float )
-    {
-        /**
-        * Nova mudança 04/08/2025: transferi a lógica de atualização de camera para a classe CameraInstance.ts da minha outra engine: a engine principal de logica 
-        */
-    }
 }

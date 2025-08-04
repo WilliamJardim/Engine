@@ -422,7 +422,7 @@ export default class RenderizadorCena
             {
                 const propriedadesCamera : ConfigCamera   = cameraAtual.getPropriedadesCamera();
 
-                //Se a luz já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
+                //Se a camera já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
                 if ( this.toRenderCameraAssociation[ cameraAtual.id ] == null ) 
                 {
                     // Cria a camera no meu mini renderizador webgl

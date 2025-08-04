@@ -1430,7 +1430,11 @@ export class Renderer
             // Nova mudança 04/08/2025: transferi a lógica de atualização de camera para a classe CameraInstance.ts da minha outra engine: a engine principal de logica
             // No entando, mantive a função receberInformacoesTecladoMouse, para reter informações uteis de teclado e mouse na classe CameraRenderizador.ts caso eu precise depois.
             
-            // IMPORTANTE: A MINHA ENGINE DE LOGICA ELA JA CALCULA A MOVIMENTAÇÂO E ROTAÇÂO DA CAMERA, ENTÂO O receberInformacoesTecladoMouse aqui nem está sendo usado pra nada. Mais mantive por que eu quis, conforme expliquei.
+            /**
+            * IMPORTANTE: A MINHA ENGINE DE LOGICA ELA JA CALCULA A MOVIMENTAÇÂO E ROTAÇÂO DE CAMERA, 
+            * REPLICA A MOVIMENTAÇÂO E ROTAÇÂO PARA ESSA CAMERA, na função updateCamerasVisually, das linhas 410-471, do meu arquivo RenderizadorCena.ts. 
+            * Além disso, o "receberInformacoesTecladoMouse" acima nem está sendo usado pra nada. Mais mantive por que eu quis, conforme expliquei.
+            */
 
             // Repassa as informações da camera atual para as variaveis do meu renderizador que controlam a camera
             this.miraCamera[0]    = cameraAtual.miraCamera.x;

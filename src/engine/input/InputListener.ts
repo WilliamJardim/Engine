@@ -135,6 +135,11 @@ export default class InputListener
             if( event.shiftKey == true ){
                 contexto.keyDetection.SHIFT = false;
             }
+
+            // Mesmo que não seja o Shift, se eu soltar qualquer tecla, ele ja para de dar sinal de Shift, pra ajudar na minha de logica de correr com a camera
+            if( event.shiftKey == false ){
+                contexto.keyDetection.SHIFT = false;
+            }
             
         };
         

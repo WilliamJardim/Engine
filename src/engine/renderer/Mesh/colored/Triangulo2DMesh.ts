@@ -53,7 +53,7 @@ export class Triangulo2DMesh extends VisualMesh
         this.criar();
     }
 
-    getPositions() : Array<float>
+    public getPositions() : Array<float>
     {
         return [
             0.0,  1.0,  0.0,   // Topo
@@ -62,7 +62,7 @@ export class Triangulo2DMesh extends VisualMesh
         ];
     }
 
-    getColors() : Array<float>
+    public getColors() : Array<float>
     {
         const nivelTransparencia = this.getTransparencia();
 
@@ -73,7 +73,7 @@ export class Triangulo2DMesh extends VisualMesh
         ];
     }
 
-    atualizarDesenho() : void
+    public atualizarDesenho() : void
     {
         // Copia os valores do renderer que o objeto acompanha
         this.copiarValoresRenderer();
@@ -142,7 +142,7 @@ export class Triangulo2DMesh extends VisualMesh
                     // Chama o drawElements para DESENHAR O OBJETO
     }
 
-    criar() : void
+    public criar() : void
     {
         this.atualizarDesenho();
     }

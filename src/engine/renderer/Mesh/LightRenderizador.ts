@@ -67,7 +67,7 @@ export class LightRenderizador
     *  - Objetos mais longe recebem menas influencia da luz
     *  - E objetos mais perto recebem mais influencia da luz
     */
-    calcularForcaLuz( posicaoObjeto:Array<float> ) : float
+    public calcularForcaLuz( posicaoObjeto:Array<float> ) : float
     {       
         const posicaoLuz : Position3D   = this.position;
         const alcanceLuz : float        = this.raio;
@@ -89,32 +89,32 @@ export class LightRenderizador
     /**
     * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto
     */
-    calcularInfluenciaBrilho( forcaLuz:float ) : float
+    public calcularInfluenciaBrilho( forcaLuz:float ) : float
     {
         return this.brilho / forcaLuz;
     }
 
-    calcularInfluenciaAmbient( forcaLuz:float ) : float
+    public calcularInfluenciaAmbient( forcaLuz:float ) : float
     {
         return this.ambient / forcaLuz;
     }
 
-    calcularInfluenciaDiffuse( forcaLuz:float ) : float
+    public calcularInfluenciaDiffuse( forcaLuz:float ) : float
     {
         return this.diffuse / forcaLuz
     }
 
-    calcularInfluenciaSpecular( forcaLuz:float ) : float
+    public calcularInfluenciaSpecular( forcaLuz:float ) : float
     {
         return this.specular / forcaLuz;
     }
 
-    calcularInfluenciaIntensidade( forcaLuz:float ) : float
+    public calcularInfluenciaIntensidade( forcaLuz:float ) : float
     {   
         return this.intensidade / forcaLuz;
     }
 
-    calcularInfluenciaCores( forcaLuz:float ) : Array<float>
+    public calcularInfluenciaCores( forcaLuz:float ) : Array<float>
     {
         const vermelho : float  = this.cor[0] / forcaLuz;
         const verde    : float  = this.cor[1] / forcaLuz;
@@ -131,7 +131,7 @@ export class LightRenderizador
     * Calcula o como essa luz, influencia a iluminação do objeto no brilho, diffuse, intensidade, cor, etc...  
     * Usando a função calcularForcaLuz, e as outras acima
     */
-    calcularInterferencia( posicaoObjeto:Array<float> ): Array<float>
+    public calcularInterferencia( posicaoObjeto:Array<float> ): Array<float>
     {
         /**
         * Calcula o como essa luz, dada sua força, influencia a iluminação do objeto atual(do primeiro laço FOR)

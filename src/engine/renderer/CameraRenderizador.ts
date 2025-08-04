@@ -79,7 +79,7 @@ export default class CameraRenderizador
     /**
     * Recebe do meu renderizador informações sobre o teclado e mouse 
     */
-    receberInformacoesTecladoMouse( infoPosicaoMouse:Position2D, infoTeclasTeclado: KeyDetection ): void
+    public receberInformacoesTecladoMouse( infoPosicaoMouse:Position2D, infoTeclasTeclado: KeyDetection ): void
     {
         // Atualiza a posição do mouse
         this.infoPosicaoMouse.x = infoPosicaoMouse.x;

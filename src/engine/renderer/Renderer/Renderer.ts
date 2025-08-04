@@ -120,7 +120,8 @@ export class Renderer
     public idCameraAtiva     : int;
     public refCameraAtiva    : Ponteiro<CameraRenderizador>;
     
-    constructor( canvasRef:React.RefObject<HTMLCanvasElement>, tipoPerspectiva:string="perspectiva", renderConfig:RenderConfig ){
+    constructor( canvasRef:React.RefObject<HTMLCanvasElement>, tipoPerspectiva:string="perspectiva", renderConfig:RenderConfig )
+    {
         this.canvas = canvasRef;
 
         this.cameras         = new Array();
@@ -274,7 +275,7 @@ export class Renderer
     /**
     * Chamado no arquivo principal, para atualizar as informações de teclado e mouse, que serão usadas por exemplo nos calculos de movimentação e rotação da camera do jogador
     */
-    receberInformacoesTecladoMouse( infoPosicaoMouse: Position2D, infoTeclasTeclado: KeyDetection ): void
+    public receberInformacoesTecladoMouse( infoPosicaoMouse: Position2D, infoTeclasTeclado: KeyDetection ): void
     {
         // Atualiza a posição do mouse, do meu renderizador
         this.infoPosicaoMouse.x = infoPosicaoMouse.x;
@@ -295,7 +296,7 @@ export class Renderer
     /**
     * Carrega uma textura WebGL e armazena num mapa de texturas
     */
-    carregarTextura( textureFile:string ): WebGLTexture
+    public carregarTextura( textureFile:string ): WebGLTexture
     {
         const gl:WebGL2RenderingContext = this.gl;
 
@@ -312,7 +313,7 @@ export class Renderer
     * Atualiza os vertices da posição de um objeto.
     * Voce passa o objeto atual em questão, e em seguida, os vertices que quer definir nele. 
     */
-    atualizarVerticesPosicao( objetoAtual:Ponteiro<VisualMesh>, vertices:Array<float> ): void
+    public atualizarVerticesPosicao( objetoAtual:Ponteiro<VisualMesh>, vertices:Array<float> ): void
     {
         const gl:WebGL2RenderingContext = this.gl;
 
@@ -324,7 +325,7 @@ export class Renderer
         }
     }
     
-    ficarNoite()
+    public ficarNoite()
     {
         this.ambient  = 0.2;  
         this.diffuse  = 0.3; 
@@ -338,32 +339,32 @@ export class Renderer
     /**
     * Programas basicos
     */
-    getSkyboxProgram()
+    public getSkyboxProgram()
     {
         return this.programs.skyboxProgram;
     }
 
-    getCubeProgram()
+    public getCubeProgram()
     {
         return this.programs.basicProgram;
     }
 
-    getEsferaProgram()
+    public getEsferaProgram()
     {
         return this.programs.basicProgram;
     }
 
-    getTrianguloProgram()
+    public getTrianguloProgram()
     {
         return this.programs.basicProgram;
     }
 
-    getCilindroProgram()
+    public getCilindroProgram()
     {
         return this.programs.basicProgram;
     }
 
-    getOnduladoProgram()
+    public getOnduladoProgram()
     {
         return this.programs.onduladoProgram;
     }
@@ -371,18 +372,18 @@ export class Renderer
     /**
     * Programas com textura
     */
-    getOBJProgram()
+    public getOBJProgram()
     {
         return this.programs.textureProgram;
     }
 
-    getCubeTextureUVProgram()
+    public getCubeTextureUVProgram()
     {
         return this.programs.textureProgram;
     }
 
     // Força atualizar a iluminação geral de todos os objetos
-    atualizarIluminacaoGeralObjetos(): void
+    public atualizarIluminacaoGeralObjetos(): void
     {
         const gl : WebGL2RenderingContext = this.gl;
 
@@ -402,7 +403,7 @@ export class Renderer
     /**
     * Carrega a textura do fundo a cena(o skybox 2D)
     */
-    carregarImagemSkybox(imagemURL:string) : void
+    public carregarImagemSkybox(imagemURL:string) : void
     {
         const gl            : WebGL2RenderingContext   = this.gl;
         const programSkybox : WebGLProgram             = this.getSkyboxProgram();
@@ -440,7 +441,7 @@ export class Renderer
     /**
     * Desenha o skybox da cena 
     */
-    desenharSkyboxFundo() : void
+    public desenharSkyboxFundo() : void
     {
         const gl                     : WebGL2RenderingContext          = this.gl;
         const programSkybox          : WebGLProgram                    = this.getSkyboxProgram();
@@ -469,24 +470,24 @@ export class Renderer
 
     // chamada sempre que vão haver mudanças de camera, como no loop de renderização dos objetos, etc.
     // OBS: a matrixVisualizacao ja inclui o ponto de vista da camera, já está embutido
-    updateCamera( frameDelta:float ) : void
+    public updateCamera( frameDelta:float ) : void
     {
         this.matrixPontoVista   = CriarMatrixPontoVista( frameDelta, "FPS", this.posicaoCamera, this.miraCamera, this.sentidoCamera );
         this.matrixVisualizacao = MultiplicarMatrix4x4( new Float32Array(16), this.matrixCamera, this.matrixPontoVista );
     }
 
     /*** OBTEM VISUALIZACAO ATUALIZADA */
-    getMatrixVisualizacao() : Float32Array<ArrayBufferLike>
+    public getMatrixVisualizacao() : Float32Array<ArrayBufferLike>
     {
         return this.matrixVisualizacao;
     }
 
-    getObjetos() : Array<VisualMesh>
+    public getObjetos() : Array<VisualMesh>
     {
         return this.objetos;
     }
 
-    getLuzes()   : Array<Ponteiro<LightRenderizador>>
+    public getLuzes()   : Array<Ponteiro<LightRenderizador>>
     {
         return this.luzes;
     }
@@ -494,7 +495,7 @@ export class Renderer
     /**
     * Cria um novo objeto na cena( adicionando ele na lista de renderização )
     */
-    criarObjeto( propriedadesObjeto:VisualMeshConfig ): Ponteiro<VisualMesh>
+    public criarObjeto( propriedadesObjeto:VisualMeshConfig ): Ponteiro<VisualMesh>
     {
         const contextoRenderizador = this;
 
@@ -576,7 +577,7 @@ export class Renderer
     /**
     * Cria uma nova luz na cena( adicionando ele na lista de renderização )
     */
-    criarLuz( propriedadesLuz:LightConfig ): Ponteiro<LightRenderizador>
+    public criarLuz( propriedadesLuz:LightConfig ): Ponteiro<LightRenderizador>
     {
         this.luzes.push( new LightRenderizador( propriedadesLuz ) );
 
@@ -587,7 +588,7 @@ export class Renderer
     /**
     * Cria uma nova camera no meu renderizador 
     */
-    criarCamera( propriedadesCamera:ConfigCamera ) : Ponteiro<CameraRenderizador>
+    public criarCamera( propriedadesCamera:ConfigCamera ) : Ponteiro<CameraRenderizador>
     {
         this.cameras.push( new CameraRenderizador( propriedadesCamera ) );
 
@@ -598,7 +599,7 @@ export class Renderer
     /**
     * Retorna qual o program deve ser usado para desenhar um objeto, de acordo com o tipo dele 
     */
-    getProgramObjetoDesenhar( tipoObjeto:string ) : Ponteiro<WebGLProgram>
+    public getProgramObjetoDesenhar( tipoObjeto:string ) : Ponteiro<WebGLProgram>
     {
         if( tipoObjeto == "Cubo" )
         {
@@ -639,7 +640,7 @@ export class Renderer
     /**
     * Obtem as informações do programa de um objeto, que vão ser usadas na renderização desse tal objeto
     */
-    getInformacoesProgramaObjeto( gl:WebGL2RenderingContext, objetoAtual:Ponteiro<VisualMesh> ) : InformacoesPrograma
+    public getInformacoesProgramaObjeto( gl:WebGL2RenderingContext, objetoAtual:Ponteiro<VisualMesh> ) : InformacoesPrograma
     {
         // Se o ponteiro não for null
         if( objetoAtual != null )
@@ -723,7 +724,7 @@ export class Renderer
     *    (3) Ou então, eu poderia criar uma outra classe VisualMesh que vai herdar o ObjectBase, no final das definições raizes, e ai como todos os objetos herdam o VisualMesh, iria seguir o fluxo normal(visto que nesse ponto Cena, ObjectBase e outras classes raiz vão estar totalmente definidas)
     *        Mais pode ser um pouco mais complicado por causa de conversões de objetos que podem ser necessarias ser feitas
     */
-    atualizarIluminacaoGeralObjeto( objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:IluminacaoGeral ) : void
+    public atualizarIluminacaoGeralObjeto( objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:IluminacaoGeral ) : void
     {
         const luzesCena : Array<Ponteiro<LightRenderizador>>   = this.getLuzes();
 
@@ -829,7 +830,7 @@ export class Renderer
     * Envia a iluminação geral do objeto já calculada para o shader 
     * A iluminação geral é uma iluminação aplicada a todas as partes de um objeto
     */
-    enviarIluminacaoGeralObjetoShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, iluminacaoGeral:IluminacaoGeral): void
+    public enviarIluminacaoGeralObjetoShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, iluminacaoGeral:IluminacaoGeral): void
     {
         /**
         * Aplica os valores 
@@ -860,7 +861,7 @@ export class Renderer
     /**
     * Aplica a iluminação geral em um objeto 
     */
-    aplicarIluminacaoGeralObjeto(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:IluminacaoGeral): void
+    public aplicarIluminacaoGeralObjeto(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, objetoAtual:Ponteiro<VisualMesh>, iluminacaoGeral:IluminacaoGeral): void
     {
         // Se o ponteiro não for null
         if( objetoAtual != null )
@@ -893,7 +894,7 @@ export class Renderer
     * SÒ CRIA UMA VEZ, ENTAO SE ELES JA FORAM CRIADOS, USA ELES MESMO SEM PRECISAR CRIAR NOVAMENTE
     * lembrando que cada buffer é um ponteiro, então ele pode ser nulo
     */
-    createBuffersObjetoDesenhar( gl:WebGL2RenderingContext, objetoAtual:Ponteiro<VisualMesh> ): void
+    public createBuffersObjetoDesenhar( gl:WebGL2RenderingContext, objetoAtual:Ponteiro<VisualMesh> ): void
     {
         // Se o ponteiro não for nulo
         if( objetoAtual != null )
@@ -925,7 +926,7 @@ export class Renderer
     * Para isso, precisa do arrayIluminacaoParte, que é na verdade o array retornado pela função acima
     * O pipeline do meu mini renderizador no arquivo Renderer/Renderer.ts na linha 803 deixará isso bem claro.
     */
-    enviarIluminacaoParteShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, mapaIluminacaoTotalParte:IluminacaoTotalParte ): void
+    public enviarIluminacaoParteShader(gl:WebGL2RenderingContext, informacoesPrograma:InformacoesPrograma, mapaIluminacaoTotalParte:IluminacaoTotalParte ): void
     {
         /**
         * Aplica os valores 
@@ -959,8 +960,8 @@ export class Renderer
     * Uma função genérica, e que pode ser chamada aqui dentro, para qualquer objeto.
     * Vou usar ela no método desenharObjetos abaixo
     */
-    desenharUmObjeto( frameDelta:float, 
-                      objetoAtual:Ponteiro<VisualMesh>
+    public desenharUmObjeto( frameDelta:float, 
+                             objetoAtual:Ponteiro<VisualMesh>
     ): void
     {
         const gl                             : WebGL2RenderingContext              = this.gl;
@@ -1294,7 +1295,7 @@ export class Renderer
     * Desenha os objetos na tela
     * Converte a representação de Meshs para desenhos com WebGL
     */
-    desenharObjetos() : void
+    public desenharObjetos() : void
     {
         const gl              : WebGL2RenderingContext               = this.gl;
         const objetosVisuais  : Array<VisualMesh>                    = this.getObjetos();
@@ -1361,7 +1362,7 @@ export class Renderer
     }
 
     // Desenha tudo
-    desenharTudo() : void
+    public desenharTudo() : void
     {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         this.desenharSkyboxFundo();
@@ -1371,7 +1372,7 @@ export class Renderer
     /**
     * Obtem todas as cameras criadas no meu renderizador
     */
-    getCameras(): Array<Ponteiro<CameraRenderizador>>
+    public getCameras(): Array<Ponteiro<CameraRenderizador>>
     {
         return this.cameras;
     }
@@ -1379,7 +1380,7 @@ export class Renderer
     /**
     * Define a camera de numero TAL como sendo a visão do jogador 
     */
-    setCameraAtiva( idCameraUsar:int ): void
+    public setCameraAtiva( idCameraUsar:int ): void
     {   
         this.idCameraAtiva  = idCameraUsar;
         
@@ -1397,14 +1398,14 @@ export class Renderer
     /**
     * Obtem a camera ativa do momento
     */
-    getCameraAtiva(): Ponteiro<CameraRenderizador>
+    public getCameraAtiva(): Ponteiro<CameraRenderizador>
     {
         return this.cameras[ this.idCameraAtiva ];
     }
     /**
     * Obtem o ID da camera ativa do momento
     */
-    getIDCameraAtiva(): int
+    public getIDCameraAtiva(): int
     {
         return this.idCameraAtiva;
     }
@@ -1412,7 +1413,7 @@ export class Renderer
     /**
     * Atualiza a camera atual repassando os dados pra ela, e chamando a função de atualização, passando o frame dela
     */
-    atualizarCameraAtual(): void
+    public atualizarCameraAtual(): void
     {
         const cameraAtual : Ponteiro<CameraRenderizador>  = this.getCameraAtiva();
 
@@ -1431,8 +1432,12 @@ export class Renderer
             // No entando, mantive a função receberInformacoesTecladoMouse, para reter informações uteis de teclado e mouse na classe CameraRenderizador.ts caso eu precise depois.
             
             /**
-            * IMPORTANTE: A MINHA ENGINE DE LOGICA ELA JA CALCULA A MOVIMENTAÇÂO E ROTAÇÂO DE CAMERA, 
-            * REPLICA A MOVIMENTAÇÂO E ROTAÇÂO PARA ESSA CAMERA, na função updateCamerasVisually, das linhas 410-471, do meu arquivo RenderizadorCena.ts. 
+            * IMPORTANTE: 
+            *   Eu removi o calculo de MOVIMENTAÇÂO E ROTAÇÂO aqui da função atualizarCameraAtual, pois eu queria transferir para a engine de logica.
+            * 
+            *   A MINHA ENGINE DE LOGICA ELA JA CALCULA A MOVIMENTAÇÂO E ROTAÇÂO DESSA CAMERA DA SEGUINTE FORMA:
+            *   ELA REPLICA A MOVIMENTAÇÂO E ROTAÇÂO DA CAMERA LOGICA(da engine de logica) PARA ESSA CAMERA VISUAL(deste mini renderizador), na função updateCamerasVisually, das linhas 410-471, do meu arquivo RenderizadorCena.ts. 
+            *  
             * Além disso, o "receberInformacoesTecladoMouse" acima nem está sendo usado pra nada. Mais mantive por que eu quis, conforme expliquei.
             */
 
@@ -1464,7 +1469,7 @@ export class Renderer
 
 
     // SERIA NECESSARIO ADAPTAR NO C++ POR CAUSA DE CONTEXTO DE BIND
-    render(now:float) : void
+    public render(now:float) : void
     {
         requestAnimationFrame(this.render);
 
@@ -1480,9 +1485,9 @@ export class Renderer
     /**
     * Obtem um objeto que contenha nomeObjeto em seu nome, ou algum outro critério
     */
-    queryObjetos( criterio:string="nome", 
-                  operador:string="like", 
-                  valorPesquisar:string="" 
+    public queryObjetos( criterio:string="nome", 
+                         operador:string="like", 
+                         valorPesquisar:string="" 
 
     ) : Array<VisualMesh> 
     {
@@ -1558,7 +1563,7 @@ export class Renderer
     }
 
     // Traz o primeiro que encontrar
-    queryObjeto( criterio:string, operador:string, valorPesquisar:string ) : VisualMesh
+    public queryObjeto( criterio:string, operador:string, valorPesquisar:string ) : VisualMesh
     {
         return this.queryObjetos(criterio, operador, valorPesquisar)[0];
     }
@@ -1566,7 +1571,7 @@ export class Renderer
     /**
     * Inicia o loop de renderização 
     */
-    inicializar(): void
+    public inicializar(): void
     {
         this.carregarImagemSkybox("/sky/sky.jpg");
         this.render(0);    

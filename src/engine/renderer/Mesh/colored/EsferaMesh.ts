@@ -65,7 +65,7 @@ export class EsferaMesh extends VisualMesh
     /**
     * Obtem as posições de renderização do cubo 
     */
-    getPositions() : Array<float>
+    public getPositions() : Array<float>
     {
         const positions  : Array<float>  = [];
         const latitudes  : float         = 30;
@@ -98,7 +98,7 @@ export class EsferaMesh extends VisualMesh
     /**
     * Obtem os indices de renderização do cubo 
     */
-    getIndices() : Array<float>
+    public getIndices() : Array<float>
     {
         const indices    : Array<float> = [];
         const latitudes  : float  = 30;
@@ -122,7 +122,7 @@ export class EsferaMesh extends VisualMesh
     /**
     * Obtem as cores das faces do cubo, usados na renderização do cubo 
     */
-    getFaceColors() : Array<float>
+    public getFaceColors() : Array<float>
     {
         return [];
     }
@@ -130,7 +130,7 @@ export class EsferaMesh extends VisualMesh
     /**
     * Cria o vetor de cores usando o getFaceColors
     */
-    getColors() : Array<float>
+    public getColors() : Array<float>
     {
         const cores              : Array<float>  = [];
         const latitudes          : float         = 30;
@@ -152,7 +152,7 @@ export class EsferaMesh extends VisualMesh
     * Implementação do método desenhar para especificamente desenhar um cubo
     * Converte a representação desse Mesh para desenhos com WebGL
     */
-    atualizarDesenho() : void
+    public atualizarDesenho() : void
     {
         // Atributos visuais 
         const meshConfig : VisualMeshConfig  = this.meshConfig;
@@ -226,7 +226,7 @@ export class EsferaMesh extends VisualMesh
     * Metodo chamado logo após o fim do construtor, quanto todos os parametros necessários já foram atribudos
     * Cria o cubo em si, usando o WebGL 
     */
-    criar() : void
+    public criar() : void
     {
         this.atualizarDesenho();
     }

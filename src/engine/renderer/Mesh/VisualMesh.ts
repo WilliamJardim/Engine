@@ -266,7 +266,7 @@ export class VisualMesh
     }
 
     // Copia os valores do renderer que o objeto acompanha
-    copiarValoresRenderer() : void
+    public copiarValoresRenderer() : void
     {   
         const renderer : Renderer  = this.renderer;
 
@@ -290,14 +290,14 @@ export class VisualMesh
     // ATIVAR EM TODOS: renderizador.getObjetos().forEach((o)=>{ o.enableStaticAccumulatedLights() })
 
     // Ativa as luzes acumuladas estaticas
-    enableStaticAccumulatedLights() : void
+    public enableStaticAccumulatedLights() : void
     {
         this.staticAccumulatedLights = true;
         this._jaAcumulouLuzes        = false; 
     }
 
     // Desativa as luzes acumuladas estaticas
-    disableStaticAccumulatedLights() : void
+    public disableStaticAccumulatedLights() : void
     {
         this.staticAccumulatedLights = false;
     }
@@ -305,7 +305,7 @@ export class VisualMesh
     /**
     * Define a iluminação do objeto como um todo 
     */
-    setIntireIlumination( iluminationDefinition:IluminacaoGeralParte ) : void
+    public setIntireIlumination( iluminationDefinition:IluminacaoGeralParte ) : void
     {
         this.brilhoObjeto          = iluminationDefinition.brilhoObjeto;
         this.ambientObjeto         = iluminationDefinition.ambientObjeto;
@@ -320,7 +320,7 @@ export class VisualMesh
         this.corLuz[2] = (iluminationDefinition.corLuzObjeto[2] || 0) + this.renderer.corAmbient[2];
     }
 
-    getRotation() : Position3D
+    public getRotation() : Position3D
     {
         return this.rotation;
     }
@@ -328,24 +328,24 @@ export class VisualMesh
     /**
     * Soma uma rotação ao redor de cada eixo: X, Y, Z, respectivamente.
     */
-    addRotationAround(rotation:Position3D) : void
+    public addRotationAround(rotation:Position3D) : void
     {
         this.rotation.x += rotation.x;
         this.rotation.y += rotation.y;
         this.rotation.z += rotation.z;
     }
 
-    addRotationAroundX(rotationX:float) : void
+    public addRotationAroundX(rotationX:float) : void
     {
         this.rotation.x += rotationX;
     }
 
-    addRotationAroundY(rotationY:float) : void
+    public addRotationAroundY(rotationY:float) : void
     {
         this.rotation.y += rotationY;
     }
 
-    addRotationAroundZ(rotationZ:float) : void
+    public addRotationAroundZ(rotationZ:float) : void
     {
         this.rotation.z += rotationZ;
     }
@@ -353,24 +353,24 @@ export class VisualMesh
     /**
     * Define uma rotação ao redor de cada eixo: X, Y, Z, respectivamente.
     */
-    setRotationAround(rotation:Position3D) : void
+    public setRotationAround(rotation:Position3D) : void
     {
         this.rotation.x = rotation.x;
         this.rotation.y = rotation.y;
         this.rotation.z = rotation.z;
     }
 
-    setRotationAroundX(rotationX:float) : void
+    public setRotationAroundX(rotationX:float) : void
     {
         this.rotation.x = rotationX;
     }
 
-    setRotationAroundY(rotationY:float) : void
+    public setRotationAroundY(rotationY:float) : void
     {
         this.rotation.y = rotationY;
     }
 
-    setRotationAroundZ(rotationZ:float) : void
+    public setRotationAroundZ(rotationZ:float) : void
     {
         this.rotation.z = rotationZ;
     }
@@ -383,24 +383,24 @@ export class VisualMesh
     * Respeitando a direção de movimento da posição, ou seja, 
     * Ao mover em +X, ele anda pra direita, então por esse método ao rotacionar em direção a X, ele vai inclinar pra direita tambem
     */
-    addRotationTowards(rotation:Position3D) : void
+    public addRotationTowards(rotation:Position3D) : void
     {
         this.rotation.x += (rotation.z * -1);
         this.rotation.y += rotation.y;
         this.rotation.z += (rotation.x * -1);
     }
 
-    addRotationTowardsX(rotationX:float) : void
+    public addRotationTowardsX(rotationX:float) : void
     {
         this.rotation.z += (rotationX * -1);
     }
 
-    addRotationTowardsY(rotationY:float) : void
+    public addRotationTowardsY(rotationY:float) : void
     {
         this.rotation.y += rotationY;
     }
 
-    addRotationTowardsZ(rotationZ:float) : void
+    public addRotationTowardsZ(rotationZ:float) : void
     {
         this.rotation.x += (rotationZ * -1);
     }
@@ -412,172 +412,172 @@ export class VisualMesh
     * Respeitando a direção de movimento da posição, ou seja, 
     * Ao mover em +X, ele anda pra direita, então por esse método ao rotacionar em direção a X, ele vai inclinar pra direita tambem
     */
-    setRotationTowards(rotation:Position3D) : void
+    public setRotationTowards(rotation:Position3D) : void
     {
         this.rotation.x = (rotation.z * -1);
         this.rotation.y = rotation.y;
         this.rotation.z = (rotation.x * -1);
     }
 
-    setRotationTowardsX(rotationX:float) : void 
+    public setRotationTowardsX(rotationX:float) : void 
     {
         this.rotation.z = (rotationX * -1);
     }
 
-    setRotationTowardsY(rotationY:float) : void
+    public setRotationTowardsY(rotationY:float) : void
     {
         this.rotation.y = rotationY;
     }
 
-    setRotationTowardsZ(rotationZ:float) : void
+    public setRotationTowardsZ(rotationZ:float) : void
     {
         this.rotation.x = (rotationZ * -1);
     }
 
 
-    getPosition() : Position3D
+    public getPosition() : Position3D
     {
         return this.position;
     }
 
-    addPosition(position:Position3D) : void
+    public addPosition(position:Position3D) : void
     {
         this.position.x += position.x;
         this.position.y += position.y;
         this.position.z += position.z;
     }
 
-    addPositionX(positionX:float) : void 
+    public addPositionX(positionX:float) : void 
     {
         this.position.x += positionX;
     }
 
-    addPositionY(positionY:float) : void
+    public addPositionY(positionY:float) : void
     {
         this.position.y += positionY;
     }
 
-    addPositionZ(positionZ:float) : void
+    public addPositionZ(positionZ:float) : void
     {
         this.position.z += positionZ;
     }
 
 
-    setPosition(position:Position3D) : void
+    public setPosition(position:Position3D) : void
     {
         this.position.x = position.x;
         this.position.y = position.y;
         this.position.z = position.z;
     }
 
-    setPositionX(positionX:float) : void
+    public setPositionX(positionX:float) : void
     {
         this.position.x = positionX;
     }
 
-    setPositionY(positionY:float) : void
+    public setPositionY(positionY:float) : void
     {
         this.position.y = positionY;
     }
 
-    setPositionZ(positionZ:float) : void
+    public setPositionZ(positionZ:float) : void
     {
         this.position.z = positionZ;
     }
 
 
-    getScale() : Position3D
+    public getScale() : Position3D
     {
         return this.scale;
     }
 
-    addScale(scale:Position3D) : void
+    public addScale(scale:Position3D) : void
     {
         this.scale.x += scale.x;
         this.scale.y += scale.y;
         this.scale.z += scale.z;
     }
 
-    addScaleX(scaleX:float) : void
+    public addScaleX(scaleX:float) : void
     {
         this.scale.x += scaleX;
     }
 
-    addScaleY(scaleY:float) : void
+    public addScaleY(scaleY:float) : void
     {
         this.scale.y += scaleY;
     }
 
-    addScaleZ(scaleZ:float) : void
+    public addScaleZ(scaleZ:float) : void
     {
         this.scale.z += scaleZ;
     }
 
 
-    setScale(scale:Position3D) : void
+    public setScale(scale:Position3D) : void
     {
         this.scale.x = scale.x;
         this.scale.y = scale.y;
         this.scale.z = scale.z;
     }
 
-    setScaleX(scaleX:float) : void
+    public setScaleX(scaleX:float) : void
     {
         this.scale.x = scaleX;
     }
 
-    setScaleY(scaleY:float) : void
+    public setScaleY(scaleY:float) : void
     {
         this.scale.y = scaleY;
     }
 
-    setScaleZ(scaleZ:float) : void
+    public setScaleZ(scaleZ:float) : void
     {
         this.scale.z = scaleZ;
     }
 
 
-    isTransparente() : boolean
+    public isTransparente() : boolean
     {
         return this.transparencia < 1;
     }
 
-    isOpaco() : boolean
+    public isOpaco() : boolean
     {
         return this.transparencia >= 1;
     }
 
-    getTransparencia() : float
+    public getTransparencia() : float
     {
         return this.transparencia;
     }
 
-    setTransparencia( nivelOpacidade:float ) : void
+    public setTransparencia( nivelOpacidade:float ) : void
     {
         this.transparencia = nivelOpacidade;
     }
 
-    setInvisibilidade( novaInvisibilidade:boolean=false ) : void
+    public setInvisibilidade( novaInvisibilidade:boolean=false ) : void
     {
         this.invisivel = novaInvisibilidade;
     }
 
-    ocultar() : void
+    public ocultar() : void
     {
         this.invisivel = true;
     }
 
-    aparecer() : void
+    public aparecer() : void
     {
         this.invisivel = false;
     }
 
-    isInvisivel() : boolean
+    public isInvisivel() : boolean
     {
         return this.invisivel == true;
     }
 
-    isVisivel() : boolean
+    public isVisivel() : boolean
     {
         return this.invisivel == false;
     }
@@ -585,7 +585,7 @@ export class VisualMesh
     /**
     * Obtem a instancia do renderizador
     */
-    getRenderer() : Renderer
+    public getRenderer() : Renderer
     {
         return this.renderer;
     }
@@ -593,27 +593,27 @@ export class VisualMesh
     /**
     * Obtem os atributos desse objeto 
     */
-    getAtributos() : VisualMeshConfig
+    public getAtributos() : VisualMeshConfig
     {
         return this.meshConfig;
     }
 
-    getPositions() : Array<float>
+    public getPositions() : Array<float>
     {
         return this.positions;
     }
 
-    getColors() : Array<float>
+    public getColors() : Array<float>
     {
         return this.cores;
     }
 
-    getIndices() : Array<float>
+    public getIndices() : Array<float>
     {
         return this.indices;
     }
 
-    getUVs() : Array<float>
+    public getUVs() : Array<float>
     {
         return this.uvArray || [];
     }
@@ -622,23 +622,23 @@ export class VisualMesh
     * Função que atualize as informações de desenho do objeto 
     * Se implementa ela em cada objeto
     */
-    atualizarDesenho( frameDelta:float ) : void
+    public atualizarDesenho( frameDelta:float ) : void
     {
         
     }
 
     // Obtem o program usado por ele no meu mini renderizador webgl
-    getProgram(): Ponteiro<WebGLProgram>
+    public getProgram(): Ponteiro<WebGLProgram>
     {
         return this.renderer.getProgramObjetoDesenhar(this.tipo);
     }
 
-    getVertex() : string
+    public getVertex() : string
     {
         return this.vertexScript;
     }
 
-    getFragment() : string
+    public getFragment() : string
     {
         return this.fragmentScript;
     }
@@ -646,13 +646,13 @@ export class VisualMesh
     /**
     * Declaração de funções que só serão implementadas dentro do OBJMesh 
     */
-    calcularCentroideParte( nomeParte:string ): Array<float>
+    public calcularCentroideParte( nomeParte:string ): Array<float>
     {
         // ESTA IMPLEMENTADO NO OBJMesh
         return [];
     }
 
-    calcularCentroideGlobalParte( nomeParte:string ): Array<float>
+    public calcularCentroideGlobalParte( nomeParte:string ): Array<float>
     {
         // ESTA IMPLEMENTADO NO OBJMesh
         return [];

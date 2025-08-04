@@ -23,7 +23,6 @@ import {
 import { Renderer } from "../Renderer/Renderer.js";
 import { float, int, Ponteiro } from "../../types/types-cpp-like.js";
 import Mapa from "../../utils/dicionarios/Mapa.js";
-import OBJMeshConfig from "../../interfaces/render_engine/OBJMeshConfig.js";
 import InformacoesPrograma from "../../interfaces/render_engine/InformacoesPrograma.js";
 import IluminacaoTotalParte from "../../interfaces/render_engine/IluminacaoTotalParte.js";
 import IluminacaoGeralOBJMesh from "../../interfaces/render_engine/IluminacaoGeralParte.js";
@@ -164,25 +163,25 @@ export class OBJMesh extends VisualMesh
     }
 
     // Ativa a iluminação individual de cada parte individual do OBJ
-    enableChildrenIndividualLights() : void
+    public enableChildrenIndividualLights() : void
     {   
         this.childrenIndividualLights = true;
     }
 
     // Desativa a iluminação individual de cada parte individual do OBJ
-    disableChildrenIndividualLights() : void
+    public disableChildrenIndividualLights() : void
     {
         this.childrenIndividualLights = false;
     }
 
     // Ativa a acumulação de luzes em cada parte individual do OBJ
-    enableAccumulatedLights() : void
+    public enableAccumulatedLights() : void
     {
         this.useAccumulatedLights = true;
     }
 
     // Disativa a acumulação de luzes em cada parte individual do OBJ
-    disableAccumulatedLights() : void
+    public disableAccumulatedLights() : void
     {
         this.useAccumulatedLights = false;
     }
@@ -196,7 +195,7 @@ export class OBJMesh extends VisualMesh
     * Serve para interpretar os comandos de um arquivo MTL
     * como "newmtl" = novo material, "d" = opacidade, etc....
     */
-    carregarMTL(mtlString:String) : void
+    public carregarMTL(mtlString:String) : void
     {
         let linhas         : Array<string>   = mtlString.split("\n");
         let qtdeLinhas     : int             = linhas.length;
@@ -272,7 +271,7 @@ export class OBJMesh extends VisualMesh
     * Função auxiliar que serve para interpretar os comandos de um arquivo OBJ
     * como "o" = objeto, "f" = faces, etc.... 
     */
-    _interpretarInstrucaoOBJ( comando=String(), partesLinha:Array<string>=[] ): void
+    public _interpretarInstrucaoOBJ( comando=String(), partesLinha:Array<string>=[] ): void
     {
         // Se nao tem objeto ativo
         if( this.objetoAtivo == "NENHUM_OBJETO" ) 
@@ -385,7 +384,7 @@ export class OBJMesh extends VisualMesh
     /**
     * Função que carrega um arquivo .OBJ
     */
-    carregarOBJ(objString:string) 
+    public carregarOBJ(objString:string) 
     {
         let linhas         : Array<string>  = objString.split("\n");
         let qtdeLinhas     : int            = linhas.length;
@@ -622,22 +621,22 @@ export class OBJMesh extends VisualMesh
         }
     }
 
-    getPositions() : Array<float>
+    public getPositions() : Array<float>
     {
         return this.positions;
     }
 
-    getColors() : Array<float>
+    public getColors() : Array<float>
     {
         return this.cores;
     }
 
-    getIndices() : Array<float>
+    public getIndices() : Array<float>
     {
         return this.indices;
     }
 
-    getUVs() : Array<float>
+    public getUVs() : Array<float>
     {
         return this.uvArray || [];
     }
@@ -646,7 +645,7 @@ export class OBJMesh extends VisualMesh
     * @override
     * @implementation
     */
-    isTransparente() : boolean
+    public isTransparente() : boolean
     {
         return this.transparencia < 1 || this._isTransparente == true;
     }
@@ -655,7 +654,7 @@ export class OBJMesh extends VisualMesh
     * Define a iluminação do objeto como um todo 
     * @override
     */
-    setIntireIlumination( iluminationDefinition:IluminacaoGeralParte ) : void
+    public setIntireIlumination( iluminationDefinition:IluminacaoGeralParte ) : void
     {
         this.brilhoObjeto          = iluminationDefinition.brilhoObjeto;
         this.ambientObjeto         = iluminationDefinition.ambientObjeto;
@@ -692,32 +691,32 @@ export class OBJMesh extends VisualMesh
     /**
     * Abaixo criei métodos para permitir obter, pesquisar, e manipular partes do modelo, individualmente, ou em grupo
     */
-    getObjetos() : Mapa<string, Array<FaceObjeto>>
+    public getObjetos() : Mapa<string, Array<FaceObjeto>>
     {
         return this.objetos;
     }
 
-    getPartes() : Mapa<string, Array<FaceObjeto>>
+    public getPartes() : Mapa<string, Array<FaceObjeto>>
     {
         return this.objetos;
     }
 
-    getNomesObjetos() : Array<string>
+    public getNomesObjetos() : Array<string>
     {
         return this.nomesObjetos;
     }
 
-    getNomesPartes() : Array<string>
+    public getNomesPartes() : Array<string>
     {
         return this.nomesObjetos;
     }
 
-    getParteByIndex( index:int = 0 ) : Ponteiro<Array<FaceObjeto>>
+    public getParteByIndex( index:int = 0 ) : Ponteiro<Array<FaceObjeto>>
     {
         return this.objetos[ this.nomesObjetos[ index ] ];
     }
 
-    getParteByName( nomeParte:string ) : Ponteiro<Array<FaceObjeto>>
+    public getParteByName( nomeParte:string ) : Ponteiro<Array<FaceObjeto>>
     {
         return this.objetos[ nomeParte ];
     }
@@ -725,9 +724,9 @@ export class OBJMesh extends VisualMesh
     /**
     * Obtem um objeto/parte que contenha nomeParte em seu nome, ou algum outro critério
     */
-    queryPartes( criterio="nome", 
-                 operador="like", 
-                 valorPesquisar="" 
+    public queryPartes( criterio="nome", 
+                        operador="like", 
+                        valorPesquisar="" 
 
     ) : Array<Array<FaceObjeto>> 
     {
@@ -787,7 +786,7 @@ export class OBJMesh extends VisualMesh
     /**
     * Obtem todos so vertices de uma parte especifica, extraidos do vetor de vertices do OBJ
     */
-    getVerticesParte( nomeParte:string )
+    public getVerticesParte( nomeParte:string )
     {
         return {
             inicio   : this.verticesComecaObjetos[nomeParte],
@@ -803,7 +802,7 @@ export class OBJMesh extends VisualMesh
     *  (1) Somar X, Y e Z de todos os vertices, fazendo uma acumulação
     *  (2) Dividir pela quantidade de vertices
     */
-    calcularCentroideParte( nomeParte:string ): Array<float>
+    public calcularCentroideParte( nomeParte:string ): Array<float>
     {
         let qtdeVerticesParte : int            = 0;
         let verticesParte     : Matrix<float>  = new Array<Array<float>>;  // Matrix<float>
@@ -856,7 +855,7 @@ export class OBJMesh extends VisualMesh
     * FORMULA MATEMATICA:
     *    posicaoGlobalParte = matrixModeloObjetoVisual * posicaoLocalParte
     */
-    calcularCentroideGlobalParte( nomeParte:string ): Array<float>
+    public calcularCentroideGlobalParte( nomeParte:string ): Array<float>
     {
         const matrixModeloObjetoVisual : Ponteiro<Float32Array<ArrayBufferLike>>  = this.modeloObjetoVisual;
         const centroLocalParte         : Array<float>                             = this.calcularCentroideParte( nomeParte );
@@ -876,7 +875,7 @@ export class OBJMesh extends VisualMesh
     /**
     * Traz todos os vertices que estão dentro de um range de coordenadas
     */
-    queryVerticesCoordenadas( minXYZ=Array(), maxXYZ=Array(), expansion=1, trazerNomeParte=true )
+    public queryVerticesCoordenadas( minXYZ=Array(), maxXYZ=Array(), expansion=1, trazerNomeParte=true )
     {
         // Min Max X
         const minX : float  = minXYZ[0] * expansion;
@@ -974,7 +973,7 @@ export class OBJMesh extends VisualMesh
     * renderizador.getObjetos()[11].queryPartesCoordenadas( [0,0,0], [1,1,1], 1 )
     * 
     */
-    queryPartesCoordenadas( minXYZ=Array(), maxXYZ=Array(), expansion=1 ) : Array<Array<any>>
+    public queryPartesCoordenadas( minXYZ=Array(), maxXYZ=Array(), expansion=1 ) : Array<Array<any>>
     {
         // Min Max X
         const minX : float  = minXYZ[0] * expansion;
@@ -1063,7 +1062,7 @@ export class OBJMesh extends VisualMesh
     /**
     * Causa uma deformação em alguma parte do modelo, igual no CuboDeformavelMesh.js
     */
-    deformarVerticePorProximidade(xAlvo:float, yAlvo:float, zAlvo:float, raio:float, intensidade:float) : void
+    public deformarVerticePorProximidade(xAlvo:float, yAlvo:float, zAlvo:float, raio:float, intensidade:float) : void
     {
         const vertices : Array<float>  = this.getPositions();
 
@@ -1088,7 +1087,7 @@ export class OBJMesh extends VisualMesh
         this.renderer.atualizarVerticesPosicao( this, vertices );
     }
 
-    atualizarDesenho() : void
+    public atualizarDesenho() : void
     {
         // Atributos visuais 
         const meshConfig : VisualMeshConfig  = this.meshConfig;
@@ -1159,7 +1158,7 @@ export class OBJMesh extends VisualMesh
         //debugger
     }
 
-    criar() : void
+    public criar() : void
     {
         this.atualizarDesenho();
     }

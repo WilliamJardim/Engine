@@ -54,7 +54,7 @@ export class Triangulo3DMesh extends VisualMesh
         this.criar();
     }
 
-    getPositions() : Array<float>
+    public getPositions() : Array<float>
     {
         return [
             // Base (quadrado)
@@ -68,7 +68,7 @@ export class Triangulo3DMesh extends VisualMesh
         ];
     }
 
-    getIndices() : Array<float>
+    public getIndices() : Array<float>
     {
         return [
             // Base (2 triângulos)
@@ -83,7 +83,7 @@ export class Triangulo3DMesh extends VisualMesh
         ];
     }
 
-    getFaceColors() : Matrix<float>
+    public getFaceColors() : Matrix<float>
     {
         const nivelTransparencia = this.getTransparencia();
 
@@ -97,7 +97,7 @@ export class Triangulo3DMesh extends VisualMesh
         ];
     }
 
-    getColors() : Array<float>
+    public getColors() : Array<float>
     {
         const faceColors : Matrix<float>  = this.getFaceColors();
 
@@ -113,7 +113,7 @@ export class Triangulo3DMesh extends VisualMesh
         return cores;
     }
 
-    atualizarDesenho() : void
+    public atualizarDesenho() : void
     {
         // Atributos visuais 
         const meshConfig : VisualMeshConfig  = this.meshConfig;
@@ -182,7 +182,7 @@ export class Triangulo3DMesh extends VisualMesh
                     // Chama o drawElements para DESENHAR O OBJETO
     }
 
-    criar() : void
+    public criar() : void
     {
         this.atualizarDesenho();
     }

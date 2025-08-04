@@ -74,7 +74,7 @@ export class CuboDeformavelMesh extends VisualMesh
     /**
     * Obtem as posições de renderização do cubo 
     */
-    getPositions() : Array<float>
+    public getPositions() : Array<float>
     {
         return [
             // Front
@@ -95,7 +95,7 @@ export class CuboDeformavelMesh extends VisualMesh
     /**
     * Obtem os indices de renderização do cubo 
     */
-    getIndices() : Array<float>
+    public getIndices() : Array<float>
     {
         return [
             0, 1, 2,    0, 2, 3,     // front
@@ -110,7 +110,7 @@ export class CuboDeformavelMesh extends VisualMesh
     /**
     * Obtem as cores das faces do cubo, usados na renderização do cubo 
     */
-    getFaceColors() : Matrix<float>
+    public getFaceColors() : Matrix<float>
     {
         // A implantação em C++ seria diferente
         const nivelTransparencia = this.getTransparencia();
@@ -128,7 +128,7 @@ export class CuboDeformavelMesh extends VisualMesh
     /**
     * Cria o vetor de cores usando o getFaceColors
     */
-    getColors() : Array<float>
+    public getColors() : Array<float>
     {
         const faceColors = this.getFaceColors();
 
@@ -147,7 +147,7 @@ export class CuboDeformavelMesh extends VisualMesh
     * Implementação do método desenhar para especificamente desenhar um cubo
     * Converte a representação desse Mesh para desenhos com WebGL
     */
-    atualizarDesenho() : void
+    public atualizarDesenho() : void
     {
         // Atributos visuais 
         const meshConfig : VisualMeshConfig  = this.meshConfig;
@@ -221,7 +221,7 @@ export class CuboDeformavelMesh extends VisualMesh
     * Metodo chamado logo após o fim do construtor, quanto todos os parametros necessários já foram atribudos
     * Cria o cubo em si, usando o WebGL 
     */
-    criar() : void
+    public criar() : void
     {
         this.atualizarDesenho();
     }
@@ -229,7 +229,7 @@ export class CuboDeformavelMesh extends VisualMesh
     /**
     * Causa uma deformação no cubo em torno de um ponto de origem
     */
-    deformarVerticePorProximidade(xAlvo:float, yAlvo:float, zAlvo:float, raio:float, intensidade:float) 
+    public deformarVerticePorProximidade(xAlvo:float, yAlvo:float, zAlvo:float, raio:float, intensidade:float) 
     {
         const vertices = this.verticesAtuais;
 
@@ -256,7 +256,7 @@ export class CuboDeformavelMesh extends VisualMesh
     /**
     * Volta o cubo em seu estado original sem as deformações 
     */
-    restaurarFormaOriginal() 
+    public restaurarFormaOriginal() 
     {
         this.verticesAtuais = this.verticesOriginais.slice();
 

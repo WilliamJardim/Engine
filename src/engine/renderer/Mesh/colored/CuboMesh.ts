@@ -66,7 +66,7 @@ export class CuboMesh extends VisualMesh
     /**
     * Obtem as posições de renderização do cubo 
     */
-    getPositions() : Array<float>
+    public getPositions() : Array<float>
     {
         return [
             // Front
@@ -87,7 +87,7 @@ export class CuboMesh extends VisualMesh
     /**
     * Obtem os indices de renderização do cubo 
     */
-    getIndices() : Array<float>
+    public getIndices() : Array<float>
     {
         return [
             0, 1, 2,    0, 2, 3,     // front
@@ -102,7 +102,7 @@ export class CuboMesh extends VisualMesh
     /**
     * Obtem as cores das faces do cubo, usados na renderização do cubo 
     */
-    getFaceColors() : Matrix<float>
+    public getFaceColors() : Matrix<float>
     {
         // A implantação em C++ seria diferente
         const nivelTransparencia = this.getTransparencia();
@@ -120,7 +120,7 @@ export class CuboMesh extends VisualMesh
     /**
     * Cria o vetor de cores usando o getFaceColors
     */
-    getColors() : Array<float>
+    public getColors() : Array<float>
     {
         const faceColors : Matrix<float>  = this.getFaceColors();
 
@@ -138,7 +138,7 @@ export class CuboMesh extends VisualMesh
     * Implementação do método desenhar para especificamente desenhar um cubo
     * Converte a representação desse Mesh para desenhos com WebGL
     */
-    atualizarDesenho() : void
+    public atualizarDesenho() : void
     {
         // Atributos visuais 
         const meshConfig : VisualMeshConfig  = this.meshConfig;
@@ -212,7 +212,7 @@ export class CuboMesh extends VisualMesh
     * Metodo chamado logo após o fim do construtor, quanto todos os parametros necessários já foram atribudos
     * Cria o cubo em si, usando o WebGL 
     */
-    criar() : void
+    public criar() : void
     {
         this.atualizarDesenho();
     }

@@ -64,7 +64,7 @@ export class CilindroMesh extends VisualMesh
     /**
     * Obtem as posições de renderização do cilindro 
     */
-    getPositions() : Array<float>
+    public getPositions() : Array<float>
     {
         const N         : int  = 32; // Mais pontos = mais suave
         const altura    : int  = 2;
@@ -110,7 +110,7 @@ export class CilindroMesh extends VisualMesh
     /**
     * Obtem os indices de renderização do cilindro 
     */
-    getIndices() : Array<float>
+    public getIndices() : Array<float>
     {
         const N       : int          = 32;
         const indices : Array<float> = [];
@@ -150,7 +150,7 @@ export class CilindroMesh extends VisualMesh
     /**
     * Obtem as cores das faces do cilindro, usados na renderização do cilindro 
     */
-    getFaceColors()
+    public getFaceColors()
     {
        // NAO USADO 
     }
@@ -158,7 +158,7 @@ export class CilindroMesh extends VisualMesh
     /**
     * Cria o vetor de cores usando o getFaceColors
     */
-    getColors() : Array<float>
+    public getColors() : Array<float>
     { 
         const N = 32;
         const nivelTransparencia = this.getTransparencia();
@@ -180,7 +180,7 @@ export class CilindroMesh extends VisualMesh
     * Implementação do método desenhar para especificamente desenhar um cilindro
     * Converte a representação desse Mesh para desenhos com WebGL
     */
-    atualizarDesenho() : void
+    public atualizarDesenho() : void
     {
         // Atributos visuais 
         const meshConfig : VisualMeshConfig  = this.meshConfig;
@@ -254,7 +254,7 @@ export class CilindroMesh extends VisualMesh
     * Metodo chamado logo após o fim do construtor, quanto todos os parametros necessários já foram atribudos
     * Cria o cilindro em si, usando o WebGL 
     */
-    criar() : void
+    public criar() : void
     {
         this.atualizarDesenho();
     }

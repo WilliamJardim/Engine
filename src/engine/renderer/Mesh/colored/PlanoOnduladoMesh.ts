@@ -76,7 +76,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Obtem as posições de renderização do cubo 
     */
-    getPositions() : Array<float>
+    public getPositions() : Array<float>
     {
         const positions   : Array<float>  = [];
         const largura     : float         = 10;
@@ -103,7 +103,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Obtem os indices de renderização do cubo 
     */
-    getIndices() : Array<float>
+    public getIndices() : Array<float>
     {
         const indices     : Array<float>  = [];
         const subdivisoes : float         = 100;
@@ -124,7 +124,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Obtem as cores das faces do cubo, usados na renderização do cubo 
     */
-    getFaceColors() : Array<float>
+    public getFaceColors() : Array<float>
     {
         return [];
     }
@@ -132,7 +132,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Cria o vetor de cores usando o getFaceColors
     */
-    getColors() : Array<float>
+    public getColors() : Array<float>
     {
         const cores              : Array<float>    = [];
         const vertices           : Array<float>    = this.getPositions();
@@ -152,7 +152,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     * Implementação do método desenhar para especificamente desenhar um cubo
     * Converte a representação desse Mesh para desenhos com WebGL
     */
-    atualizarDesenho() : void
+    public atualizarDesenho() : void
     {
         // Atributos visuais 
         const meshConfig = this.meshConfig;
@@ -226,7 +226,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     * Metodo chamado logo após o fim do construtor, quanto todos os parametros necessários já foram atribudos
     * Cria o cubo em si, usando o WebGL 
     */
-    criar() : void
+    public criar() : void
     {
         this.atualizarDesenho();
     }
@@ -234,7 +234,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     /**
     * Pode subir ou afundar os pontos deste plano
     */
-    elevarPico(xAlvo:float, zAlvo:float, raio:float, intensidade:float) : void
+    public elevarPico(xAlvo:float, zAlvo:float, raio:float, intensidade:float) : void
     {
         const vertices : Array<float>  = this.getPositions();
         for (let i:int = 0; i < vertices.length; i += 3) 
@@ -258,7 +258,7 @@ export class PlanoOnduladoMesh extends VisualMesh
     * Pode subir ou afundar os pontos deste plano
     * Versão melhorada para criar animações
     */
-    elevarPicoParaAnimacao(xAlvo:float, zAlvo:float, raio:float, intensidade:float, tempo:float) : void
+    public elevarPicoParaAnimacao(xAlvo:float, zAlvo:float, raio:float, intensidade:float, tempo:float) : void
     {
         const vertices : Array<float>  = this.vertices;
         for (let i:int = 0; i < vertices.length; i += 3) 

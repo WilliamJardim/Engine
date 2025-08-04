@@ -95,16 +95,11 @@ export default class CameraInstance
     }
 
     /**
-    * Quando o jogador mover o mouse pra alguma direção, com o intuito de movimentar a direção da camera 
+    * Calcula qual deve ser a sensibilidade da camera, de acordo com o FPS definido no limite de FPS.
+    * Eu tive a ideia de criar isso pra impedir que a camera se mova devagar demais ou rapido demais, dependendo do FPS
     */
-    public onMoverMouse(): void
+    public getSensibilidadeLimitadaAoFPS(): float
     {
-        // Detecta se virou pra esquerda ou direita, da origem
-        const viradaEsquerdaOrigem : boolean  = this.miraCamera.x >= 1.4918051575931215  ? true : false;
-        const viradaDireitaOrigem  : boolean  = this.miraCamera.y <= -1.4918051575931215 ? true : false;
-
-        // OBS: ele ja tem as informações sobre a posição X e Y do mouse, pois nesse momento, ja recebeu pela chamada da função receberInformacoesTecladoMouse que é feita no meu renderizador
-        
         // OBS: Pra evitar problemas com camera muito rapida, eu reduzo a sensibilidade de acordo com o FPS
         let amortecedorSensibilidadeMouse = 1;
 
@@ -129,6 +124,21 @@ export default class CameraInstance
             amortecedorSensibilidadeMouse = 0.003 * this.LimiteFPS;
         }
 
+        return amortecedorSensibilidadeMouse;
+    }
+
+    /**
+    * Quando o jogador mover o mouse pra alguma direção, com o intuito de movimentar a direção da camera 
+    */
+    public onMoverMouse(): void
+    {
+        // Detecta se virou pra esquerda ou direita, da origem
+        const viradaEsquerdaOrigem : boolean  = this.miraCamera.x >= 1.4918051575931215  ? true : false;
+        const viradaDireitaOrigem  : boolean  = this.miraCamera.y <= -1.4918051575931215 ? true : false;
+
+        // OBS: ele ja tem as informações sobre a posição X e Y do mouse, pois nesse momento, ja recebeu pela chamada da função receberInformacoesTecladoMouse que é feita no meu renderizador
+        const amortecedorSensibilidadeMouse : float  = this.getSensibilidadeLimitadaAoFPS();
+        
         // Atualiza a mira X e Y da camera
         this.miraCamera.x -= (this.sensibilidade * amortecedorSensibilidadeMouse) * this.infoPosicaoMouse.y;
         this.miraCamera.y += (this.sensibilidade * amortecedorSensibilidadeMouse) * this.infoPosicaoMouse.x;

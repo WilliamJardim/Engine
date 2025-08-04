@@ -118,5 +118,5 @@ E isso também explicaria o por que em alguns casos, alguns objetos conseguem id
 BUG: os cubos ao ficarem no chão, andando levemente com a força restantante do arremeço inicial que eu faço, eles as vezes afundam no chão
 Aconteceu umas 3 vezes
 
-# 04/08/2025 16:47 PM - Quanto o FPS é maior que 60, a sensibilidade da camera começa a ficar alta
+# 04/08/2025 16:47 PM - Quanto o FPS é maior que 60, a sensibilidade da camera começa a ficar alta (RESOLVIDO 17:44 PM)
 Quanto mais eu aumento o FPS, mais a sensibilidade da camera fica alta. Isso torna dificil de controlar ela.

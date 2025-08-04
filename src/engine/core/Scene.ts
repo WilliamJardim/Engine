@@ -43,6 +43,7 @@ export default class Scene
     public sceneConfig    : SceneConfig;
     public inputListener  : InputListener;
     public sceneCounter   : FrameCounter;
+    public LimiteFPS      : int; // Vai receber do RenderizadorCena.ts, apenas pra consulta
 
     public gravity                              : Position3D;
     public normalSpeed                          : float = 0.05;
@@ -90,6 +91,8 @@ export default class Scene
         this.refCameraAtiva = null;
 
         this.idJogadorAtivo = "NENHUM";
+
+        this.LimiteFPS = sceneConfig.LimiteFPS; // Vai receber do RenderizadorCena.ts, apenas pra consulta
 
         // Informações sobre o teclado e mouse(vão ser atualizadas via função atualizarDadosTecladoMouse)
         this.infoPosicaoMouse = {
@@ -1004,6 +1007,9 @@ export default class Scene
         // Se o ponteiro não for null, e se o ID da camera não for valor invalido(no caso, eu defini -1 como sendo um valor invalido)
         if( cameraAtual != null && this.idCameraAtiva != -1 )
         {
+            // Repassa o limite de FPs que eu defini no RenderizadorCena.ts
+            cameraAtual.LimiteFPS = this.LimiteFPS;
+
             // Repassa as informações de teclado e mouse que o meu renderizador recebeu da minha camada de entrada
             cameraAtual.receberInformacoesTecladoMouse( this.infoPosicaoMouse, this.infoTeclasTeclado );
 

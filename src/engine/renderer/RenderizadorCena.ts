@@ -52,7 +52,7 @@ export default class RenderizadorCena
     public firstRender                : boolean = true;
     public provavelmentePronto        : boolean = false; // Sinaliza se os objetos iniciais foram carregados
     public executandoRenderizacao     : boolean = false; // Sinaliza se a Engine já está funcionando ou não
-    public LimiteFPS                  : int     = 60;   // Limita o FPS para 60 frames por segundo
+    public LimiteFPS                  : int     = 10;   // Limita o FPS para 60 frames por segundo
 
     // Armazena todos os OBJ lidos por essa Engine gráfica
     public objLidos                   : Mapa<string, ObjString>;
@@ -70,7 +70,8 @@ export default class RenderizadorCena
         this.engineScene = new Scene({
             inputListener                  : this.inputListener,
             haveWind                       : true, // A cena vai ter vento
-            enable_advanced_frame_tracking : true
+            enable_advanced_frame_tracking : true,
+            LimiteFPS                      : this.LimiteFPS // Repassa o LimiteFPS apenas pra consulta
         });
 
         // Configuração da renderização da Engine

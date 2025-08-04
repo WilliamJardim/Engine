@@ -11,7 +11,7 @@ import KeyDetection from "../interfaces/both_engines/KeyDetection";
 import Position2D from "../interfaces/main_engine/Position2D";
 import Position3D from "../interfaces/main_engine/Position3D";
 import ConfigCamera from "../interfaces/both_engines/CameraConfig";
-import { float } from "../types/types-cpp-like";
+import { float, int } from "../types/types-cpp-like";
 import { calcularDirecaoCamera, calcularDireitaCamera } from "../utils/render_engine/math";
 
 export default class CameraInstance
@@ -27,11 +27,15 @@ export default class CameraInstance
     public infoPosicaoMouse            : Position2D;
     public infoTeclasTeclado           : KeyDetection;
 
+    public LimiteFPS                   : int; // Vai receber do Scene.ts, apenas pra consulta
+
     constructor( cameraConfig:ConfigCamera )
     {
         /**
         * Configurações da camera 
         */
+
+        this.LimiteFPS = 0; // Vai receber do Scene.ts, apenas pra consulta
 
         this.nome = cameraConfig.nome;
         this.id   = (this.nome) + String(new Date().getTime());
@@ -100,10 +104,34 @@ export default class CameraInstance
         const viradaDireitaOrigem  : boolean  = this.miraCamera.y <= -1.4918051575931215 ? true : false;
 
         // OBS: ele ja tem as informações sobre a posição X e Y do mouse, pois nesse momento, ja recebeu pela chamada da função receberInformacoesTecladoMouse que é feita no meu renderizador
+        
+        // OBS: Pra evitar problemas com camera muito rapida, eu reduzo a sensibilidade de acordo com o FPS
+        let amortecedorSensibilidadeMouse = 1;
+
+        if( this.LimiteFPS < 16 )
+        {
+            amortecedorSensibilidadeMouse = 0.13 * this.LimiteFPS;
+        }
+
+        if( this.LimiteFPS >= 16 && this.LimiteFPS < 40 )
+        {
+            amortecedorSensibilidadeMouse = 0.05 * this.LimiteFPS;
+        }
+
+        if( this.LimiteFPS >= 40 && this.LimiteFPS <= 100 )
+        { 
+            amortecedorSensibilidadeMouse = 0.016 * this.LimiteFPS; // Baseado na diferença da sensibilidade que eu usava antes pra agora vezes o FPS atual
+        
+        }else if( this.LimiteFPS > 100 && this.LimiteFPS <= 120 ){
+            amortecedorSensibilidadeMouse = 0.007 * this.LimiteFPS;
+
+        }else if( this.LimiteFPS > 120 ){
+            amortecedorSensibilidadeMouse = 0.003 * this.LimiteFPS;
+        }
 
         // Atualiza a mira X e Y da camera
-        this.miraCamera.x -= this.sensibilidade * this.infoPosicaoMouse.y;
-        this.miraCamera.y += this.sensibilidade * this.infoPosicaoMouse.x;
+        this.miraCamera.x -= (this.sensibilidade * amortecedorSensibilidadeMouse) * this.infoPosicaoMouse.y;
+        this.miraCamera.y += (this.sensibilidade * amortecedorSensibilidadeMouse) * this.infoPosicaoMouse.x;
     }
 
     /**

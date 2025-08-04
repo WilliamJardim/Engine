@@ -52,9 +52,9 @@ export default class CameraRenderizador
         /**
         * Configurações de sensibilidade, limite de rotação, etc... 
         */
-        this.sensibilidade = cameraConfig.sensibilidade;
+        this.sensibilidade         = cameraConfig.sensibilidade;
         this.limiteMiraCimaBaixo   = cameraConfig.limiteMiraCimaBaixo || 1.6183333333333352;
-        this.passosAndar   = cameraConfig.passosAndar;
+        this.passosAndar           = cameraConfig.passosAndar;
 
         /**
         * Configurações de movimentação da camera
@@ -98,113 +98,19 @@ export default class CameraRenderizador
     }
 
     /**
-    * Quando o jogador mover o mouse pra alguma direção, com o intuito de movimentar a direção da camera 
+    * NOTA, 04/08/2025 15:35 PM: As funções: onMoverMouse, onLimitarMiraCamera, onAndarCamera foram movidas para dentro do meu arquivo CameraInstance.ts da minha outra engine: a engine principal de logica 
     */
-    onMoverMouse(): void
-    {
-        // Detecta se virou pra esquerda ou direita, da origem
-        const viradaEsquerdaOrigem : boolean  = this.miraCamera.x >= 1.4918051575931215  ? true : false;
-        const viradaDireitaOrigem  : boolean  = this.miraCamera.y <= -1.4918051575931215 ? true : false;
-
-        // OBS: ele ja tem as informações sobre a posição X e Y do mouse, pois nesse momento, ja recebeu pela chamada da função receberInformacoesTecladoMouse que é feita no meu renderizador
-
-        // Atualiza a mira X e Y da camera
-        this.miraCamera.x -= this.sensibilidade * this.infoPosicaoMouse.y;
-        this.miraCamera.y += this.sensibilidade * this.infoPosicaoMouse.x;
-    }
 
     /**
-    * Limita a mira da camera 
-    */
-    onLimitarMiraCamera(): void
-    {
-        // Mantem a rotação Y da camera estavel( o X nesse caso representa o Y por que eu criei invertido na logica )
-        if( this.miraCamera.x > this.limiteMiraCimaBaixo )
-        {
-            this.miraCamera.x = this.limiteMiraCimaBaixo;
-        }
-        if( this.miraCamera.x < -this.limiteMiraCimaBaixo )
-        {
-            this.miraCamera.x = -this.limiteMiraCimaBaixo;
-        }
-    }
-
-    /**
-    * Quando o jogador precionar as teclas do teclado, com o intuito de fazer a camera andar
-    */
-    onAndarCamera( frameDelta:float ): void
-    {
-        // Se está correndo
-        if( this.infoTeclasTeclado.SHIFT == true )
-        {
-            this.passosAndar = 3.5;
-
-        // Se está andando
-        }else{
-            this.passosAndar = 0.9;
-        }
-        
-        // Calcula a direção da câmera com base na rotação
-        const vetorMiraCamera: Array<float> = [
-                                                this.miraCamera.x,  // X
-                                                this.miraCamera.y,  // Y
-                                                this.miraCamera.z   // Z
-                                              ];
-
-        const direcao : Array<float>   = calcularDirecaoCamera(vetorMiraCamera);
-
-        // Calcula o vetor "direita" (eixo X local)
-        const direita : Array<float>   = calcularDireitaCamera(direcao);
-
-        // Aplica movimentação com base em eixos locais
-        const velocidadeFinal : float  = this.passosAndar * frameDelta;
-
-        if (this.infoTeclasTeclado.W == true) 
-        {
-            this.posicaoCamera.x += direcao[0] * velocidadeFinal;
-            this.posicaoCamera.y += direcao[1] * velocidadeFinal;
-            this.posicaoCamera.z += direcao[2] * velocidadeFinal;
-        }
-        if (this.infoTeclasTeclado.S == true) 
-        {
-            this.posicaoCamera.x -= direcao[0] * velocidadeFinal;
-            this.posicaoCamera.y -= direcao[1] * velocidadeFinal;
-            this.posicaoCamera.z -= direcao[2] * velocidadeFinal;
-        }
-        if (this.infoTeclasTeclado.A == true) 
-        {
-            this.posicaoCamera.x += direita[0] * velocidadeFinal;
-            this.posicaoCamera.y += direita[1] * velocidadeFinal;
-            this.posicaoCamera.z += direita[2] * velocidadeFinal;
-        }
-        if (this.infoTeclasTeclado.D == true) 
-        {
-            this.posicaoCamera.x -= direita[0] * velocidadeFinal;
-            this.posicaoCamera.y -= direita[1] * velocidadeFinal;
-            this.posicaoCamera.z -= direita[2] * velocidadeFinal;
-        }
-    }
-
-    /**
+    * NAO USADO
     * Atualiza essa camera 
+    * ATENÇÂO: Esse método não foi planejado para ser usado para criar regras de jogo.
+    * As regras de jogo com respeito a cameras vão estar na parte de lógica de cameras, na engine principal.
     */
     atualizarCamera( frameDelta:float )
     {
-        /** 
-        * Obtem as informações atualizadas sobre o mouse e o teclado, que a camera recebeu do meu renderizador, 
-        * que por sua vez, recebeu da minha camada de entrada
+        /**
+        * Nova mudança 04/08/2025: transferi a lógica de atualização de camera para a classe CameraInstance.ts da minha outra engine: a engine principal de logica 
         */
-
-        // OBS: ele ja tem as informações sobre a posição X e Y do mouse, pois nesse momento, ja recebeu pela chamada da função receberInformacoesTecladoMouse que é feita no meu renderizador
-
-        // Atualiza a posição da camera quando o jogador mover o mouse
-        this.onMoverMouse();
-        
-        // Limita o mouse
-        this.onLimitarMiraCamera();
-
-        // Faz o movimento da camera, controlada pelo jogador
-        this.onAndarCamera( frameDelta );
-
     }
 }

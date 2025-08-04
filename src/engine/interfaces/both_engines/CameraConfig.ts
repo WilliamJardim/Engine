@@ -16,6 +16,6 @@ export default interface ConfigCamera
     miraCamera           : Position3D;
     posicaoCamera        : Position3D;
     sensibilidade        : float;
-    limiteMiraCimaBaixo  : float
+    limiteMiraCimaBaixo  : float;
     passosAndar          : float;
 }

@@ -19,7 +19,7 @@ export default class InputListener
         const contexto = this;
 
         this.keyDetection  = { 
-                              SHIFT      : false,
+                               SHIFT      : false,
                                W          : false,
                                A          : false,
                                S          : false,

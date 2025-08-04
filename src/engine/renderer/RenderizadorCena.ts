@@ -52,7 +52,7 @@ export default class RenderizadorCena
     public firstRender                : boolean = true;
     public provavelmentePronto        : boolean = false; // Sinaliza se os objetos iniciais foram carregados
     public executandoRenderizacao     : boolean = false; // Sinaliza se a Engine já está funcionando ou não
-    public LimiteFPS                  : int     = 30;   // Limita o FPS para 60 frames por segundo
+    public LimiteFPS                  : int     = 60;   // Limita o FPS para 60 frames por segundo
 
     // Armazena todos os OBJ lidos por essa Engine gráfica
     public objLidos                   : Mapa<string, ObjString>;
@@ -499,9 +499,13 @@ export default class RenderizadorCena
                 const frameDelta               : float  = context.engineScene.sceneCounter.calculateFrameDelta(); // Tempo entre frames
                 const frameNumber              : float  = context.engineScene.sceneCounter.getFrameNumber();
 
+                // Fornece as informações atualizadas de teclado e mouse para a engine de logica pra usar nas cameras
+                context.engineScene.receberInformacoesTecladoMouse( context.inputListener.mousePosition, 
+                                                                    context.inputListener.keyDetection );
+
                 // Fornece as informações atualizadas de teclado e mouse para o renderizador usar nas cameras
                 context.renderizador.receberInformacoesTecladoMouse( context.inputListener.mousePosition, 
-                                                                    context.inputListener.keyDetection );
+                                                                     context.inputListener.keyDetection );
 
                 // Só chama o loop da minha engine se o renderizador já está apto para renderizar coisas
                 context.engineScene.loop( frameDelta, 

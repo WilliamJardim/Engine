@@ -1427,13 +1427,17 @@ export class Renderer
             // Repassa as informações de teclado e mouse que o meu renderizador recebeu da minha camada de entrada
             cameraAtual.receberInformacoesTecladoMouse( this.infoPosicaoMouse, this.infoTeclasTeclado );
 
-            // Atualiza a camera atual
-            cameraAtual.atualizarCamera( this.lastFrameDelta );
+            // Nova mudança 04/08/2025: transferi a lógica de atualização de camera para a classe CameraInstance.ts da minha outra engine: a engine principal de logica
+            // No entando, mantive a função receberInformacoesTecladoMouse, para reter informações uteis de teclado e mouse na classe CameraRenderizador.ts caso eu precise depois.
+            // Atualiza a camera atual(uma atualização que não envolve regras de jogo nem regras de movimentação de personagem)
+            //cameraAtual.atualizarCamera( this.lastFrameDelta );
+
+            // IMPORTANTE: A MINHA ENGINE DE LOGICA ELA JA CALCULA A MOVIMENTAÇÂO E ROTAÇÂO DA CAMERA, ENTÂO O receberInformacoesTecladoMouse aqui nem está sendo usado pra nada. Mais mantive por que eu quis, conforme expliquei.
 
             // Repassa as informações da camera atual para as variaveis do meu renderizador que controlam a camera
-            this.miraCamera[0] = cameraAtual.miraCamera.x;
-            this.miraCamera[1] = cameraAtual.miraCamera.y;
-            this.miraCamera[2] = cameraAtual.miraCamera.z;
+            this.miraCamera[0]    = cameraAtual.miraCamera.x;
+            this.miraCamera[1]    = cameraAtual.miraCamera.y;
+            this.miraCamera[2]    = cameraAtual.miraCamera.z;
             this.posicaoCamera[0] = cameraAtual.posicaoCamera.x;
             this.posicaoCamera[1] = cameraAtual.posicaoCamera.y;
             this.posicaoCamera[2] = cameraAtual.posicaoCamera.z;

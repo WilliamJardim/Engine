@@ -35,6 +35,8 @@ import { LightInstance }     from './LightInstance.ts';
 import { PipelineCallback } from 'stream';
 import CameraInstance from './CameraInstance.ts';
 import Player from './Player.ts';
+import Position2D from '../interfaces/main_engine/Position2D.ts';
+import KeyDetection from '../interfaces/both_engines/KeyDetection.ts';
 
 export default class Scene
 {
@@ -54,6 +56,10 @@ export default class Scene
     public objects               : Array<Ponteiro<AbstractObjectBase>>;
     public lights                : Array<Ponteiro<LightInstance>>;
     public sounds                : Array<Ponteiro<LocalSound>>;
+
+    // Informações sobre o teclado e mouse
+    public infoPosicaoMouse      : Position2D;
+    public infoTeclasTeclado     : KeyDetection;
 
     public cameras               : Array<Ponteiro<CameraInstance>>;
     public idCameraAtiva         : int;   // O ID da camera atual é um numero
@@ -84,6 +90,23 @@ export default class Scene
         this.refCameraAtiva = null;
 
         this.idJogadorAtivo = "NENHUM";
+
+        // Informações sobre o teclado e mouse(vão ser atualizadas via função atualizarDadosTecladoMouse)
+        this.infoPosicaoMouse = {
+            x: 0,
+            y: 0,
+        }
+        this.infoTeclasTeclado = { 
+                               SHIFT      : false,
+                               W          : false,
+                               A          : false,
+                               S          : false,
+                               D          : false,
+                               ArrowUp    : false,
+                               ArrowDown  : false,
+                               ArrowLeft  : false,
+                               ArrowRight : false 
+                            };
 
         this.usarTrocaCameraLivre = false; // Se for true, permite que eu mude a camera a qualquer momento. Pensei nisso para poder criar cenas externas a visão do jogador
 
@@ -167,6 +190,27 @@ export default class Scene
         /**
         * FIM DAS INICIALIZAÇÔES QUE NÂO PRECISAM EM C++ 
         */
+    }
+
+    /**
+    * Chamado no arquivo principal, para atualizar as informações de teclado e mouse, que serão usadas por exemplo nos calculos de movimentação e rotação da camera do jogador
+    */
+    receberInformacoesTecladoMouse( infoPosicaoMouse: Position2D, infoTeclasTeclado: KeyDetection ): void
+    {
+        // Atualiza a posição do mouse, do meu renderizador
+        this.infoPosicaoMouse.x = infoPosicaoMouse.x;
+        this.infoPosicaoMouse.y = infoPosicaoMouse.y;
+
+        // Atualiza as teclas do teclado
+        this.infoTeclasTeclado.W = infoTeclasTeclado.W;
+        this.infoTeclasTeclado.A = infoTeclasTeclado.A;
+        this.infoTeclasTeclado.S = infoTeclasTeclado.S;
+        this.infoTeclasTeclado.D = infoTeclasTeclado.D;
+        this.infoTeclasTeclado.ArrowUp    = infoTeclasTeclado.ArrowUp;
+        this.infoTeclasTeclado.ArrowDown  = infoTeclasTeclado.ArrowDown;
+        this.infoTeclasTeclado.ArrowLeft  = infoTeclasTeclado.ArrowLeft;
+        this.infoTeclasTeclado.ArrowRight = infoTeclasTeclado.ArrowRight;
+        this.infoTeclasTeclado.SHIFT      = infoTeclasTeclado.SHIFT;
     }
 
     /**
@@ -516,6 +560,8 @@ export default class Scene
                     renderizadorPronto,
                     frameDelta,
                     frameNumber );
+
+        context.atualizarCameraAtual( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
         context.updateGeneral( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
@@ -940,6 +986,31 @@ export default class Scene
                  // Atualiza o som
                  jogadorAtual.updatePlayer(firstRender, renderizadorPronto, frameDelta, frameNumber);
             }
+        }
+    }
+
+    /**
+    * Atualiza a camera atual repassando os dados pra ela, e chamando a função de atualização, passando o frame dela
+    */
+    public atualizarCameraAtual( firstRender:boolean, renderizadorPronto:boolean, frameDelta:float, frameNumber:int ): void
+    {
+        const cameraAtual    : Ponteiro<CameraInstance>  = this.getCameraAtiva();
+        
+        if( this.idCameraAtiva > this.cameras.length )
+        {
+            console.warn("O this.idCameraAtiva tem um valor invalido!");
+        }
+
+        // Se o ponteiro não for null, e se o ID da camera não for valor invalido(no caso, eu defini -1 como sendo um valor invalido)
+        if( cameraAtual != null && this.idCameraAtiva != -1 )
+        {
+            // Repassa as informações de teclado e mouse que o meu renderizador recebeu da minha camada de entrada
+            cameraAtual.receberInformacoesTecladoMouse( this.infoPosicaoMouse, this.infoTeclasTeclado );
+
+            // Atualiza a camera atual(uma atualização que não envolve regras de jogo nem regras de movimentação de personagem)
+            cameraAtual.atualizarCamera( frameDelta );
+
+            // O RENDERIZADOR VAI PASSAR AS INFORMAÇÔES PARA A CAMERA INTERNA DELE, QUE VAI ESPELHAR ESSA CAMERA
         }
     }
 }

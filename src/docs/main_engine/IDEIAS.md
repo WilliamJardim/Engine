@@ -104,4 +104,11 @@ Isso vai trazer uma obrigação para a cena: *Ter pelo menos um jogador*, pois s
 
 Com isso tive ainda outra ideia: Criar um modo jogador-inspetor, que vai servir para voar livremente pelo cenário, sem receber fisica, nem nenhuma logica de jogo.
 
+# 04/08/2025 16:01 PM
+IDEIA: remover a função getPropriedadesCamera e no lugar dela, acessar os atributos diretamente no RenderizadorCena.ts
+Isso reduz a quantidade de chamadas desnecessarias
+
+# 04/08/2025 16:02 PM
+IDEIA: remover alguns comentários antigos e não usados. Remover chamadas desnecessarias.
+
 

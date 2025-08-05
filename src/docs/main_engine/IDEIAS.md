@@ -78,6 +78,11 @@ Pois fica mais facil manter tudo no Scene.ts, pra não causar confusão e confli
 Isso vai inclusive facilitar pra mim integrar minha classe jogador na fisica e logica do jogo
 eu vou poder criar novos laços de repetição pra tratar os jogadores por exemplo. 
 
+  # 05/08/2025 16:25 PM - IDEIA DE TRANSFERIR OS METODOS DO ObjectBase para o Scene.ts, para simplificar e centralizar tudo
+  Continuei avaliando como vou fazer isso: E eu achei melhor eu começar a transferir os métodos "updatePhysics", "updateCollisionState", "updateMovement", "updateRotation", "updateEvents" e "updateAttachments" para dentro do meu Scene.ts
+
+  
+
 # 03/08/2025 15:35 PM
 Terminar minha classe Player.
 
@@ -111,4 +116,5 @@ Isso reduz a quantidade de chamadas desnecessarias
 # 04/08/2025 16:02 PM (FEITO 16:38 PM)
 IDEIA: remover alguns comentários antigos e não usados. Remover chamadas desnecessarias.
 
-
+# 05/08/2025 16:25
+IDEIA: Tipar os meus callbacks de eventos dos objetos

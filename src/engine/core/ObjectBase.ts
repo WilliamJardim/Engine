@@ -1487,7 +1487,7 @@ export default class ObjectBase extends AbstractObjectBase
                         //Chama o evento whenFall
                         if( eventosObjeto.whenFall != null )
                         {
-                            esteObjeto.callEvent( eventosObjeto.whenFall, {
+                            eventosObjeto.whenFall.bind(esteObjeto)({
                                 self     : esteObjeto,
                                 instante : new Date().getTime()
                             });
@@ -1981,15 +1981,6 @@ export default class ObjectBase extends AbstractObjectBase
     }
 
     /**
-    * Chama um evento 
-    */
-    public callEvent( funcaoEvento:Function, parametros:any ): void
-    {
-        const objeto  = this;
-        funcaoEvento.bind(objeto)( parametros );
-    }
-
-    /**
     * Atualiza os eventos internos do objeto 
     */
     public updateEvents( frameDelta:float ): void
@@ -2051,7 +2042,7 @@ export default class ObjectBase extends AbstractObjectBase
                                     isCollision( objeto, objetoAtualCena, {x: 0.5, y: 0.5, z: 0.5} ) == true 
                                 )
                             ) {
-                                objeto.callEvent( eventosObjeto.whenCollide, {
+                                eventosObjeto.whenCollide.bind(objeto)({
                                     self     : objeto,
                                     target   : objetoAtualCena,
                                     instante : new Date().getTime(),
@@ -2077,7 +2068,7 @@ export default class ObjectBase extends AbstractObjectBase
                                 objetoAtualCena.id != objeto.id &&
                                 isProximity( objeto, objetoAtualCena, objeto.objProps.proximityConfig ) == true
                             ){
-                                objeto.callEvent( eventosObjeto.whenProximity, {
+                                eventosObjeto.whenProximity.bind(objeto)({
                                     self     : objeto,
                                     target   : objetoAtualCena,
                                     instante : new Date().getTime(),

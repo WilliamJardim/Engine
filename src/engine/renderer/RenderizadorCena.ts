@@ -230,7 +230,7 @@ export default class RenderizadorCena
                 //Se o objeto já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
                 if ( this.toRenderAssociation[objetoAtual.id] == null ) 
                 {
-                    const context = this;
+                    const context : RenderizadorCena  = this;
 
                     const atributosObjetos = {
                         tipo: objProps.type,
@@ -293,7 +293,7 @@ export default class RenderizadorCena
                 /**
                 * Atualiza visualmente a posição, rotação e escala dos objetos
                 */
-                let objetoVisual = this.toRenderAssociation.get( objetoAtual.id );
+                let objetoVisual : Ponteiro<VisualMesh>  = this.toRenderAssociation.get( objetoAtual.id );
 
                 // ENQUANTO ESSA LINHA DE CÒDIGO NUNCA FOR EXECUTADA, OS OBJETOS TODOS APARECEM NORMALMENTE
                 // MAIS A PARTIR DO MOMENTO EM QUE ESSA LINHA DE CÒDIGO È EXECUTADA, TUDO SOME

@@ -1,3 +1,5 @@
+Nota adicionada 05/08/2025, [neste commit](https://github.com/WilliamJardim/Engine/commit/43cc499df0a81ba0d2632a874b6a82a45a63c94d)
+
 ## Metas para os futuros lançamentos
 Este arquivo de metas foi criado 05/08/2025 16:30 PM
 

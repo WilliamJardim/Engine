@@ -1,4 +1,4 @@
-**Nota escrita 06/08/2025 17:28 PM**, por William Alves Jardim, explicando a estrutura de classes da minha Engine de logica/física(que está atualmente na subpasta `src/engine/core/`), que eu planejei e construí especificamente para esse projeto, ao longo do desenvolvimento dele.
+**Nota escrita 06/08/2025 17:28 PM**, por William Alves Jardim, adicionada [neste commit](https://github.com/WilliamJardim/Engine/commit/047c23f7cb77d50922d409bc87f827ca39529d25), explicando a estrutura de classes da minha Engine de logica/física(que está atualmente na subpasta `src/engine/core/`), que eu planejei e construí especificamente para esse projeto, ao longo do desenvolvimento dele.
 
 Criei essa nota para descrever em detalhes a estrutura de classes de minha Engine de lógica/fisica, para fins de documentação, aprendizado e posterior consulta por mim caso um dia eu queria migrar meu código pra C++. 
 

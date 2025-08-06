@@ -41,6 +41,7 @@ import ThreadInstance from '../utils/thread/ThreadInstance';
 
 export default class RenderizadorCena
 {
+    public canvasRef                  : React.RefObject<HTMLCanvasElement>; // Coloquei aqui em cima para deixar claro quais recursos do navegador eu uso, para uma possivel migração pra C++
     public engineScene                : Scene;
     public inputListener              : InputListener;
     public toRenderAssociation        : Mapa<string, Ponteiro<VisualMesh>>;
@@ -48,7 +49,6 @@ export default class RenderizadorCena
     public toRenderCameraAssociation  : Mapa<string, Ponteiro<CameraRenderizador>>;
     public renderizador               : Renderer;
     public renderConfig               : RenderConfig;
-    public canvasRef                  : React.RefObject<HTMLCanvasElement>;
     public firstRender                : boolean = true;
     public provavelmentePronto        : boolean = false; // Sinaliza se os objetos iniciais foram carregados
     public executandoRenderizacao     : boolean = false; // Sinaliza se a Engine já está funcionando ou não

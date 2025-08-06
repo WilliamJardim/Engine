@@ -69,6 +69,12 @@ import Position2D from '../../interfaces/main_engine/Position2D.ts';
 import CameraRenderizador from '../CameraRenderizador.ts';
 import ConfigCamera from '../../interfaces/both_engines/CameraConfig.ts';
 
+/**
+* NOTA DE PORTABILIDADE
+* 
+* o "canvas" ele só usa 3 vezes. Ele só define, e usa para criar a instancia de GL do WebGL, que ele precisa do canvas, e é por isso que eu passo ele como parametro. 
+*/
+
 export class Renderer
 {
     public canvas        : React.RefObject<HTMLCanvasElement>;

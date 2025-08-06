@@ -1,7 +1,7 @@
 ## Página inicial da documentação da Engine
 
 ## Detalhes de estrutura atual da Engine
-Neste tópico apresento estrutura de classes e organização que desenvolvi exclusivamente para este projeto.
+Neste tópico apresento estruturas de classes e organização que desenvolvi exclusivamente para este projeto.
 Estou documentando e compartilhando publicamente essas ideias para contribuir com a comunidade e registrar sua autoria.
 
 Os links a seguir explicam resumidamente cada uma dessas estruturas:

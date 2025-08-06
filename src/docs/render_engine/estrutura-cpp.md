@@ -5,9 +5,10 @@ Criei essa nota para descrever em detalhes a estrutura de classes de minha Engin
 Essa é a estrutura que eu planejei para meu código TypeScript ser **100% portável para C++**, fazendo uso de conceitos presentes na linguagem C++ dentro do TypeScript, como **polimorfismo, herança, ponteiros, structs e metodos virtuais.**
 Eu planejei isso e fui construindo essa estrutura gradualmente, ao longo do desenvolvimento desse projeto.
 
-A estrutura atual da minha Engine de renderização é a seguinte, abaixo:
+A estrutura atual da minha Engine de renderização é a seguinte, abaixo, em ordem sequencial:
 
 # Estrutura atual Engine renderização:
+
 Funções globais que chamam o WebGL ou Open GL.
 
 Declaração antecipada do `Renderer.ts`, apenas com os atributos.

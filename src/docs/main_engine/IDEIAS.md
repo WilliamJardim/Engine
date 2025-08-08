@@ -136,7 +136,7 @@ IDEIA: Criar uma Thread só para entrada, para expandir o meu InputListener.ts, 
 
   Hoje dia 08/08/2025, tentei fazer isso, e não consegui: Tentei criar uma nova Thread para ler as entradas de teclado, porém não consegui por conta que eu não consegui ter dois laços de repetição while um para cada thread, sem bloquear a executação no navegador. Então deixei alguns trechos de minha tentativa apenas como exemplo mesmo de ideia para caso eu tente fazer isso de forma diferente no futuro, ou mesmo, tente migrar pra C++. 
 
-# 08/08/2025 19:14 PM
+# 08/08/2025 19:14 PM (TERMINADO PARCIALMENTE 19:55)
 IDEIA: Ao invez de criar uma segunda thread só pra entrada de teclado e mouse, 
 eu posso usar a thread principal mesmo e separar em sub-chamadas de funções mesmo
 
@@ -154,3 +154,7 @@ eu posso usar a thread principal mesmo e separar em sub-chamadas de funções me
   e o loop_entrada estaria rodando na thread principal mesmo, assim tudo continua usando apenas uma unica thread.
   eu poderia até separar os loops por arquivos.
 
+   ## 08/08/2025 19:55 PM
+   Criei a função "loop_principal" para ter toda a lógica de renderização, logica de jogo e fisica.
+
+   E criei as funções "loop_entrada_teclado" e "loop_entrada_mouse", por enquanto em branco, pois são só esbolços do que eu quero fazer.

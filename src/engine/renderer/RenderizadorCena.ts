@@ -518,8 +518,108 @@ export default class RenderizadorCena
     */
 
     /**
+    * @Esbolço
+    * @EtapaThreadPrincipal
+    * @RodaPorFrame 
+    * Etapa de renderização da thread principal, uma sub-função dedicada para fazer o processamento da entrada do teclado. 
+    * 
+    * NOTA DE PORTABILIDADE PRA C++:
+    *   Não precisaria ter "async" depois do "public"
+    *   O "Thread<void>" seria apenas void. Isso é uma função que funcioan de forma sincrona.
+    *   "await" também não existiria.
+    */
+    public async loop_entrada_teclado(): Thread<void>
+    {
+
+    }   
+
+    /**
+    * @Esbolço
+    * @EtapaThreadPrincipal
+    * @RodaPorFrame 
+    * Etapa de renderização da thread principal, uma sub-função dedicada para fazer o processamento da entrada do mouse. 
+    * 
+    * NOTA DE PORTABILIDADE PRA C++:
+    *   Não precisaria ter "async" depois do "public"
+    *   O "Thread<void>" seria apenas void. Isso é uma função que funcioan de forma sincrona.
+    *   "await" também não existiria.
+    */
+    public async loop_entrada_mouse(): Thread<void>
+    {
+
+    }
+
+    /**
+    * @EtapaThreadPrincipal 
+    * @RodaPorFrame
+    * Etapa de renderização da thread principal, uma sub-função dedicada para fazer o processamento da lógica, fisica e renderização, de tudo.
+    * 
+    * Executa uma vez por frame. Ela é chamada a cada frame pelo laço de repetição while, enquanto a minha engine estiver rodando.
+    * Em outras palavras: Executa a cada frame.
+    * 
+    * NOTA DE PORTABILIDADE PRA C++:
+    *   Não precisaria ter "async" depois do "public"
+    *   O "Thread<void>" seria apenas void. Isso é uma função que funcioan de forma sincrona.
+    *   "await" também não existiria.
+    */
+    public async loop_principal(): Thread<void>
+    {
+        const context             : RenderizadorCena = this;
+        const TempoEsperaPorFrame : float            = 1000 / context.LimiteFPS; // Calcula os milisegundos que serão usados para fazer a espera
+
+        //Outras coisas que vão acontecer
+        const milisegundosFrameComecou : float  = context.engineScene.sceneCounter.getTime();
+        const frameDelta               : float  = context.engineScene.sceneCounter.calculateFrameDelta(); // Tempo entre frames
+        const frameNumber              : float  = context.engineScene.sceneCounter.getFrameNumber();
+
+        // Fornece as informações atualizadas de teclado e mouse para a engine de logica pra usar nas cameras
+        context.engineScene.receberInformacoesTecladoMouse( context.armazenamentoEntrada.mousePosition, 
+                                                            context.armazenamentoEntrada.keyDetection );
+
+        // Fornece as informações atualizadas de teclado e mouse para o renderizador usar nas cameras
+        context.renderizador.receberInformacoesTecladoMouse( context.armazenamentoEntrada.mousePosition, 
+                                                             context.armazenamentoEntrada.keyDetection );
+
+        // Só chama o loop da minha engine se o renderizador já está apto para renderizar coisas
+        context.engineScene.loop( frameDelta, 
+                                  frameNumber, 
+                                  context.firstRender, 
+                                  context.provavelmentePronto );
+
+        // Atualiza as cameras
+        context.updateCamerasVisually();
+
+        // Atualiza a visualização dos objetos
+        context.updateObjectsVisually();
+
+        // Atualiza as luzes
+        context.updateLightsVisually();
+
+        // TODO: Atualiza os movimentos da camera
+        
+        // TODO: Renderizar a cena
+
+        // Diz que a primeira renderização já terminou
+        context.firstRender = false;
+
+        const milisegundosFrameTerminou : float  = context.engineScene.sceneCounter.getTime();
+        const diferencaComecouTerminou  : float  = milisegundosFrameTerminou - milisegundosFrameComecou;
+
+        /**
+        * Se a diferença(tempo decorrido neste frame em questão) for menor que o tempo de espera(do FPS) que eu defini, 
+        * ai ele vai aguarda ele completar os milisegundos que faltam pra terminar. 
+        * Porém, caso contrário, se a diferença for maior, vai seguir direto sem dar sleep, pois não precisa.
+        */
+        if( diferencaComecouTerminou < TempoEsperaPorFrame )
+        {
+            // Faz uma pausa, para poder manter o controle do FPS que eu quero
+            await sleep_thread( TempoEsperaPorFrame );
+        }
+    }
+
+    /**
     * @Thread 
-    * Thread principal, responsavel por fazer todas as chamadas necessárias para a renderização. 
+    * Thread principal, responsavel por fazer todas as chamadas necessárias para a lógica e renderização. 
     * 
     * NOTA CASO EU QUEIRA PORTAR PRA C++ UM DIA: 
     *   29/07/2025 22:25 PM
@@ -530,11 +630,15 @@ export default class RenderizadorCena
     *   Tambem não preciso me preocupar com tempo de vida, pois, as variaveis e ponteiros não são destruidos em lugar nenhum.
     *   Se uma thread fizesse uso de alguma variavel ou ponteiro que pode ser destruido em algum momento, eu preciso tratar isso, para a thread não dar crash no programa.
     *   Eu preciso ter certeza de que todas as variaveis que uma thread usa vão estar realmente disponiveis e não tenham sido destruidas.
+    * 
+    * NOTA DE PORTABILIDADE PRA C++:
+    *   Não precisaria ter "async" depois do "public"
+    *   O "Thread<void>" seria apenas void. Isso é uma função que funcioan de forma sincrona.
+    *   "await" também não existiria.
     */
-    public async loop_principal(): Thread<void>
+    public async thread_loop_principal(): Thread<void>
     {
         const context             : RenderizadorCena = this;
-        const TempoEsperaPorFrame : float            = 1000 / context.LimiteFPS; // Calcula os milisegundos que serão usados para fazer a espera
 
         // Se o ponteiro não for null
         if( this.canvasRef.current != null )
@@ -542,57 +646,21 @@ export default class RenderizadorCena
             // Se já estiver rodando
             while( context.executandoRenderizacao == true )
             {
-                //Outras coisas que vão acontecer
-                const milisegundosFrameComecou : float  = context.engineScene.sceneCounter.getTime();
-                const frameDelta               : float  = context.engineScene.sceneCounter.calculateFrameDelta(); // Tempo entre frames
-                const frameNumber              : float  = context.engineScene.sceneCounter.getFrameNumber();
-
-                // Fornece as informações atualizadas de teclado e mouse para a engine de logica pra usar nas cameras
-                context.engineScene.receberInformacoesTecladoMouse( context.armazenamentoEntrada.mousePosition, 
-                                                                    context.armazenamentoEntrada.keyDetection );
-
-                // Fornece as informações atualizadas de teclado e mouse para o renderizador usar nas cameras
-                context.renderizador.receberInformacoesTecladoMouse( context.armazenamentoEntrada.mousePosition, 
-                                                                     context.armazenamentoEntrada.keyDetection );
-
-                // Só chama o loop da minha engine se o renderizador já está apto para renderizar coisas
-                context.engineScene.loop( frameDelta, 
-                                          frameNumber, 
-                                          context.firstRender, 
-                                          context.provavelmentePronto );
-
-                // Atualiza as cameras
-                context.updateCamerasVisually();
-
-                // Atualiza a visualização dos objetos
-                context.updateObjectsVisually();
-
-                // Atualiza as luzes
-                context.updateLightsVisually();
-
-                // TODO: Atualiza os movimentos da camera
-                
-                // TODO: Renderizar a cena
-
-                // Diz que a primeira renderização já terminou
-                context.firstRender = false;
-
-                const milisegundosFrameTerminou : float  = context.engineScene.sceneCounter.getTime();
-                const diferencaComecouTerminou  : float  = milisegundosFrameTerminou - milisegundosFrameComecou;
+                /**
+                * Faz o processamento do teclado e mouse 
+                */
+                await this.loop_entrada_teclado();
+                await this.loop_entrada_mouse();
 
                 /**
-                * Se a diferença(tempo decorrido neste frame em questão) for menor que o tempo de espera(do FPS) que eu defini, 
-                * ai ele vai aguarda ele completar os milisegundos que faltam pra terminar. 
-                * Porém, caso contrário, se a diferença for maior, vai seguir direto sem dar sleep, pois não precisa.
+                * Faz o processamento de logica de jogo, fisica e renderização  
                 */
-                if( diferencaComecouTerminou < TempoEsperaPorFrame )
-                {
-                    // Faz uma pausa, para poder manter o controle do FPS que eu quero
-                    await sleep_thread( TempoEsperaPorFrame );
-                }
+                await this.loop_principal();
             }
-        }   
 
+            // Quando o loop principal terminar
+            this.encerrar();
+        }   
     }
 
     //Função que inicia o loop principal
@@ -609,7 +677,7 @@ export default class RenderizadorCena
         context.executandoRenderizacao = true;
 
         // Cria a Thread principal usada na renderização
-        const thread_principal = new ThreadInstance( context.loop_principal, context ); // Executa a função loop_principal passando o própia context, ou seja, o this
+        const thread_principal = new ThreadInstance( context.thread_loop_principal, context ); // Executa a função loop_principal passando o própia context, ou seja, o this
         thread_principal.detach();
 
         //const thread_entrada  = new ThreadInstance( context.thread_entrada, context );

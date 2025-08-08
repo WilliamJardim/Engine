@@ -135,3 +135,22 @@ IDEIA: Mover o RenderizadorCena.ts para um nivel superior, dentro da pasta `engi
 IDEIA: Criar uma Thread só para entrada, para expandir o meu InputListener.ts, num estilo de código que lembra mais o estilo de código do C++
 
   Hoje dia 08/08/2025, tentei fazer isso, e não consegui: Tentei criar uma nova Thread para ler as entradas de teclado, porém não consegui por conta que eu não consegui ter dois laços de repetição while um para cada thread, sem bloquear a executação no navegador. Então deixei alguns trechos de minha tentativa apenas como exemplo mesmo de ideia para caso eu tente fazer isso de forma diferente no futuro, ou mesmo, tente migrar pra C++. 
+
+# 08/08/2025 19:14 PM
+IDEIA: Ao invez de criar uma segunda thread só pra entrada de teclado e mouse, 
+eu posso usar a thread principal mesmo e separar em sub-chamadas de funções mesmo
+
+  exemplo: 
+
+  thread_loop_principal(): Thread<void>
+  {
+    this.loop_entrada_teclado();
+    this.loop_entrada_mouse();
+    this.loop_principal();
+
+    outros loops aqui...
+  }
+
+  e o loop_entrada estaria rodando na thread principal mesmo, assim tudo continua usando apenas uma unica thread.
+  eu poderia até separar os loops por arquivos.
+

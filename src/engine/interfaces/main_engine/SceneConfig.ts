@@ -7,12 +7,12 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import InputListener from "../../input/InputListener";
-import { int } from "../../types/types-cpp-like";
+import ArmazenadorEntradaTecladoMouse from "../../input/ArmazenadorEntradaTecladoMouse";
+import { int, Ponteiro } from "../../types/types-cpp-like";
 
 export default interface SceneConfig
 {
-    inputListener                  : InputListener;
+    armazenamentoEntrada           : Ponteiro<ArmazenadorEntradaTecladoMouse>;
     haveWind                       : boolean;
     enable_advanced_frame_tracking : boolean; //Se ativado, vai capturar os dados do objeto a cada frame. Por padrão é ativado
     LimiteFPS                      : int;     // Apenas pra consultar mesmo

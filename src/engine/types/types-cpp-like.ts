@@ -18,6 +18,9 @@ export type int = number;
 export type short = number;
 export type long = number;
 
+// ssize_t representa um numero inteiro com sinal
+export type ssize_t = number;
+
 // Tipos de ponto flutuante
 export type float = number;
 export type double = number;

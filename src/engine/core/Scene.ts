@@ -20,7 +20,7 @@ import isCollision           from '../utils/main_engine/isCollision.ts';
 import Wind                  from '../interfaces/main_engine/Wind.ts';
 import FrameCounter          from './FrameCounter.ts';
 import MovementState         from '../interfaces/main_engine/MovementState.ts';
-import InputListener         from "../input/InputListener.ts";
+import ArmazenadorEntradaTecladoMouse from '../input/ArmazenadorEntradaTecladoMouse.ts';
 import SceneConfig           from "../interfaces/main_engine/SceneConfig.ts";
 import Position3D            from "../interfaces/main_engine/Position3D.ts";
 import VelocityStatus        from "../interfaces/main_engine/VelocityStatus.ts";
@@ -40,10 +40,10 @@ import KeyDetection from '../interfaces/both_engines/KeyDetection.ts';
 
 export default class Scene
 {
-    public sceneConfig    : SceneConfig;
-    public inputListener  : InputListener;
-    public sceneCounter   : FrameCounter;
-    public LimiteFPS      : int; // Vai receber do RenderizadorCena.ts, apenas pra consulta
+    public sceneConfig           : SceneConfig;
+    public armazenamentoEntrada  : Ponteiro<ArmazenadorEntradaTecladoMouse>;
+    public sceneCounter          : FrameCounter;
+    public LimiteFPS             : int; // Vai receber do RenderizadorCena.ts, apenas pra consulta
 
     public gravity                              : Position3D;
     public normalSpeed                          : float = 0.05;
@@ -133,8 +133,8 @@ export default class Scene
         this.atrito    = 1;      // Atrito usado na fisica de aceleração/desaceleracao de objetos
         this.arrastoAr = 1;    // Arrast do ar(afeta objetos com aceleração que estiverem no ar)
 
-        this.sceneConfig   = sceneConfig;
-        this.inputListener = sceneConfig.inputListener;
+        this.sceneConfig          = sceneConfig;
+        this.armazenamentoEntrada = sceneConfig.armazenamentoEntrada;
  
         this.sceneCounter  = new FrameCounter( 1000, 1000 );
 

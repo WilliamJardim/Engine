@@ -122,11 +122,16 @@ IDEIA: remover alguns comentários antigos e não usados. Remover chamadas desne
 # 05/08/2025 16:25
 IDEIA: Tipar os meus callbacks de eventos dos objetos
 
-# 06/08/2025 20:31 PM - Thread só para Audio
+# 06/08/2025 20:31 PM - Thread só para Audio (INVIÁVEL)
 IDEIA: Refatorar meu AudioPlayer. Criar uma Thread só para audio, e criar uma estrutura mais proxima do C++ para reprodução de audio.
+
+  Hoje dia 08/08/2025, tentei fazer isso, e não consegui: Tentei criar uma nova Thread para ler as entradas de teclado, porém não consegui por conta que eu não consegui ter dois laços de repetição while um para cada thread, sem bloquear a executação no navegador. Então deixei alguns trechos de minha tentativa apenas como exemplo mesmo de ideia para caso eu tente fazer isso de forma diferente no futuro, ou mesmo, tente migrar pra C++. 
+  POR ISSO THREAD DE AUDIO TAMBEM NÂO VOU CONSEGUIR CRIAR
 
 # 06/08/2025 20:34 PM - Integrador de camadas
 IDEIA: Mover o RenderizadorCena.ts para um nivel superior, dentro da pasta `engine`, e mudar o nome dele para um nome mais geral, tipo "IntegradorCamadasEngine" ou "IntegradorSubEngines", pois eu tive a ideia de chamar as partes da minha engine de camadas: camada de renderização, camada de audio, camada de logica/fisica, camada de entrada, etc...
 
-# 06/08/2025 20:35 PM - Thread de entrada
+# 06/08/2025 20:35 PM - Thread de entrada (INVIÁVEL)
 IDEIA: Criar uma Thread só para entrada, para expandir o meu InputListener.ts, num estilo de código que lembra mais o estilo de código do C++
+
+  Hoje dia 08/08/2025, tentei fazer isso, e não consegui: Tentei criar uma nova Thread para ler as entradas de teclado, porém não consegui por conta que eu não consegui ter dois laços de repetição while um para cada thread, sem bloquear a executação no navegador. Então deixei alguns trechos de minha tentativa apenas como exemplo mesmo de ideia para caso eu tente fazer isso de forma diferente no futuro, ou mesmo, tente migrar pra C++. 

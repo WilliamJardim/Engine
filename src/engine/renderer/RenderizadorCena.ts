@@ -16,8 +16,8 @@ import React          from 'react';
 import ObjectBase     from '../core/ObjectBase';
 import Scene          from '../core/Scene';
 import ObjectProps    from '../interfaces/main_engine/ObjectProps';
-import InputListener  from '../input/InputListener';
 import SceneConfig    from '../interfaces/main_engine/SceneConfig';
+import ArmazenadorEntradaTecladoMouse from '../input/ArmazenadorEntradaTecladoMouse';
 import { float, int, Ponteiro, Thread }   from '../types/types-cpp-like';
 import { Renderer } from './Renderer/Renderer';
 import { calcularDirecaoCamera, calcularDireitaCamera } from '../utils/render_engine/math';
@@ -38,12 +38,13 @@ import CameraRenderizador from './CameraRenderizador';
 import AbstractObjectBase from '../core/AbstractObjectBase';
 import sleep_thread from '../utils/thread/sleep_thread';
 import ThreadInstance from '../utils/thread/ThreadInstance';
+import lerTeclaPrecionada from '../utils/teclado/isPrecionandoTecla';
 
 export default class RenderizadorCena
 {
     public canvasRef                  : React.RefObject<HTMLCanvasElement>; // Coloquei aqui em cima para deixar claro quais recursos do navegador eu uso, para uma possivel migração pra C++
     public engineScene                : Scene;
-    public inputListener              : InputListener;
+    public armazenamentoEntrada       : ArmazenadorEntradaTecladoMouse;
     public toRenderAssociation        : Mapa<string, Ponteiro<VisualMesh>>;
     public toRenderLightsAssociation  : Mapa<string, Ponteiro<LightRenderizador>>;
     public toRenderCameraAssociation  : Mapa<string, Ponteiro<CameraRenderizador>>;
@@ -64,11 +65,11 @@ export default class RenderizadorCena
         this.provavelmentePronto    = false;
         this.executandoRenderizacao = false;
 
-        this.inputListener = new InputListener();
+        this.armazenamentoEntrada = new ArmazenadorEntradaTecladoMouse();
 
         // Cria a cena da Engine
         this.engineScene = new Scene({
-            inputListener                  : this.inputListener,
+            armazenamentoEntrada           : this.armazenamentoEntrada,
             haveWind                       : true, // A cena vai ter vento
             enable_advanced_frame_tracking : true,
             LimiteFPS                      : this.LimiteFPS // Repassa o LimiteFPS apenas pra consulta
@@ -471,6 +472,52 @@ export default class RenderizadorCena
     }
 
     /**
+    * NÂO USADO, 08/08/2025 18:09 PM
+    * NÂO È POSSIVEL FAZER DESSA FORMA EM JAVASCRIPT/TYPESCRIPT para rodar no navegador, por causa que não é possivel rodar loops while true de forma não bloqueante em duas Theads. 
+    * @Thread
+    * Thread para ler o teclado e mouse, responsável por capturar teclas do teclado e movimentos do mouse
+    *
+    public async thread_entrada(): Thread<void>
+    {
+        const context             : RenderizadorCena = this;
+
+        // Se já estiver rodando
+        while( context.executandoRenderizacao == true )
+        {
+            context.armazenamentoEntrada.keyDetection.W = false;
+            context.armazenamentoEntrada.keyDetection.A = false;
+            context.armazenamentoEntrada.keyDetection.S = false;
+            context.armazenamentoEntrada.keyDetection.D = false;
+
+            if( lerTeclaPrecionada( "w" ) == true )
+            {
+                context.armazenamentoEntrada.keyDetection.W = true;
+            }
+
+            if( lerTeclaPrecionada( "a" ) == true )
+            {
+                context.armazenamentoEntrada.keyDetection.A = true;
+            }
+
+            if( lerTeclaPrecionada( "s" ) == true )
+            {
+                context.armazenamentoEntrada.keyDetection.S = true;
+            }
+
+            if( lerTeclaPrecionada( "d" ) == true )
+            {
+                context.armazenamentoEntrada.keyDetection.D = true;
+            }
+
+            if(context.armazenamentoEntrada.keyDetection.W == true)
+            {
+                console.log("asdasdasdsadasddsa");
+            }
+        }
+    }
+    */
+
+    /**
     * @Thread 
     * Thread principal, responsavel por fazer todas as chamadas necessárias para a renderização. 
     * 
@@ -501,12 +548,12 @@ export default class RenderizadorCena
                 const frameNumber              : float  = context.engineScene.sceneCounter.getFrameNumber();
 
                 // Fornece as informações atualizadas de teclado e mouse para a engine de logica pra usar nas cameras
-                context.engineScene.receberInformacoesTecladoMouse( context.inputListener.mousePosition, 
-                                                                    context.inputListener.keyDetection );
+                context.engineScene.receberInformacoesTecladoMouse( context.armazenamentoEntrada.mousePosition, 
+                                                                    context.armazenamentoEntrada.keyDetection );
 
                 // Fornece as informações atualizadas de teclado e mouse para o renderizador usar nas cameras
-                context.renderizador.receberInformacoesTecladoMouse( context.inputListener.mousePosition, 
-                                                                     context.inputListener.keyDetection );
+                context.renderizador.receberInformacoesTecladoMouse( context.armazenamentoEntrada.mousePosition, 
+                                                                     context.armazenamentoEntrada.keyDetection );
 
                 // Só chama o loop da minha engine se o renderizador já está apto para renderizar coisas
                 context.engineScene.loop( frameDelta, 
@@ -564,6 +611,9 @@ export default class RenderizadorCena
         // Cria a Thread principal usada na renderização
         const thread_principal = new ThreadInstance( context.loop_principal, context ); // Executa a função loop_principal passando o própia context, ou seja, o this
         thread_principal.detach();
+
+        //const thread_entrada  = new ThreadInstance( context.thread_entrada, context );
+        //thread_entrada.detach();
     }
 
     // Função que vai destruir o Renderizador

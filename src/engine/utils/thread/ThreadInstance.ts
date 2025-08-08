@@ -15,7 +15,9 @@ export default class ThreadInstance
 {
     constructor( funcaoChamar:Function, contextoFuncao:any )
     {   
-        funcaoChamar.bind(contextoFuncao)();
+        setTimeout(function(){
+            funcaoChamar.bind(contextoFuncao)();
+        }, 1);
     }
 
     // Permite que a Thread rode em segundo plano

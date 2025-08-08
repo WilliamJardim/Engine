@@ -32,6 +32,8 @@ export type char = string; // deve conter apenas 1 caractere
 export type Ptr<T> = T | null;
 export type Ponteiro<T> = T | null;
 
+export type atomic<T> = T;
+
 /**
 * Em C++ 11 é possivel declarar um tipo para Ptr assim:
 * 

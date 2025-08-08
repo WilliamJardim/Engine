@@ -679,9 +679,6 @@ export default class RenderizadorCena
         // Cria a Thread principal usada na renderização
         const thread_principal = new ThreadInstance( context.thread_loop_principal, context ); // Executa a função loop_principal passando o própia context, ou seja, o this
         thread_principal.detach();
-
-        //const thread_entrada  = new ThreadInstance( context.thread_entrada, context );
-        //thread_entrada.detach();
     }
 
     // Função que vai destruir o Renderizador

@@ -18,7 +18,7 @@ import Scene          from '../core/Scene';
 import ObjectProps    from '../interfaces/main_engine/ObjectProps';
 import SceneConfig    from '../interfaces/main_engine/SceneConfig';
 import ArmazenadorEntradaTecladoMouse from '../input/ArmazenadorEntradaTecladoMouse';
-import { float, int, Ponteiro, Thread }   from '../types/types-cpp-like';
+import { atomic, float, int, Ponteiro, Thread }   from '../types/types-cpp-like';
 import { Renderer } from './Renderer/Renderer';
 import { calcularDirecaoCamera, calcularDireitaCamera } from '../utils/render_engine/math';
 import { VisualMesh } from './Mesh/VisualMesh';
@@ -52,7 +52,7 @@ export default class RenderizadorCena
     public renderConfig               : RenderConfig;
     public firstRender                : boolean = true;
     public provavelmentePronto        : boolean = false; // Sinaliza se os objetos iniciais foram carregados
-    public executandoRenderizacao     : boolean = false; // Sinaliza se a Engine já está funcionando ou não
+    public executandoRenderizacao     : atomic<boolean> = false; // Sinaliza se a Engine já está funcionando ou não
     public LimiteFPS                  : int     = 60;   // Limita o FPS para 60 frames por segundo
 
     // Armazena todos os OBJ lidos por essa Engine gráfica

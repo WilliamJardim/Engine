@@ -39,6 +39,7 @@ import AbstractObjectBase from '../core/AbstractObjectBase';
 import sleep_thread from '../utils/thread/sleep_thread';
 import ThreadInstance from '../utils/thread/ThreadInstance';
 import lerTeclaPrecionada from '../utils/teclado/isPrecionandoTecla';
+import lerPosicaoMouse from '../utils/mouse/lerPosicaoMouse';
 
 export default class RenderizadorCena
 {
@@ -530,7 +531,33 @@ export default class RenderizadorCena
     */
     public async loop_entrada_teclado(): Thread<void>
     {
+        const context             : RenderizadorCena = this;
 
+        context.armazenamentoEntrada.keyDetection.W = false;
+        context.armazenamentoEntrada.keyDetection.A = false;
+        context.armazenamentoEntrada.keyDetection.S = false;
+        context.armazenamentoEntrada.keyDetection.D = false;
+
+        // Movimento do personagem
+        if( lerTeclaPrecionada( "w" ) == true )
+        {
+            context.armazenamentoEntrada.keyDetection.W = true;
+        }
+
+        if( lerTeclaPrecionada( "a" ) == true )
+        {
+            context.armazenamentoEntrada.keyDetection.A = true;
+        }
+
+        if( lerTeclaPrecionada( "s" ) == true )
+        {
+            context.armazenamentoEntrada.keyDetection.S = true;
+        }
+
+        if( lerTeclaPrecionada( "d" ) == true )
+        {
+            context.armazenamentoEntrada.keyDetection.D = true;
+        }
     }   
 
     /**
@@ -546,7 +573,13 @@ export default class RenderizadorCena
     */
     public async loop_entrada_mouse(): Thread<void>
     {
+        const context       : RenderizadorCena = this;
+        const posicaoMouse  : Array<int>   = lerPosicaoMouse();
+        const posicaoXMouse : int          = posicaoMouse[0];
+        const posicaoYMouse : int          = posicaoMouse[1];
 
+        context.armazenamentoEntrada.mousePosition.x = posicaoXMouse;
+        context.armazenamentoEntrada.mousePosition.y = posicaoYMouse;
     }
 
     /**
@@ -701,138 +734,3 @@ export default class RenderizadorCena
         return this.canvasRef;
     }
 }
-
-/**
-* ESPECIFICO PARA O JAVSCRIPT( em C++ não iria precisar disso ):
-* 
-* Estou fazendo isso para ele capturar informações do teclado e armazenar globalmente,
-* eu vou usar as informações do keyDetection_geral dentro de minhas funções abstratas da minha pasta utils, para acessar o teclado por meio disso
-* PORÈM SIMULANDO UM ESTILO VISUAL QUE LEMBRA O ESTILO QUE EU FARIA EM C++, pra compatibilidade, pra mim sempre lembrar como eu faria em C++
-*/
-/*
-window.keyDetection_geral  = { 
-                               SHIFT      : false,
-                               W          : false,
-                               A          : false,
-                               S          : false,
-                               D          : false,
-                               ArrowUp    : false,
-                               ArrowDown  : false,
-                               ArrowLeft  : false,
-                               ArrowRight : false 
-                           };
-
-const onKeyDown_geral = (event: KeyboardEvent) => {
-    
-    if( window.keyDetection_geral != undefined )
-    {
-        if(event.code == "ArrowUp")
-        {
-            window.keyDetection_geral.ArrowUp = true;
-        }
-
-        if(event.code == "KeyW")
-        {
-            window.keyDetection_geral.W = true;
-        }      
-
-        if(event.code == "ArrowDown")
-        {
-            window.keyDetection_geral.ArrowDown = true;
-        }
-
-        if(event.code == "KeyS")
-        {
-            window.keyDetection_geral.S = true;
-        }
-
-        if(event.code == "ArrowLeft")
-        {
-            window.keyDetection_geral.ArrowLeft = true;
-        }
-
-        if(event.code == "KeyA")
-        {
-            window.keyDetection_geral.A = true;
-        }
-
-        if(event.code == "ArrowRight")
-        {
-            window.keyDetection_geral.ArrowRight = true;
-        }
-
-        if(event.code == "KeyD")
-        {
-            window.keyDetection_geral.D = true;
-        }
-
-        if( event.shiftKey == true ){
-            window.keyDetection_geral.SHIFT = true;
-        }
-    }
-    
-};
-
-const onKeyUp_geral = (event: KeyboardEvent) => {
-
-    if( window.keyDetection_geral != undefined )
-    {
-        if(event.code == "ArrowUp")
-        {
-            window.keyDetection_geral.ArrowUp = false;
-        }
-
-        if(event.code == "KeyW")
-        {
-            window.keyDetection_geral.W = false;
-        }      
-
-        if(event.code == "ArrowDown")
-        {
-            window.keyDetection_geral.ArrowDown = false;
-        }
-
-        if(event.code == "KeyS")
-        {
-            window.keyDetection_geral.S = false;
-        }
-
-        if(event.code == "ArrowLeft")
-        {
-            window.keyDetection_geral.ArrowLeft = false;
-        }
-
-        if(event.code == "KeyA")
-        {
-            window.keyDetection_geral.A = false;
-        }
-
-        if(event.code == "ArrowRight")
-        {
-            window.keyDetection_geral.ArrowRight = false;
-        }
-
-        if(event.code == "KeyD")
-        {
-            window.keyDetection_geral.D = false;
-        }
-
-        if( event.shiftKey == true ){
-            window.keyDetection_geral.SHIFT = false;
-        }
-
-        // Mesmo que não seja o Shift, se eu soltar qualquer tecla, ele ja para de dar sinal de Shift, pra ajudar na minha de logica de correr com a camera
-        if( event.shiftKey == false ){
-            window.keyDetection_geral.SHIFT = false;
-        }
-    }
-    
-};
-
-document.addEventListener("keydown", onKeyDown_geral);
-document.addEventListener("keyup",   onKeyUp_geral);
-
-// FIM DAS FUNÇÔES ESPECIFICAS DO JAVASCRIPT.
-
-Se eu quisse seguir essa ideia, eu só precisaria verificar se o window.keyDetection_geral existe e verificar as teclas
-*/

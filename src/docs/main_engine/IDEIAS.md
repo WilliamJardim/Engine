@@ -136,7 +136,7 @@ IDEIA: Criar uma Thread só para entrada, para expandir o meu InputListener.ts, 
 
   Hoje dia 08/08/2025, tentei fazer isso, e não consegui: Tentei criar uma nova Thread para ler as entradas de teclado, porém não consegui por conta que eu não consegui ter dois laços de repetição while um para cada thread, sem bloquear a executação no navegador. Então deixei alguns trechos de minha tentativa apenas como exemplo mesmo de ideia para caso eu tente fazer isso de forma diferente no futuro, ou mesmo, tente migrar pra C++. 
 
-# 08/08/2025 19:14 PM (TERMINADO PARCIALMENTE 19:55)
+# 08/08/2025 19:14 PM (TERMINADO 22:07 PM)
 IDEIA: Ao invez de criar uma segunda thread só pra entrada de teclado e mouse, 
 eu posso usar a thread principal mesmo e separar em sub-chamadas de funções mesmo
 
@@ -158,3 +158,9 @@ eu posso usar a thread principal mesmo e separar em sub-chamadas de funções me
    Criei a função "loop_principal" para ter toda a lógica de renderização, logica de jogo e fisica.
 
    E criei as funções "loop_entrada_teclado" e "loop_entrada_mouse", por enquanto em branco, pois são só esbolços do que eu quero fazer.
+
+   ## 08/08/2025 22:07 PM
+   Terminei de fazer essa minha ideia: movi a lógica de captura de teclado e mouse da classe "ArmazenadorEntradaTecladoMouse" para a função "injetarScriptCapurarEntradaNavegador" nas variaveis globais "keyDetection_geral" e "mousePosition_geral". E criei as funções: "lerPosicaoMouse" e "isPrecionandoTecla" que são usadas dentro das minhas funções "loop_entrada_teclado" e "loop_entrada_mouse", para simplificar a leitura de teclas do teclado e de posição do mouse, de forma abstraida, e sem precisar me preocupar com detalhes do javascript no navegador. Esses detalhes que eu abstrai eu fiz isso por causa de uma ideia que eu tive para tornar meu código mais direto e facilitar uma futura migração para C++ . A lógica de leitura de teclado e mouse continua exatamente a mesma: porém, abstraida dessa forma como eu descrevi aqui nessa mensagem de commit.  
+   Toda a lógica contida no arquivo na função "injetarScriptCapurarEntradaNavegador" ela é especifica para o navegador, e numa migração para C++, ela não seria portada, pois só serve no navegador. 
+
+   A classe "ArmazenadorEntradaTecladoMouse" apenas armazena as informações de teclado e mouse, e permite consultar elas de uma forma mais elegante através de uma função "isTeclando", que serve para verificar se uma teclado do teclado está sendo precionada. Isso pretendo usar em regras de jogo.

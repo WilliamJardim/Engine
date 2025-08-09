@@ -13,10 +13,11 @@
 */
 export default class ThreadInstance
 {
-    constructor( funcaoChamar:Function, contextoFuncao:any )
+    constructor( funcaoChamar:Function, contextoFuncao:any, ...outrosParametros )
     {   
         setTimeout(function(){
-            funcaoChamar.bind(contextoFuncao)();
+            // Chama a função passando o contexto e tambem meus parametros. Todos separados por virgula
+            funcaoChamar.bind(contextoFuncao)(...outrosParametros);
         }, 1);
     }
 

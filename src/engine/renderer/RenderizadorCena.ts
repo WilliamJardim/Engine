@@ -130,11 +130,29 @@ export default class RenderizadorCena
     }
 
     /**
+    * Cria uma Thread pra fazer o carregamento de forma asincrona
+    * Eu só preciso passar os parametros: idObjeto, caminho_obj e caminho_mtl na hora de criar a thread, que ela faz o resto.
+    */
+    public async thread_carregar_modelo_objeto_segundoplano(idObjeto:string, caminho_obj:string, caminho_mtl:string)
+    {
+        const context            : RenderizadorCena  = this;
+
+        const idObjetoCarregando : string  = idObjeto;
+        const objString          : string  = await carregarTxt( caminho_obj );
+        const mtlString          : string  = await carregarTxt( caminho_mtl );
+
+        // Salva e diz que ja terminou de carregar
+        context.objLidos[ idObjetoCarregando ].obj_string = objString;
+        context.objLidos[ idObjetoCarregando ].mtl_string = mtlString;
+        context.objLidos[ idObjetoCarregando ].concluido  = true;
+    }
+
+    /**
     * Função que lê o objeto e diz que ja foi carregado 
     */
     public async carregarOBJ_seNaoCarregado( idObjeto:string, tipoObjeto:string, caminho_obj:string, caminho_mtl:string ): Promise<boolean>
     {
-        const context = this;
+        const context : RenderizadorCena  = this;
 
         // Se o objeto não está presente no Mapa de OBJs
         if( tipoObjeto == "OBJ" && this.getOBJMemoria( idObjeto ) == null )
@@ -154,17 +172,9 @@ export default class RenderizadorCena
             // Diz que o objeto está sendo carregado
             this.objLidos[ idObjeto ].carregando  = true;
 
-            // Cria uma Thread pra fazer o carregamento de forma asincrona
-            setTimeout(async function(){
-                const idObjetoCarregando : string  = idObjeto;
-                const objString          : string  = await carregarTxt( caminho_obj );
-                const mtlString          : string  = await carregarTxt( caminho_mtl );
-
-                // Salva e diz que ja terminou de carregar
-                context.objLidos[ idObjetoCarregando ].obj_string = objString;
-                context.objLidos[ idObjetoCarregando ].mtl_string = mtlString;
-                context.objLidos[ idObjetoCarregando ].concluido  = true;
-            }, 1);
+            // Cria uma Thread pra fazer o carregamento de forma asincrona, passando como parametro o idObjeto, caminho_obj e caminho_mtl.
+            const thread_carregar_modelo_obj = new ThreadInstance( context.thread_carregar_modelo_objeto_segundoplano, context, idObjeto, caminho_obj, caminho_mtl );
+            thread_carregar_modelo_obj.detach();
         }
 
         return true;

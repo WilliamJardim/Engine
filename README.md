@@ -20,7 +20,7 @@ Escrevi uma documentação, onde eu apresento técnicas que desenvolvi exclusiva
 A documentação por enquanto fica dentro da pasta `src/docs`, dentro deste repositório.
 
 Para ler a documentação acesse o link abaixo:
-[LER DOCUMENTAÇÃO](./src/docs/README.md)
+[LER DOCUMENTAÇÃO](./docs/README.md)
 
 ## Licença
 Este é um projeto pessoal de **William Alves Jardim**, iniciado em **2025**, desenvolvido por diversão, e está protegido por direitos autorais e licenciado sob os termos da [Creative Commons BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).  

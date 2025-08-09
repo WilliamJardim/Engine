@@ -1,3 +1,12 @@
+# Ideias da minha engine de logica/fisica
+
+Nota adicionada em 15 de julho de 2025, [neste commit](https://github.com/WilliamJardim/Engine/commit/c37e7f3c66ff432f3670e72b23b7319e05799844#diff-3073b4842f9abc296af5a3ecb9bd816cbf3ef0bcd4535dd0b5df7f1f52ed6aa8).
+
+## Destaques histórico de commits desse arquivo de ideias de minha engine de logica/fisica:
+Essa nota descreve minhas ideias que eu tive ao longo do tempo para e minha engine de logica/fisica, cujo os códigos ficam dentro da pasta `src/engine/core/`.
+
+ - Até [este commit](https://github.com/WilliamJardim/Engine/blob/ff94942eb0bb49785b7fb97531c1b8a9f0b0533c/src/docs/) **de 08 de agosto de 2025**, este arquivo ainda estava na pasta `src/docs`(digo "ainda estava" por que pretendo mover a documentação inteira de lugar no próximo commit). 
+
 # 30/07/2025 22:57 PM
 Criar um atributo no meu ObjectBase chamado mostrarCaixaProximidade, mostrarCaixaColisao
 

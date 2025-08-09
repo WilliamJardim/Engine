@@ -1,3 +1,22 @@
+# Ideias da engine de renderização:
+
+## Destaques histórico de commits desse arquivo de ideias da engine de renderização: 
+Essa nota descreve minhas ideias que eu tive ao longo do tempo para e minha engine de renderização, cujo os códigos ficam dentro da pasta `src/engine/renderer/`.
+
+Este arquivo `IDEIAS.md` foi movido de lugar ao longo do tempo. 
+Abaixo estão alguns links históricos dela, em ordem cronológica(do mais recente para o mais antigo):
+
+ - Até [este commit](https://github.com/WilliamJardim/Engine/blob/ff94942eb0bb49785b7fb97531c1b8a9f0b0533c/src/docs/) **de 08 de agosto de 2025**, este arquivo ainda estava na pasta `src/docs`(digo "ainda estava" por que pretendo mover a documentação inteira de lugar no próximo commit). 
+
+ - APÓS O DIA **15 JUNHO de 2025**, FIZ VÁRIOS OUTROS COMMITS QUE ALTERARAM A DOCUMENTAÇÂO: ADICIONANDO NOVAS IDEIAS, NOVOS BUGS. E FUI MARCANDO ALGUNS BUGS COMO SOLUCIONADOS E ALGUMAS IDEIAS COMO IMPLEMENTADAS.
+
+ - Até [este commit](https://github.com/WilliamJardim/Engine/commit/c37e7f3c66ff432f3670e72b23b7319e05799844#diff-f6af93fcf86cc8183423c49cc9d1655dd042c7b5c9095665ae2dc923aa27a72a) **de 15 julho de 2025**, eu ja havia movido este arquivo para dentro da pasta `src/docs/render_engine`, e dentro da pasta `src/docs` eu ja tinha organizado as ideias e bugs duas subpastas `main_engine`(que contém a documentação de ideias e bugs da engine de lógica/fisica) e `render_engine`(que contém a documentação de ideias e bugs da engine de renderização), e também, ja existia um outro arquivo chamado `IDEIAS.md` ao lado das duas pastas `main_engine` e `render_engine`, que era um arquivo de ideias gerais de ambas as minhas duas engines(a de logica/fisica e a de renderização). Este arquivo de anotações dos ideias da minha engine de renderização ficava especificamente dentro da pasta `src/docs/render_engine/`
+
+ - Até [este commit](https://github.com/WilliamJardim/Engine/commit/a53fcb78ded446cc2f1beabf10eaf2367664c374#diff-c8aa735fdf10561f8984d4b0259b0c1931b973872eb56071f2f8e110c407e3d5) **de 11 julho de 2025**, este arquivo ficava na pasta `src/engine/renderer/docs/`, que era uma pasta especifica para documentações, ideias e bugs da minha engine de renderização.
+
+*NOTA: Eu não citei todos os links de commits relacionados a este arquivo, eu só citei alguns que achei mais principais para citar, para destacar as mudanças que fiz ao longo do tempo na estrutura da documentação de ideias. Para ver todos os commits deste e outros arquivos, acesse o histórico de commits deste repositório no github, em [commits](https://github.com/WilliamJardim/Engine/commits/main/), e dentro de cada commit, pode-se usar a opção "Browse files" para ver como cada arquivo estava até o commit*. 
+ 
+
 Criar movimento de camera que leva em conta a rotação da camera
 
 Corrigir o bug da rotação

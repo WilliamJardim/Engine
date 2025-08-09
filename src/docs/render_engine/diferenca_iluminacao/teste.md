@@ -1,3 +1,5 @@
+Nota adicionada em 19 de julho de 2025, [neste commit](https://github.com/WilliamJardim/Engine/commit/fc90d1f71d8ecc572df017666ee53f055910b90b).
+
 # 19/07/2025 11:39 AM
 Eu fiz esse arquivo de anotação para registrar um possivel BUG ou pequena diferença que eu tive, 
 do meu sistema de iluminação de meu mini renderizador webgl em JS na versão antes da migração pra TS,

@@ -1,3 +1,24 @@
+# Bugs da engine de renderização:
+
+## Destaques histórico de commits desse arquivo de bugs da engine de renderização: 
+Essa nota descreve os bugs que eu encontrei ao longo do tempo na minha engine de renderização, cujos códigos ficam dentro da pasta `src/engine/renderer/`.
+
+Este arquivo `BUGS.md` foi movido de lugar ao longo do tempo. 
+Abaixo estão alguns links históricos dela, em ordem cronológica(do mais recente para o mais antigo):
+
+ - Até [este commit](https://github.com/WilliamJardim/Engine/blob/ff94942eb0bb49785b7fb97531c1b8a9f0b0533c/src/docs/) **de 08 de agosto de 2025**, este arquivo ainda estava na pasta `src/docs`(digo "ainda estava" por que pretendo mover a documentação inteira de lugar no próximo commit). 
+
+ - APÓS O DIA **15 JUNHO de 2025**, FIZ VÁRIOS OUTROS COMMITS QUE ALTERARAM A DOCUMENTAÇÂO: ADICIONANDO NOVAS IDEIAS, NOVOS BUGS. E FUI MARCANDO ALGUNS BUGS COMO SOLUCIONADOS E ALGUMAS IDEIAS COMO IMPLEMENTADAS.
+
+ - Até [este commit](https://github.com/WilliamJardim/Engine/commit/c37e7f3c66ff432f3670e72b23b7319e05799844#diff-4de6ae158ec320bd7573ff80114ae05aa45048324edfc0891739363b08c4d7a1) **de 15 julho de 2025**, eu ja havia movido este arquivo para dentro da pasta `src/docs/render_engine`, e dentro da pasta `src/docs` eu ja tinha organizado as ideias e bugs duas subpastas `main_engine`(que contém a documentação de ideias e bugs da engine de lógica/fisica) e `render_engine`(que contém a documentação de ideias e bugs da engine de renderização). O arquivo de anotações dos bugs da minha engine de renderização ficava especificamente dentro da pasta `src/docs/render_engine/`
+
+ - Até [este commit](https://github.com/WilliamJardim/Engine/commit/ed3c0a56864ae1a6db045be2c5e01c0406387c96) de **de 13 julho de 2025**, eu havia movido este arquivo para a pasta `src/engine/renderer/`. Eu havia transferido as anotações dos bugs `src/engine/BUGs.txt` para um arquivo chamado `BUGS` dentro da pasta `src/engine/renderer/`.
+
+ - Até [este commit](https://github.com/WilliamJardim/Engine/commit/a53fcb78ded446cc2f1beabf10eaf2367664c374#diff-6186e4d647749ed4588d8e95487fee4ec40a56e64722922a8c82594f9a0e54da) **de 11 julho de 2025**, este arquivo ficava na pasta `src/engine/renderer/docs/`, que era uma pasta especifica para documentações, ideias e bugs da minha engine de renderização.
+
+*NOTA: Eu não citei todos os links de commits relacionados a este arquivo, eu só citei alguns que achei mais principais para citar, para destacar as mudanças que fiz ao longo do tempo na estrutura da documentação de ideias. Para ver todos os commits deste e outros arquivos, acesse o histórico de commits deste repositório no github, em [commits](https://github.com/WilliamJardim/Engine/commits/main/), e dentro de cada commit, pode-se usar a opção "Browse files" para ver como cada arquivo estava até o commit*. 
+
+
 (CORRIGIDO) Na camera ortografica, Em qualquer objeto,
 O eixo Z parece funcionar com uma escala diferente de X e Y, pois valores pequenos não afetam em nada.
 PIOR: E quando eu tento alterar o eixo Z, ao invez de mover o objeto em Z, a renderização buga e objeto perde parte de sua visualização

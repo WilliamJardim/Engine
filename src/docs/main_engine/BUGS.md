@@ -1,3 +1,13 @@
+# Bugs da minha engine de logica/fisica
+
+Nota adicionada em 15 de julho de 2025, [neste commit](https://github.com/WilliamJardim/Engine/commit/c37e7f3c66ff432f3670e72b23b7319e05799844#diff-d2b16d9be91d56bb1f1a43d8d60384c3fe30ce59d23284f195d14af0d14176a5).
+
+## Destaques histórico de commits desse arquivo de bugs de minha engine de logica/fisica:
+Essa nota descreve os bugs que eu encontrei ao longo do tempo na minha engine de logica/fisica, cujo os códigos ficam dentro da pasta `src/engine/core/`.
+
+ - Até [este commit](https://github.com/WilliamJardim/Engine/blob/ff94942eb0bb49785b7fb97531c1b8a9f0b0533c/src/docs/) **de 08 de agosto de 2025**, este arquivo ainda estava na pasta `src/docs`(digo "ainda estava" por que pretendo mover a documentação inteira de lugar no próximo commit). 
+
+
 # 30/07/2025 23:00 PM
 Meu sistema de colisão e proximidade funciona muito bem quando eu passo os limites XYZ pra ele verificar a proximidade.
 

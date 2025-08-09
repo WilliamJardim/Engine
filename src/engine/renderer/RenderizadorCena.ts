@@ -133,7 +133,7 @@ export default class RenderizadorCena
     * Cria uma Thread pra fazer o carregamento de forma asincrona
     * Eu só preciso passar os parametros: idObjeto, caminho_obj e caminho_mtl na hora de criar a thread, que ela faz o resto.
     */
-    public async thread_carregar_modelo_objeto_segundoplano(idObjeto:string, caminho_obj:string, caminho_mtl:string)
+    public async thread_carregar_modelo_objeto_segundoplano(idObjeto:string, caminho_obj:string, caminho_mtl:string): Thread<void>
     {
         const context            : RenderizadorCena  = this;
 

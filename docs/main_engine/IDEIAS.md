@@ -173,3 +173,7 @@ eu posso usar a thread principal mesmo e separar em sub-chamadas de funções me
    Toda a lógica contida no arquivo na função "injetarScriptCapurarEntradaNavegador" ela é especifica para o navegador, e numa migração para C++, ela não seria portada, pois só serve no navegador. 
 
    A classe "ArmazenadorEntradaTecladoMouse" apenas armazena as informações de teclado e mouse, e permite consultar elas de uma forma mais elegante através de uma função "isTeclando", que serve para verificar se uma teclado do teclado está sendo precionada. Isso pretendo usar em regras de jogo.
+
+# 09/08/2025 14:10 PM
+Abstrair também as funções de áudio, usadas na minha classe "LocalSound", similar ao que eu fiz com a entrada de teclado e mouse,
+para facilitar uma possivel futura migração para C++. Isso iria ajudar por que ao abstrair essas funções de ler e reproduzir audio, eu faço minha engine ficar independente da forma como elas são implantadas em cada plataforma. Ela só sabe que a função faz tal coisa, com tais parametros, etc... Mais não sabe exatamente como, pois o "como" vai depender da plataforma(web com TS, ou desktop em C++).

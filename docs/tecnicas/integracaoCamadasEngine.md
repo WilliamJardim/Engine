@@ -10,6 +10,8 @@ OBS: A implantação dessa ideia que eu tive foi feita na pratica antes dessa da
 
 **OBS: Comecei a escrever esse documento técnico explicativo as 13:56 PM, porém terminei as 15:24 PM, e fiz o commmit dele.**
 
+**OBS: A minha primeira revisão deste documento técnico explicativo foi feita 10/08/2025, e commitada 15:39 PM.**
+
 ## Explicação geral
 Eu desenvolvi uma estrutura para minha Engine que facilite minha migração futura pra C++, e ao mesmo tempo que torne cada camada da Engine independente das demais, impedindo misturar responsábilidades. **Por exemplo: a camada de renderização** só cuida da parte de renderização gráficas dos objetos, renderização do céu, carregamento de modelos .obj, carregamento de materiais .mtl de modelos, carregamento de texturas, criação de buffers, controle de cameras, e muito mais coisas relacioandas a gráficos, desenho e renderização em geral. **Outro exemplo: a camada de lógica/fisica**, que eu tambem chamei de "engine principal", ela cuida somente das lógicas de jogo em geral e coisas relacionadas. gerenciamento de objetos na cena, criação e exclusão de objetos, manipulação de objetos, eventos de jogo, simulação de fisica, como gravidade, empurrões, etc. 
 **Essas camadas conversam entre si por meio de uma camada integradora. Eu chamei ele de integrador por causa que é justamente o que ele faz. Ele une todas as camadas da Engine de uma forma que funcionem em conjunto. Vou explicar isso abaixo.**

@@ -4,7 +4,7 @@ import RenderizadorCena             from './engine/renderer/RenderizadorCena';
 import './MyEngineScene.css'; 
 
 // SOMENTE NO NAVEGADOR: VOU IGNORAR QUANDO EU FOR PORTAR PRA C++
-import injetarScriptCapurarEntradaNavegador from './engine/entrada-navegador';
+import injetarScriptCapurarEntradaNavegador from './engine/browser/entrada-navegador';
 function ativar_coisas_especificas_navegador()
 {
   injetarScriptCapurarEntradaNavegador();

@@ -22,7 +22,7 @@ Abaixo apresento as camadas atuais da Engine:
 **Nota: Uma camada pode ser um único arquivo, ou uma pasta com um arquivo, ou vários arquivos dentro de uma pasta.**
 
 ## Camada de renderização
-Tambem chamada por mim de "engine de renderização", é resposável por toda a parte de renderização: cuida da parte de renderização gráficas dos objetos, renderização do céu, carregamento de modelos .obj, carregamento de materiais .mtl de modelos, carregamento de texturas, criação de buffers, controle de cameras, e muito mais coisas relacioandas a gráficos, desenho e renderização em geral.
+Tambem chamada por mim de "engine de renderização", é resposável por toda a parte de renderização: cuida da parte de renderização gráficas dos objetos, renderização do céu, carregamento de modelos .obj, carregamento de materiais .mtl de modelos, carregamento de texturas, criação de buffers, controle de cameras, criação e atualização de iluminação, e muito mais coisas relacionadas a gráficos, desenho e renderização em geral. Não existe lógicas de jogo, fisica ou outras coisas na camada de renderização, apenas coisas relacionadas a renderização.
 
 Links para o código da camada de renderização:
   - Código da camada de renderização até o dia 09/08/2025 22:48 PM: [Camada de renderização - até o dia 09/08/2025 22:48 PM](https://github.com/WilliamJardim/Engine/blob/405b1fa65de221e0873aefc7b8c435097583f87f/src/engine/renderer/Renderer/Renderer.ts)
@@ -33,7 +33,7 @@ Links para o código da camada de renderização:
 
 
 ## Camada de lógica/fisica
-Tambem chamada por mim de "engine de logica", "engine de logica/fisica" ou de "engine principal", é responsável por toda a lógica de jogo, lógicas em geral, controle e gerenciamento da cena, e controle e gerenciamento de objetos: cuida somente das lógicas de jogo em geral e coisas relacionadas. gerenciamento de objetos na cena, criação e exclusão de objetos, manipulação de objetos, eventos de jogo, simulação de fisica, como gravidade, empurrões, etc.
+Tambem chamada por mim de "engine de logica", "engine de logica/fisica" ou de "engine principal", é responsável por toda a lógica de jogo, lógicas em geral, controle e gerenciamento da cena, instancias das luzes que serão intepretadas pela camada de renderização, e controle e gerenciamento de objetos: cuida somente das lógicas de jogo em geral e coisas relacionadas. gerenciamento de objetos na cena, criação e exclusão de objetos, manipulação de objetos, eventos de jogo, simulação de fisica, como gravidade, empurrões, etc. **A camada de lógica/fisica não tem nenhuma função relacionada a renderização. E também, a camada de lógica/fisica não possui nenhuma representação gráfica por si só. Ou seja, ela é invisivel gráficamente, pois ela só representa a parte lógica da Engine, mais não sua renderização.** Vou explicar mais detalhes na explicação da camada integradora.
 
 Links para o código da camada de lógica/fisica:
   - Código da camada de lógica/fisica até o dia 09/08/2025 22:48 PM: [Camada de lógica/fisica - até o dia 09/08/2025 22:48 PM](https://github.com/WilliamJardim/Engine/tree/405b1fa65de221e0873aefc7b8c435097583f87f/src/engine/core)
@@ -72,7 +72,7 @@ A camada integradora é responsável por integrar a Engine de lógica/fisica com
 
   - `LimiteFPS`: um número, que define a taxa de frames por segundo(FPS) que o renderizador vai usar. Essa taxa é usada na função `loop_principal`, na linha 608, do arquivo `RenderizadorCena.ts`. Você pode ver o código completo do arquivo `RenderizadorCena.ts` que será citado abaixo caso queira ver os detalhes.
 
-**Nota: para cada variável acima, eu deixei um breve texto explicando para que ela serve, dentro do contexto da camada integradora, com detalhes e nomes das funções qeu as usam.** 
+**Nota: para cada variável acima, eu deixei um breve texto explicando para que ela serve, dentro do contexto da camada integradora, com detalhes e nomes das funções que as usam.** 
 
 Links para o código da camada integradora(do arquivo RenderizadorCena.ts):
   - Código da camada integradora até o dia 09/08/2025 22:48 PM: [Camada integradora - até o dia 09/08/2025 22:48 PM](https://github.com/WilliamJardim/Engine/blob/405b1fa65de221e0873aefc7b8c435097583f87f/src/engine/renderer/RenderizadorCena.ts)

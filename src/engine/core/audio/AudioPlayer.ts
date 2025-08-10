@@ -1,4 +1,4 @@
-import { float } from "../types/types-cpp-like";
+import { float } from "../../types/types-cpp-like";
 
 /**
 * AUTHOR: William Alves Jardim

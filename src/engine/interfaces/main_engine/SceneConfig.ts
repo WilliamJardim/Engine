@@ -7,7 +7,7 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import ArmazenadorEntradaTecladoMouse from "../../input/ArmazenadorEntradaTecladoMouse";
+import ArmazenadorEntradaTecladoMouse from "../../core/input/ArmazenadorEntradaTecladoMouse";
 import { int, Ponteiro } from "../../types/types-cpp-like";
 
 export default interface SceneConfig

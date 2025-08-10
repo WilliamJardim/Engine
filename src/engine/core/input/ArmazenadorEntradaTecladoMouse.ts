@@ -7,8 +7,8 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import KeyDetection from "../interfaces/both_engines/KeyDetection";
-import Position2D   from "../interfaces/main_engine/Position2D";
+import KeyDetection from "../../interfaces/both_engines/KeyDetection";
+import Position2D   from "../../interfaces/main_engine/Position2D";
 
 /**
 * Armazena informações de teclado e mouse obtidas pela minha Engine

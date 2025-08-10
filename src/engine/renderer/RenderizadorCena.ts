@@ -17,7 +17,7 @@ import ObjectBase     from '../core/ObjectBase';
 import Scene          from '../core/Scene';
 import ObjectProps    from '../interfaces/main_engine/ObjectProps';
 import SceneConfig    from '../interfaces/main_engine/SceneConfig';
-import ArmazenadorEntradaTecladoMouse from '../input/ArmazenadorEntradaTecladoMouse';
+import ArmazenadorEntradaTecladoMouse from '../core/input/ArmazenadorEntradaTecladoMouse';
 import { atomic, float, int, Ponteiro, Thread }   from '../types/types-cpp-like';
 import { Renderer } from './Renderer/Renderer';
 import { calcularDirecaoCamera, calcularDireitaCamera } from '../utils/render_engine/math';

@@ -20,7 +20,7 @@ import isCollision           from '../utils/main_engine/isCollision.ts';
 import Wind                  from '../interfaces/main_engine/Wind.ts';
 import FrameCounter          from './FrameCounter.ts';
 import MovementState         from '../interfaces/main_engine/MovementState.ts';
-import ArmazenadorEntradaTecladoMouse from '../input/ArmazenadorEntradaTecladoMouse.ts';
+import ArmazenadorEntradaTecladoMouse from './input/ArmazenadorEntradaTecladoMouse.ts';
 import SceneConfig           from "../interfaces/main_engine/SceneConfig.ts";
 import Position3D            from "../interfaces/main_engine/Position3D.ts";
 import VelocityStatus        from "../interfaces/main_engine/VelocityStatus.ts";

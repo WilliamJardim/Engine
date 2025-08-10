@@ -34,7 +34,7 @@ export default class AudioPlayer
         this.lastEndedTime  = -1;
     }
 
-    initialize()
+    public initialize()
     {
         this.lastTime    = 0;
         this.isTocando   = false;
@@ -43,13 +43,13 @@ export default class AudioPlayer
         // Mais coisas se eu quiser
     }
 
-    setVolume( volume: float )
+    public setVolume( volume: float )
     {
         this.audioRef.volume = volume;
     }
 
     // Define o segundo de inicio e fim do audio, caso ele seja muito grande
-    setExactCropTime( begin: float, end: float )
+    public setExactCropTime( begin: float, end: float )
     {
         if( begin != -1 )
         {
@@ -62,7 +62,7 @@ export default class AudioPlayer
         }
     }
 
-    setSrc( src: string )
+    public setSrc( src: string )
     {
         this.audioRef.src = src;
         this.lastTime     = 0;
@@ -70,7 +70,7 @@ export default class AudioPlayer
         this.neverPlayed  = true;
     }
 
-    play()
+    public play()
     {
         // Se tem inicio
         if( this.begin != -1 )
@@ -85,7 +85,7 @@ export default class AudioPlayer
         this.lastPlayedTime = new Date().getTime();
     }
 
-    stop()
+    public stop()
     {
         this.audioRef.pause();
         this.audioRef.currentTime = 0;
@@ -93,21 +93,21 @@ export default class AudioPlayer
         this.lastEndedTime = new Date().getTime();
     }
 
-    pause()
+    public pause()
     {
         this.lastTime = this.audioRef.currentTime;
         this.audioRef.pause();
         this.isTocando = false;
     }
 
-    resume()
+    public resume()
     {
         this.audioRef.currentTime = this.lastTime;
         this.audioRef.play();
         this.isTocando = true;
     }
 
-    forwardSecounds( secounds: float )
+    public forwardSecounds( secounds: float )
     {
         this.firstPlayed = true;
         this.lastTime = this.audioRef.currentTime;
@@ -134,7 +134,7 @@ export default class AudioPlayer
         }
     }
 
-    backSecounds( secounds: float )
+    public backSecounds( secounds: float )
     {
         this.firstPlayed = true;
         this.neverPlayed = false;
@@ -154,7 +154,7 @@ export default class AudioPlayer
     }
 
     // Atualiza o audioPlayer, por exemplo, para detectar um corte
-    update()
+    public update()
     {
         // Se ultrapassou o limite do propio audio
         if( this.audioRef.currentTime > this.audioRef.duration && this.audioRef.duration > 0 )

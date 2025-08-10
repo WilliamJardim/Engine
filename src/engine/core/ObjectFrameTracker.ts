@@ -7,17 +7,30 @@
 * 
 * Veja o arquivo `LICENSE` na raiz do repositório para mais detalhes.
 */
-import ObjectPosition      from "../../interfaces/main_engine/ObjectPosition";
-import ObjectScale         from "../../interfaces/main_engine/ObjectScale";
-import ObjectVelocity      from "../../interfaces/main_engine/ObjectVelocity";
-import AbstractObjectBase  from "../AbstractObjectBase";
-import ObjectFrameData, { FrameDataOrder } from "./ObjectFrameData";
-import { float, int, Ponteiro }        from "../../types/types-cpp-like";
+import ObjectPosition      from "../interfaces/main_engine/ObjectPosition";
+import ObjectScale         from "../interfaces/main_engine/ObjectScale";
+import ObjectVelocity      from "../interfaces/main_engine/ObjectVelocity";
+import AbstractObjectBase  from "./AbstractObjectBase";
+import { float, int, Ponteiro }        from "../types/types-cpp-like";
 
 /**
 * Vai guardar todas as informações relevantes do objeto dentro do array frameData, após cada frame 
 * Pra poderem ser consultadas posteriormente
 */
+export type FrameDataOrder = "beforeUpdate" | "afterUpdate";
+
+export default interface ObjectFrameData
+{
+    order              : FrameDataOrder, //After or Before the object update
+    frameDelta         : float,
+    frameNumber        : int,
+    firstRender        : boolean,
+    renderizadorPronto : boolean,
+    velocity           : ObjectVelocity,
+    position           : ObjectPosition,
+    scale              : ObjectScale
+}
+
 export default class ObjectFrameTracker{
     public frameData       : Array<ObjectFrameData>;
     public objetoVinculado : Ponteiro<AbstractObjectBase>;
@@ -63,7 +76,7 @@ export default class ObjectFrameTracker{
             // Se o monitor de frames está ativado
             if( this.enabled )
             {
-                this.frameData.push({
+                const frameDataAdicionar : ObjectFrameData = {
                     order               : order,
                     frameDelta          : frameDelta,
                     frameNumber         : frameNumber,
@@ -71,8 +84,10 @@ export default class ObjectFrameTracker{
                     renderizadorPronto  : renderizadorPronto,
                     velocity            : velocidade,
                     position            : position,
-                    scale               : scale    
-                });
+                    scale               : scale   
+                } as ObjectFrameData;
+
+                this.frameData.push(frameDataAdicionar);
             }
         }
     }

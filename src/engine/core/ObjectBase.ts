@@ -27,7 +27,7 @@ import ObjectAcceleration  from "../interfaces/main_engine/ObjectAcceleration";
 import ObjectForce         from "../interfaces/main_engine/ObjectForce";
 import Position3D          from "../interfaces/main_engine/Position3D";
 import VelocityStatus      from "../interfaces/main_engine/VelocityStatus";
-import ObjectFrameTracker  from "./ObjectFrameTracker/ObjectFrameTracker";
+import ObjectFrameTracker  from "./ObjectFrameTracker";
 import includeString       from "../utils/array/includeString";
 import objectANOTHaveSomeClassesIgnoredByObjectB from "../utils/main_engine/array/objectANOTHaveSomeClassesIgnoredByObjectB";
 import AbstractObjectBase  from "./AbstractObjectBase";

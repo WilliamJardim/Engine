@@ -26,7 +26,7 @@ import RotationState       from "../interfaces/main_engine/RotationState";
 import VelocityStatus      from "../interfaces/main_engine/VelocityStatus";
 import { float, int, Ponteiro }        from "../types/types-cpp-like";
 import ProximityBounds     from "../interfaces/main_engine/ProximityBounds";
-import ObjectFrameTracker  from "./ObjectFrameTracker/ObjectFrameTracker";
+import ObjectFrameTracker  from "./ObjectFrameTracker";
 import Scene               from "./Scene";
 
 /**

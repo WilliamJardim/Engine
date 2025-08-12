@@ -8,6 +8,7 @@ Os links a seguir explicam resumidamente cada uma dessas estruturas:
  
  - [Estrutura da Engine de lógica/fisica](./main_engine/estrutura-cpp.md) 
  - [Estrutura da Engine de renderização](./render_engine/estrutura-cpp.md) 
+ - [Estrutura de threads que criei](./estrutura-threads.md)
 
 Todas as estruturas de classes descritas aqui foram publicadas por William Alves Jardim em suas respectivas datas (indicadas em cada tópico), com o intuito de contribuir abertamente com a comunidade e registrar estas ideias como parte do conhecimento público (prior art).
 

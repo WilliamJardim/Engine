@@ -1,4 +1,4 @@
-**Nota escrita 12/08/2025 as 17:37 PM, e concluída as 18:21 PM**, por William Alves Jardim, explicando a estrutura de threads da minha Engine, que eu planejei e construí especificamente para esse projeto, ao longo do desenvolvimento dele.
+**Nota escrita 12/08/2025 as 17:37 PM, e concluída as 18:21 PM**, por William Alves Jardim, adicionada [neste commit](https://github.com/WilliamJardim/Engine/commit/aaf943a63a9a5451d308a9de5326880717412ae9), explicando a estrutura de threads da minha Engine, que eu planejei e construí especificamente para esse projeto, ao longo do desenvolvimento dele.
 
 Criei essa nota para descrever em detalhes a estrutura de threads de minha Engine, para fins de documentação, aprendizado e posterior consulta por mim caso um dia eu queria migrar meu código pra C++. 
 

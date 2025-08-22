@@ -26,7 +26,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 {
     // Importa o modelo do meu quarto 1
     // Cria um plano que pode se deformar
-    
+    /*
     scene.criarObjeto(new ObjectBase({
         type : 'OBJ',
         name : 'Mapa antigo',
@@ -83,14 +83,16 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 
         },
     }));
-    
+    */
+
+
     
     // Cria um plano que pode se deformar
     scene.criarObjeto( new ObjectBase({
         type : 'OBJ',
         name : 'Mapa novo 2',
-        obj  : '/MAPS/theroom2/map.obj',
-        mtl  : '/MAPS/theroom2/map.mtl',
+        obj  : '/MAPS/montains/montains.obj',
+        mtl  : '/MAPS/montains/montains.mtl',
         
         isInvisible: false,
         opacity: 1, 
@@ -126,8 +128,8 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             y: 0,
             z: 0
         },
-        collide: true,
-        collisionEvents: true,
+        collide: false,
+        collisionEvents: false,
         podeAtravessar: false,
         ignoreCollisions: [],
         proximityConfig: {

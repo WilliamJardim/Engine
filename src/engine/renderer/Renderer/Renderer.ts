@@ -78,6 +78,7 @@ import ConfigCamera from '../../interfaces/both_engines/CameraConfig.ts';
 export class Renderer
 {
     public canvas        : React.RefObject<HTMLCanvasElement>;
+    public skyCaminhoTextura : string; 
     public skyTexture    : Ponteiro<WebGLTexture>;
     public skyQuadBuffer : Ponteiro<WebGLBuffer>;
     public ambient       : float;
@@ -157,8 +158,9 @@ export class Renderer
         this.lastFrameDelta = 0;
 
         // Inicializa a textura do skybox nula
-        this.skyTexture    = null;
-        this.skyQuadBuffer = null;
+        this.skyCaminhoTextura = "sky/bg2.jpg";
+        this.skyTexture        = null;
+        this.skyQuadBuffer     = null;
 
         // Iluminação global base que todos os objetos vão seguir
         this.ambient        = renderConfig.ambient  || 0.4; // Força da luz ambiente
@@ -1579,7 +1581,7 @@ export class Renderer
     */
     public inicializar(): void
     {
-        this.carregarImagemSkybox("/sky/sky.jpg");
+        this.carregarImagemSkybox(this.skyCaminhoTextura);
         this.render(0);    
     }
 }

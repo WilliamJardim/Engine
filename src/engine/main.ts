@@ -459,7 +459,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
 
         sensibilidade        : 0.07,
         limiteMiraCimaBaixo  : 1.6183333333333352,
-        passosAndar          : 0 // Vou definir na camera por enquanto
+        passosAndar          : 5 // Vou definir na camera por enquanto
     }));
 
     // Define a camera ativa como sendo a primeira camera, ou seja, camera cujo indice é zero(a camera criada acima)

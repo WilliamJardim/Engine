@@ -172,7 +172,7 @@ export default class CameraInstance
 
         // Se está andando
         }else{
-            this.passosAndar = 15.9;
+            this.passosAndar = 45.9;
         }
         
         // Calcula a direção da câmera com base na rotação

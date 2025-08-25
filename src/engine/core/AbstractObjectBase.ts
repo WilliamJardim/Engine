@@ -860,10 +860,13 @@ export default abstract class AbstractObjectBase
 
     }
 
+    /**
+    * Movido para o Scene.ts
     public updatePhysics( frameDelta:float ): void
     {
 
     }
+    */
 
     public updateRotation( frameDelta:float ): void
     {

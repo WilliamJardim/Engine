@@ -592,7 +592,233 @@ export default class Scene
     }
 
     /**
-    * Update object collision reaction 
+    * Atualiza a fisica de queda com gravidade, sopro de vento, kicks, etc - deste objeto.
+    * Este objeto atualiza essas coisas dele mesmo.
+    */
+    public updatePhysics( esteObjeto:Ponteiro<AbstractObjectBase>, frameDelta:float ): void
+    {
+        const objetosCena               : Array<Ponteiro<AbstractObjectBase>> = this.getObjects();
+        const gravity                   : Position3D                          = this.getGravity();
+        const frameDeltaIntensification : float                               = this.frameDeltaIntensification;
+        const objectPhysicsUpdateRate   : float                               = this.objectPhysicsUpdateRate;
+
+        // Se o ponteiro do objeto em questão não for null
+        if( esteObjeto != null )
+        {
+            esteObjeto.isFalling = true;
+
+            //If this object have physics
+            if( (esteObjeto.objProps.podeAtravessar != true)                                       &&
+                (esteObjeto.objProps.collide == true || esteObjeto.objProps.collide == undefined ) && 
+                 esteObjeto.physicsState.havePhysics == true 
+            ){
+                /**
+                * FISICA DE QUEDA DO OBJETO
+                * Para cada objeto da cena
+                * (Esse laço só executa uma vez por que tem códigos que criei que precisam do BREAK)
+                */
+                for( let i:int = 0; i < objetosCena.length; i++ )
+                {
+                    const objetoAtualCena :  Ponteiro<AbstractObjectBase>  = objetosCena[i];
+
+                    /**
+                    * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
+                    */
+                    if(  objetoAtualCena != null                          &&
+                        (objetoAtualCena.objProps.podeAtravessar != true) &&
+                        (objetoAtualCena.objProps.collide == true )       && 
+                         objetoAtualCena.id != esteObjeto.id              && 
+                        
+                        //no ar, o objeto tem um alcançe de colisão maior, pra evitar o bug dele não conseguir detectar o objeto para ele parar em cima ao cair
+                        isCollision( esteObjeto, 
+                                     objetoAtualCena, 
+                                     (
+                                        esteObjeto.isFalling == true ? {x: 0.8, y: 0.8, z: 0.8} 
+                                                                     : {x: 0.5, y: 0.5, z: 0.5}
+                                     ) 
+                        ) == true 
+                    ){
+                        //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
+                        //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
+                        
+                        if( esteObjeto.getPosition().y > objetoAtualCena.getPosition().y )
+                        {
+                            //Diz que o objeto parou de cair
+                            esteObjeto.isFalling        = false;
+                            esteObjeto.groundY          = esteObjeto.getPosition().y; // A posição da ultima colisão
+                            esteObjeto.objectBelow      = objetoAtualCena;
+                            esteObjeto.lastObjectBelow  = objetoAtualCena;
+
+                            if( esteObjeto.getVelocity().y == 0 )
+                            {
+                                // Diz que o objeto parou de receber uma velocidade em Y
+                                esteObjeto.isReceiving_Y_Velocity = false;
+                            }
+                        }
+                        
+                        //Impede que o objeto suba em cima de outro objeto
+                        if( esteObjeto.isMovimentoTravadoPorColisao == false && esteObjeto.getPosition().y < objetoAtualCena.getPosition().y ){
+                            esteObjeto.setPosition({
+                                y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - esteObjeto.getScale().y,
+
+                                // O resto da posição mantém
+                                x: objetoAtualCena.getPosition().x,
+                                z: objetoAtualCena.getPosition().z
+                            })
+                        }
+
+                        //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
+                        //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
+                        /*
+                        if( this.getPosition().y > objetoAtualCena.getPosition().y )
+                        {
+                            this.setPosition({
+                                y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
+                            });
+
+                            //Diz que o objeto parou de cair
+                            this.isFalling = false;
+                            this.groundY = this.getPosition().y; // A posição da ultima colisão
+                            this.objectBelow = objetoAtualCena;
+                            this.lastObjectBelow = objetoAtualCena;
+                        }
+                        */
+
+                        /**
+                        * A linha que estava comentada: objetoAtualCena.objProps.havePhysics === false , é desnecessaria, pois, o objeto não precisa ser estatico para nao poder ultrapassar
+                        * Porem é mais dificil de testar se objetos tiverem fisica, por que ficam caindo. Mais eu fiz um teste movendo o chao para baixo, e a caixa e o cubo cairam certinho como esperado, e o cubo não conseguiu ultrapassar a caixa por baixo
+                        *
+                        * DETALHE: Mais se não mover o chao pra baixo não deu pra testar pois quando eu tentei mover o cubo pra ficar em baixo da caixa ele ficou no meio da caixa,
+                        * mais isso não é por causa da logica de correação da posição do cubo, mais sim, por que, o cubo a onde ele tava não pode ultrassar a caixa, ai a logica de correção dele jogou ele pra baixo da caixa, porém, isso fez ele ultrapassar o chão, então, ele corrigiu a posição e ficou em cima do chão, o que fez ele ficar no meio da caixa
+                        * Eu sei disso por que testei varias vezes, e ao fazer ess teste de mover o chao pra baixo, os dois objetos cairam corretamente como eu queria, e quando cairam no chao, o cubo ficou em baixo da caixa, e quando eu tentei forçar o cubo a ultrapassar a caixa por baixo, ele permaneceu lá em baixo da caixa, então a posição foi corrigida certa, e mesmo assim continuou em cima do chão, o que também é otimo, msotra que ta certo.
+                        */
+
+                        // Zera a velocidade do objeto pois ele já caiu
+                        if( esteObjeto.isReceiving_Y_Velocity == false )
+                        {
+                            //Se é um objeto que pode quicar como uma bola
+                            if( esteObjeto.objProps.kick_rate != undefined ){
+                                
+                                //Se tem uma velocidade aceitavel para quicar
+                                if( Math.abs(esteObjeto.getVelocity().y) >= 6 )
+                                {
+                                    esteObjeto.getVelocity().y = ((esteObjeto.getVelocity().y/1.7) * -1) + esteObjeto.objProps.kick_rate + (Math.random() * 5) + (Math.random() * esteObjeto.objProps.kick_rate/2);
+                                
+                                }else{
+                                    //Se nao atendeu minha limitação, ele zera normalmente
+                                    esteObjeto.getVelocity().y = 0;
+                                }
+
+                            //Se é um objeto normal, o Y zera
+                            }else{
+                                esteObjeto.getVelocity().y = 0;
+                            }
+                        }
+
+                        break;
+                    }
+                }
+
+                /**
+                * Se o objeto está caindo 
+                */
+                if( esteObjeto.isFalling === true )
+                {
+                    /**
+                    * Sinaliza que um movimento para baixo está ocorrendo neste objeto 
+                    */
+                    esteObjeto.movimentSinalyzer.down = true;
+
+                    /**
+                    * Enquanto o objeto estiver caindo, ele não tem objeto abaixo dele 
+                    */
+                    esteObjeto.objectBelow = null;
+                
+                    if( esteObjeto.getVelocity().y != undefined && esteObjeto.getPosition().y != undefined )
+                    {
+                        /**
+                        * Faz o object decrementar a posição Y com a gravidade
+                        */
+                        esteObjeto.getVelocity().y -= this.gravity.y;
+
+                        /**
+                        * Executa os eventos de queda 
+                        */
+                        const eventosDoObjeto : Array<ObjectEvents> = esteObjeto.objEvents.getEventos();
+
+                        for( let j:int = 0; j < eventosDoObjeto.length; j++ )
+                        {
+                            const eventosObjeto : ObjectEvents = eventosDoObjeto[ j ];
+
+                            //Chama o evento whenFall
+                            if( eventosObjeto.whenFall != null )
+                            {
+                                eventosObjeto.whenFall.bind(esteObjeto)({
+                                    self     : esteObjeto,
+                                    instante : new Date().getTime()
+                                });
+                            }
+                        }
+                    }
+
+                    /**
+                    * Aplica fisica de rotação na queda de acordo com o vento
+                    */
+                    if( this.sceneConfig.haveWind == true )
+                    {
+                        if( esteObjeto.objProps.name != "Player" )
+                        {
+                            const wind    : Wind    = this.wind;
+                            const randomX : float   = Math.random() * 0.001;
+                            const randomY : float   = Math.random() * 0.001;
+                            const randomZ : float   = Math.random() * 0.001;
+
+                            esteObjeto.somarRotation({
+                                x: (randomX + wind.orientation.x) * wind.intensity.x * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification,
+                                y: (randomY + wind.orientation.y) * wind.intensity.y * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification,
+                                z: (randomZ + wind.orientation.z) * wind.intensity.z * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification
+                            });
+
+                            //O vento tambem empurra um pouco na queda 
+                            esteObjeto.somarForce({
+                                x: (randomX + wind.deslocationTrend.x + wind.orientation.x) * wind.intensity.x,
+                                y: (randomY + wind.deslocationTrend.y + wind.orientation.y) * wind.intensity.y,
+                                z: (randomZ + wind.deslocationTrend.z + wind.orientation.z) * wind.intensity.z
+                            
+                            //(como velocidade interna da engine)
+                            }, false);
+                        }
+                    }
+
+                // Se o objeto não está caindo
+                }else{
+                    //Se ele já está no chão
+                    if( esteObjeto.objectBelow != null && esteObjeto.objProps.name != "Player" ){
+                        esteObjeto.setRotation({x:0, y: 0, z: 0});
+                    }
+
+                }
+
+                // Se existe gravidade em outras direções
+                if( this.gravity.x != 0 )
+                {
+                    esteObjeto.getVelocity().x -= this.gravity.x;
+                }
+
+                // Se existe gravidade em outras direções
+                if( this.gravity.z != 0 )
+                {
+                    esteObjeto.getVelocity().z -= this.gravity.z;
+                }
+
+            }
+        }
+
+    }
+
+    /**
+    * Update object collision reaction.
+    * Atualiza a reação das colisões de cada objeto para com cada objeto.
     */
     public updateCollisionReactions(firstRender:boolean, renderizadorPronto:boolean, frameDelta:float, frameNumber: int)
     {
@@ -849,14 +1075,14 @@ export default class Scene
     }
 
     /**
-    * Update all objects in the scene 
+    * Update all objects in the scene.
+    * Atualiza todos os objetos na cena, atualizando a lógica de jogo deles, fisica, eventos, etc...
     */
     public updateObjects( firstRender: boolean, renderizadorPronto: boolean, frameDelta:float, frameNumber: int ): void
     {
 
-        const context      : Scene  = this;
-        const currentScene : Scene  = context;
-
+        const context          : Scene                                = this;
+        const currentScene     : Scene                                = context;
         const updatableObjects : Array<Ponteiro<AbstractObjectBase>>  = this.objects;
 
         for( let i:int = 0 ; i < updatableObjects.length ; i++ )
@@ -871,9 +1097,10 @@ export default class Scene
                 const currentObjectIndex            : int                = i;
 
                 /**
-                * Atualiza uma tabela com os nomes dos objetos
+                * Atualiza uma tabela com os nomes dos objetos,
+                * Se o ponteiro não for nulo
                 */
-                if( currentObject && currentObject.objProps )
+                if( currentObject != null )
                 {
                     if( currentObject.objProps.name != "" ){
                         context.objectTableByName[ currentObject.objProps.name ] = currentObject;
@@ -899,6 +1126,18 @@ export default class Scene
                     }
 
                     /**
+                    * Reseta algumas coisas antes do loop.
+                    * Isso reseta algumas coisas basicas do objeto, antes de qualquer loop de lógica e fisica
+                    */
+                    currentObject.pre_loop_reset();
+
+                    /**
+                    * Atualiza a fisica de queda com gravidade, sopro de vento, kicks, etc - deste objeto.
+                    * Este objeto atualiza essas coisas dele mesmo.
+                    */
+                    this.updatePhysics( currentObject, frameDelta );
+
+                    /**
                     * Atualiza a lógica de jogo do objeto. 
                     * Esse método vai fazer a atualização de lógica e regras de jogo do objeto.
                     * OBS: Esse método não vai fazer atualizações de fisica, ou movimentação padrão da engine. Apenas lógicas especificas para o objeto.
@@ -918,8 +1157,14 @@ export default class Scene
                     */
                     currentObject.updateVelocitySinalyzer( velocityBeforeUpdate, velocitySinalyzerBeforeUpdate, firstRender, renderizadorPronto, frameDelta, frameNumber );
 
+                    /**
+                    * Reseta algumas coisas depois do frame atual terminar.
+                    * Muito importante para o calculo de força.
+                    */
+                    currentObject.reset_loop_afterframe();
+
                 }catch(e){
-                    console.log(e)
+                    console.error(e)
                 }
             }
         }

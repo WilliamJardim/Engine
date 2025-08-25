@@ -1318,236 +1318,6 @@ export default class ObjectBase extends AbstractObjectBase
     }
 
     /**
-    * Atualiza a fisica de queda com gravidade, sopro de vento, kicks, etc - deste objeto.
-    * Este objeto atualiza essas coisas dele mesmo.
-    */
-    public updatePhysics( frameDelta:float ): void
-    {
-        const esteObjeto  : Ponteiro<AbstractObjectBase>  = this;
-        const scene       : Ponteiro<Scene>               = esteObjeto.scene;
-
-        // Se o ponteiro da cena nao for null
-        if( scene != null )
-        { 
-            const objetosCena               : Array<Ponteiro<AbstractObjectBase>> = scene.getObjects();
-            const gravity                   : Position3D                          = scene.getGravity();
-            const frameDeltaIntensification : float                               = scene.frameDeltaIntensification;
-            const objectPhysicsUpdateRate   : float                               = scene.objectPhysicsUpdateRate;
-
-            this.isFalling = true;
-
-            //If this object have physics
-            if( (this.objProps.podeAtravessar != true) &&
-                (this.objProps.collide == true || this.objProps.collide == undefined ) && 
-                this.scene != null && 
-                this.scene.gravity && 
-                this.physicsState.havePhysics == true 
-            ){
-                /**
-                * FISICA DE QUEDA DO OBJETO
-                * Para cada objeto da cena
-                * (Esse laço só executa uma vez por que tem códigos que criei que precisam do BREAK)
-                */
-                for( let i:int = 0; i < objetosCena.length; i++ )
-                {
-                    const objetoAtualCena :  Ponteiro<AbstractObjectBase>  = objetosCena[i];
-
-                    /**
-                    * Se o ESTE OBJETO tiver colisão habilitada e colidir com o TAL outro OBJETO, ele corrige a posição Y DESTE OBJETO, para impedir ultrapassar o TAL outro OBJETO
-                    */
-                    if(  objetoAtualCena != null &&
-                        (objetoAtualCena.objProps.podeAtravessar != true) &&
-                        (objetoAtualCena.objProps.collide == true ) && 
-                        objetoAtualCena.id != this.id && 
-                        
-                        //no ar, o objeto tem um alcançe de colisão maior, pra evitar o bug dele não conseguir detectar o objeto para ele parar em cima ao cair
-                        isCollision( this, 
-                                    objetoAtualCena, 
-                                    (
-                                        this.isFalling == true ? {x: 0.8, y: 0.8, z: 0.8} 
-                                                            : {x: 0.5, y: 0.5, z: 0.5}
-                                    ) 
-                        ) == true 
-                    ){
-                        //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
-                        //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
-                        
-                        if( this.getPosition().y > objetoAtualCena.getPosition().y )
-                        {
-                            //Diz que o objeto parou de cair
-                            this.isFalling = false;
-                            this.groundY = this.getPosition().y; // A posição da ultima colisão
-                            this.objectBelow = objetoAtualCena;
-                            this.lastObjectBelow = objetoAtualCena;
-
-                            if( this.getVelocity().y == 0 )
-                            {
-                                // Diz que o objeto parou de receber uma velocidade em Y
-                                this.isReceiving_Y_Velocity = false;
-                            }
-                        }
-                        
-                        //Impede que o objeto suba em cima de outro objeto
-                        if( this.isMovimentoTravadoPorColisao == false && this.getPosition().y < objetoAtualCena.getPosition().y ){
-                            this.setPosition({
-                                y: objetoAtualCena.getPosition().y - objetoAtualCena.getScale().y - this.getScale().y,
-
-                                // O resto da posição mantém
-                                x: objetoAtualCena.getPosition().x,
-                                z: objetoAtualCena.getPosition().z
-                            })
-                        }
-
-                        //Corrige a posição Y do objeto pra não ultrapassar o Y do objeto
-                        //BUG: Se o cubo ficar em baixo da caixa e subir um pouquinho Y dele, a caixa corrige sua posição e FICA EM CIMA DO CUBO
-                        /*
-                        if( this.getPosition().y > objetoAtualCena.getPosition().y )
-                        {
-                            this.setPosition({
-                                y: objetoAtualCena.getPosition().y + (objetoAtualCena.getScale().y/1.4) + (this.getScale().y/1.4)
-                            });
-
-                            //Diz que o objeto parou de cair
-                            this.isFalling = false;
-                            this.groundY = this.getPosition().y; // A posição da ultima colisão
-                            this.objectBelow = objetoAtualCena;
-                            this.lastObjectBelow = objetoAtualCena;
-                        }
-                        */
-
-                        /**
-                        * A linha que estava comentada: objetoAtualCena.objProps.havePhysics === false , é desnecessaria, pois, o objeto não precisa ser estatico para nao poder ultrapassar
-                        * Porem é mais dificil de testar se objetos tiverem fisica, por que ficam caindo. Mais eu fiz um teste movendo o chao para baixo, e a caixa e o cubo cairam certinho como esperado, e o cubo não conseguiu ultrapassar a caixa por baixo
-                        *
-                        * DETALHE: Mais se não mover o chao pra baixo não deu pra testar pois quando eu tentei mover o cubo pra ficar em baixo da caixa ele ficou no meio da caixa,
-                        * mais isso não é por causa da logica de correação da posição do cubo, mais sim, por que, o cubo a onde ele tava não pode ultrassar a caixa, ai a logica de correção dele jogou ele pra baixo da caixa, porém, isso fez ele ultrapassar o chão, então, ele corrigiu a posição e ficou em cima do chão, o que fez ele ficar no meio da caixa
-                        * Eu sei disso por que testei varias vezes, e ao fazer ess teste de mover o chao pra baixo, os dois objetos cairam corretamente como eu queria, e quando cairam no chao, o cubo ficou em baixo da caixa, e quando eu tentei forçar o cubo a ultrapassar a caixa por baixo, ele permaneceu lá em baixo da caixa, então a posição foi corrigida certa, e mesmo assim continuou em cima do chão, o que também é otimo, msotra que ta certo.
-                        */
-
-                        // Zera a velocidade do objeto pois ele já caiu
-                        if( this.isReceiving_Y_Velocity == false )
-                        {
-                            //Se é um objeto que pode quicar como uma bola
-                            if( this.objProps.kick_rate != undefined ){
-                                
-                                //Se tem uma velocidade aceitavel para quicar
-                                if( Math.abs(this.getVelocity().y) >= 6 )
-                                {
-                                    this.getVelocity().y = ((this.getVelocity().y/1.7) * -1) + this.objProps.kick_rate + (Math.random() * 5) + (Math.random() * this.objProps.kick_rate/2);
-                                
-                                }else{
-                                    //Se nao atendeu minha limitação, ele zera normalmente
-                                    this.getVelocity().y = 0;
-                                }
-
-                            //Se é um objeto normal, o Y zera
-                            }else{
-                                this.getVelocity().y = 0;
-                            }
-                        }
-
-
-                        break;
-                    }
-                }
-
-                /**
-                * Se o objeto está caindo 
-                */
-                if( this.isFalling === true )
-                {
-                    /**
-                    * Sinaliza que um movimento para baixo está ocorrendo neste objeto 
-                    */
-                    this.movimentSinalyzer.down = true;
-
-                    /**
-                    * Enquanto o objeto estiver caindo, ele não tem objeto abaixo dele 
-                    */
-                    this.objectBelow = null;
-                
-                    if( this.getVelocity().y != undefined && this.getPosition().y != undefined )
-                    {
-                        /**
-                        * Faz o object decrementar a posição Y com a gravidade
-                        */
-                        this.getVelocity().y -= this.scene.gravity.y;
-
-                        /**
-                        * Executa os eventos de queda 
-                        */
-                        const eventosDoObjeto : Array<ObjectEvents> = this.objEvents.getEventos();
-
-                        for( let j:int = 0; j < eventosDoObjeto.length; j++ )
-                        {
-                            const eventosObjeto : ObjectEvents = eventosDoObjeto[ j ];
-
-                            //Chama o evento whenFall
-                            if( eventosObjeto.whenFall != null )
-                            {
-                                eventosObjeto.whenFall.bind(esteObjeto)({
-                                    self     : esteObjeto,
-                                    instante : new Date().getTime()
-                                });
-                            }
-                        }
-                    }
-
-                    /**
-                    * Aplica fisica de rotação na queda de acordo com o vento
-                    */
-                    if( this.scene.sceneConfig.haveWind == true )
-                    {
-                        if( this.objProps.name != "Player" ){
-                            const wind:Wind = this.scene.wind;
-                            const randomX = Math.random() * 0.001;
-                            const randomY = Math.random() * 0.001;
-                            const randomZ = Math.random() * 0.001;
-
-                            this.somarRotation({
-                                x: (randomX + wind.orientation.x) * wind.intensity.x * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification,
-                                y: (randomY + wind.orientation.y) * wind.intensity.y * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification,
-                                z: (randomZ + wind.orientation.z) * wind.intensity.z * Math.abs(gravity.y) * 4.8 * frameDelta * frameDeltaIntensification
-                            });
-
-                            //O vento tambem empurra um pouco na queda 
-                            this.somarForce({
-                                x: (randomX + wind.deslocationTrend.x + wind.orientation.x) * wind.intensity.x,
-                                y: (randomY + wind.deslocationTrend.y + wind.orientation.y) * wind.intensity.y,
-                                z: (randomZ + wind.deslocationTrend.z + wind.orientation.z) * wind.intensity.z
-                            
-                            //(como velocidade interna da engine)
-                            }, false);
-                        }
-                    }
-
-                // Se o objeto não está caindo
-                }else{
-                    //Se ele já está no chão
-                    if( this.objectBelow != null && this.objProps.name != "Player" ){
-                        this.setRotation({x:0, y: 0, z: 0});
-                    }
-
-                }
-
-                // Se existe gravidade em outras direções
-                if( this.scene.gravity.x != 0 )
-                {
-                    this.getVelocity().x -= this.scene.gravity.x;
-                }
-
-                // Se existe gravidade em outras direções
-                if( this.scene.gravity.z != 0 )
-                {
-                    this.getVelocity().z -= this.scene.gravity.z;
-                }
-
-            }
-        }
-
-    }
-
-    /**
     * Atualiza a rotação do objeto, e do objeto em relação aos outros objetos na cena
     */
     public updateRotation( frameDelta:float ): void
@@ -2122,15 +1892,16 @@ export default class ObjectBase extends AbstractObjectBase
     ): void{
         if( renderizadorPronto == true )
         {
-            /**
-            * Reseta algumas coisas antes do loop 
-            */
-            this.pre_loop_reset();
+            // MOVIDO PARA O Scene.ts
+                /**
+                * Reseta algumas coisas antes do loop 
+                */
+                //this.pre_loop_reset(); 
 
-            /**
-            * Principal: Fisica, Movimentação e Eventos 
-            */
-            this.updatePhysics( frameDelta );
+                /**
+                * Principal: Fisica, Movimentação e Eventos 
+                */
+                //this.updatePhysics( frameDelta );
             
             /**
             * Igualmente importante, atualiza quais objetos estão colidindo/e os que estão proximos com quais objetos 
@@ -2158,10 +1929,11 @@ export default class ObjectBase extends AbstractObjectBase
             */
             this.updateAttachments( frameDelta );
 
-            /**
-            * Reseta algumas coisas depois do frame atual terminar
-            */
-            this.reset_loop_afterframe();
+            // MOVIDO PARA O Scene.ts
+                /**
+                * Reseta algumas coisas depois do frame atual terminar
+                */
+                //this.reset_loop_afterframe();
         }
     }
 

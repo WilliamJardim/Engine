@@ -2111,6 +2111,10 @@ export default class ObjectBase extends AbstractObjectBase
 
     }
 
+    /**
+    * Método que vai fazer a atualização de lógica e regras de jogo do objeto.
+    * OBS: Esse método não vai fazer atualizações de fisica, ou movimentação padrão da engine. Apenas lógicas especificas para o objeto.
+    */
     public updateObject( firstRender: boolean, 
                          renderizadorPronto: boolean, 
                          frameDelta: float, 

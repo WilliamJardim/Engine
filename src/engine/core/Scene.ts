@@ -899,7 +899,9 @@ export default class Scene
                     }
 
                     /**
-                    * Update the object 
+                    * Atualiza a lógica de jogo do objeto. 
+                    * Esse método vai fazer a atualização de lógica e regras de jogo do objeto.
+                    * OBS: Esse método não vai fazer atualizações de fisica, ou movimentação padrão da engine. Apenas lógicas especificas para o objeto.
                     */
                     currentObject.updateObject( firstRender, renderizadorPronto, frameDelta, frameNumber );
 

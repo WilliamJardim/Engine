@@ -885,11 +885,12 @@ export default class Scene
 
                 try{
                     /**
-                    * Repass some important informations into the  "currentObject"
+                    * Envia algumas informações importantes para dentro do "currentObject"
+                    * Para caso eu precise acessar o scene ou outros objetos de dentro do contexto do "currentObject", em alguma regra interna de atualização de lógica que eu possa querer criar
                     */
                     currentObject.setScene( currentScene );
 
-                    if( this.sceneConfig.enable_advanced_frame_tracking )
+                    if( this.sceneConfig.enable_advanced_frame_tracking == true )
                     {
                         /**
                         * Salva o status atual deste objeto ANTES DA ATUALIZACAO frame no historico do objeto 
@@ -902,7 +903,7 @@ export default class Scene
                     */
                     currentObject.updateObject( firstRender, renderizadorPronto, frameDelta, frameNumber );
 
-                    if( this.sceneConfig.enable_advanced_frame_tracking )
+                    if( this.sceneConfig.enable_advanced_frame_tracking == true )
                     {
                         /**
                         * Salva o status atual deste objeto APOS A ATUALIZACAO este frame no historico do objeto 

@@ -1909,74 +1909,72 @@ export default class ObjectBase extends AbstractObjectBase
         const objeto  : AbstractObjectBase = this;
         const scene   : Ponteiro<Scene>    = objeto.getScene();
 
-        if( scene == null )
+        // Se o ponteiro não for null
+        if( scene != null )
         {
-            return; 
-        }
-
-        if( objeto.objProps.attachments )
-        {                                                
-            /**
-            * Para cada objeto da cena
-            */
-            for( let i:int = 0; i < objeto.objProps.attachments.length; i++ )
-            {   
-                const anexo            : ObjectAttachment             = objeto.objProps.attachments[i];
-                const nomeObjetoAnexar : string                       = anexo.name;
-                const objetoAnexar     : Ponteiro<AbstractObjectBase> = scene.getObjectByName( nomeObjetoAnexar );
-                
-                //Se o ponteiro não é nulo
-                if( objetoAnexar != null )
-                {
-                    // Se ele NÂO DEVE COLIDIR COM O OBOJETO DONO DO ANEXO
-                    if( anexo.attacherCollision == false )
-                    {
-                        if( includeString(objeto.objProps.ignoreCollisions, objetoAnexar.id) == false ){ 
-                            objeto.objProps.ignoreCollisions.push( objetoAnexar.id );
-                        }
-                    }
-
-                    // Se tem um ajuste de posição EM RELAÇÂO AO OBJETO, aplica
-                    // Acompanha a posição do objeto
-                    objetoAnexar.setPosition( objeto.getPosition() );
-
-                    // Alem disso, permite fazer um ajuste de posição
-                    objetoAnexar.somarX( anexo.position.x );
-                    objetoAnexar.somarY( anexo.position.y );
-                    objetoAnexar.somarZ( anexo.position.z );
-
-                    //Se vai copiar a memsa escala do objeto
-                    if( anexo.sameScale == true ){
-                        objetoAnexar.setScale( objeto.getScale() );
-                    }
-
-                    // Se tem uma escala especifica para ele
-                    objetoAnexar.setScale( anexo.scale );
-
-                    // Se tem redução de escala
-                    objetoAnexar.somarEscalaX( anexo.scaleReduce.x );
-                    objetoAnexar.somarEscalaY( anexo.scaleReduce.y );
-                    objetoAnexar.somarEscalaZ( anexo.scaleReduce.z );
-
-                    //Se tem rotação
-                    objetoAnexar.setRotation( anexo.rotation );
-
-                    //Se tem incremento de rotação nos eixos
-                    objetoAnexar.somarRotation( anexo.rotationIncrement );
-
-                    //Se tem outras coisas
-                    objetoAnexar.objProps.podeAtravessar = anexo.podeAtravessar;
-                    objetoAnexar.objProps.collide        = anexo.collide;
+            if( objeto.objProps.attachments.length > 0 )
+            {                                                
+                /**
+                * Para cada objeto da cena
+                */
+                for( let i:int = 0; i < objeto.objProps.attachments.length; i++ )
+                {   
+                    const anexo            : ObjectAttachment             = objeto.objProps.attachments[i];
+                    const nomeObjetoAnexar : string                       = anexo.name;
+                    const objetoAnexar     : Ponteiro<AbstractObjectBase> = scene.getObjectByName( nomeObjetoAnexar );
                     
-                    objetoAnexar.objProps.havePhysics     = anexo.havePhysics;
-                    objetoAnexar.physicsState.havePhysics = anexo.havePhysics;
+                    //Se o ponteiro não é nulo
+                    if( objetoAnexar != null )
+                    {
+                        // Se ele NÂO DEVE COLIDIR COM O OBOJETO DONO DO ANEXO
+                        if( anexo.attacherCollision == false )
+                        {
+                            if( includeString(objeto.objProps.ignoreCollisions, objetoAnexar.id) == false ){ 
+                                objeto.objProps.ignoreCollisions.push( objetoAnexar.id );
+                            }
+                        }
 
-                    objetoAnexar.objProps.collisionEvents = anexo.collisionEvents;
-                    objetoAnexar.objProps.isInvisible     = anexo.isInvisible;
-                }
-            }        
-        }                                               
+                        // Se tem um ajuste de posição EM RELAÇÂO AO OBJETO, aplica
+                        // Acompanha a posição do objeto
+                        objetoAnexar.setPosition( objeto.getPosition() );
 
+                        // Alem disso, permite fazer um ajuste de posição
+                        objetoAnexar.somarX( anexo.position.x );
+                        objetoAnexar.somarY( anexo.position.y );
+                        objetoAnexar.somarZ( anexo.position.z );
+
+                        //Se vai copiar a memsa escala do objeto
+                        if( anexo.sameScale == true ){
+                            objetoAnexar.setScale( objeto.getScale() );
+                        }
+
+                        // Se tem uma escala especifica para ele
+                        objetoAnexar.setScale( anexo.scale );
+
+                        // Se tem redução de escala
+                        objetoAnexar.somarEscalaX( anexo.scaleReduce.x );
+                        objetoAnexar.somarEscalaY( anexo.scaleReduce.y );
+                        objetoAnexar.somarEscalaZ( anexo.scaleReduce.z );
+
+                        //Se tem rotação
+                        objetoAnexar.setRotation( anexo.rotation );
+
+                        //Se tem incremento de rotação nos eixos
+                        objetoAnexar.somarRotation( anexo.rotationIncrement );
+
+                        //Se tem outras coisas
+                        objetoAnexar.objProps.podeAtravessar = anexo.podeAtravessar;
+                        objetoAnexar.objProps.collide        = anexo.collide;
+                        
+                        objetoAnexar.objProps.havePhysics     = anexo.havePhysics;
+                        objetoAnexar.physicsState.havePhysics = anexo.havePhysics;
+
+                        objetoAnexar.objProps.collisionEvents = anexo.collisionEvents;
+                        objetoAnexar.objProps.isInvisible     = anexo.isInvisible;
+                    }
+                }        
+            }                                               
+        }
     }
 
     /**

@@ -855,18 +855,17 @@ export default abstract class AbstractObjectBase
         return 0;
     }
 
+    /**
+    * Movidos para o Scene.ts
     public updateCollisionState( frameDelta:float ): void
     {
 
     }
 
-    /**
-    * Movido para o Scene.ts
     public updatePhysics( frameDelta:float ): void
     {
 
     }
-    */
 
     public updateRotation( frameDelta:float ): void
     {
@@ -882,16 +881,20 @@ export default abstract class AbstractObjectBase
     {
                            
     }
+    */
 
     public callEvent( funcaoEvento:Function, parametros:any ): void
     {
       
     }
 
+    /**
+    * Movidos para o Scene.ts
     public updateEvents( frameDelta:float ): void
     {
         
     }
+    */
 
     public reset_loop_afterframe(): void
     {

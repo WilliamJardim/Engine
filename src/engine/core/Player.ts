@@ -13,12 +13,11 @@ import { float, int, Ponteiro } from "../types/types-cpp-like";
 import Mapa from "../utils/dicionarios/Mapa";
 import CameraInstance from "./CameraInstance";
 import AbstractObjectBase from "./AbstractObjectBase";
-import ObjectBase from "./ObjectBase";
 
 /**
 * Classe que representa um jogador 
 */
-export default class Player extends ObjectBase
+export default class Player extends AbstractObjectBase
 {
     public playerProps      : PlayerProps;
     public nome             : string;
@@ -104,7 +103,7 @@ export default class Player extends ObjectBase
     */
     public updateSituacoes(): void
     {
-
+        
     }
 
     /**
@@ -112,7 +111,7 @@ export default class Player extends ObjectBase
     */
     public updateInventario(): void
     {
-
+        
     }
 
     /**

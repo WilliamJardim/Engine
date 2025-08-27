@@ -57,14 +57,14 @@ export default class LocalSound
     }
 
     // Toca o som apenas uma vez
-    play(): void
+    public play(): void
     {   
         this.audioPlayer.setExactCropTime( this.soundProps.begin,  this.soundProps.end );
         this.audioPlayer.play();
     }
 
     // Determina quando o jogador está perto ou longe do som
-    calculateHear(): void
+    public calculateHear(): void
     {
         const soundProps         : LocalSoundProps = this.soundProps;
         const minVolume          : float           = soundProps.initialVolume;
@@ -113,7 +113,7 @@ export default class LocalSound
     }
 
     // Atualiza o som na cena do jogo
-    updateSound(): void
+    public updateSound(): void
     {
         // Calcula de quão longe o som vai ser ouvido
         this.calculateHear();

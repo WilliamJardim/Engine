@@ -910,12 +910,12 @@ export default abstract class AbstractObjectBase
         
     }
     
-    isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>, limites:ProximityBounds ): boolean
+    public isCollisionOf( outroObjeto:Ponteiro<AbstractObjectBase>, limites:ProximityBounds ): boolean
     {
         return false;
     }
 
-    getCollisions( limites:ProximityBounds = {x:0, y:0, z:0}, 
+    public getCollisions( limites:ProximityBounds = {x:0, y:0, z:0}, 
                    recalculate:boolean = false  
 
     ): Array<Ponteiro<AbstractObjectBase>>
@@ -923,7 +923,7 @@ export default abstract class AbstractObjectBase
         return [];
     }
 
-    getProximity( limites:ProximityBounds = {x:0, y:0, z:0}, 
+    public getProximity( limites:ProximityBounds = {x:0, y:0, z:0}, 
                   recalculate:boolean = false 
                     
     ): Array<Ponteiro<AbstractObjectBase>>
@@ -931,7 +931,7 @@ export default abstract class AbstractObjectBase
         return [];
     }
 
-    isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>, limites:ProximityBounds ): boolean
+    public isProximityOf( outroObjeto:Ponteiro<AbstractObjectBase>, limites:ProximityBounds ): boolean
     {
         return false;
     }

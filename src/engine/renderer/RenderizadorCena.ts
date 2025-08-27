@@ -623,7 +623,7 @@ export default class RenderizadorCena
         context.renderizador.receberInformacoesTecladoMouse( context.armazenamentoEntrada.mousePosition, 
                                                              context.armazenamentoEntrada.keyDetection );
 
-        // Só chama o loop da minha engine se o renderizador já está apto para renderizar coisas
+        // Só chama o loop da minha engine se o renderizador já está apto para renderizar coisas(função que chamei de "loop" será chamada para cada frame)
         context.engineScene.loop( frameDelta, 
                                   frameNumber, 
                                   context.firstRender, 

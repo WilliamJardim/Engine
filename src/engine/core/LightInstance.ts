@@ -46,7 +46,7 @@ export class LightInstance
     }
 
     // Converte o objeto para um objeto mais simples, pra poder usar no meu mini renderizador webgl
-    getPropriedadesLuz(): PropriedadesLuz
+    public getPropriedadesLuz(): PropriedadesLuz
     {
         const tipo        : string        = this.tipo;
         const name        : string        = this.name;

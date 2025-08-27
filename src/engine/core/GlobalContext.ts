@@ -34,15 +34,15 @@ export default class GlobalContext
         });
     }
 
-    set( atributo:string, valor:any ){
+    public set( atributo:string, valor:any ){
         this.dados[ atributo ] = valor;
     }
 
-    get( atributo:string ): any{
+    public get( atributo:string ): any{
         return this.dados[ atributo ];
     }
 
-    avaliable( atributo:string ): any{
+    public avaliable( atributo:string ): any{
         return this.dados[ atributo ];
     }
 }

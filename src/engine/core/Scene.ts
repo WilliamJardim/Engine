@@ -555,49 +555,6 @@ export default class Scene
         this.objects = novosObjetosCena;
     }
 
-    //Função que chama o loop "animate"
-    public loop( frameDelta: float, 
-                 frameNumber: int,
-                 firstRender: boolean = true, 
-                 renderizadorPronto: boolean = false 
-    ){
-        const context = this;
-
-        EngineBeforeLoop( context, frameDelta, frameNumber, firstRender, renderizadorPronto );
-    
-        EngineLoop( context, 
-                    firstRender,
-                    renderizadorPronto,
-                    frameDelta,
-                    frameNumber );
-
-        context.atualizarCameraAtual( firstRender, renderizadorPronto, frameDelta, frameNumber );
-
-        context.updateGeneral( firstRender, renderizadorPronto, frameDelta, frameNumber );
-
-        context.updateObjects( firstRender, renderizadorPronto, frameDelta, frameNumber );
-
-        context.updateSounds( firstRender, renderizadorPronto, frameDelta, frameNumber );
-
-        context.updateJogadores( firstRender, renderizadorPronto, frameDelta, frameNumber );
-
-        if( firstRender == true )
-        {
-            // Chamar a função EngineMain
-            EngineMain( this, firstRender, renderizadorPronto, frameDelta, frameNumber );
-        }
-
-            
-    }
-
-    /**
-    * Update in general  
-    */
-    public updateGeneral( firstRender:boolean, renderizadorPronto:boolean, frameDelta:float, frameNumber: int )
-    {
-        this.updateCollisionReactions(firstRender, renderizadorPronto, frameDelta, frameNumber);
-    }
-
     /**
     * Atualiza a fisica de queda com gravidade, sopro de vento, kicks, etc - de um objeto em questão.
     * Este objeto atualiza essas coisas dele mesmo.
@@ -1706,129 +1663,6 @@ export default class Scene
     }
 
     /**
-    * Update all objects in the scene.
-    * Atualiza todos os objetos na cena, atualizando a lógica de jogo deles, fisica, eventos, etc...
-    */
-    public updateObjects( firstRender: boolean, renderizadorPronto: boolean, frameDelta:float, frameNumber: int ): void
-    {
-
-        const context          : Scene                                = this;
-        const currentScene     : Scene                                = context;
-        const updatableObjects : Array<Ponteiro<AbstractObjectBase>>  = this.objects;
-
-        for( let i:int = 0 ; i < updatableObjects.length ; i++ )
-        {
-            const currentObject : Ponteiro<AbstractObjectBase>   = updatableObjects[ i ];
-        
-            // Se o ponteiro não está nulo
-            if( currentObject != null )
-            {
-                const velocityBeforeUpdate          : ObjectVelocity     = {... currentObject.getVelocity()}; // Faz uma copia sem referencia
-                const velocitySinalyzerBeforeUpdate : VelocityStatus     = {... currentObject.velocitySinalyzer}; // Faz uma copia sem referencia
-                const currentObjectIndex            : int                = i;
-
-                /**
-                * Atualiza uma tabela com os nomes dos objetos,
-                * Se o ponteiro não for nulo
-                */
-                if( currentObject != null )
-                {
-                    if( currentObject.objProps.name != "" ){
-                        context.objectTableByName[ currentObject.objProps.name ] = currentObject;
-                    }
-                    if( currentObject.id != "" ){
-                        context.objectTableById[ currentObject.id ] = currentObject;
-                    }
-                }
-
-                try{
-                    /**
-                    * Envia algumas informações importantes para dentro do "currentObject"
-                    * Para caso eu precise acessar o scene ou outros objetos de dentro do contexto do "currentObject", em alguma regra interna de atualização de lógica que eu possa querer criar
-                    */
-                    currentObject.setScene( currentScene );
-
-                    if( this.sceneConfig.enable_advanced_frame_tracking == true )
-                    {
-                        /**
-                        * Salva o status atual deste objeto ANTES DA ATUALIZACAO frame no historico do objeto 
-                        */
-                        currentObject.frameHistory.logObject( "beforeUpdate", firstRender, renderizadorPronto, frameDelta, frameNumber );
-                    }
-
-                    /**
-                    * Reseta algumas coisas antes do loop.
-                    * Isso reseta algumas coisas basicas do objeto, antes de qualquer loop de lógica e fisica
-                    */
-                    currentObject.pre_loop_reset();
-
-                    /**
-                    * Atualiza a fisica de queda com gravidade, sopro de vento, kicks, etc - deste objeto.
-                    * Este objeto atualiza essas coisas dele mesmo.
-                    */
-                    this.updatePhysicsOfObject( currentObject, frameDelta );
-
-                    /**
-                    * Atualiza status de colisão e proximidade de um objeto em questão com outros objetos. 
-                    * Isso atualiza quais objetos estão colidindo/e os que estão proximos com quais objetos
-                    */
-                    this.updateCollisionStateOfObject( currentObject, frameDelta );
-
-                    /**
-                    * Atualiza os movimentos do objeto 
-                    */
-                    this.updateMovementOfObject( currentObject, frameDelta );
-
-                    /**
-                    * Atualiza a rotação do objeto 
-                    */
-                    this.updateRotationOfObject( currentObject, frameDelta );
-
-                    /**
-                    * Atualiza os eventos do objeto 
-                    */
-                    this.updateEventsOfObject( currentObject, frameDelta );
-
-                    /**
-                    * Atualiza os "attachments" ou "objeto anexados/grudados" ao objeto atual
-                    */
-                    this.updateAttachmentsOfObject( currentObject, frameDelta );
-
-                    /**
-                    * Atualiza a lógica de jogo do objeto. 
-                    * Esse método vai fazer a atualização de lógica e regras de jogo do objeto.
-                    * OBS: Esse método não vai fazer atualizações de fisica, ou movimentação padrão da engine. Apenas lógicas especificas para o objeto.
-                    */
-                    currentObject.updateObject( firstRender, renderizadorPronto, frameDelta, frameNumber );
-
-                    if( this.sceneConfig.enable_advanced_frame_tracking == true )
-                    {
-                        /**
-                        * Salva o status atual deste objeto APOS A ATUALIZACAO este frame no historico do objeto 
-                        */
-                        currentObject.frameHistory.logObject( "afterUpdate", firstRender, renderizadorPronto, frameDelta, frameNumber );
-                    }
-
-                    /**
-                    * Atualiza o status instantaneo da velocidade(em cada eixo, se está aumentando, diminuindo, etc...) referente ao frame anterior
-                    */
-                    currentObject.updateVelocitySinalyzer( velocityBeforeUpdate, velocitySinalyzerBeforeUpdate, firstRender, renderizadorPronto, frameDelta, frameNumber );
-
-                    /**
-                    * Reseta algumas coisas depois do frame atual terminar.
-                    * Muito importante para o calculo de força.
-                    */
-                    currentObject.reset_loop_afterframe();
-
-                }catch(e){
-                    console.error(e)
-                }
-            }
-        }
-
-    }
-
-    /**
     * Atualiza os eventos internos de um objeto em questão
     */
     public updateEventsOfObject( esteObjeto:Ponteiro<AbstractObjectBase>, frameDelta:float ): void
@@ -2017,8 +1851,131 @@ export default class Scene
         }
     }
 
+    /**
+    * Update all objects in the scene.
+    * Atualiza todos os objetos na cena, atualizando a lógica de jogo deles, fisica, eventos, etc...
+    */
+    public updateObjects( firstRender:boolean, renderizadorPronto:boolean, frameDelta:float, frameNumber:int ): void
+    {
+
+        const context          : Scene                                = this;
+        const currentScene     : Scene                                = context;
+        const updatableObjects : Array<Ponteiro<AbstractObjectBase>>  = this.objects;
+
+        for( let i:int = 0 ; i < updatableObjects.length ; i++ )
+        {
+            const currentObject : Ponteiro<AbstractObjectBase>   = updatableObjects[ i ];
+        
+            // Se o ponteiro não está nulo
+            if( currentObject != null )
+            {
+                const velocityBeforeUpdate          : ObjectVelocity     = {... currentObject.getVelocity()}; // Faz uma copia sem referencia
+                const velocitySinalyzerBeforeUpdate : VelocityStatus     = {... currentObject.velocitySinalyzer}; // Faz uma copia sem referencia
+                const currentObjectIndex            : int                = i;
+
+                /**
+                * Atualiza uma tabela com os nomes dos objetos,
+                * Se o ponteiro não for nulo
+                */
+                if( currentObject != null )
+                {
+                    if( currentObject.objProps.name != "" ){
+                        context.objectTableByName[ currentObject.objProps.name ] = currentObject;
+                    }
+                    if( currentObject.id != "" ){
+                        context.objectTableById[ currentObject.id ] = currentObject;
+                    }
+                }
+
+                try{
+                    /**
+                    * Envia algumas informações importantes para dentro do "currentObject"
+                    * Para caso eu precise acessar o scene ou outros objetos de dentro do contexto do "currentObject", em alguma regra interna de atualização de lógica que eu possa querer criar
+                    */
+                    currentObject.setScene( currentScene );
+
+                    if( this.sceneConfig.enable_advanced_frame_tracking == true )
+                    {
+                        /**
+                        * Salva o status atual deste objeto ANTES DA ATUALIZACAO frame no historico do objeto 
+                        */
+                        currentObject.frameHistory.logObject( "beforeUpdate", firstRender, renderizadorPronto, frameDelta, frameNumber );
+                    }
+
+                    /**
+                    * Reseta algumas coisas antes do loop.
+                    * Isso reseta algumas coisas basicas do objeto, antes de qualquer loop de lógica e fisica
+                    */
+                    currentObject.pre_loop_reset();
+
+                    /**
+                    * Atualiza a fisica de queda com gravidade, sopro de vento, kicks, etc - deste objeto.
+                    * Este objeto atualiza essas coisas dele mesmo.
+                    */
+                    this.updatePhysicsOfObject( currentObject, frameDelta );
+
+                    /**
+                    * Atualiza status de colisão e proximidade de um objeto em questão com outros objetos. 
+                    * Isso atualiza quais objetos estão colidindo/e os que estão proximos com quais objetos
+                    */
+                    this.updateCollisionStateOfObject( currentObject, frameDelta );
+
+                    /**
+                    * Atualiza os movimentos do objeto 
+                    */
+                    this.updateMovementOfObject( currentObject, frameDelta );
+
+                    /**
+                    * Atualiza a rotação do objeto 
+                    */
+                    this.updateRotationOfObject( currentObject, frameDelta );
+
+                    /**
+                    * Atualiza os eventos do objeto 
+                    */
+                    this.updateEventsOfObject( currentObject, frameDelta );
+
+                    /**
+                    * Atualiza os "attachments" ou "objeto anexados/grudados" ao objeto atual
+                    */
+                    this.updateAttachmentsOfObject( currentObject, frameDelta );
+
+                    /**
+                    * Atualiza a lógica de jogo do objeto. 
+                    * Esse método vai fazer a atualização de lógica e regras de jogo do objeto.
+                    * OBS: Esse método não vai fazer atualizações de fisica, ou movimentação padrão da engine. Apenas lógicas especificas para o objeto.
+                    */
+                    currentObject.updateObject( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
+                    if( this.sceneConfig.enable_advanced_frame_tracking == true )
+                    {
+                        /**
+                        * Salva o status atual deste objeto APOS A ATUALIZACAO este frame no historico do objeto 
+                        */
+                        currentObject.frameHistory.logObject( "afterUpdate", firstRender, renderizadorPronto, frameDelta, frameNumber );
+                    }
+
+                    /**
+                    * Atualiza o status instantaneo da velocidade(em cada eixo, se está aumentando, diminuindo, etc...) referente ao frame anterior
+                    */
+                    currentObject.updateVelocitySinalyzer( velocityBeforeUpdate, velocitySinalyzerBeforeUpdate, firstRender, renderizadorPronto, frameDelta, frameNumber );
+
+                    /**
+                    * Reseta algumas coisas depois do frame atual terminar.
+                    * Muito importante para o calculo de força.
+                    */
+                    currentObject.reset_loop_afterframe();
+
+                }catch(e){
+                    console.error(e)
+                }
+            }
+        }
+
+    }
+
     // Update all sounds in the scene
-    public updateSounds( firstRender: boolean, renderizadorPronto: boolean, frameDelta:float, frameNumber: int ): void
+    public updateSounds( firstRender:boolean, renderizadorPronto:boolean, frameDelta:float, frameNumber:int ): void
     {
         const context : Scene                        = this;
         const sounds  : Array<Ponteiro<LocalSound>>  = this.sounds;
@@ -2044,7 +2001,7 @@ export default class Scene
     }
 
     // Atualiza todos os jogadores na cena
-    public updateJogadores( firstRender: boolean, renderizadorPronto: boolean, frameDelta:float, frameNumber: int ): void
+    public updateJogadores( firstRender:boolean, renderizadorPronto:boolean, frameDelta:float, frameNumber:int ): void
     {
         const context   : Scene                    = this;
         const jogadores : Array<Ponteiro<Player>>  = this.jogadores;
@@ -2112,5 +2069,59 @@ export default class Scene
 
             // O RENDERIZADOR VAI PASSAR AS INFORMAÇÔES PARA A CAMERA INTERNA DELE, QUE VAI ESPELHAR ESSA CAMERA
         }
+    }
+
+    /**
+    * Update in general.
+    * Função que atualiza tudo na Engine, uma por uma.
+    */
+    public updateGeneral( firstRender:boolean, renderizadorPronto:boolean, frameDelta:float, frameNumber:int )
+    {
+        this.atualizarCameraAtual( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
+        this.updateCollisionReactions(firstRender, renderizadorPronto, frameDelta, frameNumber);
+
+        this.updateObjects( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
+        this.updateSounds( firstRender, renderizadorPronto, frameDelta, frameNumber );
+
+        this.updateJogadores( firstRender, renderizadorPronto, frameDelta, frameNumber );
+    }
+
+    /**
+    * Função que chama o loop "animate".
+    * Melhor dizendo: essa função é o loop principal da Engine, que vai ser executado a cada frame.
+    * Essa função vai se chamada a cada frame, pela função "loop_principal" do arquivo RenderizadorCena.ts, na linha 608.
+    */
+    public loop( frameDelta: float, 
+                 frameNumber: int,
+                 firstRender: boolean = true, 
+                 renderizadorPronto: boolean = false 
+    ){
+        const context = this;
+
+        // Função que é executada antes do loop da Engine.
+        EngineBeforeLoop( context, frameDelta, frameNumber, firstRender, renderizadorPronto );
+    
+        // Atualiza tudo na Engine 
+        context.updateGeneral( firstRender,
+                               renderizadorPronto,
+                               frameDelta,
+                               frameNumber );
+
+        // Função que é executada durante o loop da Engine.
+        EngineLoop( context, 
+                    firstRender,
+                    renderizadorPronto,
+                    frameDelta,
+                    frameNumber );
+
+        // Se for o primeiro frame(ou seja, se a Engine está renderizando pela primeira vez)
+        if( firstRender == true )
+        {
+            // Chamar a função EngineMain
+            EngineMain( this, firstRender, renderizadorPronto, frameDelta, frameNumber );
+        }
+
     }
 }

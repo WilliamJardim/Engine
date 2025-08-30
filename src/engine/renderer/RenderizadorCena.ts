@@ -40,6 +40,8 @@ import sleep_thread from '../utils/thread/sleep_thread';
 import ThreadInstance from '../utils/thread/ThreadInstance';
 import lerTeclaPrecionada from '../utils/teclado/isPrecionandoTecla';
 import lerPosicaoMouse from '../utils/mouse/lerPosicaoMouse';
+import VisualMeshConfig from '../interfaces/render_engine/VisualMeshConfig';
+import { EngineBeforeLoop, EngineLoop, EngineMain } from '../main';
 
 export default class RenderizadorCena
 {
@@ -157,6 +159,7 @@ export default class RenderizadorCena
         // Se o objeto não está presente no Mapa de OBJs
         if( tipoObjeto == "OBJ" && this.getOBJMemoria( idObjeto ) == null )
         {   
+            // Cria ele
             this.objLidos[ idObjeto ] = {
                 obj_string : "",
                 mtl_string : "",
@@ -166,7 +169,10 @@ export default class RenderizadorCena
             }
         }
 
-        // O carregamento do OBJ ainda não terminou
+        /** 
+        * O carregamento do OBJ ainda não terminou,
+        * Se ele nao está sendo carregado por alguma thread, cria uma para fazer isso.
+        */
         if( this.getOBJMemoria( idObjeto ).carregando == false )
         {
             // Diz que o objeto está sendo carregado
@@ -202,7 +208,7 @@ export default class RenderizadorCena
                 const objProps        : ObjectProps     = objetoAtual.objProps;
                 const tipoObjeto      : string          = objProps.type;
                 const stringsOBJ      : ObjString       = this.getOBJMemoria( objetoAtual.id );
-                const isOBJCarregado  : boolean         = stringsOBJ != null;
+                const isOBJCarregado  : boolean         = stringsOBJ != null; //Se o objeto não existe no mapa, então ele não está carregado.
 
                 // Se for um OBJ
                 if( tipoObjeto == "OBJ" )
@@ -230,12 +236,16 @@ export default class RenderizadorCena
                     if( stringsOBJ.concluido == true && stringsOBJ.foi_lido == false )
                     {
                         podeInserirOBJ = true;
+
+                        //NOTA: Vai sinalizar que ele pode ser inserido
                     }
 
                     // Detecta quanto o OBJ ja foi inserido
                     if( stringsOBJ.concluido == true && stringsOBJ.foi_lido == true )
                     {
                         jaFoiInserido = true;
+
+                        //NOTA: Vai sinalizar que ele ja foi inserido
                     }
                 }
 
@@ -251,6 +261,7 @@ export default class RenderizadorCena
                         position: objProps.position,
                         scale: objProps.scale,
                         rotation: objProps.rotation,
+                        renderizavel: objProps.isRenderizavel,
                         invisivel: objProps.isInvisible,
                         transparencia: objProps.opacity, // 100 opaco
 
@@ -623,11 +634,29 @@ export default class RenderizadorCena
         context.renderizador.receberInformacoesTecladoMouse( context.armazenamentoEntrada.mousePosition, 
                                                              context.armazenamentoEntrada.keyDetection );
 
+        // Função que é executada antes do loop da Engine.
+        EngineBeforeLoop( context.engineScene, frameDelta, frameNumber, context.firstRender, context.provavelmentePronto );
+
         // Só chama o loop da minha engine se o renderizador já está apto para renderizar coisas(função que chamei de "loop" será chamada para cada frame)
         context.engineScene.loop( frameDelta, 
                                   frameNumber, 
                                   context.firstRender, 
                                   context.provavelmentePronto );
+
+        // Função que é executada após o loop da Engine.
+        EngineLoop( context.engineScene, 
+                    context.firstRender,
+                    context.provavelmentePronto,
+                    frameDelta,
+                    frameNumber );
+
+        // Se for o primeiro frame(ou seja, se a Engine está renderizando pela primeira vez)
+        if( context.firstRender == true )
+        {
+            // Chamar a função EngineMain
+            EngineMain( context.engineScene, context.firstRender, context.provavelmentePronto, frameDelta, frameNumber );
+        }
+
 
         // Atualiza as cameras
         context.updateCamerasVisually();

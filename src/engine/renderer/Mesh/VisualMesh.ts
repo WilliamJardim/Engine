@@ -65,6 +65,7 @@ export class VisualMesh
     public scale          : Position3D;
     public rotation       : Position3D;
 
+    public renderizavel              : boolean;
     public invisivel                 : boolean;
     public transparencia             : float;
     public alwaysUpdateLights        : boolean;
@@ -170,6 +171,7 @@ export class VisualMesh
         this.scale         = propriedadesMesh.scale;
         this.rotation      = propriedadesMesh.rotation;
         this.invisivel     = propriedadesMesh.invisivel || false; 
+        this.renderizavel  = propriedadesMesh.renderizavel || true;
         this.transparencia = propriedadesMesh.transparencia;
 
         // Luzes do objeto

@@ -494,10 +494,19 @@ export default class Scene
     }
 
     /**
-    * Adiciona um objeto na cena
+    * Adiciona um objeto na cena, e retorna o ID do objeto ou uma string vazia
     */
-    public criarObjeto( objeto:Ponteiro<AbstractObjectBase> ): void{
-        this.objects.push( objeto );
+    public criarObjeto( objeto:Ponteiro<AbstractObjectBase> ): string{
+        let idObjetoCriado:string = "";
+
+        // Se o ponteiro não for nulo
+        if( objeto != null )
+        {
+            this.objects.push( objeto );
+            idObjetoCriado = objeto.id;
+        }
+
+        return idObjetoCriado;
     }
 
     /**
@@ -1869,6 +1878,9 @@ export default class Scene
             // Se o ponteiro não está nulo
             if( currentObject != null )
             {
+            // E se o objeto for renderizavel
+            if( currentObject.objProps.renderizavel == true )
+            {
                 const velocityBeforeUpdate          : ObjectVelocity     = {... currentObject.getVelocity()}; // Faz uma copia sem referencia
                 const velocitySinalyzerBeforeUpdate : VelocityStatus     = {... currentObject.velocitySinalyzer}; // Faz uma copia sem referencia
                 const currentObjectIndex            : int                = i;
@@ -1877,14 +1889,11 @@ export default class Scene
                 * Atualiza uma tabela com os nomes dos objetos,
                 * Se o ponteiro não for nulo
                 */
-                if( currentObject != null )
-                {
-                    if( currentObject.objProps.name != "" ){
-                        context.objectTableByName[ currentObject.objProps.name ] = currentObject;
-                    }
-                    if( currentObject.id != "" ){
-                        context.objectTableById[ currentObject.id ] = currentObject;
-                    }
+                if( currentObject.objProps.name != "" ){
+                    context.objectTableByName[ currentObject.objProps.name ] = currentObject;
+                }
+                if( currentObject.id != "" ){
+                    context.objectTableById[ currentObject.id ] = currentObject;
                 }
 
                 try{
@@ -1969,6 +1978,7 @@ export default class Scene
                 }catch(e){
                     console.error(e)
                 }
+            }
             }
         }
 
@@ -2101,7 +2111,7 @@ export default class Scene
         const context = this;
 
         // Função que é executada antes do loop da Engine.
-        EngineBeforeLoop( context, frameDelta, frameNumber, firstRender, renderizadorPronto );
+        //EngineBeforeLoop( context, frameDelta, frameNumber, firstRender, renderizadorPronto );
     
         // Atualiza tudo na Engine 
         context.updateGeneral( firstRender,
@@ -2110,18 +2120,18 @@ export default class Scene
                                frameNumber );
 
         // Função que é executada durante o loop da Engine.
-        EngineLoop( context, 
-                    firstRender,
-                    renderizadorPronto,
-                    frameDelta,
-                    frameNumber );
+        //EngineLoop( context, 
+        //            firstRender,
+        //            renderizadorPronto,
+        //            frameDelta,
+        //            frameNumber );
 
         // Se for o primeiro frame(ou seja, se a Engine está renderizando pela primeira vez)
-        if( firstRender == true )
-        {
+        //if( firstRender == true )
+        //{
             // Chamar a função EngineMain
-            EngineMain( this, firstRender, renderizadorPronto, frameDelta, frameNumber );
-        }
+        //    EngineMain( this, firstRender, renderizadorPronto, frameDelta, frameNumber );
+        //}
 
     }
 }

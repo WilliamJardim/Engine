@@ -501,7 +501,7 @@ export class Renderer
     }
 
     /**
-    * Cria um novo objeto na cena( adicionando ele na lista de renderização )
+    * Cria um novo objeto na cena( adicionando ele na lista de renderização ), retorna o Ponteiro de VisualMesh do objeto criado
     */
     public criarObjeto( propriedadesObjeto:VisualMeshConfig ): Ponteiro<VisualMesh>
     {
@@ -1324,12 +1324,13 @@ export class Renderer
 
         for( let i:int = 0 ; i < objetosVisuais.length ; i++ )
         {
-            const objetoAtual : VisualMesh   = objetosVisuais[i];
-            const isInvisivel : boolean      = objetoAtual.invisivel;
-            const isOpaco     : boolean      = objetoAtual.isOpaco();
+            const objetoAtual    : VisualMesh   = objetosVisuais[i];
+            const isRenderizavel : boolean      = objetoAtual.renderizavel;
+            const isInvisivel    : boolean      = objetoAtual.invisivel;
+            const isOpaco        : boolean      = objetoAtual.isOpaco();
     
             // Se não está invisivel e SE ES OPACO, ENTAO desenha o objeto
-            if( isInvisivel == false && isOpaco == true )
+            if( isInvisivel == false && isOpaco == true && isRenderizavel == true )
             {
                 // Atualiza as informações do objeto, como posição, rotação, escala, e outras
                 objetoAtual.atualizarDesenho( frameDelta );
@@ -1350,11 +1351,12 @@ export class Renderer
         for( let i:int = 0 ; i < objetosVisuais.length ; i++ )
         {
             const objetoAtual    : VisualMesh  = objetosVisuais[i];
+            const isRenderizavel : boolean     = objetoAtual.renderizavel;
             const isInvisivel    : boolean     = objetoAtual.invisivel;
             const isTransparente : boolean     = objetoAtual.isTransparente();
 
             // Se não está invisivel e SE ES TRANSPARENTE, ENTAO desenha o objeto
-            if( isInvisivel == false && isTransparente == true )
+            if( isInvisivel == false && isTransparente == true && isRenderizavel == true )
             {
                 // Atualiza as informações do objeto, como posição, rotação, escala, e outras
                 objetoAtual.atualizarDesenho( frameDelta );

@@ -177,3 +177,25 @@ eu posso usar a thread principal mesmo e separar em sub-chamadas de funções me
 # 09/08/2025 14:10 PM
 Abstrair também as funções de áudio, usadas na minha classe "LocalSound", similar ao que eu fiz com a entrada de teclado e mouse,
 para facilitar uma possivel futura migração para C++. Isso iria ajudar por que ao abstrair essas funções de ler e reproduzir audio, eu faço minha engine ficar independente da forma como elas são implantadas em cada plataforma. Ela só sabe que a função faz tal coisa, com tais parametros, etc... Mais não sabe exatamente como, pois o "como" vai depender da plataforma(web com TS, ou desktop em C++).
+
+# 29/08/2025 15:42 PM - Sistema gerenciador de mapas da cena: MapManager
+IDEIA: Sistema de carregamento de mapas, que gerencia mapas de jogo, e permite trocar de mapa.
+Ele fica atrelado a Scene. Ele carrega os mapas usando o meu sistema de carregamento de objetos .obj.
+Um mapa pode ser carregado e já renderizado, ou pode ser apenas carregado e renderizado em outro momento.
+
+# 29/08/2025 15:56 PM - Sistema de colisões em objetos .obj
+IDEIA: Criar um sistema de colisões em objetos. Para isso posso criar um prefixo marcacolisao_<nomeobjeto>, pra representar a colisão dele.
+Todas as marcas de colisão de um objeto se moverão junto com eles automaticamente. E elas serão reconhecidas como colisão na Engine.
+Isso vai ser util por que eu não vou precisar criar colisão apenas em forma de caixa. Eu poderia desenhar as colisões como eu quiser, usando algum software de modelagem 3D.
+Mas para isso, eu precisaria definir propriedades de colisão para cada parte do objeto, pois o marcacolisao_<nomeobjeto> seria um novo Mesh, só para representar a zona de colisão da parte em questão. Seria similar ao meu sistema de iluminação individual das partes. Nesse caso, eu poderia chamar a variavel de colisao individual das partes.
+
+
+
+
+
+
+
+
+
+
+

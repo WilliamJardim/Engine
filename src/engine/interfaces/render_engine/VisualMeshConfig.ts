@@ -17,6 +17,7 @@ export default interface VisualMeshConfig{
     position                  : Position3D;
     scale                     : Position3D;
     rotation                  : Position3D;
+    renderizavel              : boolean;
     invisivel                 : boolean;
     transparencia             : float;
 

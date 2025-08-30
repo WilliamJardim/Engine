@@ -34,6 +34,7 @@ export default interface ObjectProps
     ignoreCollisions : Array<string>,
     proximityConfig  : ProximityBounds,
     isInvisible      : boolean,
+    renderizavel     : boolean, // Se o objeto atualmente será renderizado pelo meu mini renderizador ou não
 
     // Iluminação do mini renderizador webgl
     childrenIndividualLights : boolean,

@@ -35,3 +35,28 @@ LightRenderizador
 LightEnginePrincipal
 
 Pra não ter confusão de tipos
+
+
+# 28/08/2025 16:25 PM - Script quase conversor de código
+Criar um "conversor" de código, que vai tentar converter de TypeScript para C++, uma conversão crua, só pra facilitar a portabilidade futura.
+Por exemplo
+```typescript
+public funcao(): tipo
+{
+
+}
+```
+
+Vai ficar:
+```cpp
+public tipo funcao()
+{
+
+}
+```
+
+Tambem vai converter:
+  - import para #include
+  - . para ->, 
+  - E as classes
+

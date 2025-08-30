@@ -17,6 +17,7 @@ import { carregarTxt } from './utils/render_engine/funcoesBase';
 import { LightInstance } from './core/LightInstance';
 import { float, int } from './types/types-cpp-like';
 import CameraInstance from './core/CameraInstance';
+import MapManager from './core/MapManager';
 
 // Objeto usado para armazenar qualquer coisa que o jogo precisar
 export const globalContext = new GlobalContext({});
@@ -24,127 +25,17 @@ export const globalContext = new GlobalContext({});
 /** Função que vai ser executada quanto a Engine for iniciada */
 export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPronto: boolean, frameDelta: float, frameNumber: int ): void
 {
-    // Importa o modelo do meu quarto 1
-    // Cria um plano que pode se deformar
+    // Cria meu gerenciador de mapas
+    const gerenciadorMapa:MapManager  = new MapManager(scene);
+
+    // Manda ele carregar o mapa montains
     /*
-    scene.criarObjeto(new ObjectBase({
-        type : 'OBJ',
-        name : 'Mapa antigo',
-        obj  : '/MAPS/theroom/map.obj',
-        mtl  : '/MAPS/theroom/map.mtl',
-        
-        isInvisible: false,
-        opacity: 1, 
+    gerenciadorMapa.configurarIluminacao({
 
-        childrenIndividualLights: true,
-        useAccumulatedLights: true,
-        staticAccumulatedLights: false,
-
-        position: {
-            x: 0,
-            y: 8,
-            z: 0
-        },
-
-        scale: {
-            x: 1,
-            y: 1,
-            z: 1
-        },
-
-        rotation: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
-
-        mass: 1,
-        classes: [],
-        havePhysics: false,
-        scaleReduce: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
-        collide: true,
-        collisionEvents: true,
-        podeAtravessar: false,
-        ignoreCollisions: [],
-        proximityConfig: {
-            x: 8,
-            y: 8,
-            z: 8
-        },
-        events: [],
-        kick_rate: 4,
-        enable_advanced_frame_tracking: false,
-        attachments: [],
-        onCreate: function(){
-
-        },
-    }));
+    });
     */
 
-
-    
-    // Cria um plano que pode se deformar
-    scene.criarObjeto( new ObjectBase({
-        type : 'OBJ',
-        name : 'Mapa novo 2',
-        obj  : '/MAPS/montains/montains.obj',
-        mtl  : '/MAPS/montains/montains.mtl',
-        
-        isInvisible: false,
-        opacity: 1, 
-
-        childrenIndividualLights: true,
-        useAccumulatedLights: true,
-        staticAccumulatedLights: false,
-
-        
-        position: {
-            x: 0,
-            y: 8,
-            z: 0
-        },
-
-        scale: {
-            x: 1,
-            y: 1,
-            z: 1
-        },
-
-        rotation: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
-
-        mass: 1,
-        classes: [],
-        havePhysics: false,
-        scaleReduce: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
-        collide: false,
-        collisionEvents: false,
-        podeAtravessar: false,
-        ignoreCollisions: [],
-        proximityConfig: {
-            x: 8,
-            y: 8,
-            z: 8
-        },
-        events: [],
-        kick_rate: 4,
-        enable_advanced_frame_tracking: false,
-        attachments: [],
-        onCreate: function(){
-
-        },
-    }));
+    gerenciadorMapa.carregarMapa("montains");
 
     // Cria um carro
     scene.criarObjeto( new ObjectBase({
@@ -153,6 +44,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
         obj  : '/objs/carros/classic-car.obj',
         mtl  : '/objs/carros/classic-car.mtl',
         
+        renderizavel: true,
         isInvisible: false,
         opacity: 1, 
 
@@ -254,6 +146,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             y: 8,
             z: 8
         },
+        renderizavel: true,
         isInvisible: false,
         opacity: 1,
         events: [
@@ -318,6 +211,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             y: 8,
             z: 8
         },
+        renderizavel: true,
         isInvisible: false,
         opacity: 1,
         events: [],
@@ -371,6 +265,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             y: 8,
             z: 8
         },
+        renderizavel: true,
         isInvisible: false,
         opacity: 1,
         events: [],
@@ -424,6 +319,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
             y: 8,
             z: 8
         },
+        renderizavel: true,
         isInvisible: false,
         opacity: 1,
         events: [],

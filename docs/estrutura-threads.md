@@ -10,7 +10,7 @@ Minha Engine usa apenas uma única thread para tudo, um conceito chamado de sing
 
 ## Classe `ThreadInstance` e sua finalidade:
 Para isso, eu criei uma classe chamada `ThreadInstance` para simular uma instancia de uma Thread, porém, no navegador.
-Abaixo mostro um exemplo de como eu crio a thread principal da minha engine, extraido da linha 723, da função `iniciar`, do arquivo `RenderizadorCena.ts`:
+Abaixo mostro um exemplo de como eu crio a thread principal da minha engine, extraido da linha 723, da função `iniciar`, do arquivo `IntegradorCamadas.ts`:
 
 ```javascript
 // Cria a Thread principal usada na renderização
@@ -21,20 +21,20 @@ thread_principal.detach(); // Permite que a Thread rode em segundo plano
 
 Ela não cria um Thread real, apenas simula isso conceitualmente, para fins de tornar meu projeto mais facil de ser portado para C++, por seguir uma estrutura mais linear e classica.
 
-No construtor da classe `ThreadInstance`, eu tenho 2 parametros principais: `funcaoChamar` e `contextoFuncao`. A `funcaoChamar` é uma função que eu quero chamar(a função será a thread em si, ou seja, uma função que contém os códigos que eu quero que a thread faça). E o `contextoFuncao` é o contexto da classe, no caso, ele é minha variavél `context`, que no contexto da minha função `iniciar` é o `this`, ou seja, o contexto da própia instancia de `RenderizadorCena`.
+No construtor da classe `ThreadInstance`, eu tenho 2 parametros principais: `funcaoChamar` e `contextoFuncao`. A `funcaoChamar` é uma função que eu quero chamar(a função será a thread em si, ou seja, uma função que contém os códigos que eu quero que a thread faça). E o `contextoFuncao` é o contexto da classe, no caso, ele é minha variavél `context`, que no contexto da minha função `iniciar` é o `this`, ou seja, o contexto da própia instancia de `IntegradorCamadas`.
 
 Os outros parametros são adicionais e opcionais. Caso você não passe nenhum outro parametro, a Thread que será criada não vai receber nenhum parametro. Porém, se você passar mais parametros depois do `contextoFuncao`, ai, a Thread que será criada vai receber esses parametros como parametros da funçao `funcaoChamar`. Esses parametros adicionais ficam dentro da variável `...outrosParametros` na declaração do construtor da minha classe `ThreadInstance`.
 
-A função que minha thread principal chama é `thread_loop_principal`, que está dentro da instancia de classe `RenderizadorCena`. Tanto é que, para chamar, eu uso o `context.thread_loop_principal` que seria o mesmo que `this.context.thread_loop_principal` ou `this->thread_loop_principal` se eu estivesse escrevendo em C++.
+A função que minha thread principal chama é `thread_loop_principal`, que está dentro da instancia de classe `IntegradorCamadas`. Tanto é que, para chamar, eu uso o `context.thread_loop_principal` que seria o mesmo que `this.context.thread_loop_principal` ou `this->thread_loop_principal` se eu estivesse escrevendo em C++.
 
 ## Função da thread principal
-A `thread_loop_principal` é uma função que não recebe nenhum parametro, pois tudo o que ela precisa já está dentro da própia instancia da classe `RenderizadorCena`, acessada por meio do `this`(no caso o meu `context`) 
+A `thread_loop_principal` é uma função que não recebe nenhum parametro, pois tudo o que ela precisa já está dentro da própia instancia da classe `IntegradorCamadas`, acessada por meio do `this`(no caso o meu `context`) 
 
 Ela é a função da thread principal, que chama várias sub-funções(que eu chamei de etapas de renderização), por exemplo
 
- - `loop_entrada_teclado`: Uma sub-função dedicada para fazer o processamento da entrada do teclado. Ela verifica em tempo real quais teclas estão sendo precionadas e registra isso no `RenderizadorCena`, para posterior consulta pela Engine.
+ - `loop_entrada_teclado`: Uma sub-função dedicada para fazer o processamento da entrada do teclado. Ela verifica em tempo real quais teclas estão sendo precionadas e registra isso no `IntegradorCamadas`, para posterior consulta pela Engine.
 
- - `loop_entrada_mouse`: Uma sub-função dedicada para fazer o processamento da entrada do mouse. Ela obtém em tempo real qual é a posição X e Y do mouse, e registra isso no `RenderizadorCena`, para posterior consulta pela Engine.
+ - `loop_entrada_mouse`: Uma sub-função dedicada para fazer o processamento da entrada do mouse. Ela obtém em tempo real qual é a posição X e Y do mouse, e registra isso no `IntegradorCamadas`, para posterior consulta pela Engine.
 
  - `loop_principal`: Uma sub-função dedicada para fazer o processamento da lógica, fisica e renderização, de tudo.
 
@@ -66,7 +66,7 @@ Abaixo mostro o código da minha função `thread_loop_principal`:
 */
 public async thread_loop_principal(): Thread<void>
 {
-    const context             : RenderizadorCena = this;
+    const context             : IntegradorCamadas = this;
 
     // Se o ponteiro não for null
     if( this.canvasRef.current != null )

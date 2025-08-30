@@ -23,7 +23,7 @@ import { Matrix } from "../../types/matrix";
 import ContagemIndicesParteOBJ from "../../interfaces/render_engine/ContagemIndicesParteOBJ";
 import Material from "../../interfaces/render_engine/Material";
 import FaceObjeto from "../../interfaces/render_engine/FaceObjeto";
-import RenderizadorCena from "../RenderizadorCena";
+import IntegradorCamadas from "../../IntegradorCamadas";
 
 /**
 * PORTABILIDADE PRA C++:

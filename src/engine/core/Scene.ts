@@ -50,7 +50,7 @@ export default class Scene
     public sceneConfig           : SceneConfig;
     public armazenamentoEntrada  : Ponteiro<ArmazenadorEntradaTecladoMouse>;
     public sceneCounter          : FrameCounter;
-    public LimiteFPS             : int; // Vai receber do RenderizadorCena.ts, apenas pra consulta
+    public LimiteFPS             : int; // Vai receber do IntegradorCamadas.ts, apenas pra consulta
 
     public gravity                              : Position3D;
     public normalSpeed                          : float = 0.05;
@@ -99,7 +99,7 @@ export default class Scene
 
         this.idJogadorAtivo = "NENHUM";
 
-        this.LimiteFPS = sceneConfig.LimiteFPS; // Vai receber do RenderizadorCena.ts, apenas pra consulta
+        this.LimiteFPS = sceneConfig.LimiteFPS; // Vai receber do IntegradorCamadas.ts, apenas pra consulta
 
         // Informações sobre o teclado e mouse(vão ser atualizadas via função atualizarDadosTecladoMouse)
         this.infoPosicaoMouse = {
@@ -2068,7 +2068,7 @@ export default class Scene
         // Se o ponteiro não for null, e se o ID da camera não for valor invalido(no caso, eu defini -1 como sendo um valor invalido)
         if( cameraAtual != null && this.idCameraAtiva != -1 )
         {
-            // Repassa o limite de FPs que eu defini no RenderizadorCena.ts
+            // Repassa o limite de FPs que eu defini no IntegradorCamadas.ts
             cameraAtual.LimiteFPS = this.LimiteFPS;
 
             // Repassa as informações de teclado e mouse que o meu renderizador recebeu da minha camada de entrada
@@ -2101,7 +2101,7 @@ export default class Scene
     /**
     * Função que chama o loop "animate".
     * Melhor dizendo: essa função é o loop principal da Engine, que vai ser executado a cada frame.
-    * Essa função vai se chamada a cada frame, pela função "loop_principal" do arquivo RenderizadorCena.ts, na linha 608.
+    * Essa função vai se chamada a cada frame, pela função "loop_principal" do arquivo IntegradorCamadas.ts, na linha 608.
     */
     public loop( frameDelta: float, 
                  frameNumber: int,

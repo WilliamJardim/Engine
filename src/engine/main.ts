@@ -31,7 +31,7 @@ export function EngineMain( scene: Scene, firstRender: boolean, renderizadorPron
     // Manda ele carregar o mapa montains
     /*
     gerenciadorMapa.configurarIluminacao({
-
+        
     });
     */
 

@@ -25,7 +25,7 @@ export default function lerTeclaPrecionada( nomeTecla:char ): boolean
     * mais seria completamente diferente em C++, de acordo se for Linux ou Windows
     * 
     * A IMPLANTAÇÂO ABAIXO VAI SER SOMENTE PRA TYPESCRIPT
-    * Irei usar a variavel global "keyDetection_geral" que eu criei no RenderizadorCena.ts
+    * Irei usar a variavel global "keyDetection_geral" que eu criei no IntegradorCamadas.ts
     * Em C++ eu não iria fazer dessa forma, mais como to fazendo no javascript/typescript, estou fazendo de uma forma que vou conseguir criar uma código abstrato que fica visualmente semelhante ao que eu faria em C++
     * Pra portar pra C++ basta estudar como é, e tambem ignorar a parte do Javascript, pois só serve no navegador pra ele manter o estilo parecido com o estilo que eu faria no C++
     */

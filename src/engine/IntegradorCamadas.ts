@@ -10,40 +10,41 @@
 
 /**
 * Wrapper para facilitar a comunicação com meu mini renderizador webgl 
+* Ele integra todas as camadas da minha Engine, fazendo elas trabalharem em conjunto, integradas.
 */
 
 import React          from 'react';
-import ObjectBase     from '../core/ObjectBase';
-import Scene          from '../core/Scene';
-import ObjectProps    from '../interfaces/main_engine/ObjectProps';
-import SceneConfig    from '../interfaces/main_engine/SceneConfig';
-import ArmazenadorEntradaTecladoMouse from '../core/input/ArmazenadorEntradaTecladoMouse';
-import { atomic, float, int, Ponteiro, Thread }   from '../types/types-cpp-like';
-import { Renderer } from './Renderer/Renderer';
-import { calcularDirecaoCamera, calcularDireitaCamera } from '../utils/render_engine/math';
-import { VisualMesh } from './Mesh/VisualMesh';
-import { carregarTxt } from '../utils/render_engine/funcoesBase';
-import ObjString from '../interfaces/render_engine/ObjString';
-import Mapa from '../utils/dicionarios/Mapa';
-import { LightRenderizador } from './Mesh/LightRenderizador';
-import ObjectPosition from '../interfaces/main_engine/ObjectPosition';
-import ObjectScale from '../interfaces/main_engine/ObjectScale';
-import LightConfig from '../interfaces/main_engine/LightConfig';
-import { LightInstance } from '../core/LightInstance';
-import RenderConfig from '../interfaces/render_engine/RenderConfig';
-import PropriedadesLuz from '../interfaces/render_engine/PropridadesLuz';
-import ConfigCamera from '../interfaces/both_engines/CameraConfig';
-import CameraInstance from '../core/CameraInstance';
-import CameraRenderizador from './CameraRenderizador';
-import AbstractObjectBase from '../core/AbstractObjectBase';
-import sleep_thread from '../utils/thread/sleep_thread';
-import ThreadInstance from '../utils/thread/ThreadInstance';
-import lerTeclaPrecionada from '../utils/teclado/isPrecionandoTecla';
-import lerPosicaoMouse from '../utils/mouse/lerPosicaoMouse';
-import VisualMeshConfig from '../interfaces/render_engine/VisualMeshConfig';
-import { EngineBeforeLoop, EngineLoop, EngineMain } from '../main';
+import ObjectBase     from './core/ObjectBase';
+import Scene          from './core/Scene';
+import ObjectProps    from './interfaces/main_engine/ObjectProps';
+import SceneConfig    from './interfaces/main_engine/SceneConfig';
+import ArmazenadorEntradaTecladoMouse from './core/input/ArmazenadorEntradaTecladoMouse';
+import { atomic, float, int, Ponteiro, Thread }   from './types/types-cpp-like';
+import { Renderer } from './renderer/Renderer/Renderer';
+import { calcularDirecaoCamera, calcularDireitaCamera } from './utils/render_engine/math';
+import { VisualMesh } from './renderer/Mesh/VisualMesh';
+import { carregarTxt } from './utils/render_engine/funcoesBase';
+import ObjString from './interfaces/render_engine/ObjString';
+import Mapa from './utils/dicionarios/Mapa';
+import { LightRenderizador } from './renderer/Mesh/LightRenderizador';
+import ObjectPosition from './interfaces/main_engine/ObjectPosition';
+import ObjectScale from './interfaces/main_engine/ObjectScale';
+import LightConfig from './interfaces/main_engine/LightConfig';
+import { LightInstance } from './core/LightInstance';
+import RenderConfig from './interfaces/render_engine/RenderConfig';
+import PropriedadesLuz from './interfaces/render_engine/PropridadesLuz';
+import ConfigCamera from './interfaces/both_engines/CameraConfig';
+import CameraInstance from './core/CameraInstance';
+import CameraRenderizador from './renderer/CameraRenderizador';
+import AbstractObjectBase from './core/AbstractObjectBase';
+import sleep_thread from './utils/thread/sleep_thread';
+import ThreadInstance from './utils/thread/ThreadInstance';
+import lerTeclaPrecionada from './utils/teclado/isPrecionandoTecla';
+import lerPosicaoMouse from './utils/mouse/lerPosicaoMouse';
+import VisualMeshConfig from './interfaces/render_engine/VisualMeshConfig';
+import { EngineBeforeLoop, EngineLoop, EngineMain } from './main';
 
-export default class RenderizadorCena
+export default class IntegradorCamadas
 {
     public canvasRef                  : React.RefObject<HTMLCanvasElement>; // Coloquei aqui em cima para deixar claro quais recursos do navegador eu uso, para uma possivel migração pra C++
     public engineScene                : Scene;
@@ -137,7 +138,7 @@ export default class RenderizadorCena
     */
     public async thread_carregar_modelo_objeto_segundoplano(idObjeto:string, caminho_obj:string, caminho_mtl:string): Thread<void>
     {
-        const context            : RenderizadorCena  = this;
+        const context            : IntegradorCamadas  = this;
 
         const idObjetoCarregando : string  = idObjeto;
         const objString          : string  = await carregarTxt( caminho_obj );
@@ -154,7 +155,7 @@ export default class RenderizadorCena
     */
     public async carregarOBJ_seNaoCarregado( idObjeto:string, tipoObjeto:string, caminho_obj:string, caminho_mtl:string ): Promise<boolean>
     {
-        const context : RenderizadorCena  = this;
+        const context : IntegradorCamadas  = this;
 
         // Se o objeto não está presente no Mapa de OBJs
         if( tipoObjeto == "OBJ" && this.getOBJMemoria( idObjeto ) == null )
@@ -252,7 +253,7 @@ export default class RenderizadorCena
                 //Se o objeto já não foi criado na renderização do meu mini renderizador webgl, cria ele pela primeira vez
                 if ( this.toRenderAssociation[objetoAtual.id] == null ) 
                 {
-                    const context : RenderizadorCena  = this;
+                    const context : IntegradorCamadas  = this;
 
                     const atributosObjetos = {
                         tipo: objProps.type,
@@ -261,7 +262,7 @@ export default class RenderizadorCena
                         position: objProps.position,
                         scale: objProps.scale,
                         rotation: objProps.rotation,
-                        renderizavel: objProps.isRenderizavel,
+                        renderizavel: objProps.renderizavel,
                         invisivel: objProps.isInvisible,
                         transparencia: objProps.opacity, // 100 opaco
 
@@ -501,7 +502,7 @@ export default class RenderizadorCena
     *
     public async thread_entrada(): Thread<void>
     {
-        const context             : RenderizadorCena = this;
+        const context             : IntegradorCamadas = this;
 
         // Se já estiver rodando
         while( context.executandoRenderizacao == true )
@@ -552,7 +553,7 @@ export default class RenderizadorCena
     */
     public async loop_entrada_teclado(): Thread<void>
     {
-        const context             : RenderizadorCena = this;
+        const context             : IntegradorCamadas = this;
 
         context.armazenamentoEntrada.keyDetection.W = false;
         context.armazenamentoEntrada.keyDetection.A = false;
@@ -594,7 +595,7 @@ export default class RenderizadorCena
     */
     public async loop_entrada_mouse(): Thread<void>
     {
-        const context       : RenderizadorCena = this;
+        const context       : IntegradorCamadas = this;
         const posicaoMouse  : Array<int>   = lerPosicaoMouse();
         const posicaoXMouse : int          = posicaoMouse[0];
         const posicaoYMouse : int          = posicaoMouse[1];
@@ -618,7 +619,7 @@ export default class RenderizadorCena
     */
     public async loop_principal(): Thread<void>
     {
-        const context             : RenderizadorCena = this;
+        const context             : IntegradorCamadas = this;
         const TempoEsperaPorFrame : float            = 1000 / context.LimiteFPS; // Calcula os milisegundos que serão usados para fazer a espera
 
         //Outras coisas que vão acontecer
@@ -710,7 +711,7 @@ export default class RenderizadorCena
     */
     public async thread_loop_principal(): Thread<void>
     {
-        const context             : RenderizadorCena = this;
+        const context             : IntegradorCamadas = this;
 
         // Se o ponteiro não for null
         if( this.canvasRef.current != null )

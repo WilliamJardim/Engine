@@ -15,7 +15,7 @@ Porém, mesmo com o carregamento em andamento, de maneira independente disso, el
 
 No meu código de carregamento dos arquivos .obj, para cada objeto do tipo OBJ instanciado na cena, eu pego o caminho do arquivo, e eu começo a carregar. Ai eu tenho variaveis de controle, para definir quanto um carregamento começou, e quando terminou, e também, se os dados do arquivo ja foram ou não enviados para a minha Engine de renderização. Cada arquivo .obj que está nesse processo de carregando fica registrado numa tabela, que registra as informações dele e o status atual do carregamento dele.
 
-Esse é o conceito, a ideia que tive. Eu criei isso na prática no meu arquivo [RenderizadorCena.ts](../../engine/renderer/RenderizadorCena.ts), nas funções `salvarOBJMemoria`, `getOBJMemoria`, `thread_carregar_modelo_objeto_segundoplano`, `carregarOBJ_seNaoCarregado`, `updateObjectsVisually`.
+Esse é o conceito, a ideia que tive. Eu criei isso na prática no meu arquivo [IntegradorCamadas.ts](../../engine/IntegradorCamadas.ts), nas funções `salvarOBJMemoria`, `getOBJMemoria`, `thread_carregar_modelo_objeto_segundoplano`, `carregarOBJ_seNaoCarregado`, `updateObjectsVisually`.
 
 *Nota: Este documento técnico foi escrito e publicado por William Alves Jardim para registrar publicamente esta ideia como parte do estado da técnica (prior art), com a intenção de contribuir com a comunidade e compartilhar conhecimento de forma aberta.*
 

@@ -1,6 +1,6 @@
 // src/components/MyEngineScene.tsx
 import React, { useEffect, useRef } from 'react';
-import RenderizadorCena             from './engine/renderer/RenderizadorCena';
+import IntegradorCamadas            from './engine/IntegradorCamadas';
 import './MyEngineScene.css'; 
 
 // SOMENTE NO NAVEGADOR: VOU IGNORAR QUANDO EU FOR PORTAR PRA C++
@@ -16,7 +16,7 @@ const MyEngineScene: React.FC = () => {
   
   useEffect(() => {
 
-    const renderizadorGL : RenderizadorCena = new RenderizadorCena(canvasRef);
+    const renderizadorGL : IntegradorCamadas = new IntegradorCamadas(canvasRef);
 
     renderizadorGL.iniciar();
 

@@ -1446,7 +1446,7 @@ export class Renderer
             *   Eu removi o calculo de MOVIMENTAÇÂO E ROTAÇÂO aqui da função atualizarCameraAtual, pois eu queria transferir para a engine de logica.
             * 
             *   A MINHA ENGINE DE LOGICA ELA JA CALCULA A MOVIMENTAÇÂO E ROTAÇÂO DESSA CAMERA DA SEGUINTE FORMA:
-            *   ELA REPLICA A MOVIMENTAÇÂO E ROTAÇÂO DA CAMERA LOGICA(da engine de logica) PARA ESSA CAMERA VISUAL(deste mini renderizador), na função updateCamerasVisually, das linhas 410-471, do meu arquivo RenderizadorCena.ts. 
+            *   ELA REPLICA A MOVIMENTAÇÂO E ROTAÇÂO DA CAMERA LOGICA(da engine de logica) PARA ESSA CAMERA VISUAL(deste mini renderizador), na função updateCamerasVisually, das linhas 410-471, do meu arquivo IntegradorCamadas.ts. 
             *  
             * Além disso, o "receberInformacoesTecladoMouse" acima nem está sendo usado pra nada. Mais mantive por que eu quis, conforme expliquei.
             */

@@ -189,8 +189,13 @@ Todas as marcas de colisão de um objeto se moverão junto com eles automaticame
 Isso vai ser util por que eu não vou precisar criar colisão apenas em forma de caixa. Eu poderia desenhar as colisões como eu quiser, usando algum software de modelagem 3D.
 Mas para isso, eu precisaria definir propriedades de colisão para cada parte do objeto, pois o marcacolisao_<nomeobjeto> seria um novo Mesh, só para representar a zona de colisão da parte em questão. Seria similar ao meu sistema de iluminação individual das partes. Nesse caso, eu poderia chamar a variavel de colisao individual das partes.
 
-
-
+# 30/08/2025 11:02 AM - Sistema gerenciador de objetos
+Criar um sistema de gerenciamento de objetos. Onde eu posso manipular os objetos com métodos getters e setters 
+Isso vai permitir criar objetos com apenas um único comando, e ir passando os parâmetros depois via setters.
+E a Engine internamente já cria as estruturas JSON usadas.
+Isso vai poupar linhas, e simplificar visualmente o código. 
+Também vai ser algo opcional. Ou seja, eu vou poder continuar criando objetos como antes, de forma verbosa, mais, eu teria uma nova forma de criar objetos mais intuitiva, simples e fácil.
+Ele pode até mesmo criar vários objetos de uma vez só com nome, e depois ir atribuindo parâmetros também via setters individualmente ou então, vários de uma só vez
 
 
 

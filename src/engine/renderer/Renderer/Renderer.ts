@@ -223,7 +223,7 @@ export class Renderer
             this.anguloVisaoY    = 60 * Math.PI / 180;
             this.aspectoCamera   = this.width / this.height;
             this.pPerto          = 0.1;
-            this.pLonge          = 100;
+            this.pLonge          = 650;
             
             this.matrixCamera = CriarMatrixPerspectiva(this.anguloVisaoY, 
                                                        this.aspectoCamera, 

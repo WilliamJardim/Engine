@@ -189,6 +189,32 @@ Todas as marcas de colisão de um objeto se moverão junto com eles automaticame
 Isso vai ser util por que eu não vou precisar criar colisão apenas em forma de caixa. Eu poderia desenhar as colisões como eu quiser, usando algum software de modelagem 3D.
 Mas para isso, eu precisaria definir propriedades de colisão para cada parte do objeto, pois o marcacolisao_<nomeobjeto> seria um novo Mesh, só para representar a zona de colisão da parte em questão. Seria similar ao meu sistema de iluminação individual das partes. Nesse caso, eu poderia chamar a variavel de colisao individual das partes.
 
+# 31/08/2025 21:37 PM - Ideias de como meu sistema de colisões em .obj vai funcionar
+Regras que pensei:
+  - Um objeto pode ter N marcas de colisão
+  - A maioria das marcas de colisão vão ser quadradas
+  - Para um objeto que tem marcas de colisão, a colisão padrão dele vai ser desativada, e a Engine vai enxergar apenas as marcas de colisão
+  - As marcas de colisão do objeto não podem colidir com outras marcas de colisão do mesmo.
+  - As marcas de colisão do objeto não podem colidir com o propio objeto
+  - Se o objeto se move ou gira, todas as marcas de colisão devem acompanhar
+  - Se uma marca de colisão se move ou gira, todas as marcas e o objeto, devem acompanhar
+  - Cada marca de colisão vai atuar como um ponto de colisão independente, que pode recochetear objetos ou permitir que o objeto seja empurrado quando colide com outros objetos.
+
+# 31/08/2025 22:03 PM - Ideias de um novo formato para meus mapas
+Estrutura que pensei:
+  - mapa.obj e mapa.mtl: para o mapa em si
+  - detalhes.obj e detalhes.mtl: para os detalhes adicionais, pra não bugar o mapa
+  - dinamicos.obj e dinamicos.mtl: para objetos dinamicos com fisica
+Todos esses vão poder ter marcas de colisões
+
+# 02/08/2025 20:59 PM - Ideia de como interpretar objetos dinamicos dentro de arquivos .obj
+Todo objeto que for dinamico vai começar com um prefixo dinamico_<nomeobjeto>. A minha Engine vai ler isso, extrair os objetos da string do .obj e transformar isso em objetos separados, para poder criar por cima, a parte. Os objetos que forem extraidos devem ser deletados do arquivo .obj de origem, e depois criar objetos a parte.
+
+# 02/08/2025 21:02 PM - Outra ideia de como interpretar objetos dinamicos dentro de arquivos .obj
+No mapa, no arquivo dinamicos.obj ou no mapa.obj, eu poderia apenas ter cubos(ou objetos mesmo, porém com uma área de colisão quadrada) que servem como marcadores de objetos, que apenas vão dizer pra Engine que lá vão existir objetos dinamicos. Ele pode usar o prefixo dinamico_<nomeobjeto>, e ele vai ter posição, rotação e escala. Ai a Engine vai criar esses objetos um por um, lendo eles da pasta public, nas posições das suas respectivas marcações, sem precisar extrair do objeto .obj. E essas marcações serão removidas, ou podem ficar invisiveis e sem colisão. Assim o mapa não precisa ter copias dos objetos, e eu não preciso extrair nem remover eles do .obj do mapa.
+
+No dinamico__<nomeobjeto>, eu precisaria remover numeros, e padronizar o nome(ficando em tudo minusculo).
+
 # 30/08/2025 11:02 AM - Sistema gerenciador de objetos
 Criar um sistema de gerenciamento de objetos. Onde eu posso manipular os objetos com métodos getters e setters 
 Isso vai permitir criar objetos com apenas um único comando, e ir passando os parâmetros depois via setters.
@@ -196,8 +222,6 @@ E a Engine internamente já cria as estruturas JSON usadas.
 Isso vai poupar linhas, e simplificar visualmente o código. 
 Também vai ser algo opcional. Ou seja, eu vou poder continuar criando objetos como antes, de forma verbosa, mais, eu teria uma nova forma de criar objetos mais intuitiva, simples e fácil.
 Ele pode até mesmo criar vários objetos de uma vez só com nome, e depois ir atribuindo parâmetros também via setters individualmente ou então, vários de uma só vez
-
-
 
 
 
